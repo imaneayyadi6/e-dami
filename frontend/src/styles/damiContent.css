@@ -1,0 +1,475 @@
+.dami {
+  background-color: #fff !important;
+  overflow: hidden;
+  padding: 30px;
+  /* height: 100%; */
+}
+.dami-logo {
+  width: 50px;
+  height: 50px;
+  margin: 0 13px;
+  display: block;
+  text-align: center;
+}
+.dami-snrt-logo {
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  padding: 20px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 13% !important;
+}
+.dami-header {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  padding: 0;
+}
+
+.dami-lb-tp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid lightgray;
+  width: 77%;
+}
+.dami-type-de-processus {
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 1px solid lightgray;
+  padding: 8px;
+  width: 100%;
+}
+.dami-libelle {
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 12px;
+  width: 100%;
+}
+.dami-codification-table {
+  font-size: 12px;
+  height: 100%;
+  width: 10% !important;
+}
+.dami-codification-table tr {
+  border-bottom: 1px solid lightgray;
+}
+.dami-codification-table tr:last-child {
+  border-bottom: none;
+}
+.dami-codification-table tr td {
+  padding: -2px 5px;
+}
+.dami-codification-table tr td {
+  border-right: 1px solid lightgray;
+}
+.dami-header-codi-item {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.demandeur-section {
+  font-size: 12px;
+  padding: 0 5px;
+  padding-bottom: 10px;
+  width: 100%;
+  border-bottom: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+}
+.demandeur-section table .dami-input {
+  margin: 0;
+}
+.demandeur-section table {
+  width: 100%;
+}
+
+.demandeur-section .dami-input {
+  width: 200px;
+  margin-right: 15px;
+}
+
+.dami-body {
+  /* min-height: 1000px; */
+  min-height: 500px;
+  border-bottom: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+}
+.dami-body table tr {
+  margin: 0 !important;
+}
+
+.dami-footer {
+  font-size: 10px;
+}
+
+.dami-footer .dami-input {
+  margin: 0;
+  width: 80%;
+}
+.signataires {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid lightgray;
+  border-top: none;
+  height: 50px;
+}
+.directeur-lib {
+  width: 100%;
+  height: 100%;
+  display: block;
+  padding: 5px;
+  /* background-color: red; */
+  text-align: center;
+  border-right: 1px solid lightgray;
+}
+.directeur-lib:last-child {
+  border-right: none;
+}
+
+.signataires-ch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 230px;
+  border: 1px solid lightgray;
+  border-top: none;
+}
+.sig-item {
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid lightgray;
+  padding: 5px;
+}
+.sig-item .dami-input {
+  margin: 0;
+}
+.sig-item div {
+  margin: 0;
+}
+.sig-item:last-child {
+  border-right: none;
+}
+
+/* begin document */
+@media screen and (max-width: 990px) {
+  .doc-row {
+    flex-direction: column-reverse !important;
+  }
+}
+
+.doc {
+  min-height: 600px;
+  /* width: 768px; */
+  padding: 7px 35px;
+  background-color: #fff !important;
+  border: 1px solid lightgray;
+  overflow: hidden;
+  /* overflow-y: auto; */
+}
+
+.crt-dami-com-item:hover {
+  background-color: #f4f4f4;
+}
+
+.btn-remove-component {
+  font-size: 12px;
+  position: absolute;
+  cursor: pointer;
+  right: -3%;
+  padding: 1px 3px;
+  top: 0%;
+}
+
+.btn-remove-component:hover {
+  background-color: #f4f4f4;
+}
+.line {
+  width: 100%;
+  background-color: lightgray;
+  height: 1px;
+  display: block;
+  margin: 15px 0;
+}
+/* begin label */
+.dami-label {
+  margin: 0;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: auto;
+  white-space: nowrap;
+  margin: 5px 0;
+}
+.dami-label.block {
+  width: 100%;
+}
+.dami-comp-ui {
+  position: relative;
+}
+.dami-label.focus {
+  background-color: lightgray;
+}
+.dami-label.bold {
+  font-weight: bold;
+}
+.dami-label.italic {
+  font-style: italic;
+}
+.dami-label.underline {
+  text-decoration: underline;
+}
+
+.dami-label.align-left {
+  text-align: left;
+}
+.dami-label.align-center {
+  text-align: center;
+}
+.dami-label.align-right {
+  text-align: right;
+}
+.dami-label.align-justify {
+  text-align: justify;
+}
+
+/* end label */
+
+/* begin input */
+.dami-input {
+  border: none;
+  border-bottom: 1px dotted var(--bs-gray);
+  outline: none;
+  width: 280px;
+  margin: 7px 0;
+  padding: 3px;
+  font-size: 12px;
+}
+
+.dami-input.block {
+  width: 100% !important;
+}
+
+/* end input */
+
+/* Begin checkbox */
+.dami-check-box {
+  --webkit-appearance: none;
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  margin-right: 2px;
+  border: 1px solid gray;
+  border-radius: 0;
+  outline: none;
+  background-color: #fff !important;
+}
+.dami-check-box:checked {
+  --webkit-appearance: none;
+  appearance: none;
+  z-index: 100;
+  cursor: pointer;
+  position: relative;
+}
+.dami-check-box:checked::after {
+  content: "\f00c";
+  font-size: 10px;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #101010;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.btn-remove-chk {
+  font-size: 10px;
+  margin-top: 2px;
+  margin-right: 3px;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+.btn-remove-chk:hover {
+  background-color: lightgray;
+}
+.btn-add-chk {
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 3px;
+  padding: 5px 10px;
+}
+.btn-add-chk:hover {
+  background-color: lightgray;
+}
+.dami-check-box-container {
+  padding: 5px 0;
+}
+/* .dami-check-box-container:hover {
+    background-color: #f4f4f4;
+  } */
+/* End checkbox */
+
+/* Begin Radio Button */
+.dami-radio-button {
+  --webkit-appearance: none;
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  margin-right: 2px;
+  border: 1px solid gray;
+  border-radius: 0;
+  outline: none;
+  margin-left: 10px;
+  background-color: #fff !important;
+}
+
+.dami-radio-button:checked {
+  --webkit-appearance: none;
+  appearance: none;
+  z-index: 100;
+  cursor: pointer;
+  position: relative;
+}
+.dami-radio-button:checked::after {
+  content: "\f00c";
+  font-size: 10px;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #101010;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dami-radio-button-container {
+  padding: 5px 0;
+}
+
+/* .dami-radio-button-container:hover {
+    background-color: #f4f4f4;
+  } */
+
+/* End Radio Button */
+
+/* Begin TextArea */
+.lst-of-text-input {
+  width: 300px;
+  background-color: red;
+  z-index: 1000;
+  margin-bottom: 15px;
+}
+.lst-of-text-input.block {
+  width: 100%;
+}
+.dami-textarea-line {
+  border: none;
+  border-bottom: 1px dotted var(--bs-gray);
+  outline: none;
+  width: 100%;
+  padding: 3px;
+  font-size: 12px;
+  display: block;
+  z-index: 100;
+}
+
+/* End TextArea */
+
+/* Begin List Of CheckBox */
+.lst-check-boxes-header > tr {
+  background-color: #f4f4f4;
+}
+.lst-check-boxes-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.line-section {
+  background-color: #f4f4f4;
+}
+
+.lst.dami-check-box {
+  text-align: center;
+  background-color: #fff !important;
+}
+.lst.dami-check-box.disabled {
+  background-color: lightgray !important;
+}
+.btn-add-checkbox-label-header {
+  font-size: 12px;
+  padding: 1px 4px;
+  cursor: pointer;
+}
+.btn-add-checkbox-label-header:hover {
+  background-color: lightgray;
+}
+.btn-add-checkbox-line {
+  font-size: 12px;
+  padding: 1px 4px;
+  cursor: pointer;
+}
+.btn-add-checkbox-line:hover {
+  background-color: lightgray;
+}
+
+.btn-remove-checkbox-label-header {
+  font-size: 10px;
+  padding: 1px 3px;
+  cursor: pointer;
+}
+.btn-remove-checkbox-label-header:hover {
+  background-color: lightgray;
+}
+.btn-remove-checkbox-line {
+  font-size: 10px;
+  padding: 1px 3px;
+  cursor: pointer;
+}
+.btn-remove-checkbox-line:hover {
+  background-color: lightgray;
+}
+
+/* End List Of CheckBox */
+
+/* Begin List Of Radio Button */
+.lst.dami-radio-button {
+  text-align: center;
+  background-color: #fff !important;
+}
+.lst.dami-radio-button.disabled {
+  background-color: lightgray !important;
+}
+/* End List Of Radio Button */
+.divider {
+  display: flex;
+  align-items: start;
+  margin: 10px 0;
+}
+.divider > div {
+  border-right: 1px solid lightgray;
+  min-height: 40px;
+  width: 50%;
+  padding:0 2px;
+  overflow-x: hidden;
+}
+
+.divider > div:last-child {
+  border-right: none;
+}
+.btn-remove-divider-children {
+  font-size: 12px;
+  cursor: pointer;
+  padding: 1px 3px;
+  margin-bottom: 1px;
+}
+.btn-remove-divider-children:hover {
+  background-color: #f4f4f4;
+} /* end document */

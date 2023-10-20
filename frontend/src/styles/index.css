@@ -1,0 +1,215 @@
+/* Begin Global Rules */
+body {
+  background-color: #f4f4f4 !important;
+}
+
+
+
+@keyframes showToast {
+  from {
+    bottom: 0%
+  }
+
+  to {
+    bottom: 5%;
+  }
+}
+
+.m-toast {
+  display: none;
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 650px;
+  padding: 14px 5px 14px 14px;
+  animation: showToast 0.2s ease-in-out;
+}
+
+.m-toast.show {
+  display: block;
+}
+
+@media screen and (max-width:992px) {
+  .m-toast {
+    width: 450px;
+  }
+}
+
+@media screen and (max-width:500px) {
+  .toast-container {
+    bottom: 10%;
+  }
+
+  .m-toast {
+    width: 350px;
+
+  }
+}
+
+.m-toast .btn-remove,
+.m-toast .btn-remove i {
+  font-size: 12px;
+  padding: 0 10px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.m-toast .m-toast-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.m-toast.m-toast-info {
+  color: var(--bs-info-text-emphasis);
+  background-color: var(--bs-info-bg-subtle);
+  border: 1px solid var(--bs-info-border-subtle)
+}
+
+.m-toast.m-toast-danger {
+  color: var(--bs-danger-text-emphasis);
+  background-color: var(--bs-danger-bg-subtle);
+  border: 1px solid var(--bs-danger-border-subtle)
+}
+
+.m-toast.m-toast-warning {
+  color: var(--bs-warning-text-emphasis);
+  background-color: var(--bs-warning-bg-subtle);
+  border: 1px solid var(--bs-warning-border-subtle)
+}
+
+.m-toast.m-toast-success {
+  color: var(--bs-success-text-emphasis);
+  background-color: var(--bs-success-bg-subtle);
+  border: 1px solid var(--bs-success-border-subtle)
+}
+
+.nav-link {
+  font-size: 11px !important;
+}
+
+.header-logo {
+  height: 35px;
+  width: 35px;
+}
+
+.sidebar-logo {
+  height: 20px;
+  width: 20px;
+}
+
+.side-bar {
+  width: 350px !important;
+}
+
+ul {
+  list-style: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.mr-0 {
+  margin-right: 0 !important;
+}
+
+.mr-1 {
+  margin-right: 1rem !important;
+}
+
+.mr-2 {
+  margin-right: 2rem !important;
+}
+
+.mr-3 {
+  margin-right: 3rem !important;
+}
+
+.mr-4 {
+  margin-right: 4rem !important;
+}
+
+.mr-5 {
+  margin-right: 5rem !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;
+}
+
+.ml-1 {
+  margin-left: 1rem !important;
+}
+
+.ml-5 {
+  margin-left: 5rem !important;
+}
+
+.logo-login-page {
+  width: 60px;
+  height: 60px;
+}
+
+.side-bar-icon {
+  font-size: 15px !important;
+}
+
+.track-line {
+  height: 2px !important;
+  background-color: var(--bs-dark) !important;
+}
+
+.track-line.nn-track-line {
+  background-color: #f4f4f4 !important;
+}
+
+.dot {
+  height: 35px;
+  width: 35px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  background-color: var(--bs-dark);
+  border-radius: 50%;
+  font-size: 12px;
+  display: inline-block;
+  position: relative;
+  color: #fff;
+}
+
+.dot.nn-dot {
+  background-color: #f4f4f4;
+  color: var(--bs-dark);
+}
+
+.dot i {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.dot small {
+  position: absolute;
+  color: gray;
+  margin-top: 15px;
+  text-align: center;
+  overflow: hidden;
+  top: 100%;
+  width: 120px;
+  left: 100%;
+  transform: translate(-65%, -10%);
+}
+
+.hovred:hover {
+  background-color: #f4f4f4;
+}
+
+.inline-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* End Global Rules */

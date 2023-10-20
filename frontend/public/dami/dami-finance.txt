@@ -1,0 +1,35 @@
+Comptabilité Générale, Analytique & Budgétaire
+
+Définition Période Société
+Opération de Clotures des périodes comptables
+Organisation et paramétrage des compts comptables
+Etats de vérification des écritures
+Rapprochements des comptes bancaires
+Saisie des taux de change 
+Consultation des cles CL des Articles
+Saisie des écritures de la comptabilité Génerale
+Etats Comptabilité Générale
+Annulation des documents validés des Achats
+
+
+
+Comptabilité Clients
+
+Saisie des factures clients
+Comptabilisation des factures Clients
+Consultation du grand Livre Client
+Traitement des encaissemants manuels
+Edition des Etats de la comptabilité Clients
+Reprise des factures de la régie Pub
+
+
+
+Comptabilité Fournisseurs 
+
+Saisie des factures fournisseurs
+Comptabilisation des factures
+Consultations Comptes fournisseurs
+Traitement des Paimenet manuels
+Comptabilisation D/L des paiments manuels
+Comptablisation G/L des paiments automatiques
+Edition des Etats de ka Comptabilité fournisseurs 
