@@ -1,5 +1,5 @@
 import DashboardPage from "./DashboardPage";
 import LoginPage from "./LoginPage";
-import NotFoundPage from "./NotFoundPage";
+import RedirectPage from "./RedirectPage";
 
-export { DashboardPage, LoginPage, NotFoundPage };
+export { DashboardPage, LoginPage, RedirectPage };

@@ -260,7 +260,7 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
           res.status(400);
           throw new Error("directeur existe deja !");
         } else {
-          obj.direction = direction._id;
+          utilisateur.direction = direction._id;
         }
       } else {
         res.status(404);
@@ -276,7 +276,7 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
           res.status(400);
           throw new Error("chef de service existe deja !");
         } else {
-          obj.service = service._id;
+          utilisateur.service = service._id;
         }
       } else {
         res.status(404);

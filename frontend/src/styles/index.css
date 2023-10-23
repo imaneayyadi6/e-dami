@@ -3,22 +3,20 @@ body {
   background-color: #f4f4f4 !important;
 }
 
-
-
 @keyframes showToast {
   from {
-    bottom: 0%
+    top: 0%;
   }
 
   to {
-    bottom: 5%;
+    top: 8%;
   }
 }
 
 .m-toast {
   display: none;
   position: absolute;
-  bottom: 5%;
+  top: 8%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
@@ -31,20 +29,17 @@ body {
   display: block;
 }
 
-@media screen and (max-width:992px) {
+@media screen and (max-width: 992px) {
   .m-toast {
+    top: 10%;
     width: 450px;
   }
 }
 
-@media screen and (max-width:500px) {
-  .toast-container {
-    bottom: 10%;
-  }
-
+@media screen and (max-width: 500px) {
   .m-toast {
+    top: 15%;
     width: 350px;
-
   }
 }
 
@@ -65,25 +60,25 @@ body {
 .m-toast.m-toast-info {
   color: var(--bs-info-text-emphasis);
   background-color: var(--bs-info-bg-subtle);
-  border: 1px solid var(--bs-info-border-subtle)
+  border: 1px solid var(--bs-info-border-subtle);
 }
 
 .m-toast.m-toast-danger {
   color: var(--bs-danger-text-emphasis);
   background-color: var(--bs-danger-bg-subtle);
-  border: 1px solid var(--bs-danger-border-subtle)
+  border: 1px solid var(--bs-danger-border-subtle);
 }
 
 .m-toast.m-toast-warning {
   color: var(--bs-warning-text-emphasis);
   background-color: var(--bs-warning-bg-subtle);
-  border: 1px solid var(--bs-warning-border-subtle)
+  border: 1px solid var(--bs-warning-border-subtle);
 }
 
 .m-toast.m-toast-success {
   color: var(--bs-success-text-emphasis);
   background-color: var(--bs-success-bg-subtle);
-  border: 1px solid var(--bs-success-border-subtle)
+  border: 1px solid var(--bs-success-border-subtle);
 }
 
 .nav-link {

@@ -4,10 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { createUser, resetCreateUser } from "../../redux/user/userActions";
 import { Loader, Message } from "../../components";
-import {
-
-  fetchServicesByDirectionID,
-} from "../../redux/service/serviceActions";
+import { fetchServicesByDirectionID } from "../../redux/service/serviceActions";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Toast } from "../../services";
@@ -63,7 +60,7 @@ const UtilisateurCreatePage = () => {
   });
 
   const serviceListByDirectionID = useSelector(
-    (state) => state.serviceListByDirectionID
+    state => state.serviceListByDirectionID
   );
   const {
     loading: loadingServiceListByDirectionID,
@@ -71,7 +68,7 @@ const UtilisateurCreatePage = () => {
     services,
   } = serviceListByDirectionID;
 
-  const userCreate = useSelector((state) => state.userCreate);
+  const userCreate = useSelector(state => state.userCreate);
   const {
     loading: loadingUserCreate,
     error: errorUserCreate,
@@ -79,7 +76,7 @@ const UtilisateurCreatePage = () => {
     user: createdUser,
   } = userCreate;
 
-  const directionList = useSelector((state) => state.directionList);
+  const directionList = useSelector(state => state.directionList);
   const {
     loading: loadingDirectionList,
     error: errorDirectionList,
@@ -87,21 +84,21 @@ const UtilisateurCreatePage = () => {
     directions,
   } = directionList;
 
-  const getServicesHandler = (event) => {
+  const getServicesHandler = event => {
     dispatch(fetchServicesByDirectionID(event.target.value));
   };
 
   const form = useFormik({
     initialValues,
     validationSchema,
-    validate: (values) => {
+    validate: values => {
       const errors = {};
       if (!values.demandeur && !values.signataire && !values.createur)
         errors.atLeastOneChecked = "au moins un de ces champs doit être coché";
 
       return errors;
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       const {
         email,
         nom,
@@ -180,35 +177,34 @@ const UtilisateurCreatePage = () => {
 
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center">
+      <div className='d-flex justify-content-between align-items-center'>
         <Link
-          to="/utilisateurs"
-          className="btn btn-sm btn-light mb-3"
+          to='/utilisateurs'
+          className='btn btn-sm btn-light mb-3'
           onClick={() => {
             dispatch(resetCreateUser());
-          }}
-        >
-          <i className="fas fa-arrow-left"></i> utilisateurs
+          }}>
+          <i className='fas fa-arrow-left'></i> utilisateurs
         </Link>
       </div>
 
       {errorServiceListByDirectionID && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorServiceListByDirectionID}
         </Message>
       )}
       {errorUserCreate && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorUserCreate}
         </Message>
       )}
 
       {errorDirectionList && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorDirectionList}
         </Message>
       )}
-      {message && <Message type="danger">{message}</Message>}
+      {message && <Message type='danger'>{message}</Message>}
       {loadingUserCreate && <Loader />}
       <Card>
         <Card.Body>
@@ -218,18 +214,18 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>matricule :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le matricule"
-                    name="matricule"
+                    placeholder='veuillez saisir le matricule'
+                    name='matricule'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.matricule}
                   />
-                  <small className="text-warning d-block">
-                    <i className="fa-solid fa-triangle-exclamation"></i> le
+                  <small className='text-warning d-block'>
+                    <i className='fa-solid fa-triangle-exclamation'></i> le
                     matricule ne doit pas commencer par le chiffre 0
                   </small>
                   {form.touched.matricule && form.errors.matricule && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.matricule}
                     </small>
                   )}
@@ -240,13 +236,13 @@ const UtilisateurCreatePage = () => {
                   <label>Email :</label>
                   <Form.Control
                     placeholder="veuillez saisir l'email"
-                    name="email"
+                    name='email'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.email}
                   />
                   {form.touched.email && form.errors.email && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.email}
                     </small>
                   )}
@@ -258,14 +254,14 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>Nom :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le nom"
-                    name="nom"
+                    placeholder='veuillez saisir le nom'
+                    name='nom'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.nom}
                   />
                   {form.touched.nom && form.errors.nom && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.nom}
                     </small>
                   )}
@@ -275,14 +271,14 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>Prenom :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le prenom"
-                    name="prenom"
+                    placeholder='veuillez saisir le prenom'
+                    name='prenom'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.prenom}
                   />
                   {form.touched.prenom && form.errors.prenom && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.prenom}
                     </small>
                   )}
@@ -295,14 +291,14 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>Fonction :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le fonction"
-                    name="fonction"
+                    placeholder='veuillez saisir le fonction'
+                    name='fonction'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.fonction}
                   />
                   {form.touched.fonction && form.errors.fonction && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.fonction}
                     </small>
                   )}
@@ -313,14 +309,14 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>GSM :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le gsm (numero de telephone)"
-                    name="gsm"
+                    placeholder='veuillez saisir le gsm (numero de telephone)'
+                    name='gsm'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.gsm}
                   />
                   {form.touched.gsm && form.errors.gsm && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.gsm}
                     </small>
                   )}
@@ -334,26 +330,25 @@ const UtilisateurCreatePage = () => {
                   <label>Direction :</label>
                   <Form.Select
                     disabled={loadingDirectionList}
-                    name="direction"
-                    onChange={(event) => {
+                    name='direction'
+                    onChange={event => {
                       form.handleChange(event);
                       getServicesHandler(event);
                     }}
                     onBlur={form.handleBlur}
-                    value={form.values.direction}
-                  >
-                    <option value="">
+                    value={form.values.direction}>
+                    <option value=''>
                       ---- veuillez selectionner une direction ----
                     </option>
                     {directions.length > 0 &&
-                      directions.map((direction) => (
+                      directions.map(direction => (
                         <option key={direction._id} value={direction._id}>
                           {direction.libelle}
                         </option>
                       ))}
                   </Form.Select>
                   {form.touched.direction && form.errors.direction && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.direction}
                     </small>
                   )}
@@ -368,23 +363,22 @@ const UtilisateurCreatePage = () => {
                         loadingServiceListByDirectionID ||
                         !form.values.direction
                       }
-                      name="service"
+                      name='service'
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      value={form.values.service}
-                    >
-                      <option value="">
+                      value={form.values.service}>
+                      <option value=''>
                         ---- veuillez selectionner un service ----
                       </option>
                       {services.length > 0 &&
-                        services.map((service) => (
+                        services.map(service => (
                           <option key={service._id} value={service._id}>
                             {service.libelle}
                           </option>
                         ))}
                     </Form.Select>
                     {form.touched.service && form.errors.service && (
-                      <small className="text-danger d-block">
+                      <small className='text-danger d-block'>
                         {form.errors.service}
                       </small>
                     )}
@@ -394,12 +388,12 @@ const UtilisateurCreatePage = () => {
             </Row>
             <Row>
               <Col xl={12} lg={12} md={12} sm={12}>
-                <h5 className="mt-3">Poste de responsabilité :</h5>
+                <h5 className='mt-3'>Poste de responsabilité :</h5>
               </Col>
               <Col xl={12} lg={12} md={12} sm={12}>
                 <Button
-                  variant="light"
-                  size="sm"
+                  variant='light'
+                  size='sm'
                   onClick={() => {
                     form.setValues({
                       matricule: form.values.matricule,
@@ -418,18 +412,17 @@ const UtilisateurCreatePage = () => {
                       isChefDeService: false,
                       isDirecteur: false,
                     });
-                  }}
-                >
+                  }}>
                   décoche
                 </Button>
               </Col>
               <Col xl={12} lg={12} md={12} sm={12}>
-                <div className="d-flex align-items-center">
-                  <div className="d-flex justify-content-start align-items-center mr-2">
-                    <label className="mr-1">Chef de service :</label>
+                <div className='d-flex align-items-center'>
+                  <div className='d-flex justify-content-start align-items-center mr-2'>
+                    <label className='mr-1'>Chef de service :</label>
                     <Form.Check
-                      name="isChefDeService"
-                      onChange={(event) => {
+                      name='isChefDeService'
+                      onChange={event => {
                         form.handleChange(event);
                         form.setValues({
                           matricule: form.values.matricule,
@@ -455,16 +448,16 @@ const UtilisateurCreatePage = () => {
                     />
                     {form.touched.isChefDeService &&
                       form.errors.isChefDeService && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.isChefDeService}
                         </small>
                       )}
                   </div>
-                  <div className="d-flex justify-content-start align-items-center mr-2">
-                    <label className="mr-1">Directeur:</label>
+                  <div className='d-flex justify-content-start align-items-center mr-2'>
+                    <label className='mr-1'>Directeur:</label>
                     <Form.Check
-                      name="isDirecteur"
-                      onChange={(event) => {
+                      name='isDirecteur'
+                      onChange={event => {
                         form.handleChange(event);
                         form.setValues({
                           matricule: form.values.matricule,
@@ -490,7 +483,7 @@ const UtilisateurCreatePage = () => {
                       checked={form.values.isDirecteur}
                     />
                     {form.touched.isDirecteur && form.errors.isDirecteur && (
-                      <small className="text-danger d-block">
+                      <small className='text-danger d-block'>
                         {form.errors.isDirecteur}
                       </small>
                     )}
@@ -501,60 +494,69 @@ const UtilisateurCreatePage = () => {
 
             <Row>
               <Col xl={12} lg={12} md={12} sm={12}>
-                <h5 className="mt-3">Roles :</h5>
+                <h5 className='mt-3'>Roles :</h5>
               </Col>
               <Col xl={12} lg={12} md={12} sm={12}>
-                <div className="d-flex align-items-center">
-                  <div className="d-flex justify-content-start align-items-center mr-2">
-                    <label className="mr-1">Demandeur :</label>
-                    <Form.Check
-                      name="demandeur"
-                      onChange={form.handleChange}
-                      onBlur={form.handleBlur}
-                      value={form.values.demandeur}
-                      checked={form.values.demandeur}
-                    />
-                    {form.touched.demandeur && form.errors.demandeur && (
-                      <small className="text-danger d-block">
-                        {form.errors.demandeur}
-                      </small>
-                    )}
-                  </div>
-                  <div className="d-flex justify-content-start align-items-center mr-2">
-                    <label className="mr-1">Signataire :</label>
-                    <Form.Check
-                      name="signataire"
-                      onChange={form.handleChange}
-                      onBlur={form.handleBlur}
-                      value={form.values.signataire}
-                      checked={form.values.signataire}
-                    />
-                    {form.touched.signataire && form.errors.signataire && (
-                      <small className="text-danger d-block">
-                        {form.errors.signataire}
-                      </small>
-                    )}
-                  </div>
-                  <div className="d-flex justify-content-start align-items-center mr-2">
-                    <label className="mr-1">Createur :</label>
-                    <Form.Check
-                      name="createur"
-                      onChange={form.handleChange}
-                      onBlur={form.handleBlur}
-                      value={form.values.createur}
-                      checked={form.values.createur}
-                    />
-                    {form.touched.createur && form.errors.createur && (
-                      <small className="text-danger d-block">
-                        {form.errors.createur}
-                      </small>
-                    )}
-                  </div>
-                </div>
+                <Row>
+                  <Col xl={4} lg={4} md={12} sm={12}>
+                    <div className='d-flex justify-content-start align-items-center mr-2'>
+                      <label className='mr-1'>Demandeur :</label>
+                      <Form.Check
+                        disabled={loadingUserCreate}
+                        name='demandeur'
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                        value={form.values.demandeur}
+                        checked={form.values.demandeur}
+                      />
+                      {form.touched.demandeur && form.errors.demandeur && (
+                        <small className='text-danger d-block'>
+                          {form.errors.demandeur}
+                        </small>
+                      )}
+                    </div>
+                  </Col>
+                  <Col xl={4} lg={4} md={12} sm={12}>
+                    <div className='d-flex justify-content-start align-items-center mr-2'>
+                      <label className='mr-1'>Signataire :</label>
+                      <Form.Check
+                        disabled={loadingUserCreate}
+                        name='signataire'
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                        value={form.values.signataire}
+                        checked={form.values.signataire}
+                      />
+                      {form.touched.signataire && form.errors.signataire && (
+                        <small className='text-danger d-block'>
+                          {form.errors.signataire}
+                        </small>
+                      )}
+                    </div>
+                  </Col>
+                  <Col xl={4} lg={4} md={12} sm={12}>
+                    <div className='d-flex justify-content-start align-items-center mr-2'>
+                      <label className='mr-1'>Createur :</label>
+                      <Form.Check
+                        disabled={loadingUserCreate}
+                        name='createur'
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                        value={form.values.createur}
+                        checked={form.values.createur}
+                      />
+                      {form.touched.createur && form.errors.createur && (
+                        <small className='text-danger d-block'>
+                          {form.errors.createur}
+                        </small>
+                      )}
+                    </div>
+                  </Col>
+                </Row>
               </Col>
             </Row>
             {form.errors && form.errors["atLeastOneChecked"] && (
-              <small className="text-danger d-block">
+              <small className='text-danger d-block'>
                 {form.errors["atLeastOneChecked"]}
               </small>
             )}
@@ -563,15 +565,15 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>Mot de passe :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le mot de passe"
-                    name="password"
-                    type="password"
+                    placeholder='veuillez saisir le mot de passe'
+                    name='password'
+                    type='password'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.password}
                   />
                   {form.touched.password && form.errors.password && (
-                    <small className="text-danger d-block">
+                    <small className='text-danger d-block'>
                       {form.errors.password}
                     </small>
                   )}
@@ -581,16 +583,16 @@ const UtilisateurCreatePage = () => {
                 <div>
                   <label>Confirmer le mot de passe :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le mot de passe de confirmation"
-                    name="confirmPassword"
-                    type="password"
+                    placeholder='veuillez saisir le mot de passe de confirmation'
+                    name='confirmPassword'
+                    type='password'
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     value={form.values.confirmPassword}
                   />
                   {form.touched.confirmPassword &&
                     form.errors.confirmPassword && (
-                      <small className="text-danger d-block">
+                      <small className='text-danger d-block'>
                         {form.errors.confirmPassword}
                       </small>
                     )}
@@ -598,8 +600,8 @@ const UtilisateurCreatePage = () => {
               </Col>
             </Row>
 
-            <Button className="w-100 mt-3" type="submit">
-              <i className="fa-solid fa-user-plus"></i> creer
+            <Button className='w-100 mt-3' type='submit'>
+              <i className='fa-solid fa-user-plus'></i> creer
             </Button>
           </Form>
         </Card.Body>

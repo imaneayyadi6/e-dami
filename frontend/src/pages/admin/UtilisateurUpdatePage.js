@@ -53,7 +53,7 @@ const UtilisateurUpdatePage = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
-  const userByID = useSelector((state) => state.userByID);
+  const userByID = useSelector(state => state.userByID);
   const {
     loading: loadingUserByID,
     error: errorUserByID,
@@ -77,7 +77,7 @@ const UtilisateurUpdatePage = () => {
     createur: false,
   });
 
-  const userUpdate = useSelector((state) => state.userUpdate);
+  const userUpdate = useSelector(state => state.userUpdate);
   const {
     loading: loadingUserUpdate,
     error: errorUserUpdate,
@@ -85,16 +85,15 @@ const UtilisateurUpdatePage = () => {
     user: updatedUser,
   } = userUpdate;
 
-  const userUpdatePassword = useSelector((state) => state.userUpdatePassword);
+  const userUpdatePassword = useSelector(state => state.userUpdatePassword);
   const {
     loading: loadingUserUpdatePassword,
     error: errorUserUpdatePassword,
     success: successUserUpdatePassword,
   } = userUpdatePassword;
 
-
   const serviceListByDirectionID = useSelector(
-    (state) => state.serviceListByDirectionID
+    state => state.serviceListByDirectionID
   );
   const {
     loading: loadingServiceListByDirectionID,
@@ -102,7 +101,7 @@ const UtilisateurUpdatePage = () => {
     services,
   } = serviceListByDirectionID;
 
-  const directionList = useSelector((state) => state.directionList);
+  const directionList = useSelector(state => state.directionList);
   const {
     loading: loadingDirectionList,
     error: errorDirectionList,
@@ -110,14 +109,14 @@ const UtilisateurUpdatePage = () => {
     directions,
   } = directionList;
 
-  const getServicesHandler = (event) => {
+  const getServicesHandler = event => {
     dispatch(fetchServicesByDirectionID(event.target.value));
   };
 
   const form = useFormik({
     initialValues,
     validationSchema,
-    validate: (values) => {
+    validate: values => {
       const errors = {};
 
       if (!values.demandeur && !values.signataire && !values.createur) {
@@ -128,7 +127,7 @@ const UtilisateurUpdatePage = () => {
 
       return errors;
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       const {
         email,
         nom,
@@ -144,7 +143,6 @@ const UtilisateurUpdatePage = () => {
         signataire,
         createur,
       } = values;
-
 
       if (isChefDeService && (!service || service === "")) {
         setMessage(
@@ -183,11 +181,8 @@ const UtilisateurUpdatePage = () => {
       confirmPassword: "",
     },
     validationSchema: changePasswordvalidationSchema,
-    onSubmit: (values) => {
-      const {
-        password,
-        confirmPassword
-      } = values;
+    onSubmit: values => {
+      const { password, confirmPassword } = values;
       if (String(password) === String(confirmPassword)) {
         dispatch(updateUserPassword(id, password));
       } else {
@@ -198,7 +193,6 @@ const UtilisateurUpdatePage = () => {
           setMessage(null);
         }, 7000);
       }
-
 
       window.scrollTo(0, 0);
     },
@@ -231,17 +225,17 @@ const UtilisateurUpdatePage = () => {
           isDirecteur: recoveredUser ? recoveredUser.isDirecteur : "",
           createur:
             recoveredUser &&
-              recoveredUser.roles.find((role) => String(role.role.code) === "crt")
+            recoveredUser.roles.find(role => String(role.role.code) === "crt")
               ? true
               : false,
           signataire:
             recoveredUser &&
-              recoveredUser.roles.find((role) => String(role.role.code) === "sig")
+            recoveredUser.roles.find(role => String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             recoveredUser &&
-              recoveredUser.roles.find((role) => String(role.role.code) === "dmr")
+            recoveredUser.roles.find(role => String(role.role.code) === "dmr")
               ? true
               : false,
         });
@@ -262,22 +256,24 @@ const UtilisateurUpdatePage = () => {
           direction: updatedUser
             ? updatedUser.direction && updatedUser.direction._id
             : "",
-          service: updatedUser ? updatedUser.service && updatedUser.service._id : "",
+          service: updatedUser
+            ? updatedUser.service && updatedUser.service._id
+            : "",
           isChefDeService: updatedUser ? updatedUser.isChefDeService : "",
           isDirecteur: updatedUser ? updatedUser.isDirecteur : "",
           createur:
             updatedUser &&
-              updatedUser.roles.find((role) => String(role.role.code) === "crt")
+            updatedUser.roles.find(role => String(role.role.code) === "crt")
               ? true
               : false,
           signataire:
             updatedUser &&
-              updatedUser.roles.find((role) => String(role.role.code) === "sig")
+            updatedUser.roles.find(role => String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             updatedUser &&
-              updatedUser.roles.find((role) => String(role.role.code) === "dmr")
+            updatedUser.roles.find(role => String(role.role.code) === "dmr")
               ? true
               : false,
         });
@@ -295,8 +291,7 @@ const UtilisateurUpdatePage = () => {
         message: "le mot de passe a été modifiée avec succès",
       });
       changePasswordForm.resetForm();
-      dispatch(resetUpdateUserPassword())
-
+      dispatch(resetUpdateUserPassword());
     }
   }, [
     callOnce,
@@ -306,53 +301,52 @@ const UtilisateurUpdatePage = () => {
     updatedUser,
     errorUserUpdate,
     loadingUserUpdate,
-    successUserUpdatePassword
+    successUserUpdatePassword,
   ]);
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center">
+      <div className='d-flex justify-content-between align-items-center'>
         <Link
-          to="/utilisateurs"
-          className="btn btn-sm btn-light mb-3"
+          to='/utilisateurs'
+          className='btn btn-sm btn-light mb-3'
           onClick={() => {
             setCallOnce(false);
             dispatch(resetFetchUserByID());
-          }}
-        >
-          <i className="fas fa-arrow-left"></i> utilisateurs
+          }}>
+          <i className='fas fa-arrow-left'></i> utilisateurs
         </Link>
       </div>
       {errorUserByID && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorUserByID}
         </Message>
       )}
       {errorServiceListByDirectionID && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorServiceListByDirectionID}
         </Message>
       )}
       {errorUserUpdate && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorUserUpdate}
         </Message>
       )}
       {errorUserUpdatePassword && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorUserUpdatePassword}
         </Message>
       )}
-      {message && <Message type="danger">{message}</Message>}
-      {loadingUserUpdate || loadingUserUpdatePassword && <Loader />}
+      {message && <Message type='danger'>{message}</Message>}
+      {loadingUserUpdate || (loadingUserUpdatePassword && <Loader />)}
       {errorDirectionList && (
-        <Message type="danger" itWillBeHidden>
+        <Message type='danger' itWillBeHidden>
           {errorDirectionList}
         </Message>
       )}
       <Card>
         <Card.Body>
-          <Tabs defaultActiveKey="tab1" id="my-tabs">
-            <Tab eventKey="tab1" title="Modifier les informations">
+          <Tabs defaultActiveKey='tab1' id='my-tabs'>
+            <Tab eventKey='tab1' title='Modifier les informations'>
               <Form onSubmit={form.handleSubmit}>
                 <Row>
                   <Col xl={6} lg={6} md={6} sm={12}>
@@ -360,17 +354,17 @@ const UtilisateurUpdatePage = () => {
                       <label>matricule :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="matricule"
+                        name='matricule'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.matricule}
                       />
-                      <small className="text-warning d-block">
-                        <i className="fa-solid fa-triangle-exclamation"></i> le
+                      <small className='text-warning d-block'>
+                        <i className='fa-solid fa-triangle-exclamation'></i> le
                         matricule ne doit pas commencer par le chiffre 0
                       </small>
                       {form.touched.matricule && form.errors.matricule && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.matricule}
                         </small>
                       )}
@@ -381,13 +375,13 @@ const UtilisateurUpdatePage = () => {
                       <label>Email :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="email"
+                        name='email'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.email}
                       />
                       {form.touched.email && form.errors.email && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.email}
                         </small>
                       )}
@@ -400,13 +394,13 @@ const UtilisateurUpdatePage = () => {
                       <label>Nom :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="nom"
+                        name='nom'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.nom}
                       />
                       {form.touched.nom && form.errors.nom && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.nom}
                         </small>
                       )}
@@ -417,13 +411,13 @@ const UtilisateurUpdatePage = () => {
                       <label>Prenom :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="prenom"
+                        name='prenom'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.prenom}
                       />
                       {form.touched.prenom && form.errors.prenom && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.prenom}
                         </small>
                       )}
@@ -437,13 +431,13 @@ const UtilisateurUpdatePage = () => {
                       <label>Fonction :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="fonction"
+                        name='fonction'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.fonction}
                       />
                       {form.touched.fonction && form.errors.fonction && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.fonction}
                         </small>
                       )}
@@ -455,13 +449,13 @@ const UtilisateurUpdatePage = () => {
                       <label>GSM :</label>
                       <Form.Control
                         disabled={loadingUserUpdate}
-                        name="gsm"
+                        name='gsm'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.gsm}
                       />
                       {form.touched.gsm && form.errors.gsm && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.gsm}
                         </small>
                       )}
@@ -475,26 +469,25 @@ const UtilisateurUpdatePage = () => {
                       <label>Direction :</label>
                       <Form.Select
                         disabled={loadingDirectionList}
-                        name="direction"
-                        onChange={(event) => {
+                        name='direction'
+                        onChange={event => {
                           form.handleChange(event);
                           getServicesHandler(event);
                         }}
                         onBlur={form.handleBlur}
-                        value={form.values.direction}
-                      >
-                        <option value="">
+                        value={form.values.direction}>
+                        <option value=''>
                           ---- veuillez selectionner une direction ----
                         </option>
                         {directions.length > 0 &&
-                          directions.map((direction) => (
+                          directions.map(direction => (
                             <option key={direction._id} value={direction._id}>
                               {direction.libelle}
                             </option>
                           ))}
                       </Form.Select>
                       {form.touched.direction && form.errors.direction && (
-                        <small className="text-danger d-block">
+                        <small className='text-danger d-block'>
                           {form.errors.direction}
                         </small>
                       )}
@@ -509,23 +502,22 @@ const UtilisateurUpdatePage = () => {
                             loadingServiceListByDirectionID ||
                             !form.values.direction
                           }
-                          name="service"
+                          name='service'
                           onChange={form.handleChange}
                           onBlur={form.handleBlur}
-                          value={form.values.service}
-                        >
-                          <option value="">
+                          value={form.values.service}>
+                          <option value=''>
                             ---- veuillez selectionner un service ----
                           </option>
                           {services.length > 0 &&
-                            services.map((service) => (
+                            services.map(service => (
                               <option key={service._id} value={service._id}>
                                 {service.libelle}
                               </option>
                             ))}
                         </Form.Select>
                         {form.touched.service && form.errors.service && (
-                          <small className="text-danger d-block">
+                          <small className='text-danger d-block'>
                             {form.errors.service}
                           </small>
                         )}
@@ -535,12 +527,12 @@ const UtilisateurUpdatePage = () => {
                 </Row>
                 <Row>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <h5 className="mt-3">Poste de responsabilité :</h5>
+                    <h5 className='mt-3'>Poste de responsabilité :</h5>
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
                     <Button
-                      variant="light"
-                      size="sm"
+                      variant='light'
+                      size='sm'
                       onClick={() => {
                         form.setValues({
                           matricule: form.values.matricule,
@@ -557,19 +549,18 @@ const UtilisateurUpdatePage = () => {
                           isChefDeService: false,
                           isDirecteur: false,
                         });
-                      }}
-                    >
+                      }}>
                       décoche
                     </Button>
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <div className="d-flex align-items-center">
-                      <div className="d-flex justify-content-start align-items-center mr-2">
-                        <label className="mr-1">Chef de service :</label>
+                    <div className='d-flex align-items-center'>
+                      <div className='d-flex justify-content-start align-items-center mr-2'>
+                        <label className='mr-1'>Chef de service :</label>
                         <Form.Check
                           disabled={loadingUserUpdate}
-                          name="isChefDeService"
-                          onChange={(event) => {
+                          name='isChefDeService'
+                          onChange={event => {
                             form.handleChange(event);
                             form.setValues({
                               matricule: form.values.matricule,
@@ -593,17 +584,17 @@ const UtilisateurUpdatePage = () => {
                         />
                         {form.touched.isChefDeService &&
                           form.errors.isChefDeService && (
-                            <small className="text-danger d-block">
+                            <small className='text-danger d-block'>
                               {form.errors.isChefDeService}
                             </small>
                           )}
                       </div>
-                      <div className="d-flex justify-content-start align-items-center mr-2">
-                        <label className="mr-1">Directeur:</label>
+                      <div className='d-flex justify-content-start align-items-center mr-2'>
+                        <label className='mr-1'>Directeur:</label>
                         <Form.Check
                           disabled={loadingUserUpdate}
-                          name="isDirecteur"
-                          onChange={(event) => {
+                          name='isDirecteur'
+                          onChange={event => {
                             form.handleChange(event);
                             form.setValues({
                               matricule: form.values.matricule,
@@ -625,11 +616,12 @@ const UtilisateurUpdatePage = () => {
                           value={form.values.isDirecteur}
                           checked={form.values.isDirecteur}
                         />
-                        {form.touched.isDirecteur && form.errors.isDirecteur && (
-                          <small className="text-danger d-block">
-                            {form.errors.isDirecteur}
-                          </small>
-                        )}
+                        {form.touched.isDirecteur &&
+                          form.errors.isDirecteur && (
+                            <small className='text-danger d-block'>
+                              {form.errors.isDirecteur}
+                            </small>
+                          )}
                       </div>
                     </div>
                   </Col>
@@ -637,97 +629,105 @@ const UtilisateurUpdatePage = () => {
 
                 <Row>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <h5 className="mt-3">Roles :</h5>
+                    <h5 className='mt-3'>Roles :</h5>
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <div className="d-flex align-items-center">
-                      <div className="d-flex justify-content-start align-items-center mr-2">
-                        <label className="mr-1">Demandeur :</label>
-                        <Form.Check
-                          disabled={loadingUserUpdate}
-                          name="demandeur"
-                          onChange={form.handleChange}
-                          onBlur={form.handleBlur}
-                          value={form.values.demandeur}
-                          checked={form.values.demandeur}
-                        />
-                        {form.touched.demandeur && form.errors.demandeur && (
-                          <small className="text-danger d-block">
-                            {form.errors.demandeur}
-                          </small>
-                        )}
-                      </div>
-                      <div className="d-flex justify-content-start align-items-center mr-2">
-                        <label className="mr-1">Signataire :</label>
-                        <Form.Check
-                          disabled={loadingUserUpdate}
-                          name="signataire"
-                          onChange={form.handleChange}
-                          onBlur={form.handleBlur}
-                          value={form.values.signataire}
-                          checked={form.values.signataire}
-                        />
-                        {form.touched.signataire && form.errors.signataire && (
-                          <small className="text-danger d-block">
-                            {form.errors.signataire}
-                          </small>
-                        )}
-                      </div>
-                      <div className="d-flex justify-content-start align-items-center mr-2">
-                        <label className="mr-1">Createur :</label>
-                        <Form.Check
-                          disabled={loadingUserUpdate}
-                          name="createur"
-                          onChange={form.handleChange}
-                          onBlur={form.handleBlur}
-                          value={form.values.createur}
-                          checked={form.values.createur}
-                        />
-                        {form.touched.createur && form.errors.createur && (
-                          <small className="text-danger d-block">
-                            {form.errors.createur}
-                          </small>
-                        )}
-                      </div>
-                    </div>
+                    <Row>
+                      <Col xl={4} lg={4} md={12} sm={12}>
+                        <div className='d-flex justify-content-start align-items-center mr-2'>
+                          <label className='mr-1'>Demandeur :</label>
+                          <Form.Check
+                            disabled={loadingUserUpdate}
+                            name='demandeur'
+                            onChange={form.handleChange}
+                            onBlur={form.handleBlur}
+                            value={form.values.demandeur}
+                            checked={form.values.demandeur}
+                          />
+                          {form.touched.demandeur && form.errors.demandeur && (
+                            <small className='text-danger d-block'>
+                              {form.errors.demandeur}
+                            </small>
+                          )}
+                        </div>
+                      </Col>
+                      <Col xl={4} lg={4} md={12} sm={12}>
+                        <div className='d-flex justify-content-start align-items-center mr-2'>
+                          <label className='mr-1'>Signataire :</label>
+                          <Form.Check
+                            disabled={loadingUserUpdate}
+                            name='signataire'
+                            onChange={form.handleChange}
+                            onBlur={form.handleBlur}
+                            value={form.values.signataire}
+                            checked={form.values.signataire}
+                          />
+                          {form.touched.signataire &&
+                            form.errors.signataire && (
+                              <small className='text-danger d-block'>
+                                {form.errors.signataire}
+                              </small>
+                            )}
+                        </div>
+                      </Col>
+                      <Col xl={4} lg={4} md={12} sm={12}>
+                        <div className='d-flex justify-content-start align-items-center mr-2'>
+                          <label className='mr-1'>Createur :</label>
+                          <Form.Check
+                            disabled={loadingUserUpdate}
+                            name='createur'
+                            onChange={form.handleChange}
+                            onBlur={form.handleBlur}
+                            value={form.values.createur}
+                            checked={form.values.createur}
+                          />
+                          {form.touched.createur && form.errors.createur && (
+                            <small className='text-danger d-block'>
+                              {form.errors.createur}
+                            </small>
+                          )}
+                        </div>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
 
                 {form.errors && form.errors["atLeastOneChecked"] && (
-                  <small className="text-danger d-block">
+                  <small className='text-danger d-block'>
                     {form.errors["atLeastOneChecked"]}
                   </small>
                 )}
 
-                <Button className="w-100 mt-3" type="submit" variant="dark">
-                  <i className="fa-solid fa-user-pen"></i> modifier
+                <Button className='w-100 mt-3' type='submit' variant='dark'>
+                  <i className='fa-solid fa-user-pen'></i> modifier
                 </Button>
               </Form>
             </Tab>
-            <Tab eventKey="tab2" title="Modifier le mot de passe">
-              <Form className="py-3" onSubmit={changePasswordForm.handleSubmit}>
+            <Tab eventKey='tab2' title='Modifier le mot de passe'>
+              <Form className='py-3' onSubmit={changePasswordForm.handleSubmit}>
                 <div>
                   <label>Mot de passe :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le mot de passe"
-                    name="password"
+                    placeholder='veuillez saisir le mot de passe'
+                    name='password'
                     type={showPassword ? "text" : "password"}
                     onChange={changePasswordForm.handleChange}
                     onBlur={changePasswordForm.handleBlur}
                     value={changePasswordForm.values.password}
                   />
-                  {changePasswordForm.touched.password && changePasswordForm.errors.password && (
-                    <small className="text-danger d-block">
-                      {changePasswordForm.errors.password}
-                    </small>
-                  )}
+                  {changePasswordForm.touched.password &&
+                    changePasswordForm.errors.password && (
+                      <small className='text-danger d-block'>
+                        {changePasswordForm.errors.password}
+                      </small>
+                    )}
                 </div>
 
                 <div>
                   <label>Confirmer le mot de passe :</label>
                   <Form.Control
-                    placeholder="veuillez saisir le mot de passe de confirmation"
-                    name="confirmPassword"
+                    placeholder='veuillez saisir le mot de passe de confirmation'
+                    name='confirmPassword'
                     type={showPassword ? "text" : "password"}
                     onChange={changePasswordForm.handleChange}
                     onBlur={changePasswordForm.handleBlur}
@@ -735,28 +735,30 @@ const UtilisateurUpdatePage = () => {
                   />
                   {changePasswordForm.touched.confirmPassword &&
                     changePasswordForm.errors.confirmPassword && (
-                      <small className="text-danger d-block">
+                      <small className='text-danger d-block'>
                         {changePasswordForm.errors.confirmPassword}
                       </small>
                     )}
                 </div>
-                <Form.Check label="afficher le mot de passe" type="switch" className="mt-1"
-                  onChange={() => setShowPassword(!showPassword)} />
+                <Form.Check
+                  label='afficher le mot de passe'
+                  type='switch'
+                  className='mt-1'
+                  onChange={() => setShowPassword(!showPassword)}
+                />
 
-                <Button className="w-100 mt-3" type="submit" variant="dark">
-                  <i className="fa-solid fa-key"></i> modifier le mot de passe
+                <Button className='w-100 mt-3' type='submit' variant='dark'>
+                  <i className='fa-solid fa-key'></i> modifier le mot de passe
                 </Button>
               </Form>
             </Tab>
-
           </Tabs>
-
 
           {!loadingUserByID && !recoveredUser && (
             <WarningMessage message={"utilisateur introuvable !"} />
           )}
         </Card.Body>
-      </Card >
+      </Card>
     </>
   );
 };

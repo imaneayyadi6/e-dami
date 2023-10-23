@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { DashboardPage } from "../pages";
+import { DashboardPage, RedirectPage } from "../pages";
 import {
   CategorieListPage,
   DamiEditPage,
@@ -17,7 +17,7 @@ const routes = [
   {
     path: "*",
     name: "Not found",
-    element: <Navigate to='/' />,
+    element: <RedirectPage />,
     exact: true,
     roles: ["crt", "dmr", "sig"],
   },
@@ -26,14 +26,14 @@ const routes = [
     name: "Tableau de bord",
     element: <DashboardPage />,
     exact: true,
-    roles: ["crt", "dmr", "sig"],
+    roles: ["crt", "sig"],
   },
   {
     path: "/dashboard",
     name: "Tableau de bord",
     element: <DashboardPage />,
     exact: true,
-    roles: ["crt", "dmr", "sig"],
+    roles: ["crt", "sig"],
   },
   {
     path: "/Categories",

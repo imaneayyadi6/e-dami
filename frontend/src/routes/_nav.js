@@ -3,7 +3,7 @@ let _nav = [
     to: "/dashboard",
     name: "Tableau de bord",
     icon: <i className='side-bar-icon fa-solid fa-gauge'></i>,
-    roles: ["crt", "dmr"],
+    roles: ["crt"],
   },
   {
     to: "/categories",
@@ -30,15 +30,15 @@ let _nav = [
     roles: ["crt"],
   },
   {
-    to: "/faire-une-demande",
-    name: "Faire une demande",
-    icon: <i className='side-bar-icon fa-solid fa-file-pen'></i>,
-    roles: ["dmr"],
-  },
-  {
     to: "/mes-demandes",
     name: "mes demandes",
     icon: <i className='side-bar-icon fa-solid fa-rectangle-list'></i>,
+    roles: ["dmr"],
+  },
+  {
+    to: "/faire-une-demande",
+    name: "Faire une demande",
+    icon: <i className='side-bar-icon fa-solid fa-file-pen'></i>,
     roles: ["dmr"],
   },
 ];
