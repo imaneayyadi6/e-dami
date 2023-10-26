@@ -42,35 +42,42 @@ const DamiLineChart = () => {
 
     if (successChartGetOptions && data) {
       if (!chartOnce) {
-        let labels = [];
-        let counts = [];
+        if (chartRef.current) {
+          // Destroy the existing chart if it exists
+          if (chartRef.current.chart) {
+            chartRef.current.chart.destroy();
+          }
+          let labels = [];
+          let counts = [];
 
-        for (let item of data) {
-          labels.push(item.month);
-          counts.push(Number(item.count));
+          for (let item of data) {
+            labels.push(item.month);
+            counts.push(Number(item.count));
+          }
+
+          const ctx = chartRef.current.getContext("2d");
+          // Sample data (you can replace this with your own data)
+          const objData = {
+            labels: labels,
+            datasets: [
+              {
+                label: "options",
+                data: counts,
+                backgroundColor: "rgba(255, 165, 0, 0.2)",
+                borderColor: "rgba(255, 165, 0, 1)",
+                borderWidth: 2,
+                fill: false,
+              },
+            ],
+          };
+
+          // Create a new Chart instance
+          chartRef.current.chart = new Chart(ctx, {
+            type: "line",
+            data: objData,
+          });
+          setChartOnce(true);
         }
-
-        const ctx = chartRef.current.getContext("2d");
-        // Sample data (you can replace this with your own data)
-        const objData = {
-          labels: labels,
-          datasets: [
-            {
-              label: "options",
-              data: counts,
-              backgroundColor: "rgba(255, 165, 0, 0.2)",
-              borderColor: "rgba(255, 165, 0, 1)",
-              borderWidth: 2,
-              fill: false,
-            },
-          ],
-        };
-
-        new Chart(ctx, {
-          type: "line",
-          data: objData,
-        });
-        setChartOnce(true);
       }
     }
     return () => {

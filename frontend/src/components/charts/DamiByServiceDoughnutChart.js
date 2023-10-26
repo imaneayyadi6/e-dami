@@ -46,31 +46,37 @@ const DamiByServiceDoughnutChart = () => {
     }
 
     if (successChartGetOptionsCountOfService && data) {
-
       if (!chartOnce) {
-        let labels = [];
-        let counts = [];
+        if (chartRef.current) {
+          // Destroy the existing chart if it exists
+          if (chartRef.current.chart) {
+            chartRef.current.chart.destroy();
+          }
+          let labels = [];
+          let counts = [];
 
-        for (let item of data) {
-          labels.push(item.service);
-          counts.push(Number(item.count));
+          for (let item of data) {
+            labels.push(item.service);
+            counts.push(Number(item.count));
+          }
+
+          const ctx = chartRef.current.getContext("2d");
+          const chartdata = {
+            labels: labels,
+            datasets: [
+              {
+                data: counts,
+                backgroundColor: generateColors(data.length),
+              },
+            ],
+          };
+          // Create a new Chart instance
+          chartRef.current.chart = new Chart(ctx, {
+            type: "doughnut",
+            data: chartdata,
+          });
+          setChartOnce(true);
         }
-
-        const ctx = chartRef.current.getContext("2d");
-        const chartdata = {
-          labels: labels,
-          datasets: [
-            {
-              data: counts,
-              backgroundColor: generateColors(data.length),
-            },
-          ],
-        };
-        new Chart(ctx, {
-          type: "doughnut",
-          data: chartdata,
-        });
-        setChartOnce(true);
       }
     }
     return () => {

@@ -12,6 +12,7 @@ import {
   UtilisateurDetailsPage,
 } from "../pages/admin";
 import { FaireUneDemande, MesDemandesPage } from "../pages/demandeur";
+import { DemandesPage } from "../pages/signataire";
 
 const routes = [
   {
@@ -124,6 +125,13 @@ const routes = [
     element: <FaireUneDemande />,
     exact: true,
     roles: ["dmr"],
+  },
+  {
+    path: "/demandes",
+    name: "Demandes",
+    element: <DemandesPage />,
+    exact: true,
+    roles: ["sig"],
   },
 ];
 

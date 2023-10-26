@@ -27,6 +27,11 @@ const demandeSchema = Schema({
         type: Date,
         required: [true, "veuillez saisir la date d'envoi"],
       },
+      user: {
+        type: Schema.Types.ObjectId,
+        required: [true, "veuillez saisire l'utilisateur "],
+        ref: "user",
+      },
       code: {
         type: String,
         required: [true, "veuillez entrer le code de signature"],

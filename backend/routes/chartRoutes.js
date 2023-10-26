@@ -1,5 +1,9 @@
 import express from "express";
-import { createur, protect } from "../middlewares/authMidlleware.js";
+import {
+  createur,
+  protect,
+  signataire,
+} from "../middlewares/authMidlleware.js";
 import {
   chartGetCountOptionsOfServices,
   chartGetCountOptionsOfSousCategories,
@@ -8,13 +12,11 @@ import {
 } from "../controllers/chartController.js";
 const router = express.Router();
 
-router.route("/users").get(protect, createur, chartGetUsers);
-router.route("/options").get(protect, createur, chartGetOptions);
-router
-  .route("/options/services")
-  .get(protect, createur, chartGetCountOptionsOfServices);
+router.route("/users").get(protect, chartGetUsers);
+router.route("/options").get(protect, chartGetOptions);
+router.route("/options/services").get(protect, chartGetCountOptionsOfServices);
 router
   .route("/options/souscategories")
-  .get(protect, createur, chartGetCountOptionsOfSousCategories);
+  .get(protect, chartGetCountOptionsOfSousCategories);
 
 export default router;

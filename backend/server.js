@@ -10,7 +10,7 @@ import sousCategorieRoutes from "./routes/sousCategorieRoutes.js";
 import optionRoutes from "./routes/optionRoutes.js";
 import utilisateurRoutes from "./routes/utilisateurRoutes.js";
 import chartRoutes from "./routes/chartRoutes.js";
-
+import demandeRoutes from "./routes/demandeRoutes.js";
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.use("/api/categories", categorieRoutes);
 app.use("/api/souscategories", sousCategorieRoutes);
 app.use("/api/options", optionRoutes);
 app.use("/api/charts", chartRoutes);
-
+app.use("/api/demandes", demandeRoutes);
 
 // Init Error Middlewares :
 app.use(notFound);
@@ -46,4 +46,3 @@ app.listen(
     `Server running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold
   )
 );
-

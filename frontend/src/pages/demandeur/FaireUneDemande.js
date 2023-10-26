@@ -12,7 +12,15 @@ import {
 } from "../../redux/option/optionActions";
 
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { Dami, DamiLoading, Message, WarningMessage } from "../../components";
+import {
+  Dami,
+  DamiLoading,
+  Loader,
+  Message,
+  WarningMessage,
+} from "../../components";
+import { createDemande } from "../../redux/demande/demandeActions";
+import { Toast } from "../../services";
 
 const FaireUneDemande = () => {
   const [callOnce, setCallOnce] = useState(false);
@@ -48,6 +56,13 @@ const FaireUneDemande = () => {
   const optionByID = useSelector(state => state.optionByID);
   const { loading: loadingOptionID, error: errorOptionID, option } = optionByID;
 
+  const demandeCreate = useSelector(state => state.demandeCreate);
+  const {
+    loading: loadingDemandeCreate,
+    error: errorDemandeCreate,
+    success: successDemandeCreate,
+  } = demandeCreate;
+
   const getSousCategoriesChangeHandler = event => {
     setSelectedOption(null);
     disptach(fetchSousCategoriesByCategorieID(event.target.value));
@@ -78,12 +93,28 @@ const FaireUneDemande = () => {
     });
   };
 
+  const faireUneDemandeHandler = () => {
+    const contenu = document.querySelector(".dami-body").innerHTML;
+    if (selectedOption && contenu) {
+      disptach(createDemande(selectedOption, contenu));
+    }
+  };
+
   useEffect(() => {
     if (!callOnce) {
       disptach(fetchCategories());
       setCallOnce(true);
     }
-  }, [callOnce, disptach]);
+    if (successDemandeCreate || errorDemandeCreate) {
+      window.scrollTo(0, 0);
+    }
+    if (successDemandeCreate) {
+      Toast.open({
+        type: "success",
+        message: "La demande a été effectuée avec succès.",
+      });
+    }
+  }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate]);
 
   return (
     <>
@@ -107,6 +138,13 @@ const FaireUneDemande = () => {
           {errorOptionID}
         </Message>
       )}
+      {errorDemandeCreate && (
+        <Message type='danger' itWillBeHidden={true}>
+          {errorDemandeCreate}
+        </Message>
+      )}
+
+      {loadingDemandeCreate && <Loader />}
 
       <Card>
         <Card.Body>
@@ -173,12 +211,17 @@ const FaireUneDemande = () => {
                 {option ? (
                   <>
                     <Dami option={option} />
-                    <Button className='w-100 mt-2' variant='dark'>
+                    <Button
+                      className='w-100 mt-2'
+                      variant='dark'
+                      disabled={loadingDemandeCreate}
+                      onClick={faireUneDemandeHandler}>
                       <i className='fa-solid fa-code-pull-request'></i> Demander
                     </Button>
                     <Button
                       className='w-100 mt-1'
                       variant='light'
+                      disabled={loadingDemandeCreate}
                       onClick={resetDamiFormHandler}>
                       <i className='fa-solid fa-filter-circle-xmark'></i>{" "}
                       Réinitialiser
