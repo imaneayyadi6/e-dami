@@ -94,9 +94,51 @@ const FaireUneDemande = () => {
   };
 
   const faireUneDemandeHandler = () => {
-    const contenu = document.querySelector(".dami-body").innerHTML;
-    if (selectedOption && contenu) {
-      disptach(createDemande(selectedOption, contenu));
+    if (selectedOption) {
+      const damiBody = document.querySelector(".dami-body");
+      const damiInputs = damiBody.querySelectorAll(".dami-input");
+      let isEmpty = true;
+      for (const damiInput of damiInputs) {
+        if (damiInput.value !== "") {
+          isEmpty = false;
+          break;
+        }
+      }
+
+      const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
+      for (const damiCheckBox of damiCheckBoxes) {
+        if (damiCheckBox.checked) {
+          isEmpty = false;
+          break;
+        }
+      }
+
+      const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
+      for (const damiRadioButton of damiRadioButtons) {
+        if (damiRadioButton.checked) {
+          isEmpty = false;
+          break;
+        }
+      }
+      const damiTextAreaLines = damiBody.querySelectorAll(
+        ".dami-textarea-line"
+      );
+      for (const damiTextAreaLine of damiTextAreaLines) {
+        if (damiTextAreaLine.value !== "") {
+          isEmpty = false;
+          break;
+        }
+      }
+      if (!isEmpty) {
+        const contenu = damiBody.innerHTML;
+        disptach(createDemande(selectedOption, contenu));
+      } else {
+        Toast.open({
+          type: "danger",
+          message: "il faut remplire le formulaire !",
+        });
+      }
+      window.scrollTo(0, 0);
     }
   };
 

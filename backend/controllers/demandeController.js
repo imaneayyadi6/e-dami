@@ -58,3 +58,16 @@ export const createDemande = asyncHandler(async (req, res) => {
     throw new Error("option introuvable !");
   }
 });
+
+// @desc    recuperer les demandes envoyer a un utilisateur pour le  traitee
+// @route   GET /api/demandes/handle
+// @access  private
+export const getDemandesForHandling = asyncHandler(async (req, res) => {
+  const demandes = await Demande.find({
+    "traitement.utilisateur": req.user.id,
+  })
+    .populate("demandeur")
+    .populate("option");
+
+  res.json(demandes);
+});

@@ -15,7 +15,7 @@ const demandeSchema = Schema({
   demandeur: {
     type: Schema.Types.ObjectId,
     required: [true, "veuillez saisire l'id de l'utilisateur"],
-    ref: "user",
+    ref: "utilisateur",
   },
   contenu: {
     type: String,
@@ -27,10 +27,10 @@ const demandeSchema = Schema({
         type: Date,
         required: [true, "veuillez saisir la date d'envoi"],
       },
-      user: {
+      utilisateur: {
         type: Schema.Types.ObjectId,
         required: [true, "veuillez saisire l'utilisateur "],
-        ref: "user",
+        ref: "utilisateur",
       },
       code: {
         type: String,

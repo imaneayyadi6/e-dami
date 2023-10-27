@@ -59,7 +59,10 @@ import {
   chartGetUsersReducer,
 } from "./chart/chartReducers";
 import { toastReducer } from "./toast/toastReducers";
-import { demandeCreateReducer } from "./demande/demandeReducres";
+import {
+  demandeCreateReducer,
+  demandesToHandleReducer,
+} from "./demande/demandeReducres";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -127,6 +130,7 @@ const reducer = combineReducers({
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
+  demandesToHandle: demandesToHandleReducer,
 });
 
 const store = configureStore({
