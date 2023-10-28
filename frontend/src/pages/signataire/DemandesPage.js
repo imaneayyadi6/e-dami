@@ -4,6 +4,7 @@ import { getDemandesToHandle } from "../../redux/demande/demandeActions";
 import { Message, Table, TableLoading, WarningMessage } from "../../components";
 import { Card } from "react-bootstrap";
 import moment from "moment";
+import { getTypeApprobation } from "../../services";
 
 const DemandesPage = () => {
   const [callOnce, setCallOnce] = useState(false);
@@ -38,25 +39,41 @@ const DemandesPage = () => {
             <Table
               columns={[
                 {
-                  Header: "Date de demande",
+                  Header: "date de demande",
                   accessor: row =>
-                    `${moment(row.dateEnvoi).format("YYYY-MM-DD")}`,
-                  filter: "dateEnvoi",
+                    `${moment(row.dateDemande).format("YYYY-MM-DD HH:mm")}`,
+                  filter: "dateDemande",
+                  type: "date",
                 },
                 {
-                  Header: "Demandeur",
+                  Header: "demandeur",
                   accessor: row =>
-                    `${row.demandeur.nom} ${row.demandeur.prenom}`,
+                    `${row.demandeur.prenom} ${row.demandeur.nom}`,
                   filter: "demandeur",
                 },
                 {
-                  Header: "Option",
+                  Header: "option",
                   accessor: "option.libelle",
                   filter: "option.libelle",
                 },
+                {
+                  Header: "Type d'approbation",
+                  accessor: row =>
+                    `${getTypeApprobation(row.traitement[0].code)}`,
+                  filter: "traitement[0].code",
+                },
+                {
+                  Header: "status",
+                  accessor: "traitement[0].status",
+                  filter: "traitement[0].status",
+                },
               ]}
               data={demandes}
-              dropdownFilters={["option.libelle"]}></Table>
+              dropdownFilters={[
+                "option.libelle",
+                "traitement[0].code",
+                "traitement[0].status",
+              ]}></Table>
           ) : (
             successDemandesToHandle && (
               <WarningMessage message={"Aucune demande trouvée"} />

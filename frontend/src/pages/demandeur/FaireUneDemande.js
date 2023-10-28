@@ -19,7 +19,10 @@ import {
   Message,
   WarningMessage,
 } from "../../components";
-import { createDemande } from "../../redux/demande/demandeActions";
+import {
+  createDemande,
+  resetCreateDemande,
+} from "../../redux/demande/demandeActions";
 import { Toast } from "../../services";
 
 const FaireUneDemande = () => {
@@ -95,9 +98,9 @@ const FaireUneDemande = () => {
 
   const faireUneDemandeHandler = () => {
     if (selectedOption) {
+      let isEmpty = true;
       const damiBody = document.querySelector(".dami-body");
       const damiInputs = damiBody.querySelectorAll(".dami-input");
-      let isEmpty = true;
       for (const damiInput of damiInputs) {
         if (damiInput.value !== "") {
           isEmpty = false;
@@ -151,10 +154,27 @@ const FaireUneDemande = () => {
       window.scrollTo(0, 0);
     }
     if (successDemandeCreate) {
+      const damiBody = document.querySelector(".dami-body");
+
+      damiBody.querySelectorAll(".dami-input").forEach(el => {
+        el.value = "";
+      });
+      damiBody.querySelectorAll(".dami-check-box").forEach(el => {
+        el.checked = false;
+      });
+      damiBody.querySelectorAll(".dami-radio-button").forEach(el => {
+        el.checked = false;
+      });
+      damiBody.querySelectorAll(".dami-textarea-line").forEach(el => {
+        el.value = "";
+      });
+
       Toast.open({
         type: "success",
         message: "La demande a été effectuée avec succès.",
       });
+      
+      disptach(resetCreateDemande());
     }
   }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate]);
 

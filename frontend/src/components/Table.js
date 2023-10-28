@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";  
+import React, { useEffect, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useTable, usePagination, useFilters } from "react-table";
 
@@ -15,6 +15,7 @@ const TextFilter = ({ column }) => {
       size='sm'
       style={{ maxWidth: "400px" }}
       value={column.filterValue || ""}
+      type={column.type ? column.type : "text"}
       onChange={handleFilterChange}
       placeholder={`filtrer par ${column.Header}`}
     />
@@ -156,13 +157,14 @@ const Table = ({
                       }}>
                       {row.cells.map(cell => {
                         // Check if the cell is empty (you can customize this condition)
+                        const columnName = cell.column.Header;
                         if (
                           cell.value === null ||
                           cell.value === undefined ||
                           cell.value === ""
                         ) {
                           // Get the column name from the cell object and include it in the message
-                          const columnName = cell.column.Header;
+
                           return (
                             <td className='empty-cell'>
                               <small className='column-text text-danger'>
@@ -177,9 +179,7 @@ const Table = ({
                             className={`${
                               row.original.notSavedYet && "text-warning"
                             }`}>
-                            <small className='column-text'>
-                              {cell.render("Cell")}
-                            </small>
+                            <small>{cell.render("Cell")}</small>
                           </td>
                         );
                       })}
@@ -233,13 +233,14 @@ const Table = ({
                     }}>
                     {row.cells.map(cell => {
                       // Check if the cell is empty (you can customize this condition)
+                      const columnName = cell.column.Header;
                       if (
                         cell.value === null ||
                         cell.value === undefined ||
                         cell.value === ""
                       ) {
                         // Get the column name from the cell object and include it in the message
-                        const columnName = cell.column.Header;
+
                         return (
                           <td className='empty-cell'>
                             <small className='text-danger'>
@@ -254,7 +255,16 @@ const Table = ({
                           className={`${
                             row.original.notSavedYet && "text-warning"
                           }`}>
-                          <small>{cell.render("Cell")}</small>
+                          <small
+                            className={`${
+                              columnName === "status"
+                                ? `table-text-status-${String(
+                                    cell.value
+                                  ).replace(/\s/g, '')}`
+                                : ""
+                            }`}>
+                            {cell.render("Cell")}
+                          </small>
                         </td>
                       );
                     })}

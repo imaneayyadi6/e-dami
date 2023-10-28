@@ -21,6 +21,11 @@ const demandeSchema = Schema({
     type: String,
     required: [true, "veuillez entrer le contenu de l'option"],
   },
+  status: {
+    type: String,
+    required: [true, "veuillez saisir le status global de la demande"],
+    default: "en cours",
+  },
   traitement: [
     {
       dateEnvoi: {
