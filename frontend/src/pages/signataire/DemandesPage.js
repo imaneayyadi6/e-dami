@@ -5,11 +5,13 @@ import { Message, Table, TableLoading, WarningMessage } from "../../components";
 import { Card } from "react-bootstrap";
 import moment from "moment";
 import { getTypeApprobation } from "../../services";
+import { useNavigate } from "react-router-dom";
 
 const DemandesPage = () => {
   const [callOnce, setCallOnce] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const demandesToHandle = useSelector(state => state.demandesToHandle);
   const {
     loading: loadingDemandesToHandle,
@@ -17,6 +19,10 @@ const DemandesPage = () => {
     success: successDemandesToHandle,
     demandes,
   } = demandesToHandle;
+
+  const showDetailsHandler = id => {
+    navigate(`/details-demande/${id}`);
+  };
 
   useEffect(() => {
     if (!callOnce) {
@@ -73,7 +79,8 @@ const DemandesPage = () => {
                 "option.libelle",
                 "traitement[0].code",
                 "traitement[0].status",
-              ]}></Table>
+              ]}
+              showDetailsRow={showDetailsHandler}></Table>
           ) : (
             successDemandesToHandle && (
               <WarningMessage message={"Aucune demande trouvée"} />

@@ -59,7 +59,7 @@ export const createDemande = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    recuperer les demandes envoyer a un utilisateur pour le  traitee
+// @desc    Recuperer les demandes envoyer a un utilisateur pour le  traitee
 // @route   GET /api/demandes/handle
 // @access  private
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
@@ -70,4 +70,21 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     .populate("option");
 
   res.json(demandes);
+});
+
+// @desc    Recuperer le details d'une demande par ID
+// @route   GET /api/demandes/:id
+// @access  private
+export const getDemandesByID = asyncHandler(async (req, res) => {
+  const demande = await Demande.findById(req.params.id)
+    .populate("demandeur")
+    .populate("option");
+  if (demande) {
+    res.json(demande);
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable");
+  }
+
+  res.json(demande);
 });

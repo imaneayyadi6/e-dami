@@ -99,7 +99,7 @@ const FaireUneDemande = () => {
   const faireUneDemandeHandler = () => {
     if (selectedOption) {
       let isEmpty = true;
-      const damiBody = document.querySelector(".dami-body");
+      const damiBody = document.querySelector(".dami-body div");
       const damiInputs = damiBody.querySelectorAll(".dami-input");
       for (const damiInput of damiInputs) {
         if (damiInput.value !== "") {
@@ -134,6 +134,7 @@ const FaireUneDemande = () => {
       }
       if (!isEmpty) {
         const contenu = damiBody.innerHTML;
+        console.log(contenu);
         disptach(createDemande(selectedOption, contenu));
       } else {
         Toast.open({
@@ -173,7 +174,7 @@ const FaireUneDemande = () => {
         type: "success",
         message: "La demande a été effectuée avec succès.",
       });
-      
+
       disptach(resetCreateDemande());
     }
   }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate]);

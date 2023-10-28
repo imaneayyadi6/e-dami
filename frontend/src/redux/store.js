@@ -60,6 +60,7 @@ import {
 } from "./chart/chartReducers";
 import { toastReducer } from "./toast/toastReducers";
 import {
+  demandeByIdReducer,
   demandeCreateReducer,
   demandesToHandleReducer,
 } from "./demande/demandeReducres";
@@ -131,6 +132,7 @@ const reducer = combineReducers({
   // demande :
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandesToHandleReducer,
+  demandeById: demandeByIdReducer,
 });
 
 const store = configureStore({

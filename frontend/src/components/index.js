@@ -13,7 +13,7 @@ import Dami from "./Dami";
 import DamiLoading from "./DamiLoading";
 import ToastContainer from "./ToastContainer";
 import Toast from "./Toast";
-
+import DamiDemande from "./DamiDemande";
 
 export {
   Header,
@@ -30,5 +30,6 @@ export {
   Dami,
   DamiLoading,
   ToastContainer,
-  Toast
+  Toast,
+  DamiDemande,
 };

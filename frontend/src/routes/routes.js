@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import { DashboardPage, RedirectPage } from "../pages";
 import {
   CategorieListPage,
@@ -12,7 +11,7 @@ import {
   UtilisateurDetailsPage,
 } from "../pages/admin";
 import { FaireUneDemande, MesDemandesPage } from "../pages/demandeur";
-import { DemandesPage } from "../pages/signataire";
+import { DemandeDetailsPage, DemandesPage } from "../pages/signataire";
 
 const routes = [
   {
@@ -130,6 +129,13 @@ const routes = [
     path: "/demandes",
     name: "Demandes",
     element: <DemandesPage />,
+    exact: true,
+    roles: ["sig"],
+  },
+  {
+    path: "/details-demande/:id",
+    name: "Demandes",
+    element: <DemandeDetailsPage />,
     exact: true,
     roles: ["sig"],
   },

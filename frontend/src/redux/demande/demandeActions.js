@@ -7,6 +7,10 @@ import {
   DEMANDE_TOHANDLE_LIST_REQUEST,
   DEMANDE_TOHANDLE_LIST_RESET,
   DEMANDE_TOHANDLE_LIST_SUCCESS,
+  DEMANDE_BY_ID_FAIL,
+  DEMANDE_BY_ID_REQUEST,
+  DEMANDE_BY_ID_RESET,
+  DEMANDE_BY_ID_SUCCESS,
 } from "./demandeTypes";
 import axios from "axios";
 
@@ -72,4 +76,34 @@ export const getDemandesToHandle = () => {
 
 export const resetGetDemandesToHandle = () => {
   return { type: DEMANDE_TOHANDLE_LIST_RESET };
+};
+
+export const getDemandeByID = id => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_BY_ID_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(`/api/demandes/${id}`, config);
+      dispatch({ type: DEMANDE_BY_ID_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_BY_ID_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetGetDemandeByID = () => {
+  return { type: DEMANDE_BY_ID_RESET };
 };

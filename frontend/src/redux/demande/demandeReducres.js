@@ -7,6 +7,10 @@ import {
   DEMANDE_TOHANDLE_LIST_REQUEST,
   DEMANDE_TOHANDLE_LIST_RESET,
   DEMANDE_TOHANDLE_LIST_SUCCESS,
+  DEMANDE_BY_ID_FAIL,
+  DEMANDE_BY_ID_REQUEST,
+  DEMANDE_BY_ID_RESET,
+  DEMANDE_BY_ID_SUCCESS,
 } from "./demandeTypes";
 
 export const demandeCreateReducer = (state = {}, action) => {
@@ -36,6 +40,22 @@ export const demandesToHandleReducer = (state = { demandes: [] }, action) => {
       return { loading: false, error: payload, demandes: [] };
     case DEMANDE_TOHANDLE_LIST_RESET:
       return { demandes: [] };
+    default:
+      return state;
+  }
+};
+
+export const demandeByIdReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_BY_ID_REQUEST:
+      return { loading: true };
+    case DEMANDE_BY_ID_SUCCESS:
+      return { loading: false, success: true, demande: payload };
+    case DEMANDE_BY_ID_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_BY_ID_RESET:
+      return {};
     default:
       return state;
   }
