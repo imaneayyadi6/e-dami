@@ -96,11 +96,37 @@ const FaireUneDemande = () => {
     });
   };
 
+  const convertTheValueToAttribute = () => {
+    const damiBody = document.querySelector(".dami-body div");
+    const damiInputs = damiBody.querySelectorAll(".dami-input");
+    for (const damiInput of damiInputs)
+      damiInput.setAttribute("value", damiInput.value);
+
+    const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
+    for (const damiCheckBox of damiCheckBoxes) {
+      if (damiCheckBox.checked) {
+        damiCheckBox.setAttribute("value", damiCheckBox.checked);
+        damiCheckBox.setAttribute("checked", damiCheckBox.checked);
+      }
+    }
+    const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
+    for (const damiRadioButton of damiRadioButtons) {
+      if (damiRadioButton.checked) {
+        damiRadioButton.setAttribute("value", damiRadioButton.checked);
+        damiRadioButton.setAttribute("checked", damiRadioButton.checked);
+      }
+    }
+    const damiTextAreaLines = damiBody.querySelectorAll(".dami-textarea-line");
+    for (const damiTextAreaLine of damiTextAreaLines)
+      damiTextAreaLine.setAttribute("value", damiTextAreaLine.value);
+  };
+
   const faireUneDemandeHandler = () => {
     if (selectedOption) {
       let isEmpty = true;
       const damiBody = document.querySelector(".dami-body div");
       const damiInputs = damiBody.querySelectorAll(".dami-input");
+
       for (const damiInput of damiInputs) {
         if (damiInput.value !== "") {
           isEmpty = false;
@@ -133,8 +159,8 @@ const FaireUneDemande = () => {
         }
       }
       if (!isEmpty) {
-        const contenu = damiBody.innerHTML;
-        console.log(contenu);
+        convertTheValueToAttribute();
+        const contenu = damiBody.outerHTML;
         disptach(createDemande(selectedOption, contenu));
       } else {
         Toast.open({

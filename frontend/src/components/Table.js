@@ -103,126 +103,49 @@ const Table = ({
   );
 
   return (
-    <>
-      <div className='table-responsive'>
-        <table
-          {...getTableProps()}
-          className={`table table-sm table-hover ${
-            loadingRemove && "table-active"
-          }`}>
-          <thead className='table-light'>
-            {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>
-                    <div className='d-flex flex-column justify-content-center'>
-                      <small>{column.render("Header")}</small>
-                      {column.filter ? (
-                        <div>
-                          {dropdownFilters &&
-                          dropdownFilters.includes(column.id) ? (
-                            <DropdownFilter
-                              column={column}
-                              options={column.filterOptions || []}
-                            />
-                          ) : (
-                            <TextFilter column={column} />
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ marginBottom: "32px" }}></div>
-                      )}
-                    </div>
-                  </th>
-                ))}
-                <th></th>
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map(row => {
-              prepareRow(row);
-              const rowId = row.original._id;
+    <div className='table-responsive'>
+      <table
+        {...getTableProps()}
+        className={`table table-sm table-hover  ${
+          loadingRemove && "table-active"
+        }`}>
+        <thead className=''>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <th {...column.getHeaderProps()}>
+                  <div className='d-flex flex-column justify-content-center inline-text'>
+                    <small>{column.render("Header")}</small>
+                    {column.filter ? (
+                      <div>
+                        {dropdownFilters &&
+                        dropdownFilters.includes(column.id) ? (
+                          <DropdownFilter
+                            column={column}
+                            options={column.filterOptions || []}
+                          />
+                        ) : (
+                          <TextFilter column={column} />
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ marginBottom: "32px" }}></div>
+                    )}
+                  </div>
+                </th>
+              ))}
+              <th></th>
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {page.map(row => {
+            prepareRow(row);
+            const rowId = row.original._id;
 
-              if (row.original.notSavedYet) {
-                return (
-                  <OverlayTrigger placement='left' overlay={renderTooltip}>
-                    <tr
-                      {...row.getRowProps()}
-                      className={`cursor-pointer position-relative`}
-                      onClick={() => {
-                        if (rowClick) {
-                          rowClick(rowId);
-                        }
-                      }}>
-                      {row.cells.map(cell => {
-                        // Check if the cell is empty (you can customize this condition)
-                        const columnName = cell.column.Header;
-                        if (
-                          cell.value === null ||
-                          cell.value === undefined ||
-                          cell.value === ""
-                        ) {
-                          // Get the column name from the cell object and include it in the message
-
-                          return (
-                            <td className='empty-cell'>
-                              <small className='column-text text-danger'>
-                                ({columnName}) introuvable
-                              </small>
-                            </td>
-                          );
-                        }
-                        return (
-                          <td
-                            {...cell.getCellProps()}
-                            className={`${
-                              row.original.notSavedYet && "text-warning"
-                            }`}>
-                            <small>{cell.render("Cell")}</small>
-                          </td>
-                        );
-                      })}
-
-                      <td>
-                        <div className='d-flex justify-content-end'>
-                          {showDetailsRow && !row.original.notSavedYet && (
-                            <span
-                              className='cursor-pointer'
-                              onClick={e => {
-                                e.stopPropagation();
-                                if (showDetailsRow) showDetailsRow(rowId);
-                              }}>
-                              <i className='fa-solid fa-eye mr-1'></i>
-                            </span>
-                          )}
-                          {updateRow && (
-                            <span
-                              className='cursor-pointer'
-                              onClick={e => {
-                                e.stopPropagation();
-                                if (updateRow) updateRow(rowId);
-                              }}>
-                              <i className='fa-solid fa-pen-to-square mr-1'></i>
-                            </span>
-                          )}
-                          {removeRow && (
-                            <span
-                              className='cursor-pointer'
-                              onClick={e => {
-                                e.stopPropagation();
-                                if (removeRow) removeRow(rowId);
-                              }}>
-                              <i className='fas fa-trash text-danger'></i>
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  </OverlayTrigger>
-                );
-              } else {
-                return (
+            if (row.original.notSavedYet) {
+              return (
+                <OverlayTrigger placement='left' overlay={renderTooltip}>
                   <tr
                     {...row.getRowProps()}
                     className={`cursor-pointer position-relative`}
@@ -243,7 +166,7 @@ const Table = ({
 
                         return (
                           <td className='empty-cell'>
-                            <small className='text-danger'>
+                            <small className='column-text text-danger'>
                               ({columnName}) introuvable
                             </small>
                           </td>
@@ -255,16 +178,7 @@ const Table = ({
                           className={`${
                             row.original.notSavedYet && "text-warning"
                           }`}>
-                          <small
-                            className={`${
-                              columnName === "status"
-                                ? `table-text-status-${String(
-                                    cell.value
-                                  ).replace(/\s/g, '')}`
-                                : ""
-                            }`}>
-                            {cell.render("Cell")}
-                          </small>
+                          <small>{cell.render("Cell")}</small>
                         </td>
                       );
                     })}
@@ -304,62 +218,147 @@ const Table = ({
                       </div>
                     </td>
                   </tr>
-                );
-              }
-            })}
-          </tbody>
-        </table>
-        <div className='d-flex justify-content-center'>
-          <div className='d-flex align-items-center'>
-            <small>
-              Page{" "}
-              <span style={{ fontWeight: "bold" }}>
-                {pageIndex + 1} Of {pageOptions.length}
-              </span>
-            </small>
-            <div>
+                </OverlayTrigger>
+              );
+            } else {
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={`cursor-pointer position-relative`}
+                  onClick={() => {
+                    if (rowClick) {
+                      rowClick(rowId);
+                    }
+                  }}>
+                  {row.cells.map(cell => {
+                    // Check if the cell is empty (you can customize this condition)
+                    const columnName = cell.column.Header;
+                    if (
+                      cell.value === null ||
+                      cell.value === undefined ||
+                      cell.value === ""
+                    ) {
+                      // Get the column name from the cell object and include it in the message
+
+                      return (
+                        <td className='empty-cell'>
+                          <small className='text-danger'>
+                            ({columnName}) introuvable
+                          </small>
+                        </td>
+                      );
+                    }
+                    return (
+                      <td
+                        {...cell.getCellProps()}
+                        className={`${
+                          row.original.notSavedYet && "text-warning"
+                        }`}>
+                        <small
+                          className={`${
+                            columnName === "status"
+                              ? `table-text-status-${String(cell.value).replace(
+                                  /\s/g,
+                                  ""
+                                )}`
+                              : ""
+                          }`}>
+                          {cell.render("Cell")}
+                        </small>
+                      </td>
+                    );
+                  })}
+
+                  <td>
+                    <div className='d-flex justify-content-end'>
+                      {showDetailsRow && !row.original.notSavedYet && (
+                        <span
+                          className='cursor-pointer'
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (showDetailsRow) showDetailsRow(rowId);
+                          }}>
+                          <i className='fa-solid fa-eye mr-1'></i>
+                        </span>
+                      )}
+                      {updateRow && (
+                        <span
+                          className='cursor-pointer'
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (updateRow) updateRow(rowId);
+                          }}>
+                          <i className='fa-solid fa-pen-to-square mr-1'></i>
+                        </span>
+                      )}
+                      {removeRow && (
+                        <span
+                          className='cursor-pointer'
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (removeRow) removeRow(rowId);
+                          }}>
+                          <i className='fas fa-trash text-danger'></i>
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            }
+          })}
+        </tbody>
+      </table>
+      <div className='d-flex justify-content-center'>
+        <div className='d-flex align-items-center'>
+          <small>
+            Page{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {pageIndex + 1} Of {pageOptions.length}
+            </span>
+          </small>
+          <div>
+            <Button
+              variant='light'
+              size='sm'
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}>
+              &laquo;
+            </Button>
+            <Button
+              variant='light'
+              size='sm'
+              disabled={!canPreviousPage}
+              onClick={() => previousPage()}>
+              précédente
+            </Button>
+            {Array.from({ length: pageCount }, (_, index) => (
               <Button
-                variant='light'
                 size='sm'
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}>
-                &laquo;
-              </Button>
-              <Button
                 variant='light'
-                size='sm'
-                disabled={!canPreviousPage}
-                onClick={() => previousPage()}>
-                précédente
+                key={index}
+                onClick={() => gotoPage(index)}>
+                {index + 1}
               </Button>
-              {Array.from({ length: pageCount }, (_, index) => (
-                <Button
-                  size='sm'
-                  variant='light'
-                  key={index}
-                  onClick={() => gotoPage(index)}>
-                  {index + 1}
-                </Button>
-              ))}
-              <Button
-                variant='light'
-                size='sm'
-                disabled={!canNextPage}
-                onClick={() => nextPage()}>
-                suivante
-              </Button>
-              <Button
-                variant='light'
-                size='sm'
-                disabled={!canNextPage}
-                onClick={() => gotoPage(pageCount - 1)}>
-                &raquo;
-              </Button>
-            </div>
+            ))}
+            <Button
+              variant='light'
+              size='sm'
+              disabled={!canNextPage}
+              onClick={() => nextPage()}>
+              suivante
+            </Button>
+            <Button
+              variant='light'
+              size='sm'
+              disabled={!canNextPage}
+              onClick={() => gotoPage(pageCount - 1)}>
+              &raquo;
+            </Button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

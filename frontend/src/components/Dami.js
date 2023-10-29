@@ -147,7 +147,7 @@ const Dami = ({ option, showAdmin = false }) => {
             </td>
             <td>
               <input
-                className='dami-input '
+                className='dami-input'
                 value={new Date().toLocaleDateString()}
               />
             </td>

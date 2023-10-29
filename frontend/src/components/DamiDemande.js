@@ -7,7 +7,7 @@ const DamiDemande = ({ demande }) => {
     cds: "Approbation Chef de Service",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
-    dir: `Approbation Directeur de la direction Infrastructures et système d information`,
+    dir: `Approbation Directeur de la direction ....`,
     pdg: "Approbation President-directeur generale",
   });
 
@@ -58,9 +58,6 @@ const DamiDemande = ({ demande }) => {
           element.remove();
         });
 
-      cleanDocRef.current.querySelectorAll("[readonly]").forEach(element => {
-        element.removeAttribute("readonly");
-      });
       cleanDocRef.current.querySelectorAll(".disabled").forEach(element => {
         element.setAttribute("disabled", true);
       });
@@ -142,7 +139,7 @@ const DamiDemande = ({ demande }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={demande.demandeur.direction}
+                value={demande.demandeur.direction.libelle}
               />
             </td>
           </tr>
@@ -179,7 +176,7 @@ const DamiDemande = ({ demande }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={demande.demandeur.service}
+                value={demande.demandeur.service.libelle}
               />
             </td>
           </tr>

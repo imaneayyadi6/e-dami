@@ -79,7 +79,12 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
   const demande = await Demande.findById(req.params.id)
     .populate("demandeur")
     .populate("option");
+  // .populate("demandeur.service")
   if (demande) {
+    const service = await Service.findById(demande.demandeur.service);
+    const direction = await Direction.findById(demande.demandeur.direction);
+    demande.demandeur.direction = direction;
+    demande.demandeur.service = service;
     res.json(demande);
   } else {
     res.status(404);

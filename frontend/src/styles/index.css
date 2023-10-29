@@ -18,7 +18,7 @@ body {
 }
 
 .side-bar {
-  width: 350px !important;
+  width: 340px !important;
 }
 
 ul {
@@ -127,6 +127,14 @@ ul {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.column-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 17px;
+  text-transform: lowercase;
 }
 
 /* End Global Rules */
