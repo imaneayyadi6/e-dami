@@ -67,7 +67,8 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     "traitement.utilisateur": req.user.id,
   })
     .populate("demandeur")
-    .populate("option");
+    .populate("option")
+    .sort({ createdAt: -1 });
 
   res.json(demandes);
 });

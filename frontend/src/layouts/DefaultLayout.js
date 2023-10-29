@@ -6,13 +6,13 @@ import { Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { logout } from "../redux/user/userActions";
-import { Toast as SToast } from "../services"
+import { Toast as SToast } from "../services";
 
 const DefaulLayout = () => {
   const [filteredRoutes, setFiltredRoutes] = useState([]);
   const [callOnce, setCallOnce] = useState(false);
 
-  const userLogin = useSelector((state) => state.userLogin);
+  const userLogin = useSelector(state => state.userLogin);
   const {
     userInfo: { roles },
   } = userLogin;
@@ -21,14 +21,14 @@ const DefaulLayout = () => {
 
   useEffect(() => {
     if (!callOnce) {
-      const roleCodes = roles.map((role) => String(role.role.code));
-      const filteredRoutes = routes.filter((route) =>
-        route.roles.some((roleCode) => roleCodes.includes(String(roleCode)))
+      const roleCodes = roles.map(role => String(role.role.code));
+      const filteredRoutes = routes.filter(route =>
+        route.roles.some(roleCode => roleCodes.includes(String(roleCode)))
       );
       setFiltredRoutes(filteredRoutes);
       axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
+        response => response,
+        error => {
           if (error.response.status === 401) {
             SToast.open({
               type: "danger",
@@ -49,15 +49,15 @@ const DefaulLayout = () => {
       <Alert />
       <Toast />
 
-      <div className="d-flex">
+      <div className='d-flex'>
         <Sidebar />
-        <div className="wrapper d-flex flex-column min-vh-100 w-100 flex">
+        <div className='min-vh-100 main-content'>
           <Header />
-          <main className="py-3 main">
-            <Container>
+          <main className='py-3 main'>
+            <Container fluid>
               <Routes>
                 {filteredRoutes.length > 0 &&
-                  filteredRoutes.map((route) => (
+                  filteredRoutes.map(route => (
                     <Route
                       key={route.path}
                       path={route.path}

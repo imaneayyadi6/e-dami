@@ -268,10 +268,10 @@ const Dami = ({ option, showAdmin = false }) => {
                   </div>
                 </div>
 
-                <div className=''>
+                {/* <div className=''>
                   <label>Observation:</label>
                   <input className='dami-input w-75' />
-                </div>
+                </div> */}
 
                 <div className=''>
                   <label>Date:</label>

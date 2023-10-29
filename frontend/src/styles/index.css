@@ -16,7 +16,14 @@ body {
   height: 20px;
   width: 20px;
 }
-
+.main-content {
+  width: 75%;
+}
+@media screen and (max-width: 992px) {
+  .main-content {
+    width: 100%;
+  }
+}
 .side-bar {
   width: 340px !important;
 }
@@ -133,9 +140,10 @@ ul {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 17px;
+  font-size: 15px;
   text-transform: lowercase;
 }
+
 
 /* End Global Rules */
 

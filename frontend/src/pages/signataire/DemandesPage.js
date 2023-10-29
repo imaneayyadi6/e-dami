@@ -45,17 +45,17 @@ const DemandesPage = () => {
             <Table
               columns={[
                 {
+                  Header: "demandeur",
+                  accessor: row =>
+                    `${row.demandeur.prenom} ${row.demandeur.nom}`,
+                  filter: "demandeur",
+                },
+                {
                   Header: "date de demande",
                   accessor: row =>
                     `${moment(row.dateDemande).format("YYYY-MM-DD HH:mm")}`,
                   filter: "dateDemande",
                   type: "date",
-                },
-                {
-                  Header: "demandeur",
-                  accessor: row =>
-                    `${row.demandeur.prenom} ${row.demandeur.nom}`,
-                  filter: "demandeur",
                 },
                 {
                   Header: "option",
@@ -66,7 +66,7 @@ const DemandesPage = () => {
                   Header: "Type d'approbation",
                   accessor: row =>
                     `${getTypeApprobation(row.traitement[0].code)}`,
-                  filter: "traitement[0].code",
+                  filter: "code",
                 },
                 {
                   Header: "status",
@@ -77,7 +77,7 @@ const DemandesPage = () => {
               data={demandes}
               dropdownFilters={[
                 "option.libelle",
-                "traitement[0].code",
+                "code",
                 "traitement[0].status",
               ]}
               showDetailsRow={showDetailsHandler}></Table>

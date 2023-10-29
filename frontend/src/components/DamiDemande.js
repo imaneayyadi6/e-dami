@@ -239,11 +239,11 @@ const DamiDemande = ({ demande }) => {
                     <input className='dami-check-box mr-1' />
                   </div>
                 </div>
-
+{/* 
                 <div className=''>
                   <label>Observation:</label>
                   <input className='dami-input w-75' />
-                </div>
+                </div> */}
 
                 <div className=''>
                   <label>Date:</label>

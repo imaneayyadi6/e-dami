@@ -13,7 +13,7 @@ const TextFilter = ({ column }) => {
   return (
     <Form.Control
       size='sm'
-      style={{ maxWidth: "400px" }}
+      style={{ minWidth: "250px" }}
       value={column.filterValue || ""}
       type={column.type ? column.type : "text"}
       onChange={handleFilterChange}
@@ -35,6 +35,7 @@ const DropdownFilter = ({ column }) => {
 
   return (
     <Form.Select
+      style={{ minWidth: "250px" }}
       size='sm'
       value={filterValue || ""}
       onChange={e => setFilter(e.target.value)}>
@@ -103,49 +104,126 @@ const Table = ({
   );
 
   return (
-    <div className='table-responsive'>
-      <table
-        {...getTableProps()}
-        className={`table table-sm table-hover  ${
-          loadingRemove && "table-active"
-        }`}>
-        <thead className=''>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
-                  <div className='d-flex flex-column justify-content-center inline-text'>
-                    <small>{column.render("Header")}</small>
-                    {column.filter ? (
-                      <div>
-                        {dropdownFilters &&
-                        dropdownFilters.includes(column.id) ? (
-                          <DropdownFilter
-                            column={column}
-                            options={column.filterOptions || []}
-                          />
-                        ) : (
-                          <TextFilter column={column} />
-                        )}
-                      </div>
-                    ) : (
-                      <div style={{ marginBottom: "32px" }}></div>
-                    )}
-                  </div>
-                </th>
-              ))}
-              <th></th>
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map(row => {
-            prepareRow(row);
-            const rowId = row.original._id;
+    <>
+      <div className='table-responsive'>
+        <table
+          {...getTableProps()}
+          className={`table table-sm table-hover  ${
+            loadingRemove && "table-active"
+          }`}>
+          <thead className=''>
+            {headerGroups.map(headerGroup => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <th {...column.getHeaderProps()}>
+                    <div className='d-flex flex-column justify-content-center inline-text'>
+                      <small>{column.render("Header")}</small>
+                      {column.filter ? (
+                        <div>
+                          {dropdownFilters &&
+                          dropdownFilters.includes(column.filter) ? (
+                            <DropdownFilter
+                              column={column}
+                              options={column.filterOptions || []}
+                            />
+                          ) : (
+                            <TextFilter column={column} />
+                          )}
+                        </div>
+                      ) : (
+                        <div style={{ marginBottom: "32px" }}></div>
+                      )}
+                    </div>
+                  </th>
+                ))}
+                <th></th>
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map(row => {
+              prepareRow(row);
+              const rowId = row.original._id;
 
-            if (row.original.notSavedYet) {
-              return (
-                <OverlayTrigger placement='left' overlay={renderTooltip}>
+              if (row.original.notSavedYet) {
+                return (
+                  <OverlayTrigger placement='left' overlay={renderTooltip}>
+                    <tr
+                      {...row.getRowProps()}
+                      className={`cursor-pointer position-relative`}
+                      onClick={() => {
+                        if (rowClick) {
+                          rowClick(rowId);
+                        }
+                      }}>
+                      {row.cells.map(cell => {
+                        // Check if the cell is empty (you can customize this condition)
+                        const columnName = cell.column.Header;
+                        if (
+                          cell.value === null ||
+                          cell.value === undefined ||
+                          cell.value === ""
+                        ) {
+                          // Get the column name from the cell object and include it in the message
+
+                          return (
+                            <td className='empty-cell column-text'>
+                              <small className='column-text text-danger'>
+                                ({columnName}) introuvable
+                              </small>
+                            </td>
+                          );
+                        }
+                        return (
+                          <td
+                            {...cell.getCellProps()}
+                            className={`column-text ${
+                              row.original.notSavedYet && "text-warning"
+                            }`}>
+                            <small>{cell.render("Cell")}</small>
+                          </td>
+                        );
+                      })}
+
+                      <td>
+                        <div className='d-flex justify-content-end'>
+                          {showDetailsRow && !row.original.notSavedYet && (
+                            <span
+                              className='cursor-pointer'
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (showDetailsRow) showDetailsRow(rowId);
+                              }}>
+                              <i className='fa-solid fa-eye mr-1'></i>
+                            </span>
+                          )}
+                          {updateRow && (
+                            <span
+                              className='cursor-pointer'
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (updateRow) updateRow(rowId);
+                              }}>
+                              <i className='fa-solid fa-pen-to-square mr-1'></i>
+                            </span>
+                          )}
+                          {removeRow && (
+                            <span
+                              className='cursor-pointer'
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (removeRow) removeRow(rowId);
+                              }}>
+                              <i className='fas fa-trash text-danger'></i>
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  </OverlayTrigger>
+                );
+              } else {
+                return (
                   <tr
                     {...row.getRowProps()}
                     className={`cursor-pointer position-relative`}
@@ -165,8 +243,8 @@ const Table = ({
                         // Get the column name from the cell object and include it in the message
 
                         return (
-                          <td className='empty-cell'>
-                            <small className='column-text text-danger'>
+                          <td className='empty-cell column-text'>
+                            <small className='text-danger'>
                               ({columnName}) introuvable
                             </small>
                           </td>
@@ -175,10 +253,19 @@ const Table = ({
                       return (
                         <td
                           {...cell.getCellProps()}
-                          className={`${
+                          className={`column-text ${
                             row.original.notSavedYet && "text-warning"
                           }`}>
-                          <small>{cell.render("Cell")}</small>
+                          <small
+                            className={`${
+                              columnName === "status"
+                                ? `table-text-status-${String(
+                                    cell.value
+                                  ).replace(/\s/g, "")}`
+                                : ""
+                            }`}>
+                            {cell.render("Cell")}
+                          </small>
                         </td>
                       );
                     })}
@@ -218,98 +305,14 @@ const Table = ({
                       </div>
                     </td>
                   </tr>
-                </OverlayTrigger>
-              );
-            } else {
-              return (
-                <tr
-                  {...row.getRowProps()}
-                  className={`cursor-pointer position-relative`}
-                  onClick={() => {
-                    if (rowClick) {
-                      rowClick(rowId);
-                    }
-                  }}>
-                  {row.cells.map(cell => {
-                    // Check if the cell is empty (you can customize this condition)
-                    const columnName = cell.column.Header;
-                    if (
-                      cell.value === null ||
-                      cell.value === undefined ||
-                      cell.value === ""
-                    ) {
-                      // Get the column name from the cell object and include it in the message
-
-                      return (
-                        <td className='empty-cell'>
-                          <small className='text-danger'>
-                            ({columnName}) introuvable
-                          </small>
-                        </td>
-                      );
-                    }
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        className={`${
-                          row.original.notSavedYet && "text-warning"
-                        }`}>
-                        <small
-                          className={`${
-                            columnName === "status"
-                              ? `table-text-status-${String(cell.value).replace(
-                                  /\s/g,
-                                  ""
-                                )}`
-                              : ""
-                          }`}>
-                          {cell.render("Cell")}
-                        </small>
-                      </td>
-                    );
-                  })}
-
-                  <td>
-                    <div className='d-flex justify-content-end'>
-                      {showDetailsRow && !row.original.notSavedYet && (
-                        <span
-                          className='cursor-pointer'
-                          onClick={e => {
-                            e.stopPropagation();
-                            if (showDetailsRow) showDetailsRow(rowId);
-                          }}>
-                          <i className='fa-solid fa-eye mr-1'></i>
-                        </span>
-                      )}
-                      {updateRow && (
-                        <span
-                          className='cursor-pointer'
-                          onClick={e => {
-                            e.stopPropagation();
-                            if (updateRow) updateRow(rowId);
-                          }}>
-                          <i className='fa-solid fa-pen-to-square mr-1'></i>
-                        </span>
-                      )}
-                      {removeRow && (
-                        <span
-                          className='cursor-pointer'
-                          onClick={e => {
-                            e.stopPropagation();
-                            if (removeRow) removeRow(rowId);
-                          }}>
-                          <i className='fas fa-trash text-danger'></i>
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            }
-          })}
-        </tbody>
-      </table>
-      <div className='d-flex justify-content-center'>
+                );
+              }
+            })}
+          </tbody>
+        </table>
+      </div>
+      <hr />
+      <div className='d-flex justify-content-center mt-2'>
         <div className='d-flex align-items-center'>
           <small>
             Page{" "}
@@ -358,7 +361,7 @@ const Table = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
