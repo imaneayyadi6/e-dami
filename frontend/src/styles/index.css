@@ -17,15 +17,16 @@ body {
   width: 20px;
 }
 .main-content {
-  width: 75%;
+  width: 85%;
 }
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1000px) {
   .main-content {
     width: 100%;
   }
 }
 .side-bar {
-  width: 340px !important;
+  width: 15%;
+  min-width: 300px;
 }
 
 ul {
