@@ -58,15 +58,39 @@ const DamiDemande = ({ demande }) => {
           element.remove();
         });
 
-      cleanDocRef.current.querySelectorAll(".disabled").forEach(element => {
-        element.setAttribute("disabled", true);
+      // cleanDocRef.current.querySelectorAll(".disabled").forEach(element => {
+      //   element.setAttribute("disabled", true);
+      // });
+    }
+  };
+
+  const makeRemoveReadOnly = () => {
+    if (cleanDocRef && cleanDocRef.current) {
+      cleanDocRef.current.querySelectorAll(".dami-input").forEach(damiInput => {
+        damiInput.readOnly = true;
       });
+      cleanDocRef.current
+        .querySelectorAll(".dami-textarea-line")
+        .forEach(damiInput => {
+          damiInput.readOnly = true;
+        });
+      cleanDocRef.current
+        .querySelectorAll(".dami-check-box")
+        .forEach(damiInput => {
+          damiInput.readOnly = true;
+        });
+      cleanDocRef.current
+        .querySelectorAll(".dami-radio-button")
+        .forEach(damiInput => {
+          damiInput.readOnly = true;
+        });
     }
   };
 
   useEffect(() => {
     setTimeout(() => {
       removeBtnsAndLayoutsFromCreateModal();
+      makeRemoveReadOnly();
     }, 100);
   }, []);
 
@@ -239,7 +263,7 @@ const DamiDemande = ({ demande }) => {
                     <input className='dami-check-box mr-1' />
                   </div>
                 </div>
-{/* 
+                {/* 
                 <div className=''>
                   <label>Observation:</label>
                   <input className='dami-input w-75' />

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import {
-  Dami,
   DamiDemande,
   DamiLoading,
   Message,
@@ -57,7 +56,17 @@ const DemandeDetailsPage = () => {
           {loadingDemandeByID ? (
             <DamiLoading />
           ) : (
-            recoveredDemande && <DamiDemande demande={recoveredDemande} />
+            recoveredDemande && (
+              <>
+                <DamiDemande demande={recoveredDemande} />
+                <Button variant='dark' className='w-100'>
+                  <i className='fa-solid fa-file-pen'></i> valider
+                </Button>
+                <Button variant="danger" className='w-100 mt-1'>
+                  <i className='fa-solid fa-file-circle-xmark'></i> refuser
+                </Button>
+              </>
+            )
           )}
           {!loadingDemandeByID && !recoveredDemande && (
             <WarningMessage message={"demande introuvable !"} />
