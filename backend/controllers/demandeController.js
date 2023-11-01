@@ -11,6 +11,7 @@ import Service from "../models/serviceModel.js";
 export const createDemande = asyncHandler(async (req, res) => {
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
+  console.log(option);
   const user = await Utilisateur.findById(req.user.id);
   if (option) {
     if (user) {
@@ -28,41 +29,48 @@ export const createDemande = asyncHandler(async (req, res) => {
         }
       } else if (option.signataires[0] === "hiq") {
         const direction = await Direction.findById(user.direction);
-        if (direction.directeur) {
-          userID = direction.directeur;
-          if (option.signataires[1] === "dir") {
-            const dirDirection = await Direction.findById(option.service.direction);
-            if (dirDirection) {
-              if (String(dirDirection.directeur) === String(direction.directeur)) {
-                code = "hiq.dir";
+        if (direction) {
+          if (direction.directeur) {
+            userID = direction.directeur;
+            if (option.signataires[1] === "dir") {
+              const dirDirection = await Direction.findById(option.service.direction);
+              if (dirDirection) {
+                if (String(dirDirection.directeur) === String(direction.directeur)) {
+                  code = "hiq.dir";
+                }
               }
+              else {
+                res.status(400);
+                throw new Error("proprietaire de donnees introuvable !");
+              }
+
+            }
+            else if (option.signataires[1] === "pdd") {
+              const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
+              if (pddDirection) {
+                if (String(pddDirection.directeur) === String(direction.directeur)) {
+                  code = "hiq.pdd";
+                }
+              }
+              else {
+                res.status(400);
+                throw new Error("proprietaire de donnees introuvable !");
+              }
+
             }
             else {
-              res.status(400);
-              throw new Error("proprietaire de donnees introuvable !");
+              code = "hiq";
             }
-
+          } else {
+            res.status(400);
+            throw new Error("la direction n'a pas de directeur !");
           }
-          else if (option.signataires[1] === "pdd") {
-            const pddDirection = await Direction.findById(option.proprietaireDeDonnees);
-            if (pddDirection) {
-              if (String(pddDirection.directeur) === String(direction.directeur)) {
-                code = "hiq.pdd";
-              }
-            }
-            else {
-              res.status(400);
-              throw new Error("proprietaire de donnees introuvable !");
-            }
-
-          }
-          else {
-            code = "hiq";
-          }
-        } else {
-          res.status(400);
-          throw new Error("la direction n'a pas de directeur !");
         }
+      }
+      else {
+        res.status(404);
+        throw new Error("direction introuvable !");
+
       }
 
       const demande = new Demande({
