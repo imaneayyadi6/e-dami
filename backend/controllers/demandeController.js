@@ -10,25 +10,55 @@ import Service from "../models/serviceModel.js";
 // @access  private
 export const createDemande = asyncHandler(async (req, res) => {
   const { option: optionID, contenu } = req.body;
-  const option = await Option.findById(optionID);
+  const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
   if (option) {
     if (user) {
-      const code = option.signataires[0];
+      let code = "";
       let userID = "";
 
-      if (code === "cds") {
+      if (option.signataires[0] === "cds") {
         const service = await Service.findById(user.service);
         if (service.chefService) {
           userID = service.chefService;
+          code = "cds";
         } else {
           res.status(400);
           throw new Error("le service n'a pas de chef de service !");
         }
-      } else if (code === "hiq") {
+      } else if (option.signataires[0] === "hiq") {
         const direction = await Direction.findById(user.direction);
         if (direction.directeur) {
           userID = direction.directeur;
+          if (option.signataires[1] === "dir") {
+            const dirDirection = await Direction.findById(option.service.direction);
+            if (dirDirection) {
+              if (String(dirDirection.directeur) === String(direction.directeur)) {
+                code = "hiq.dir";
+              }
+            }
+            else {
+              res.status(400);
+              throw new Error("proprietaire de donnees introuvable !");
+            }
+
+          }
+          else if (option.signataires[1] === "pdd") {
+            const pddDirection = await Direction.findById(option.proprietaireDeDonnees);
+            if (pddDirection) {
+              if (String(pddDirection.directeur) === String(direction.directeur)) {
+                code = "hiq.pdd";
+              }
+            }
+            else {
+              res.status(400);
+              throw new Error("proprietaire de donnees introuvable !");
+            }
+
+          }
+          else {
+            code = "hiq";
+          }
         } else {
           res.status(400);
           throw new Error("la direction n'a pas de directeur !");

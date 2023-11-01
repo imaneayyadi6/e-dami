@@ -5,11 +5,15 @@ const getTypeApprobation = code => {
     case "hiq":
       return "directeur hiearchique";
     case "pdd":
-      return "proprietaire de donnees";
+      return "propriétaire de données";
     case "dir":
-      return "directeur de l'entite";
+      return "directeur de l'entité";
     case "pdg":
       return "president-directeur generale";
+    case "hiq.dir":
+      return "directeur hiearchique - directeur de l'entité"
+    case "hiq.pdd":
+      return "directeur hiearchique - propriétaire de données"
     default:
       return "(pas de donnees)";
   }
