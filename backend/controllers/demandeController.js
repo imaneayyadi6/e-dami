@@ -103,6 +103,7 @@ export const createDemande = asyncHandler(async (req, res) => {
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
   const demandes = await Demande.find({
     "traitement.utilisateur": req.user.id,
+    "traitement.status": "en cours"
   })
     .populate("demandeur")
     .populate("option")
@@ -128,6 +129,52 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
   } else {
     res.status(404);
     throw new Error("demande introuvable");
+  }
+
+  res.json(demande);
+});
+
+
+// @desc    Approuver un traitemen de demande
+// @route   PUT /api/demandes/:id/approuve/:idTraitement
+// @access  private
+export const approuverDemande = asyncHandler(async (req, res) => {
+  const demande = await Demande.findById(req.params.id).populate("option");
+  if (demande) {
+    const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
+    if (traitement) {
+      if (String(traitement.utilisateur) === String(req.user.id)) {
+        demande.traitement.map(tr => {
+          if (String(tr._id) === String(req.params.idTraitement)) {
+            tr.status = "approuve";
+          }
+          return tr;
+        })
+
+        // const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
+        // console.log(codeIndex);
+
+        // demande.traitement.push({
+        //   "dateEnvoi": "2023-10-30T12:37:42.055Z",
+        //   "utilisateur": "653fa0a60f4c38271dd4fa98",
+        //   "code": "hiq",
+        //   "status": "approuve",
+        //   "_id": "653fa396edc412be0bb1f6f7"
+        // });
+        res.json(traitement);
+      }
+      else {
+        res.status(400);
+        throw new Error("vous n'avez pas le droit d'approuver cette demande !");
+      }
+    }
+    else {
+      res.status(404);
+      throw new Error("traitement introuvable");
+    }
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable !");
   }
 
   res.json(demande);
