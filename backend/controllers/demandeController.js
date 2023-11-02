@@ -150,17 +150,36 @@ export const approuverDemande = asyncHandler(async (req, res) => {
           }
           return tr;
         })
+        const codeArr = traitement.code.split(".");
+        if (codeArr.length > 0) {
+          for (const codeItem of codeArr) {
+            console.log(codeItem);
+          }
+        }
+        else {
+          const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
+          if (codeIndex !== -1) {
+            if (codeIndex === demande.option.signataires.length) {
+              demande.status = "approuve";
+            }
+            else {
+              
 
-        // const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
-        // console.log(codeIndex);
 
-        // demande.traitement.push({
-        //   "dateEnvoi": "2023-10-30T12:37:42.055Z",
-        //   "utilisateur": "653fa0a60f4c38271dd4fa98",
-        //   "code": "hiq",
-        //   "status": "approuve",
-        //   "_id": "653fa396edc412be0bb1f6f7"
-        // });
+              demande.traitement.push({
+                dateEnvoi: new Date(),
+                utilisateur: "653fa0a60f4c38271dd4fa99",
+                code: "hiq.pdd",
+                status: "en cours",
+              });
+            }
+          }
+          else {
+            res.status(500);
+            throw new Error("pas de code !");
+          }
+        }
+
         res.json(traitement);
       }
       else {
