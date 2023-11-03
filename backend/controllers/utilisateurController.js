@@ -15,14 +15,11 @@ export const authUser = asyncHandler(async (req, res) => {
     email: String(email).toLocaleLowerCase(),
   })
     .populate("roles.role")
-    .populate("service");
+    .populate("service")
+    .populate("direction");
   // .populate("service.direction");
 
   if (utilisateur && (await bcrypt.compare(password, utilisateur.password))) {
-    if (utilisateur.service && utilisateur.service.direction) {
-      const direction = await Direction.findById(utilisateur.service.direction);
-      if (direction) utilisateur.service.direction = direction;
-    }
 
     res.status(200).json({
       id: utilisateur._id,
@@ -33,6 +30,7 @@ export const authUser = asyncHandler(async (req, res) => {
       fonction: utilisateur.fonction,
       matricule: utilisateur.matricule,
       service: utilisateur.service,
+      direction: utilisateur.direction,
       roles: utilisateur.roles,
       token: generateToken(utilisateur._id),
     });

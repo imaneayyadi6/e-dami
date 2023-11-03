@@ -11,7 +11,6 @@ import Service from "../models/serviceModel.js";
 export const createDemande = asyncHandler(async (req, res) => {
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
-  console.log(option);
   const user = await Utilisateur.findById(req.user.id);
   if (option) {
     if (user) {
@@ -103,11 +102,10 @@ export const createDemande = asyncHandler(async (req, res) => {
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
   const demandes = await Demande.find({
     "traitement.utilisateur": req.user.id,
-    "traitement.status": "en cours"
   })
     .populate("demandeur")
     .populate("option")
-    .sort({ createdAt: -1 });
+    .sort({ dateDemande: -1 });
 
   res.json(demandes);
 });
@@ -144,12 +142,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
     const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
     if (traitement) {
       if (String(traitement.utilisateur) === String(req.user.id)) {
+
         demande.traitement.map(tr => {
           if (String(tr._id) === String(req.params.idTraitement)) {
             tr.status = "approuve";
           }
           return tr;
         })
+
         const codeArr = traitement.code.split(".");
         if (codeArr.length > 0) {
           for (const codeItem of codeArr) {
@@ -163,15 +163,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               demande.status = "approuve";
             }
             else {
-              
-
-
-              demande.traitement.push({
+              demande.traitement = [{
                 dateEnvoi: new Date(),
                 utilisateur: "653fa0a60f4c38271dd4fa99",
                 code: "hiq.pdd",
                 status: "en cours",
-              });
+              }, ...demande.traitement];
+
+              res.json(demande);
             }
           }
           else {
@@ -180,7 +179,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
           }
         }
 
-        res.json(traitement);
+        // res.json(demande);
       }
       else {
         res.status(400);

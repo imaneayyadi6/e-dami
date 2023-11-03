@@ -159,7 +159,7 @@ const Dami = ({ option, showAdmin = false }) => {
                 className='dami-input w-100'
                 value={
                   !showAdmin && userInfo
-                    ? userInfo.service.direction.libelle
+                    ? userInfo.direction.libelle
                     : ""
                 }
               />
