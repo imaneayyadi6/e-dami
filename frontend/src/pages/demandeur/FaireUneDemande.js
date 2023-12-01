@@ -9,6 +9,7 @@ import {
   fetchOptionByID,
   fetchOptionsBySousCategorieID,
   resetFetchOptionByID,
+  resetFetchOptionBySousCategorieID,
 } from "../../redux/option/optionActions";
 
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
@@ -68,20 +69,28 @@ const FaireUneDemande = () => {
 
   const getSousCategoriesChangeHandler = event => {
     setSelectedOption(null);
-    disptach(fetchSousCategoriesByCategorieID(event.target.value));
     disptach(resetFetchSousCategoriesByCategorieID());
     disptach(resetFetchOptionByID());
+    if (event.target.value !== "") {
+      disptach(fetchSousCategoriesByCategorieID(event.target.value));
+    }
+
   };
 
   const getOptionsChangeHandler = event => {
     setSelectedOption(null);
-    disptach(fetchOptionsBySousCategorieID(event.target.value));
-    disptach(resetFetchOptionByID());
+    if (event.target.value !== "") {
+      disptach(fetchOptionsBySousCategorieID(event.target.value));
+    }
   };
 
   const getOptionHandler = event => {
-    setSelectedOption(event.target.value);
-    disptach(fetchOptionByID(event.target.value));
+    setSelectedOption(null);
+    disptach(resetFetchOptionByID());
+    if (event.target.value !== "") {
+      setSelectedOption(event.target.value);
+      disptach(fetchOptionByID(event.target.value))
+    }
   };
 
   const resetDamiFormHandler = () => {
@@ -298,7 +307,7 @@ const FaireUneDemande = () => {
               <Col xl={12} lg={12} md={12} sm={12}>
                 {loadingOptionID && <DamiLoading />}
                 {option ? (
-                  <>
+                  <div className="">
                     <Dami option={option} />
                     <Button
                       className='w-100 mt-2'
@@ -315,7 +324,7 @@ const FaireUneDemande = () => {
                       <i className='fa-solid fa-filter-circle-xmark'></i>{" "}
                       Réinitialiser
                     </Button>
-                  </>
+                  </div>
                 ) : (
                   !loadingOptionID && (
                     <WarningMessage message={"aucune option trouvee"} />

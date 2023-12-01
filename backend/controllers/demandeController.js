@@ -37,6 +37,7 @@ export const createDemande = asyncHandler(async (req, res) => {
                 if (String(dirDirection.directeur) === String(direction.directeur)) {
                   code = "hiq.dir";
                 }
+                else code = "hiq";
               }
               else {
                 res.status(400);
@@ -49,7 +50,7 @@ export const createDemande = asyncHandler(async (req, res) => {
               if (pddDirection) {
                 if (String(pddDirection.directeur) === String(direction.directeur)) {
                   code = "hiq.pdd";
-                }
+                } else code = "hiq";
               }
               else {
                 res.status(400);
@@ -143,10 +144,18 @@ export const approuverDemande = asyncHandler(async (req, res) => {
     if (traitement) {
       if (String(traitement.utilisateur) === String(req.user.id)) {
 
-        demande.traitement.map(tr => {
+
+        let nTraitement = [];
+
+        for (let tr of demande.traitement) {
           if (String(tr._id) === String(req.params.idTraitement)) {
             tr.status = "approuve";
           }
+          nTraitement
+        }
+
+
+        demande.traitement.map(tr => {
           return tr;
         })
 
