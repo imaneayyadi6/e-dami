@@ -9,6 +9,7 @@ import Service from "../models/serviceModel.js";
 // @route   POST /api/demandes
 // @access  private
 export const createDemande = asyncHandler(async (req, res) => {
+  // creation de la demande :
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
@@ -17,6 +18,7 @@ export const createDemande = asyncHandler(async (req, res) => {
       let code = "";
       let userID = "";
 
+      // verification de code de signataires :
       if (option.signataires[0] === "cds") {
         const service = await Service.findById(user.service);
         if (service.chefService) {
@@ -31,36 +33,59 @@ export const createDemande = asyncHandler(async (req, res) => {
         if (direction) {
           if (direction.directeur) {
             userID = direction.directeur;
-            if (option.signataires[1] === "dir") {
+            if (option.signataires[1] === "pdd" && option.signataires[2] === "dir") {
+              const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
               const dirDirection = await Direction.findById(option.service.direction);
-              if (dirDirection) {
-                if (String(dirDirection.directeur) === String(direction.directeur)) {
-                  code = "hiq.dir";
+              if (dirDirection && pddDirection) {
+                if (String(pddDirection.directeur) === String(direction.directeur) &&
+                  String(dirDirection.directeur) === String(direction.directeur)) {
+                  code = "hiq.pdd.dir";
                 }
                 else code = "hiq";
               }
               else {
-                res.status(400);
-                throw new Error("proprietaire de donnees introuvable !");
+                if (!pddDirection) {
+                  res.status(400);
+                  throw new Error("proprietaire de donnees introuvable !");
+                }
+                if (!dirDirection) {
+                  res.status(400);
+                  throw new Error("directeur de  l'entité introuvable !");
+                }
               }
-
-            }
-            else if (option.signataires[1] === "pdd") {
-              const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
-              if (pddDirection) {
-                if (String(pddDirection.directeur) === String(direction.directeur)) {
-                  code = "hiq.pdd";
-                } else code = "hiq";
-              }
-              else {
-                res.status(400);
-                throw new Error("proprietaire de donnees introuvable !");
-              }
-
             }
             else {
-              code = "hiq";
+              if (option.signataires[1] === "dir") {
+                const dirDirection = await Direction.findById(option.service.direction);
+                if (dirDirection) {
+                  if (String(dirDirection.directeur) === String(direction.directeur)) {
+                    code = "hiq.dir";
+                  }
+                  else code = "hiq";
+                }
+                else {
+                  res.status(400);
+                  throw new Error("directeur de  l'entité introuvable !");
+                }
+              }
+              else if (option.signataires[1] === "pdd") {
+                const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
+                if (pddDirection) {
+                  if (String(pddDirection.directeur) === String(direction.directeur)) {
+                    code = "hiq.pdd";
+                  } else code = "hiq";
+                }
+                else {
+                  res.status(400);
+                  throw new Error("proprietaire de donnees introuvable !");
+                }
+
+              }
+              else {
+                code = "hiq";
+              }
             }
+
           } else {
             res.status(400);
             throw new Error("la direction n'a pas de directeur !");
@@ -101,12 +126,16 @@ export const createDemande = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/handle
 // @access  private
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
-  const demandes = await Demande.find({
+  let demandes = await Demande.find({
     "traitement.utilisateur": req.user.id,
   })
     .populate("demandeur")
     .populate("option")
     .sort({ dateDemande: -1 });
+
+  for (const demande of demandes) {
+    demande.traitement = demande.traitement.filter(tr => String(tr.utilisateur) === String(req.user.id));
+  }
 
   res.json(demandes);
 });
@@ -138,31 +167,66 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
 // @route   PUT /api/demandes/:id/approuve/:idTraitement
 // @access  private
 export const approuverDemande = asyncHandler(async (req, res) => {
-  const demande = await Demande.findById(req.params.id).populate("option");
+  let demande = await Demande.findById(req.params.id).populate("option");
   if (demande) {
     const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
     if (traitement) {
       if (String(traitement.utilisateur) === String(req.user.id)) {
 
-
-        let nTraitement = [];
-
         for (let tr of demande.traitement) {
           if (String(tr._id) === String(req.params.idTraitement)) {
             tr.status = "approuve";
           }
-          nTraitement
         }
 
-
-        demande.traitement.map(tr => {
-          return tr;
-        })
-
         const codeArr = traitement.code.split(".");
-        if (codeArr.length > 0) {
-          for (const codeItem of codeArr) {
-            console.log(codeItem);
+        if (codeArr.length > 1) {
+          let code = codeArr[codeArr.length - 1];
+          const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(code));
+          if (codeIndex !== -1) {
+            if (codeIndex === demande.option.signataires.length) {
+              demande.status = "approuve";
+              res.json({ message: "demande approuve" });
+            }
+            else {
+              let dirUserID = '';
+              let nextCode = demande.option.signataires[codeIndex + 1]
+              if (nextCode === "hiq") {
+                const directionID = await Utilisateur.findById(req.user.id).direction;
+                const direction = await Direction.findById(directionID);
+                if (direction) {
+                  dirUserID = direction.directeur;
+                }
+              }
+              else if (nextCode === "pdd") {
+                const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                if (direction) {
+                  dirUserID = direction.directeur;
+                }
+              }
+              else if (nextCode === "dir") {
+                const service = await Service.findById(demande.option.service)
+                const direction = await Direction.findById(String(service.direction));
+                if (direction) {
+                  dirUserID = direction.directeur;
+                }
+              }
+
+              demande.traitement.push({
+                utilisateur: dirUserID,
+                dateEnvoi: new Date(),
+                status: 'en cours',
+                code: nextCode,
+              });
+
+              await demande.save();
+
+              res.json(demande);
+            }
+          }
+          else {
+            res.status(500);
+            throw new Error("pas de code !");
           }
         }
         else {
@@ -170,16 +234,41 @@ export const approuverDemande = asyncHandler(async (req, res) => {
           if (codeIndex !== -1) {
             if (codeIndex === demande.option.signataires.length) {
               demande.status = "approuve";
+              res.json({ message: "demande approuve" });
             }
             else {
-              demande.traitement = [{
-                dateEnvoi: new Date(),
-                utilisateur: "653fa0a60f4c38271dd4fa99",
-                code: "hiq.pdd",
-                status: "en cours",
-              }, ...demande.traitement];
-
-              res.json(demande);
+              let dirUserID = '';
+              let nextCode = demande.option.signataires[codeIndex + 1]
+              if (nextCode) {
+                if (nextCode === "hiq") {
+                  const directionID = await Utilisateur.findById(req.user.id).direction;
+                  const direction = await Direction.findById(directionID);
+                  if (direction) {
+                    dirUserID = direction.directeur;
+                  }
+                }
+                else if (nextCode === "pdd") {
+                  const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                  if (direction) {
+                    dirUserID = direction.directeur;
+                  }
+                }
+                else if (nextCode === "dir") {
+                  const service = await Service.findById(demande.option.service)
+                  const direction = await Direction.findById(String(service.direction));
+                  if (direction) {
+                    dirUserID = direction.directeur;
+                  }
+                }
+                demande.traitement.push({
+                  utilisateur: dirUserID,
+                  dateEnvoi: new Date(),
+                  status: 'en cours',
+                  code: nextCode,
+                });
+              }
+              await demande.save();
+              res.json({ message: "demade approvee avec success !" });
             }
           }
           else {
