@@ -300,30 +300,33 @@ const FaireUneDemande = () => {
           </div>
         </Card.Body>
       </Card>
-      <Card className='mt-3'>
-        <Card.Body>
+      <>
+        <>
           {selectedOption ? (
             <Row className=' '>
               <Col xl={12} lg={12} md={12} sm={12}>
                 {loadingOptionID && <DamiLoading />}
                 {option ? (
                   <div className="">
+
                     <Dami option={option} />
-                    <Button
-                      className='w-100 mt-2'
-                      variant='dark'
-                      disabled={loadingDemandeCreate}
-                      onClick={faireUneDemandeHandler}>
-                      <i className='fa-solid fa-code-pull-request'></i> Demander
-                    </Button>
-                    <Button
-                      className='w-100 mt-1'
-                      variant='light'
-                      disabled={loadingDemandeCreate}
-                      onClick={resetDamiFormHandler}>
-                      <i className='fa-solid fa-filter-circle-xmark'></i>{" "}
-                      Réinitialiser
-                    </Button>
+                    <div className="d-flex justify-content-center mt-2">
+                      <Button
+                        className='mr-1'
+                        variant='dark'
+                        disabled={loadingDemandeCreate}
+                        onClick={faireUneDemandeHandler}>
+                        <i className='fa-solid fa-code-pull-request'></i> Demander
+                      </Button>
+                      <Button
+                        className=''
+                        variant='light'
+                        disabled={loadingDemandeCreate}
+                        onClick={resetDamiFormHandler}>
+                        <i className='fa-solid fa-filter-circle-xmark'></i>{" "}
+                        Réinitialiser
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   !loadingOptionID && (
@@ -337,8 +340,8 @@ const FaireUneDemande = () => {
               <WarningMessage message={"aucune option selectionne"} />
             </div>
           )}
-        </Card.Body>
-      </Card>
+        </>
+      </>
     </>
   );
 };

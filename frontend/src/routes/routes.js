@@ -133,7 +133,7 @@ const routes = [
     roles: ["sig"],
   },
   {
-    path: "/details-demande/:id",
+    path: "/details-demande/:id/traitement/:idTraitement",
     name: "Demandes",
     element: <DemandeDetailsPage />,
     exact: true,

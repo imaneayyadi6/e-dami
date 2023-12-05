@@ -63,6 +63,7 @@ import {
   demandeByIdReducer,
   demandeCreateReducer,
   demandesToHandleReducer,
+  demandeGetTraitementStatusReducer
 } from "./demande/demandeReducres";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
@@ -133,6 +134,7 @@ const reducer = combineReducers({
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandesToHandleReducer,
   demandeById: demandeByIdReducer,
+  demandeGetTraitementStatus: demandeGetTraitementStatusReducer
 });
 
 const store = configureStore({

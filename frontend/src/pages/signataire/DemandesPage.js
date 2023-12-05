@@ -20,8 +20,8 @@ const DemandesPage = () => {
     demandes,
   } = demandesToHandle;
 
-  const showDetailsHandler = id => {
-    navigate(`/details-demande/${id}`);
+  const showDetailsHandler = (id, idTraitement) => {
+    navigate(`/details-demande/${id}/traitement/${idTraitement}`);
   };
 
   useEffect(() => {
@@ -80,7 +80,12 @@ const DemandesPage = () => {
                 "code",
                 "traitement[0].status",
               ]}
-              showDetailsRow={showDetailsHandler}></Table>
+              // showDetailsRow={showDetailsHandler}
+              showDetailsRowSpecificData={{
+                columns: ["_id", "traitement._id"], 
+                function: showDetailsHandler
+              }}
+            ></Table>
           ) : (
             successDemandesToHandle && (
               <WarningMessage message={"Aucune demande trouvée"} />

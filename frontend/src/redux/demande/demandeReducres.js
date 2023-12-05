@@ -11,6 +11,9 @@ import {
   DEMANDE_BY_ID_REQUEST,
   DEMANDE_BY_ID_RESET,
   DEMANDE_BY_ID_SUCCESS,
+
+  DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS
+
 } from "./demandeTypes";
 
 export const demandeCreateReducer = (state = {}, action) => {
@@ -60,3 +63,20 @@ export const demandeByIdReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const demandeGetTraitementStatusReducer = (state = {}, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case DEMANDE_TRAITEMENT_STATUS_REQUEST:
+      return { loading: true };
+    case DEMANDE_TRAITEMENT_STATUS_SUCCESS:
+      return { loading: false, success: true, statusResult: payload };
+    case DEMANDE_TRAITEMENT_STATUS_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_TRAITEMENT_STATUS_RESET:
+      return {};
+    default:
+      return state;
+  }
+}

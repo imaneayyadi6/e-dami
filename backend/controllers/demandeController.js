@@ -141,19 +141,29 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
 });
 
 // @desc    Recuperer le details d'une demande par ID
-// @route   GET /api/demandes/:id
+// @route   GET /api/demandes/:id/traitement/:idTraitement
 // @access  private
 export const getDemandesByID = asyncHandler(async (req, res) => {
-  const demande = await Demande.findById(req.params.id)
+  const demande = await Demande.findOne({
+    _id: req.params.id,
+    "traitement._id": req.params.idTraitement
+  })
     .populate("demandeur")
     .populate("option");
-  // .populate("demandeur.service")
+
   if (demande) {
-    const service = await Service.findById(demande.demandeur.service);
-    const direction = await Direction.findById(demande.demandeur.direction);
-    demande.demandeur.direction = direction;
-    demande.demandeur.service = service;
-    res.json(demande);
+    const index = demande.traitement.findIndex(tr => String(tr._id) === String(req.params.idTraitement));
+    if (String(demande.traitement[index].utilisateur) === String(req.user.id)) {
+      const service = await Service.findById(demande.demandeur.service);
+      const direction = await Direction.findById(demande.demandeur.direction);
+      demande.demandeur.direction = direction;
+      demande.demandeur.service = service;
+      res.json(demande);
+    }
+    else {
+      res.json({ message: "vous n'avez pas le droit de traiter ou de  consulter ce traitement de cette demande", not: true, })
+    }
+
   } else {
     res.status(404);
     throw new Error("demande introuvable");
@@ -161,6 +171,30 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
 
   res.json(demande);
 });
+
+
+// @desc    Recuperer le status de traitement
+// @route   PUT /api/demandes/:id/status/:idTraitement
+// @access  private
+export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
+  const demande = await Demande.findOne({
+    _id: req.params.id,
+    "traitement._id": req.params.idTraitement
+  });
+
+  if (demande) {
+    const index = demande.traitement.findIndex(tr => String(tr._id) === String(req.params.idTraitement));
+    if (String(demande.traitement[index].utilisateur) === String(req.user.id)) {
+      return res.json({ status: demande.traitement[index].status })
+    }
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable");
+  }
+
+  res.json(demande);
+});
+
 
 
 // @desc    Approuver un traitemen de demande
@@ -295,3 +329,5 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
   res.json(demande);
 });
+
+

@@ -60,6 +60,7 @@ const Table = ({
   rowClick,
   loadingRemove,
   dropdownFilters,
+  showDetailsRowSpecificData
 }) => {
   const COLUMNS = useMemo(
     () => columns.filter(column => !true || column.accessor !== "_id"),
@@ -108,9 +109,8 @@ const Table = ({
       <div className='table-responsive'>
         <table
           {...getTableProps()}
-          className={`table table-sm table-hover  ${
-            loadingRemove && "table-active"
-          }`}>
+          className={`table table-sm table-hover  ${loadingRemove && "table-active"
+            }`}>
           <thead className=''>
             {headerGroups.map(headerGroup => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -121,7 +121,7 @@ const Table = ({
                       {column.filter ? (
                         <div>
                           {dropdownFilters &&
-                          dropdownFilters.includes(column.filter) ? (
+                            dropdownFilters.includes(column.filter) ? (
                             <DropdownFilter
                               column={column}
                               options={column.filterOptions || []}
@@ -177,9 +177,8 @@ const Table = ({
                         return (
                           <td
                             {...cell.getCellProps()}
-                            className={`column-text ${
-                              row.original.notSavedYet && "text-warning"
-                            }`}>
+                            className={`column-text ${row.original.notSavedYet && "text-warning"
+                              }`}>
                             <small>{cell.render("Cell")}</small>
                           </td>
                         );
@@ -187,12 +186,16 @@ const Table = ({
 
                       <td>
                         <div className='d-flex justify-content-end'>
-                          {showDetailsRow && !row.original.notSavedYet && (
+                          {(showDetailsRow || showDetailsRowSpecificData) && !row.original.notSavedYet && (
                             <span
                               className='cursor-pointer'
                               onClick={e => {
                                 e.stopPropagation();
-                                if (showDetailsRow) showDetailsRow(rowId);
+                                if (showDetailsRowSpecificData) {
+                                  console.log("")
+                                  // showDetailsRowSpecificData.function([])
+                                }
+                                else if (showDetailsRow) showDetailsRow(rowId);
                               }}>
                               <i className='fa-solid fa-eye mr-1'></i>
                             </span>
@@ -253,17 +256,15 @@ const Table = ({
                       return (
                         <td
                           {...cell.getCellProps()}
-                          className={`column-text ${
-                            row.original.notSavedYet && "text-warning"
-                          }`}>
-                          <small
-                            className={`${
-                              columnName === "status"
-                                ? `table-text-status-${String(
-                                    cell.value
-                                  ).replace(/\s/g, "")}`
-                                : ""
+                          className={`column-text ${row.original.notSavedYet && "text-warning"
                             }`}>
+                          <small
+                            className={`${columnName === "status"
+                              ? `table-text-status-${String(
+                                cell.value
+                              ).replace(/\s/g, "")}`
+                              : ""
+                              }`}>
                             {cell.render("Cell")}
                           </small>
                         </td>
@@ -272,11 +273,21 @@ const Table = ({
 
                     <td>
                       <div className='d-flex justify-content-end'>
-                        {showDetailsRow && !row.original.notSavedYet && (
+                        {(showDetailsRow || showDetailsRowSpecificData) && !row.original.notSavedYet && (
                           <span
                             className='cursor-pointer'
                             onClick={e => {
                               e.stopPropagation();
+                              if (showDetailsRowSpecificData) {
+                                showDetailsRowSpecificData.function(...showDetailsRowSpecificData.columns.map(col => {
+                                  if (col.split(".").length > 1) {
+
+                                    return row.original[col.split('.')[0]][0][col.split('.')[1]];
+                                  }
+                                  else
+                                    return row.original[col];
+                                }))
+                              }
                               if (showDetailsRow) showDetailsRow(rowId);
                             }}>
                             <i className='fa-solid fa-eye mr-1'></i>
@@ -310,7 +321,7 @@ const Table = ({
             })}
           </tbody>
         </table>
-      </div>
+      </div >
       <hr />
       <div className='d-flex justify-content-center mt-2'>
         <div className='d-flex align-items-center'>

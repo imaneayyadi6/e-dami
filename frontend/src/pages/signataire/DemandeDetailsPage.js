@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Placeholder } from "react-bootstrap";
 import {
   DamiDemande,
   DamiLoading,
@@ -17,7 +17,7 @@ import {
 const DemandeDetailsPage = () => {
   const [callOnce, setCallOnce] = useState(false);
 
-  const { id } = useParams();
+  const { id, idTraitement } = useParams();
   const dispatch = useDispatch();
   const demandeById = useSelector(state => state.demandeById);
   const {
@@ -27,9 +27,18 @@ const DemandeDetailsPage = () => {
     success: successDemandeByID,
   } = demandeById;
 
+  const demandeGetTraitementStatus = useSelector(state => state.demandeGetTraitementStatus);
+  const {
+    loading: loadingDemandeGetTraitementStatus,
+    error: errorDemandeGetTraitementStatus,
+    statusResult,
+    success: successdemandeGetTraitementStatus,
+  } = demandeGetTraitementStatus;
+
+
   useEffect(() => {
     if (!callOnce) {
-      dispatch(getDemandeByID(id));
+      dispatch(getDemandeByID(id, idTraitement));
       setCallOnce(true);
     }
   }, [callOnce]);
@@ -51,28 +60,53 @@ const DemandeDetailsPage = () => {
           {errorDemandeByID}
         </Message>
       )}
-      <Card>
-        <Card.Body>
+      {errorDemandeGetTraitementStatus && (
+        <Message type='danger' itWillBeHidden>
+          {errorDemandeGetTraitementStatus}
+        </Message>
+      )}
+      <>
+        <>
           {loadingDemandeByID ? (
             <DamiLoading />
           ) : (
             recoveredDemande && (
-              <>
-                <DamiDemande demande={recoveredDemande} />
-                <Button variant='dark' className='w-100'>
-                  <i className='fa-solid fa-file-pen'></i> valider
-                </Button>
-                <Button variant="danger" className='w-100 mt-1'>
-                  <i className='fa-solid fa-file-circle-xmark'></i> refuser
-                </Button>
-              </>
+              !recoveredDemande.not ? (
+                <>
+                  {statusResult && <span>{statusResult.status}</span>}
+                  <h5 className="mb-5">
+                    Status de traitement de la demande :
+                    {statusResult && <span>{statusResult.status}</span>}
+                    {loadingDemandeGetTraitementStatus && (
+                      <Placeholder animation="glow">
+                        <Placeholder xs={1} />
+                      </Placeholder>
+                    )}
+                  </h5>
+
+                  <DamiDemande demande={recoveredDemande} />
+
+
+                  <div className="d-flex justify-content-center mt-2">
+                    <Button variant='dark' className="mr-1">
+                      <i className='fa-solid fa-file-pen'></i> valider
+                    </Button>
+                    <Button variant="outline-danger">
+                      <i className='fa-solid fa-file-circle-xmark'></i> refuser
+                    </Button>
+                  </div> </>
+              ) :
+                (
+                  <Message type='danger'>{recoveredDemande.message}</Message>
+                )
+
             )
           )}
           {!loadingDemandeByID && !recoveredDemande && (
             <WarningMessage message={"demande introuvable !"} />
           )}
-        </Card.Body>
-      </Card>
+        </>
+      </>
     </>
   );
 };
