@@ -15,17 +15,41 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   })
     .populate("option")
     .populate("demandeur")
-    .sort({ dateDemande: -1 });
+    .sort({ "traitement.dateEnvoi": -1 });
 
+
+  let traitements = [];
   for (const demande of demandes) {
-    console.log(demande.traitement);
+    const index = demande.traitement.findIndex(tr => String(tr.utilisateur) === String(req.user.id))
+    if (index !== -1) {
+
+      let demandeTraitements = [];
+      for (let traitement of demande.traitement) {
+        if (String(traitement.utilisateur) === String(req.user.id)) {
+          traitement = JSON.parse(JSON.stringify(traitement))
+          demandeTraitements.push({
+            ...traitement,
+            idTraitement: traitement._id,
+            idDemande: demande._id,
+            dateDemande: demande.dateDemande,
+            demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
+            option: demande.option.libelle,
+          })
+        }
+      }
+
+
+      traitements = [...traitements, ...demandeTraitements];
+
+    }
   }
 
-  for (const demande of demandes) {
-    demande.traitement = demande.traitement.filter(tr => String(tr.utilisateur) === String(req.user.id));
-  }
+  traitements.sort((a, b) => {
+    return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
+  });
 
-  res.json(demandes);
+
+  res.json(traitements);
 });
 
 // @desc    Faire une demande
@@ -190,7 +214,7 @@ export const createDemande = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/:id/traitement/:idTraitement
 // @access  private
 export const getDemandesByID = asyncHandler(async (req, res) => {
-  const demande = await Demande.findOne({
+  let demande = await Demande.findOne({
     _id: req.params.id,
     "traitement._id": req.params.idTraitement
   })
@@ -198,12 +222,84 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
     .populate("option");
 
   if (demande) {
+    demande = JSON.parse(JSON.stringify(demande));
     const index = demande.traitement.findIndex(tr => String(tr._id) === String(req.params.idTraitement));
     if (String(demande.traitement[index].utilisateur) === String(req.user.id)) {
-      const service = await Service.findById(demande.demandeur.service);
-      const direction = await Direction.findById(demande.demandeur.direction);
+      const service = await Service.findById(demande.demandeur.service).populate("chefService");
+      const direction = await Direction.findById(demande.demandeur.direction).populate("directeur");
+      const optionService = await Service.findById(demande.option.service).populate("chefService");
+      let optionPDD = null;
+      if (demande.option.proprietaireDeDonnees)
+        optionPDD = await Direction.findById(demande.option.proprietaireDeDonnees).populate("directeur");
+
+      const optionDirection = await Direction.findById(optionService.direction).populate("directeur");
+
+      demande.dirLibelle = optionDirection.libelle;
+
+      let sig = [];
+      for (const s of demande.option.signataires) {
+
+        let obj = null;
+        let status = demande.traitement.find(tr => tr.code === s) && demande.traitement.find(tr => tr.code === s).status;
+        if (status && status !== "en cours") {
+          let dateTraitement = demande.traitement.find(tr => tr.code === s).dateTraitement;
+          if (s === "cds") {
+            obj = {
+              code: "cds",
+              nom: service.chefService.nom,
+              prenom: service.chefService.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+          if (s === "hiq") {
+            obj = {
+              code: "hiq",
+              nom: direction.directeur.nom,
+              prenom: direction.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+
+          if (s === "pdd") {
+            obj = {
+              code: "pdd",
+              nom: optionPDD.directeur.nom,
+              prenom: optionPDD.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+          if (s === "dir") {
+            obj = {
+              code: "dir",
+              nom: optionDirection.directeur.nom,
+              prenom: optionDirection.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+          sig.push(obj);
+        }
+      }
+
+      demande.sig = sig
+
+
       demande.demandeur.direction = direction;
       demande.demandeur.service = service;
+
+
+
       res.json(demande);
     }
     else {
@@ -252,75 +348,31 @@ export const approuverDemande = asyncHandler(async (req, res) => {
     if (demande.status === "en cours") {
       const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
       if (traitement) {
+
+
         if (String(traitement.utilisateur) === String(req.user.id)) {
-          for (let tr of demande.traitement) {
-            if (String(tr._id) === String(req.params.idTraitement)) {
-              tr.status = "approuve";
-            }
-          }
-          const codeArr = traitement.code.split(".");
-          if (codeArr.length > 1) {
-            let code = codeArr[codeArr.length - 1];
-            const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(code));
-            if (codeIndex !== -1) {
-              if (codeIndex + 1 === demande.option.signataires.length) {
-                demande.status = "approuve";
-                await demande.save();
-                res.json({ message: "demande approuve" });
-              }
-              else {
-                let dirUserID = '';
-                let nextCode = demande.option.signataires[codeIndex + 1]
-                if (nextCode === "hiq") {
-                  const directionID = await Utilisateur.findById(req.user.id).direction;
-                  const direction = await Direction.findById(directionID);
-                  if (direction) {
-                    dirUserID = direction.directeur;
-                  }
-                }
-                else if (nextCode === "pdd") {
-                  const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
-                  if (direction) {
-                    dirUserID = direction.directeur;
-                  }
-                }
-                else if (nextCode === "dir") {
-                  const service = await Service.findById(demande.option.service)
-                  const direction = await Direction.findById(String(service.direction));
-                  if (direction) {
-                    dirUserID = direction.directeur;
-                  }
-                }
+          if (traitement.status === "en cours") {
 
-                demande.traitement.push({
-                  utilisateur: dirUserID,
-                  dateEnvoi: new Date(),
-                  status: 'en cours',
-                  code: nextCode,
-                });
-
-                await demande.save();
-
-                res.json(demande);
+            for (let tr of demande.traitement) {
+              if (String(tr._id) === String(req.params.idTraitement)) {
+                tr.status = "approuve";
+                tr.dateTraitement = new Date();
+                break;
               }
             }
-            else {
-              res.status(500);
-              throw new Error("pas de code !");
-            }
-          }
-          else {
-            const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
-            if (codeIndex !== -1) {
-              if (codeIndex + 1 === demande.option.signataires.length) {
-                demande.status = "approuve";
-                await demande.save();
-                res.json({ message: "demande approuve " });
-              }
-              else {
-                let dirUserID = '';
-                let nextCode = demande.option.signataires[codeIndex + 1]
-                if (nextCode) {
+            const codeArr = traitement.code.split(".");
+            if (codeArr.length > 1) {
+              let code = codeArr[codeArr.length - 1];
+              const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(code));
+              if (codeIndex !== -1) {
+                if (codeIndex + 1 === demande.option.signataires.length) {
+                  demande.status = "approuve";
+                  await demande.save();
+                  res.json({ message: "demande approuve" });
+                }
+                else {
+                  let dirUserID = '';
+                  let nextCode = demande.option.signataires[codeIndex + 1]
                   if (nextCode === "hiq") {
                     const directionID = await Utilisateur.findById(req.user.id).direction;
                     const direction = await Direction.findById(directionID);
@@ -341,23 +393,77 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       dirUserID = direction.directeur;
                     }
                   }
+
                   demande.traitement.push({
                     utilisateur: dirUserID,
                     dateEnvoi: new Date(),
                     status: 'en cours',
                     code: nextCode,
                   });
+
+                  await demande.save();
+
+                  res.json(demande);
                 }
-                await demande.save();
-                res.json({ message: "demade approvee avec success !" });
+              }
+              else {
+                res.status(500);
+                throw new Error("pas de code !");
               }
             }
             else {
-              res.status(500);
-              throw new Error("pas de code !");
+              const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
+              if (codeIndex !== -1) {
+                if (codeIndex + 1 === demande.option.signataires.length) {
+                  demande.status = "approuve";
+                  await demande.save();
+                  res.json({ message: "demande approuve " });
+                }
+                else {
+                  let dirUserID = '';
+                  let nextCode = demande.option.signataires[codeIndex + 1]
+                  if (nextCode) {
+                    if (nextCode === "hiq") {
+                      const directionID = await Utilisateur.findById(req.user.id).direction;
+                      const direction = await Direction.findById(directionID);
+                      if (direction) {
+                        dirUserID = direction.directeur;
+                      }
+                    }
+                    else if (nextCode === "pdd") {
+                      const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                      if (direction) {
+                        dirUserID = direction.directeur;
+                      }
+                    }
+                    else if (nextCode === "dir") {
+                      const service = await Service.findById(demande.option.service)
+                      const direction = await Direction.findById(String(service.direction));
+                      if (direction) {
+                        dirUserID = direction.directeur;
+                      }
+                    }
+                    demande.traitement.push({
+                      utilisateur: dirUserID,
+                      dateEnvoi: new Date(),
+                      status: 'en cours',
+                      code: nextCode,
+                    });
+                  }
+                  await demande.save();
+                  res.json({ message: "demade approvee avec success !" });
+                }
+              }
+              else {
+                res.status(500);
+                throw new Error("pas de code !");
+              }
             }
           }
-
+          else {
+            res.status(400);
+            throw new Error("demande deja traitée");
+          }
         }
         else {
           res.status(400);
@@ -382,3 +488,59 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 });
 
 
+
+// @desc    Approuver un traitemen de demande
+// @route   PUT /api/demandes/:id/refuse/:idTraitement
+// @access  private
+export const refuserDemande = asyncHandler(async (req, res) => {
+  let demande = await Demande.findById(req.params.id).populate("option");
+  if (demande) {
+    if (demande.status === "en cours") {
+      const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
+      if (traitement.status === "en cours") {
+        if (traitement) {
+          if (String(traitement.utilisateur) === String(req.user.id)) {
+            if (traitement.status === "en cours") {
+              for (let tr of demande.traitement) {
+                if (String(tr._id) === String(req.params.idTraitement)) {
+                  tr.status = "refuse";
+                  tr.dateTraitement = new Date();
+                  break;
+                }
+              }
+
+              demande.status = "refuse";
+              await demande.save();
+              res.json({ message: "demande refuse!" })
+            }
+            else {
+              res.status(400);
+              throw new Error("demande deja traitée");
+            }
+          }
+          else {
+            res.status(400);
+            throw new Error("vous n'avez pas le droit de refuser cette demande !");
+          }
+        }
+        else {
+          res.status(404);
+          throw new Error("traitement introuvable");
+        }
+      }
+      else {
+        res.status(400);
+        throw new Error("demande deja traitée");
+      }
+    }
+    else {
+      res.status(400);
+      throw new Error("demande deja traitée");
+    }
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable !");
+  }
+
+  res.json(demande);
+});

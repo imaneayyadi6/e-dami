@@ -7,7 +7,7 @@ const DamiDemande = ({ demande }) => {
     cds: "Approbation Chef de Service",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
-    dir: `Approbation Directeur de la direction ....`,
+    dir: `Approbation Directeur de la direction `,
     pdg: "Approbation President-directeur generale",
   });
 
@@ -236,6 +236,9 @@ const DamiDemande = ({ demande }) => {
             {demande.option.signataires.map(sig => (
               <div className='directeur-lib' key={sig}>
                 <span>{sigTypes[sig]}</span>
+                {sig === "dir" && (
+                  <span>{demande.dirLibelle}</span>
+                )}
               </div>
             ))}
           </div>
@@ -244,11 +247,15 @@ const DamiDemande = ({ demande }) => {
               <div className='sig-item' key={sig}>
                 <div className=''>
                   <label>Nom:</label>
-                  <input className='dami-input' />
+                  <input className='dami-input'
+                    value={demande.sig.find(sg => sg.code === sig) && demande.sig.find(sg => sg.code === sig).nom}
+                  />
                 </div>
                 <div className=''>
                   <label>Prenom:</label>
-                  <input className='dami-input' />
+                  <input className='dami-input'
+                    value={demande.sig.find(sg => sg.code === sig) && demande.sig.find(sg => sg.code === sig).prenom}
+                  />
                 </div>
                 <div
                   className='d-flex align-items-center'
@@ -256,11 +263,19 @@ const DamiDemande = ({ demande }) => {
                   <label>Decision:</label>
                   <div className='ml-1'>
                     <label>Oui</label>
-                    <input className='dami-check-box mr-1' />
+
+                    <input type="checkbox" className={`dami-check-box mr-1  ${demande.sig.find(sg => sg.code === sig)
+                      &&
+                      demande.sig.find(sg => sg.code === sig).approuve ? 'checked' : ""} `}
+
+                    />
                   </div>
                   <div>
                     <label>Non</label>
-                    <input className='dami-check-box mr-1' />
+                    <input type="checkbox" className={`dami-check-box mr-1 ${demande.sig.find(sg => sg.code === sig)
+                      &&
+                      demande.sig.find(sg => sg.code === sig).refuse ? 'checked' : ""} `}
+                    />
                   </div>
                 </div>
                 {/* 
@@ -271,7 +286,11 @@ const DamiDemande = ({ demande }) => {
 
                 <div className=''>
                   <label>Date:</label>
-                  <input className='dami-input' />
+                  <input className='dami-input'
+                    value={demande.sig.find(sg => sg.code === sig)
+                      &&
+                      demande.sig.find(sg => sg.code === sig).dateTraitement ? new Date(demande.sig.find(sg => sg.code === sig).dateTraitement).toLocaleDateString(): ""}
+                  />
                 </div>
                 <div className='mt-1'>
                   <label>Signature & cachet:</label>

@@ -46,8 +46,8 @@ const DemandesPage = () => {
               columns={[
                 {
                   Header: "demandeur",
-                  accessor: row =>
-                    `${row.demandeur.prenom} ${row.demandeur.nom}`,
+                  accessor:
+                    `demandeur`,
                   filter: "demandeur",
                 },
                 {
@@ -58,31 +58,39 @@ const DemandesPage = () => {
                   type: "date",
                 },
                 {
+                  Header: "date d'envoi",
+                  accessor: row =>
+                    `${moment(row.dateEnvoi).format("YYYY-MM-DD HH:mm")}`,
+                  filter: "dateEnvoi",
+                  type: "date",
+                },
+                {
                   Header: "option",
-                  accessor: "option.libelle",
-                  filter: "option.libelle",
+                  accessor: "option",
+                  filter: "option",
                 },
                 {
                   Header: "Type d'approbation",
                   accessor: row =>
-                    `${getTypeApprobation(row.traitement[0].code)}`,
+                    `${getTypeApprobation(row.code)}`,
                   filter: "code",
                 },
                 {
                   Header: "status",
-                  accessor: "traitement[0].status",
-                  filter: "traitement[0].status",
+                  accessor: "status",
+                  filter: "status",
                 },
               ]}
               data={demandes}
               dropdownFilters={[
-                "option.libelle",
+                "demandeur",
+                "option",
                 "code",
-                "traitement[0].status",
+                "status",
               ]}
               // showDetailsRow={showDetailsHandler}
               showDetailsRowSpecificData={{
-                columns: ["_id", "traitement._id"], 
+                columns: ["idDemande", "idTraitement"],
                 function: showDetailsHandler
               }}
             ></Table>

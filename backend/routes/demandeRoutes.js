@@ -7,6 +7,7 @@ import {
   getDemandesByID,
   approuverDemande,
   getStatusTraitementDeDemande,
+  refuserDemande,
 } from "../controllers/demandeController.js";
 
 const router = express.Router();
@@ -16,5 +17,7 @@ router.route("/handle").get(protect, signataire, getDemandesForHandling);
 router.route("/:id/traitement/:idTraitement").get(protect, signataire, getDemandesByID);
 router.route("/:id/status/:idTraitement").get(protect, signataire, getStatusTraitementDeDemande);
 router.route("/:id/approuve/:idTraitement").put(protect, signataire, approuverDemande);
+router.route("/:id/refuse/:idTraitement").put(protect, signataire, refuserDemande);
+
 
 export default router;

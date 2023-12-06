@@ -2,7 +2,7 @@
   /* background-color: #fff !important; */
   overflow: hidden;
   padding: 2%;
-  margin-top:10px;  
+  margin-top: 10px;
   /* height: 100%; */
 }
 
@@ -46,7 +46,7 @@
   justify-content: center;
   border-right: 1px solid lightgray;
   width: 77%;
-  
+
 }
 
 .dami-type-de-processus {
@@ -320,7 +320,8 @@
   background-color: #fff !important;
 }
 
-.dami-check-box:checked {
+.dami-check-box:checked,
+.dami-check-box.checked {
   --webkit-appearance: none;
   appearance: none;
   z-index: 100;
@@ -328,7 +329,8 @@
   position: relative;
 }
 
-.dami-check-box:checked::after {
+.dami-check-box:checked::after,
+.dami-check-box.checked::after {
   content: "\f00c";
   font-size: 10px;
   font-family: "Font Awesome 5 Free";
