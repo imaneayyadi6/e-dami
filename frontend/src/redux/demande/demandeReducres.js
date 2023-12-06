@@ -12,7 +12,8 @@ import {
   DEMANDE_BY_ID_RESET,
   DEMANDE_BY_ID_SUCCESS,
 
-  DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS
+  DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS,
+  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS
 
 } from "./demandeTypes";
 
@@ -75,6 +76,23 @@ export const demandeGetTraitementStatusReducer = (state = {}, action) => {
     case DEMANDE_TRAITEMENT_STATUS_FAIL:
       return { loading: false, error: payload };
     case DEMANDE_TRAITEMENT_STATUS_RESET:
+      return {};
+    default:
+      return state;
+  }
+}
+
+export const demandeApprouveTraitementReducer = (state = {}, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case DEMANDE_APPROUVE_TRAITEMENT_REQUEST:
+      return { loading: true };
+    case DEMANDE_APPROUVE_TRAITEMENT_SUCCESS:
+      return { loading: false, success: true, message: payload };
+    case DEMANDE_APPROUVE_TRAITEMENT_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_APPROUVE_TRAITEMENT_RESET:
       return {};
     default:
       return state;

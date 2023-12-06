@@ -11,7 +11,9 @@ import {
   DEMANDE_BY_ID_REQUEST,
   DEMANDE_BY_ID_RESET,
   DEMANDE_BY_ID_SUCCESS,
-  DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS
+  DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS,
+  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS
+
 } from "./demandeTypes";
 import axios from "axios";
 
@@ -138,4 +140,34 @@ export const getDemandeTraitementStatus = (id, idTraitement) => {
 
 export const resetGetDemandeTraitementStatus = () => {
   return { type: DEMANDE_TRAITEMENT_STATUS_RESET };
+};
+
+export const approuveTraitement = (id, idTraitement) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(`/api/demandes/${id}/approuve/${idTraitement}`, {}, config);
+      dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetApprouveTraitement = () => {
+  return { type: DEMANDE_APPROUVE_TRAITEMENT_RESET };
 };

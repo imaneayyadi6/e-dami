@@ -192,10 +192,15 @@ const Table = ({
                               onClick={e => {
                                 e.stopPropagation();
                                 if (showDetailsRowSpecificData) {
-                                  console.log("")
-                                  // showDetailsRowSpecificData.function([])
+                                  showDetailsRowSpecificData.function(...showDetailsRowSpecificData.columns.map(col => {
+                                    if (col.split(".").length > 1) {
+                                      return row.original[col.split('.')[0]][0][col.split('.')[1]];
+                                    }
+                                    else
+                                      return row.original[col];
+                                  }))
                                 }
-                                else if (showDetailsRow) showDetailsRow(rowId);
+                                if (showDetailsRow) showDetailsRow(rowId);
                               }}>
                               <i className='fa-solid fa-eye mr-1'></i>
                             </span>
@@ -281,7 +286,6 @@ const Table = ({
                               if (showDetailsRowSpecificData) {
                                 showDetailsRowSpecificData.function(...showDetailsRowSpecificData.columns.map(col => {
                                   if (col.split(".").length > 1) {
-
                                     return row.original[col.split('.')[0]][0][col.split('.')[1]];
                                   }
                                   else
