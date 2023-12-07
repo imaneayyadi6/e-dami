@@ -6,6 +6,21 @@ import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 
 
+
+// @desc    Recuperer les demandes de demandeur
+// @route   GET /api/demandes/mesdemandes
+// @access  private
+export const getMesDemandes = asyncHandler(async (req, res) => {
+  let demandes = await Demande.find({
+    "demandeur": req.user.id,
+  })
+    .populate("option")
+    .sort({ "dateDemande": -1 });
+
+  res.json(demandes);
+
+});
+
 // @desc    Recuperer les demandes envoyer a un utilisateur pour le  traitee
 // @route   GET /api/demandes/handle
 // @access  private
@@ -239,62 +254,138 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
       let sig = [];
       for (const s of demande.option.signataires) {
 
-        let obj = null;
-        let status = demande.traitement.find(tr => tr.code === s) && demande.traitement.find(tr => tr.code === s).status;
-        if (status && status !== "en cours") {
-          let dateTraitement = demande.traitement.find(tr => tr.code === s).dateTraitement;
-          if (s === "cds") {
-            obj = {
-              code: "cds",
-              nom: service.chefService.nom,
-              prenom: service.chefService.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+        let traitement = demande.traitement.find(tr => tr.code === s);
+
+        if (traitement) {
+
+          let obj = null;
+          let status = traitement.status;
+
+          if (status && status !== "en cours") {
+            let dateTraitement = traitement.dateTraitement;
+
+            if (s === "cds") {
+              obj = {
+                code: "cds",
+                nom: service.chefService.nom,
+                prenom: service.chefService.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              }
             }
-          }
-          if (s === "hiq") {
-            obj = {
-              code: "hiq",
-              nom: direction.directeur.nom,
-              prenom: direction.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+
+            if (s === "hiq") {
+              obj = {
+                code: "hiq",
+                nom: direction.directeur.nom,
+                prenom: direction.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              }
             }
+
+            if (s === "pdd") {
+              obj = {
+                code: "pdd",
+                nom: optionPDD.directeur.nom,
+                prenom: optionPDD.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              }
+            }
+
+            if (s === "dir") {
+              obj = {
+                code: "dir",
+                nom: optionDirection.directeur.nom,
+                prenom: optionDirection.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              }
+            }
+            sig.push(obj);
           }
 
-          if (s === "pdd") {
-            obj = {
-              code: "pdd",
-              nom: optionPDD.directeur.nom,
-              prenom: optionPDD.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+        }
+        else {
+          for (const tr of demande.traitement) {
+            const arrCode = tr.code.split(".");
+            if (arrCode.length > 1) {
+              for (const item of arrCode) {
+                let traitement = tr;
+                if (traitement) {
+                  let obj = null;
+                  let status = traitement.status;
+
+                  if (status && status !== "en cours") {
+                    let dateTraitement = traitement.dateTraitement;
+
+                    if (item === "cds") {
+                      obj = {
+                        code: "cds",
+                        nom: service.chefService.nom,
+                        prenom: service.chefService.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      }
+                    }
+
+                    if (item === "hiq") {
+                      obj = {
+                        code: "hiq",
+                        nom: direction.directeur.nom,
+                        prenom: direction.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      }
+                    }
+
+                    if (item === "pdd") {
+                      obj = {
+                        code: "pdd",
+                        nom: optionPDD.directeur.nom,
+                        prenom: optionPDD.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      }
+                    }
+
+                    if (item === "dir") {
+                      obj = {
+                        code: "dir",
+                        nom: optionDirection.directeur.nom,
+                        prenom: optionDirection.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      }
+                    }
+                    sig.push(obj);
+                  }
+
+                }
+              }
             }
           }
-          if (s === "dir") {
-            obj = {
-              code: "dir",
-              nom: optionDirection.directeur.nom,
-              prenom: optionDirection.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
-            }
-          }
-          sig.push(obj);
         }
       }
 
-      demande.sig = sig
-
-
+      demande.sig = sig;
       demande.demandeur.direction = direction;
       demande.demandeur.service = service;
 
@@ -503,6 +594,7 @@ export const refuserDemande = asyncHandler(async (req, res) => {
             if (traitement.status === "en cours") {
               for (let tr of demande.traitement) {
                 if (String(tr._id) === String(req.params.idTraitement)) {
+                  tr.motifRefus = req.body.motif;
                   tr.status = "refuse";
                   tr.dateTraitement = new Date();
                   break;

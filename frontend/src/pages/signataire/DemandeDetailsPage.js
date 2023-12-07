@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import { Button, Placeholder } from "react-bootstrap";
+import { Button, Form, Modal, Placeholder } from "react-bootstrap";
 import {
   DamiDemande,
   DamiLoading,
@@ -14,8 +14,10 @@ import {
   approuveTraitement,
   getDemandeByID,
   getDemandeTraitementStatus,
+  refuseTraitement,
   resetApprouveTraitement,
   resetGetDemandeByID,
+  resetRefuseTraitement,
 } from "../../redux/demande/demandeActions";
 
 import { Dialog, Toast } from "../../services";
@@ -23,6 +25,10 @@ import { Dialog, Toast } from "../../services";
 
 const DemandeDetailsPage = () => {
   const [callOnce, setCallOnce] = useState(false);
+  const [showRefuseModal, setShowRefuseModal] = useState(false);
+  const [motif, setMotif] = useState("");
+  const [motifErrMsg, setMotifErrMsg] = useState("");
+
 
   const { id, idTraitement } = useParams();
   const dispatch = useDispatch();
@@ -50,6 +56,13 @@ const DemandeDetailsPage = () => {
     error: demandeApprouveTraitementError,
   } = demandeApprouveTraitement;
 
+  const demanderRefuseTraitement = useSelector(state => state.demanderRefuseTraitement);
+  const {
+    loading: demanderRefuseTraitementLoading,
+    success: demanderRefuseTraitementSuccess,
+    error: demanderRefuseTraitementError,
+  } = demanderRefuseTraitement;
+
 
   const approveeHandler = () => {
     Dialog.open({
@@ -63,11 +76,14 @@ const DemandeDetailsPage = () => {
   }
 
   const refuseeHandler = () => {
-    Dialog.open({
-      title: "Confirmation",
-      message: "Êtes vous sûr de vouloir refuser cette demande ?",
-
-    })
+    window.scrollTo(0, 0);
+    if (motif !== "") {
+      dispatch(refuseTraitement(id, idTraitement, motif));
+      setShowRefuseModal(false);
+    }
+    else {
+      setMotifErrMsg("Motif du refus requis !")
+    }
   }
 
 
@@ -80,13 +96,26 @@ const DemandeDetailsPage = () => {
     if (successDemandeByID) {
       dispatch(getDemandeTraitementStatus(id, idTraitement))
     }
+
     if (demandeApprouveTraitementSuccess) {
       Toast.open({ type: "success", message: "Demande approuvée avec succès." });
       setTimeout(() => {
         dispatch(resetApprouveTraitement())
       }, 5000)
     }
-  }, [callOnce, successDemandeByID, demandeApprouveTraitementSuccess]);
+
+    if (demanderRefuseTraitementSuccess) {
+      Toast.open({ type: "success", message: "Demande refusée avec succès." });
+      setTimeout(() => {
+        dispatch(resetRefuseTraitement())
+      }, 5000)
+    }
+  }, [
+    callOnce,
+    successDemandeByID,
+    demandeApprouveTraitementSuccess,
+    demanderRefuseTraitementSuccess
+  ]);
 
   return (
     <>
@@ -116,9 +145,40 @@ const DemandeDetailsPage = () => {
           {demandeApprouveTraitementError}
         </Message>
       )}
+      {demanderRefuseTraitementError && (
+        <Message type='danger' itWillBeHidden>
+          {demanderRefuseTraitementError}
+        </Message>
+      )}
+      <Modal show={showRefuseModal} size="xm" centered onHide={() => {
+        setMotif("");
+        setMotifErrMsg("")
+        setShowRefuseModal(false)
+      }} >
+        <Modal.Header closeButton >
+          <h6 >motif de refus </h6>
+        </Modal.Header>
+        <Modal.Body>
+          {motifErrMsg &&
+            (<Message type="danger">{motifErrMsg}</Message>)
+          }
+          <lable>motif:</lable>
+          <textarea
+            value={motif}
+            onChange={(e) => setMotif(e.target.value)}
+            className="form-control"
+            placeholder="veuiller saisire un motif de refus .."
+            style={{ height: 250, resize: "none" }}
+          ></textarea>
+          <Button className="mt-1 w-100" variant="dark" onClick={refuseeHandler}>
+            <i className="fa-solid fa-file-circle-xmark"></i>{" "}
+            refuser</Button>
+        </Modal.Body>
+      </Modal>
       <>
         <>
           {demandeApprouveTraitementLoading && <Loader />}
+          {demanderRefuseTraitementLoading && <Loader />}
           {loadingDemandeByID ? (
             <DamiLoading />
           ) : (
@@ -143,7 +203,7 @@ const DemandeDetailsPage = () => {
                       <Button variant='dark' className="mr-1" onClick={approveeHandler}>
                         <i className='fa-solid fa-file-pen'></i> valider
                       </Button>
-                      <Button variant="outline-danger" onClick={refuseeHandler}>
+                      <Button variant="outline-danger" onClick={() => setShowRefuseModal(true)}>
                         <i className='fa-solid fa-file-circle-xmark'></i> refuser
                       </Button>
                     </div>

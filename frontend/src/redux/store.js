@@ -62,9 +62,11 @@ import { toastReducer } from "./toast/toastReducers";
 import {
   demandeByIdReducer,
   demandeCreateReducer,
-  demandesToHandleReducer,
+  demandeToHandleReducer,
   demandeGetTraitementStatusReducer,
-  demandeApprouveTraitementReducer
+  demandeApprouveTraitementReducer,
+  demanderRefuseTraitementReducer,
+  mesDemandesReducer
 } from "./demande/demandeReducres";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
@@ -133,10 +135,12 @@ const reducer = combineReducers({
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
-  demandesToHandle: demandesToHandleReducer,
+  demandesToHandle: demandeToHandleReducer,
   demandeById: demandeByIdReducer,
   demandeGetTraitementStatus: demandeGetTraitementStatusReducer,
-  demandeApprouveTraitement: demandeApprouveTraitementReducer
+  demandeApprouveTraitement: demandeApprouveTraitementReducer,
+  demanderRefuseTraitement: demanderRefuseTraitementReducer,
+  mesDemandes: mesDemandesReducer,
 });
 
 const store = configureStore({

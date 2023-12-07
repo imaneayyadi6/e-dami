@@ -10,7 +10,7 @@ import {
   UtilisateurCreatePage,
   UtilisateurDetailsPage,
 } from "../pages/admin";
-import { FaireUneDemande, MesDemandesPage } from "../pages/demandeur";
+import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage } from "../pages/demandeur";
 import { DemandeDetailsPage, DemandesPage } from "../pages/signataire";
 
 const routes = [
@@ -139,6 +139,13 @@ const routes = [
     exact: true,
     roles: ["sig"],
   },
+  {
+    path: "/details-demande/:id",
+    name: "Demandes",
+    element: <DemandeurDetailsDemande />,
+    exact: true,
+    roles: ["dmr"],
+  }
 ];
 
 export default routes;

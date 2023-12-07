@@ -1,6 +1,6 @@
 import express from "express";
 
-import { protect, signataire } from "../middlewares/authMidlleware.js";
+import { protect, signataire, demandeur } from "../middlewares/authMidlleware.js";
 import {
   createDemande,
   getDemandesForHandling,
@@ -8,6 +8,7 @@ import {
   approuverDemande,
   getStatusTraitementDeDemande,
   refuserDemande,
+  getMesDemandes,
 } from "../controllers/demandeController.js";
 
 const router = express.Router();
@@ -18,6 +19,6 @@ router.route("/:id/traitement/:idTraitement").get(protect, signataire, getDemand
 router.route("/:id/status/:idTraitement").get(protect, signataire, getStatusTraitementDeDemande);
 router.route("/:id/approuve/:idTraitement").put(protect, signataire, approuverDemande);
 router.route("/:id/refuse/:idTraitement").put(protect, signataire, refuserDemande);
-
+router.route("/mesdemandes").get(protect, demandeur, getMesDemandes)
 
 export default router;

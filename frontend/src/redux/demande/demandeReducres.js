@@ -13,9 +13,46 @@ import {
   DEMANDE_BY_ID_SUCCESS,
 
   DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS,
-  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS
+  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS,
+  DEMANDE_REFUSE_TRAITEMENT_FAIL, DEMANDE_REFUSE_TRAITEMENT_REQUEST, DEMANDE_REFUSE_TRAITEMENT_RESET, DEMANDE_REFUSE_TRAITEMENT_SUCCESS,
+  DEMANDE_MES_DEMANDES_FAIL, DEMANDE_MES_DEMANDES_REQUEST, DEMANDE_MES_DEMANDES_RESET, DEMANDE_MES_DEMANDES_SUCCESS
 
 } from "./demandeTypes";
+
+
+
+export const mesDemandesReducer = (state = { demandes: [] }, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_MES_DEMANDES_REQUEST:
+      return { loading: true };
+    case DEMANDE_MES_DEMANDES_SUCCESS:
+      return { loading: false, success: true, demandes: payload };
+    case DEMANDE_MES_DEMANDES_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_MES_DEMANDES_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+export const demandeToHandleReducer = (state = { demandes: [] }, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_TOHANDLE_LIST_REQUEST:
+      return { loading: true, demandes: [] };
+    case DEMANDE_TOHANDLE_LIST_SUCCESS:
+      return { loading: false, success: true, demandes: payload };
+    case DEMANDE_TOHANDLE_LIST_FAIL:
+      return { loading: false, error: payload, demandes: [] };
+    case DEMANDE_TOHANDLE_LIST_RESET:
+      return { demandes: [] };
+    default:
+      return state;
+  }
+};
 
 export const demandeCreateReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -33,21 +70,6 @@ export const demandeCreateReducer = (state = {}, action) => {
   }
 };
 
-export const demandesToHandleReducer = (state = { demandes: [] }, action) => {
-  const { type, payload } = action;
-  switch (type) {
-    case DEMANDE_TOHANDLE_LIST_REQUEST:
-      return { loading: true, demandes: [] };
-    case DEMANDE_TOHANDLE_LIST_SUCCESS:
-      return { loading: false, success: true, demandes: payload };
-    case DEMANDE_TOHANDLE_LIST_FAIL:
-      return { loading: false, error: payload, demandes: [] };
-    case DEMANDE_TOHANDLE_LIST_RESET:
-      return { demandes: [] };
-    default:
-      return state;
-  }
-};
 
 export const demandeByIdReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -98,3 +120,21 @@ export const demandeApprouveTraitementReducer = (state = {}, action) => {
       return state;
   }
 }
+
+export const demanderRefuseTraitementReducer = (state = {}, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case DEMANDE_REFUSE_TRAITEMENT_REQUEST:
+      return { loading: true };
+    case DEMANDE_REFUSE_TRAITEMENT_SUCCESS:
+      return { loading: false, success: true, message: payload };
+    case DEMANDE_REFUSE_TRAITEMENT_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_REFUSE_TRAITEMENT_RESET:
+      return {};
+    default:
+      return state;
+  }
+}
+

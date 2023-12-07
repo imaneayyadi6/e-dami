@@ -12,8 +12,9 @@ import {
   DEMANDE_BY_ID_RESET,
   DEMANDE_BY_ID_SUCCESS,
   DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS,
-  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS
-
+  DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS,
+  DEMANDE_REFUSE_TRAITEMENT_FAIL, DEMANDE_REFUSE_TRAITEMENT_REQUEST, DEMANDE_REFUSE_TRAITEMENT_RESET, DEMANDE_REFUSE_TRAITEMENT_SUCCESS,
+  DEMANDE_MES_DEMANDES_FAIL, DEMANDE_MES_DEMANDES_REQUEST, DEMANDE_MES_DEMANDES_RESET, DEMANDE_MES_DEMANDES_SUCCESS
 } from "./demandeTypes";
 import axios from "axios";
 
@@ -170,4 +171,66 @@ export const approuveTraitement = (id, idTraitement) => {
 
 export const resetApprouveTraitement = () => {
   return { type: DEMANDE_APPROUVE_TRAITEMENT_RESET };
+};
+
+
+export const refuseTraitement = (id, idTraitement, motif) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(`/api/demandes/${id}/refuse/${idTraitement}`, { motif }, config);
+      dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetRefuseTraitement = () => {
+  return { type: DEMANDE_REFUSE_TRAITEMENT_RESET };
+};
+
+
+export const getMesDemandes = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_MES_DEMANDES_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get("/api/demandes/mesdemandes", config);
+      dispatch({ type: DEMANDE_MES_DEMANDES_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_MES_DEMANDES_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetGetMesDemandes = () => {
+  return { type: DEMANDE_MES_DEMANDES_RESET };
 };
