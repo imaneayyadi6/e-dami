@@ -11,7 +11,7 @@ import optionRoutes from "./routes/optionRoutes.js";
 import utilisateurRoutes from "./routes/utilisateurRoutes.js";
 import chartRoutes from "./routes/chartRoutes.js";
 import demandeRoutes from "./routes/demandeRoutes.js";
-
+import notificationRoutes from "./routes/notificationsRoutes.js";
 const app = express();
 
 // Init dotenv :
@@ -34,6 +34,8 @@ app.use("/api/souscategories", sousCategorieRoutes);
 app.use("/api/options", optionRoutes);
 app.use("/api/charts", chartRoutes);
 app.use("/api/demandes", demandeRoutes);
+app.use("/api/notifications", notificationRoutes);
+
 
 // Init Error Middlewares :
 app.use(notFound);

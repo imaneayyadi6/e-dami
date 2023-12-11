@@ -1,19 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { showSidebar } from "../redux/sidebar/sidebarActions";
 import { LinkContainer } from "react-router-bootstrap";
 import { logout } from "../redux/user/userActions";
+import { fetchNotificationsNotSeenCount } from "../redux/notification/notificationsActions";
 
 const Header = () => {
+  const [callOnce, setCallOnce] = useState(false);
   const dispatch = useDispatch();
+
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
+
+  const notificationsNotSeenCount = useSelector(state => state.notificationsNotSeenCount);
+  const { recovredData, error } = notificationsNotSeenCount
+
 
   const logoutHandler = e => {
     e.preventDefault();
     dispatch(logout());
   };
+
+  useEffect(() => {
+    if (!callOnce) {
+      console.log("hello world")
+      console.log(recovredData);
+      fetchNotificationsNotSeenCount();
+      setCallOnce(true);
+    }
+  }, [callOnce])
+
 
   return (
     <Navbar collapseOnSelect expand='lg' variant='light' bg='light'>

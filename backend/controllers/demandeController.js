@@ -4,7 +4,7 @@ import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
-
+import { sendNotificationService } from "../services/notificationService.js"
 
 
 // @desc    Recuperer les demandes de demandeur
@@ -93,7 +93,6 @@ export const createDemande = asyncHandler(async (req, res) => {
       } else if (option.signataires[0] === "hiq") {
         const direction = await Direction.findById(user.direction);
         if (direction) {
-
           if (direction.directeur) {
             userID = direction.directeur;
             console.log("directeur : ", direction.directeur)
@@ -165,7 +164,7 @@ export const createDemande = asyncHandler(async (req, res) => {
                 }
                 else {
                   res.status(400);
-                  throw new Error("directeur de  l'entité introuvable !");
+                  throw new Error("directeur de l'entité introuvable !");
                 }
               }
               else if (option.signataires[1] === "pdd") {
@@ -212,7 +211,11 @@ export const createDemande = asyncHandler(async (req, res) => {
           },
         ],
       });
+
+
       await demande.save();
+      const messageContent = `<p>Une <a  style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom} ${user.nom}, veuillez la traiter.</p>`
+      sendNotificationService(userID, messageContent)
       res.status(201).json({ message: "demande a été effectuée avec succès" });
     } else {
       res.status(404);
@@ -636,3 +639,171 @@ export const refuserDemande = asyncHandler(async (req, res) => {
 
   res.json(demande);
 });
+
+
+
+// @desc    Recuperer le details d'une demande par ID
+// @route   GET /api/demandes/:id
+// @access  private
+export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
+  let demande = await Demande.findOne({
+    _id: req.params.id,
+  })
+    .populate("demandeur")
+    .populate("option");
+
+  if (demande) {
+    demande = JSON.parse(JSON.stringify(demande));
+
+    const service = await Service.findById(demande.demandeur.service).populate("chefService");
+    const direction = await Direction.findById(demande.demandeur.direction).populate("directeur");
+    const optionService = await Service.findById(demande.option.service).populate("chefService");
+    let optionPDD = null;
+    if (demande.option.proprietaireDeDonnees)
+      optionPDD = await Direction.findById(demande.option.proprietaireDeDonnees).populate("directeur");
+
+    const optionDirection = await Direction.findById(optionService.direction).populate("directeur"); demande.dirLibelle = optionDirection.libelle;
+
+    let sig = [];
+    for (const s of demande.option.signataires) {
+      let traitement = demande.traitement.find(tr => tr.code === s);
+      if (traitement) {
+        let obj = null;
+        let status = traitement.status;
+        if (status && status !== "en cours") {
+          let dateTraitement = traitement.dateTraitement;
+          if (s === "cds") {
+            obj = {
+              code: "cds",
+              nom: service.chefService.nom,
+              prenom: service.chefService.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+
+          if (s === "hiq") {
+            obj = {
+              code: "hiq",
+              nom: direction.directeur.nom,
+              prenom: direction.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+
+          if (s === "pdd") {
+            obj = {
+              code: "pdd",
+              nom: optionPDD.directeur.nom,
+              prenom: optionPDD.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+
+          if (s === "dir") {
+            obj = {
+              code: "dir",
+              nom: optionDirection.directeur.nom,
+              prenom: optionDirection.directeur.prenom,
+              approuve: status === "approuve" ? true : false,
+              refuse: status === "refuse" ? true : false,
+              dateTraitement: dateTraitement,
+              // date:trai
+            }
+          }
+          sig.push(obj);
+        }
+
+      }
+      else {
+        for (const tr of demande.traitement) {
+          const arrCode = tr.code.split(".");
+          if (arrCode.length > 1) {
+            for (const item of arrCode) {
+              let traitement = tr;
+              if (traitement) {
+                let obj = null;
+                let status = traitement.status;
+
+                if (status && status !== "en cours") {
+                  let dateTraitement = traitement.dateTraitement;
+
+                  if (item === "cds") {
+                    obj = {
+                      code: "cds",
+                      nom: service.chefService.nom,
+                      prenom: service.chefService.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    }
+                  }
+
+                  if (item === "hiq") {
+                    obj = {
+                      code: "hiq",
+                      nom: direction.directeur.nom,
+                      prenom: direction.directeur.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    }
+                  }
+
+                  if (item === "pdd") {
+                    obj = {
+                      code: "pdd",
+                      nom: optionPDD.directeur.nom,
+                      prenom: optionPDD.directeur.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    }
+                  }
+
+                  if (item === "dir") {
+                    obj = {
+                      code: "dir",
+                      nom: optionDirection.directeur.nom,
+                      prenom: optionDirection.directeur.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    }
+                  }
+                  sig.push(obj);
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+
+    demande.sig = sig;
+    demande.demandeur.direction = direction;
+    demande.demandeur.service = service;
+
+    res.json(demande);
+
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable");
+  }
+
+  res.json(demande);
+});
+

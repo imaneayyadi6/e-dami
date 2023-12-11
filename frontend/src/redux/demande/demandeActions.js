@@ -14,7 +14,11 @@ import {
   DEMANDE_TRAITEMENT_STATUS_FAIL, DEMANDE_TRAITEMENT_STATUS_REQUEST, DEMANDE_TRAITEMENT_STATUS_RESET, DEMANDE_TRAITEMENT_STATUS_SUCCESS,
   DEMANDE_APPROUVE_TRAITEMENT_FAIL, DEMANDE_APPROUVE_TRAITEMENT_REQUEST, DEMANDE_APPROUVE_TRAITEMENT_RESET, DEMANDE_APPROUVE_TRAITEMENT_SUCCESS,
   DEMANDE_REFUSE_TRAITEMENT_FAIL, DEMANDE_REFUSE_TRAITEMENT_REQUEST, DEMANDE_REFUSE_TRAITEMENT_RESET, DEMANDE_REFUSE_TRAITEMENT_SUCCESS,
-  DEMANDE_MES_DEMANDES_FAIL, DEMANDE_MES_DEMANDES_REQUEST, DEMANDE_MES_DEMANDES_RESET, DEMANDE_MES_DEMANDES_SUCCESS
+  DEMANDE_MES_DEMANDES_FAIL, DEMANDE_MES_DEMANDES_REQUEST, DEMANDE_MES_DEMANDES_RESET, DEMANDE_MES_DEMANDES_SUCCESS,
+  DEMANDE_DEMANDEUR_BY_ID_FAIL,
+  DEMANDE_DEMANDEUR_BY_ID_REQUEST,
+  DEMANDE_DEMANDEUR_BY_ID_RESET,
+  DEMANDE_DEMANDEUR_BY_ID_SUCCESS,
 } from "./demandeTypes";
 import axios from "axios";
 
@@ -233,4 +237,34 @@ export const getMesDemandes = () => {
 
 export const resetGetMesDemandes = () => {
   return { type: DEMANDE_MES_DEMANDES_RESET };
+};
+
+export const getDemandeurDemandeByID = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_DEMANDEUR_BY_ID_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(`/api/demandes/${id}`, config);
+      dispatch({ type: DEMANDE_DEMANDEUR_BY_ID_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_DEMANDEUR_BY_ID_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetGetDemandeurDemandeByID = () => {
+  return { type: DEMANDE_DEMANDEUR_BY_ID_RESET };
 };
