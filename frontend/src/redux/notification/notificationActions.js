@@ -1,15 +1,24 @@
 import {
-    NOTIFICATION_NOTSEEN_COUNT_FAIL, NOTIFICATION_NOTSEEN_COUNT_REQUEST, NOTIFICATION_NOTSEEN_COUNT_RESET, NOTIFICATION_NOTSEEN_COUNT_SUCCESS
+    NOTIFICATION_NOTSEEN_COUNT_FAIL,
+    NOTIFICATION_NOTSEEN_COUNT_REQUEST,
+    NOTIFICATION_NOTSEEN_COUNT_RESET,
+    NOTIFICATION_NOTSEEN_COUNT_SUCCESS
 } from "./notificationTypes"
 import axios from "axios";
 
-
-export const fetchNotificationsNotSeenCount = () => {
+export const getNotificationsNotSeenCount = async () => {
+    // const { data } = await axios.get("/api/notifications/notseen", {
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGRlYmY2NDg4ZThiOTY3ZGM1NTY2ZCIsImlhdCI6MTcwMjMwMTY3MywiZXhwIjoxNzAzMTY1NjczfQ.yX65sPEvZHMXNrkBoGy-VtPO7_ckFD-Bol8lqvPTypY`,
+    //     },
+    // });
+    // console.log(data);
     return async (dispatch, getState) => {
+        console.log("Hello world")
         try {
-            console.log("fetchNotificationsNotSeenCount try catch");
-
             dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_REQUEST });
+
             const {
                 userLogin: { userInfo },
             } = getState();
@@ -20,9 +29,11 @@ export const fetchNotificationsNotSeenCount = () => {
                     authorization: `Bearer ${userInfo.token}`,
                 },
             };
+
             const { data } = await axios.get("/api/notifications/notseen", config);
 
             dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: data });
+
         } catch (error) {
             const err =
                 error.response && error.response.data.message
@@ -33,6 +44,6 @@ export const fetchNotificationsNotSeenCount = () => {
     };
 };
 
-export const resetFetchNotificationsNotSeenCount = () => {
+export const getFetchNotificationsNotSeenCount = () => {
     return { type: NOTIFICATION_NOTSEEN_COUNT_RESET };
 };

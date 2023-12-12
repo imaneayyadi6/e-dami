@@ -1,4 +1,5 @@
 import { DashboardPage, RedirectPage } from "../pages";
+import NotificationsPage from "../pages/NotificationsPage";
 import {
   CategorieListPage,
   DamiEditPage,
@@ -145,6 +146,13 @@ const routes = [
     element: <DemandeurDetailsDemande />,
     exact: true,
     roles: ["dmr"],
+  },
+  {
+    path: "/notifications",
+    name: "notifications",
+    exact: true,
+    roles: ["dmr", "sig", "crt"],
+    element: <NotificationsPage />
   }
 ];
 

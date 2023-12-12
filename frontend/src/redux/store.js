@@ -88,6 +88,7 @@ const reducer = combineReducers({
   alert: alertReducer,
   // toast :
   toast: toastReducer,
+
   // direction:
   directionList: directionListReducer,
   directionCreate: directionCreateReducer,
@@ -129,6 +130,8 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userByID: userByIDReducer,
   userUpdatePassword: userUpdatePasswordReducer,
+  // notifications : 
+  notificationsNotSeenCount: notificationsNotSeenCountReducer,
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,
@@ -144,8 +147,7 @@ const reducer = combineReducers({
   demanderRefuseTraitement: demanderRefuseTraitementReducer,
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
-  // notifications : 
-  notificationsNotSeenCount: notificationsNotSeenCountReducer,
+
 });
 
 const store = configureStore({

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showSidebar } from "../redux/sidebar/sidebarActions";
 import { LinkContainer } from "react-router-bootstrap";
 import { logout } from "../redux/user/userActions";
-import { fetchNotificationsNotSeenCount } from "../redux/notification/notificationsActions";
+import { getNotificationsNotSeenCount } from "../redux/notification/notificationActions";
 
 const Header = () => {
   const [callOnce, setCallOnce] = useState(false);
@@ -14,7 +14,7 @@ const Header = () => {
   const { userInfo } = userLogin;
 
   const notificationsNotSeenCount = useSelector(state => state.notificationsNotSeenCount);
-  const { recovredData, error } = notificationsNotSeenCount
+  const { recovredData } = notificationsNotSeenCount
 
 
   const logoutHandler = e => {
@@ -24,12 +24,10 @@ const Header = () => {
 
   useEffect(() => {
     if (!callOnce) {
-      console.log("hello world")
-      console.log(recovredData);
-      fetchNotificationsNotSeenCount();
+      getNotificationsNotSeenCount();
       setCallOnce(true);
     }
-  }, [callOnce])
+  }, [callOnce, recovredData])
 
 
   return (
@@ -46,10 +44,15 @@ const Header = () => {
         <Navbar.Collapse id='e-dami-header'>
           <Nav className='me-auto'></Nav>
           <Nav className='mr-5'>
-            <Nav.Link>
-              <i className='fa-solid fa-bell'></i> notifications{" "}
-              <span className='badge bg-primary mb-1'>0</span>
-            </Nav.Link>
+            <LinkContainer
+              to="/notifications"
+            >
+              <Nav.Link>
+                <i className='fa-solid fa-bell'></i> notifications{" "}
+                <span className='badge bg-primary mb-1'>0</span>
+              </Nav.Link>
+            </LinkContainer>
+
             <NavDropdown
               title={`${userInfo.prenom} ${userInfo.nom}`}
               id='e-dami-nav-dropdown'>
