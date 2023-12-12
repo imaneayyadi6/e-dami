@@ -4,7 +4,7 @@ import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
-import { sendNotificationService } from "../services/notificationService.js"
+import { sendNotification } from "../services/notificationService.js"
 
 
 // @desc    Recuperer les demandes de demandeur
@@ -215,7 +215,7 @@ export const createDemande = asyncHandler(async (req, res) => {
 
       await demande.save();
       const messageContent = `<p>Une <a  style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom} ${user.nom}, veuillez la traiter.</p>`
-      sendNotificationService(userID, messageContent)
+      sendNotification(userID, messageContent)
       res.status(201).json({ message: "demande a été effectuée avec succès" });
     } else {
       res.status(404);
@@ -442,8 +442,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
     if (demande.status === "en cours") {
       const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
       if (traitement) {
-
-
         if (String(traitement.utilisateur) === String(req.user.id)) {
           if (traitement.status === "en cours") {
 

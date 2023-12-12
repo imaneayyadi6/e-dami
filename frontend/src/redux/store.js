@@ -69,7 +69,7 @@ import {
   mesDemandesReducer,
   demandeDemandeurByIdReducer
 } from "./demande/demandeReducres";
-import { notificationsNotSeenCountReducer } from "./notification/notificationReducers";
+import { notificationListReducer, notificationMakeItSeenReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -130,8 +130,7 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userByID: userByIDReducer,
   userUpdatePassword: userUpdatePasswordReducer,
-  // notifications : 
-  notificationsNotSeenCount: notificationsNotSeenCountReducer,
+
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,
@@ -147,7 +146,10 @@ const reducer = combineReducers({
   demanderRefuseTraitement: demanderRefuseTraitementReducer,
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
-
+  // notifications : 
+  notificationsNotSeenCount: notificationsNotSeenCountReducer,
+  notificationList: notificationListReducer,
+  notificationMakeItSeen: notificationMakeItSeenReducer,
 });
 
 const store = configureStore({
