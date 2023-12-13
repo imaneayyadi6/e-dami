@@ -212,11 +212,11 @@ export const createDemande = asyncHandler(async (req, res) => {
         ],
       });
 
-
       await demande.save();
-      const messageContent = `<p>Une <a  style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom} ${user.nom}, veuillez la traiter.</p>`
+      const messageContent = `<p>Une <a  style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom} ${user.nom}, veuillez la traiter en tant que ${code === "cds" ? "chef de service" : "directeur hiérarchique"} </p>`
       sendNotification(userID, messageContent)
       res.status(201).json({ message: "demande a été effectuée avec succès" });
+
     } else {
       res.status(404);
       throw new Error("utilisateur introuvable !");
@@ -437,7 +437,7 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
 // @route   PUT /api/demandes/:id/approuve/:idTraitement
 // @access  private
 export const approuverDemande = asyncHandler(async (req, res) => {
-  let demande = await Demande.findById(req.params.id).populate("option");
+  let demande = await Demande.findById(req.params.id).populate("option").populate("demandeur");
   if (demande) {
     if (demande.status === "en cours") {
       const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
@@ -445,11 +445,95 @@ export const approuverDemande = asyncHandler(async (req, res) => {
         if (String(traitement.utilisateur) === String(req.user.id)) {
           if (traitement.status === "en cours") {
 
+            let crtfCode = "";
+
             for (let tr of demande.traitement) {
               if (String(tr._id) === String(req.params.idTraitement)) {
+                crtfCode = tr.code;
                 tr.status = "approuve";
                 tr.dateTraitement = new Date();
                 break;
+              }
+            }
+
+            let contenu = "";
+            let typeApp = null;
+            const arrCrtCode = crtfCode.split(".");
+            if (arrCrtCode.length > 1) {
+              for (const crtCodeItem of arrCrtCode) {
+                if (crtCodeItem === "cds") {
+                  let service = await Service.findOne({
+                    chefService: req.user.id
+                  }).populate("chefService");
+
+                  contenu = `<p>
+                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      a été certifiée par M. ${service.chefService.prenom} ${service.chefService.nom} en tant que votre chef de service.`;
+                }
+                else if (crtCodeItem === "hiq") {
+                  let direction = await Direction.findOne({
+                    directeur: req.user.id
+                  }).populate("directeur");
+
+                  contenu = `<p>
+                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que votre directeur hiérarchique.`;
+                }
+                else if (crtCodeItem === "pdd") {
+                  let direction = await Direction.findOne({
+                    directeur: req.user.id
+                  }).populate("directeur");
+
+                  contenu = `<p>
+                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que propriétaire de données.`;
+                }
+                else if (crtCodeItem === "dir") {
+                  let direction = await Direction.findOne({
+                    directeur: req.user.id
+                  }).populate("directeur");
+
+                  contenu = `<p>
+                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que directeur de l'entité.`;
+                }
+              }
+            }
+            else {
+              if (crtfCode === "cds") {
+                let service = await Service.findOne({
+                  chefService: req.user.id
+                }).populate("chefService");
+
+                contenu = `<p>
+                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    a été certifiée par M. ${service.chefService.prenom} ${service.chefService.nom} en tant que votre chef de service`;
+              }
+              else if (crtfCode === "hiq") {
+                let direction = await Direction.findOne({
+                  directeur: req.user.id
+                }).populate("directeur");
+
+                contenu = `<p>
+                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que votre directeur hiérarchique`;
+              }
+              else if (crtfCode === "pdd") {
+                let direction = await Direction.findOne({
+                  directeur: req.user.id
+                }).populate("directeur");
+
+                contenu = `<p>
+                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que propriétaire de données`;
+              }
+              else if (crtfCode === "dir") {
+                let direction = await Direction.findOne({
+                  directeur: req.user.id
+                }).populate("directeur");
+                contenu = `<p>
+                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que directeur de l'entité`;
               }
             }
             const codeArr = traitement.code.split(".");
@@ -458,8 +542,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(code));
               if (codeIndex !== -1) {
                 if (codeIndex + 1 === demande.option.signataires.length) {
+
                   demande.status = "approuve";
                   await demande.save();
+
+                  contenu += "et pour cela, elle a été finalisée et traitée avec succès </p>";
+
+                  sendNotification(demande.demandeur._id, contenu);
+
                   res.json({ message: "demande approuve" });
                 }
                 else {
@@ -470,12 +560,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     const direction = await Direction.findById(directionID);
                     if (direction) {
                       dirUserID = direction.directeur;
+                      typeApp = `directeur hiérarchique`
                     }
                   }
                   else if (nextCode === "pdd") {
                     const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
                     if (direction) {
                       dirUserID = direction.directeur;
+                      typeApp = "propriétaire de données";
                     }
                   }
                   else if (nextCode === "dir") {
@@ -483,6 +575,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     const direction = await Direction.findById(String(service.direction));
                     if (direction) {
                       dirUserID = direction.directeur;
+                      typeApp = "directeur de l'entité";
                     }
                   }
 
@@ -494,7 +587,8 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   });
 
                   await demande.save();
-
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
+                  sendNotification(dirUserID, dirContenu);
                   res.json(demande);
                 }
               }
@@ -509,6 +603,8 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 if (codeIndex + 1 === demande.option.signataires.length) {
                   demande.status = "approuve";
                   await demande.save();
+                  contenu += " et pour cela, elle a été finalisée et traitée avec succès </p>";
+                  sendNotification(demande.demandeur._id, contenu);
                   res.json({ message: "demande approuve " });
                 }
                 else {
@@ -520,12 +616,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       const direction = await Direction.findById(directionID);
                       if (direction) {
                         dirUserID = direction.directeur;
+                        typeApp = `directeur hiérarchique`
                       }
                     }
                     else if (nextCode === "pdd") {
                       const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
                       if (direction) {
                         dirUserID = direction.directeur;
+                        typeApp = "propriétaire de données";
                       }
                     }
                     else if (nextCode === "dir") {
@@ -533,6 +631,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       const direction = await Direction.findById(String(service.direction));
                       if (direction) {
                         dirUserID = direction.directeur;
+                        typeApp = "directeur de l'entité";
                       }
                     }
                     demande.traitement.push({
@@ -543,7 +642,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     });
                   }
                   await demande.save();
-                  res.json({ message: "demade approvee avec success !" });
+                  contenu += "</p>";
+                  sendNotification(demande.demandeur._id, contenu);
+                  let dirContenu = `<p>Une <a  style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
+                  sendNotification(dirUserID, dirContenu);
+                  res.json({ message: "demande approvee avec success !" });
                 }
               }
               else {
@@ -576,10 +679,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
     throw new Error("demande introuvable !");
   }
 
-  res.json(demande);
 });
-
-
 
 // @desc    Approuver un traitemen de demande
 // @route   PUT /api/demandes/:id/refuse/:idTraitement

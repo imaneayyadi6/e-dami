@@ -8,7 +8,6 @@ import { Message, WarningMessage } from "../components"
 
 const NotificationsPage = () => {
     const [callOnce, setCallOnce] = useState(false);
-    const [callOnceChangeColor, setCallOnceChangeColor] = useState(false);
 
 
     const dispatch = useDispatch();
@@ -59,7 +58,7 @@ const NotificationsPage = () => {
             makeLinkWhiteOrBlack();
             dispatch(makeAllNotificationsSeen());
         }
-    }, [callOnce, notificationListSuccess, callOnceChangeColor])
+    }, [callOnce, notificationListSuccess])
 
     return (
         <>
@@ -126,7 +125,7 @@ const NotificationsPage = () => {
                         <h3>
                             <i className="fas fa-bell"></i> notifcations non vue <span className="badge bg-dark pr-1">{notifications.filter(nt => !nt.vue).length}</span></h3>
                     </div>
-                    {notifications.length === 0 && notificationListloading && (
+                    {notifications.length === 0 && !notificationListloading && (
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
                     {notifications.length > 0 && notifications.map(notification => (
@@ -154,9 +153,6 @@ const NotificationsPage = () => {
                             </div>
                         </div>
                     ))}
-
-
-
                 </Card.Body>
             </Card>
         </>
