@@ -9,6 +9,7 @@ import {
   chartGetCountOptionsOfSousCategories,
   chartGetOptions,
   chartGetUsers,
+  chartLineGetDemandes,
 } from "../controllers/chartController.js";
 const router = express.Router();
 
@@ -18,5 +19,7 @@ router.route("/options/services").get(protect, chartGetCountOptionsOfServices);
 router
   .route("/options/souscategories")
   .get(protect, chartGetCountOptionsOfSousCategories);
+
+  router.route("/lines/demandes").get(protect, chartLineGetDemandes);
 
 export default router;

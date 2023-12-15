@@ -53,6 +53,7 @@ import {
 } from "./option/optionReducers";
 
 import {
+  chartGetLineDemandeReducer,
   chartGetOptionsCountOfServicesReducer,
   chartGetOptionsCountOfSousCategorieReducer,
   chartGetOptionsReducer,
@@ -137,6 +138,7 @@ const reducer = combineReducers({
   chartGetOptionsCountOfSousCategorie:
     chartGetOptionsCountOfSousCategorieReducer,
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
+  chartGetLineDemande: chartGetLineDemandeReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandeToHandleReducer,

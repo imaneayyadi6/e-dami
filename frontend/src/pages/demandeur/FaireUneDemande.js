@@ -211,8 +211,14 @@ const FaireUneDemande = () => {
       });
 
       disptach(resetCreateDemande());
+
+      if (selectedOption) {
+
+        disptach(fetchOptionByID(selectedOption))
+      }
+
     }
-  }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate]);
+  }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate, selectedOption]);
 
   return (
     <>

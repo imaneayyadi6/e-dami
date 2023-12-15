@@ -16,9 +16,16 @@ export const getCountNotSeenNotifications = asyncHandler(async (req, res) => {
 // @route   GET /api/notifications/
 // @access  private
 export const getNotifications = asyncHandler(async (req, res) => {
-    const notifications = await Notification.find({
+    let notifications = await Notification.find({
         utilisateur: req.user.id
-    }).sort({ dateNotification: -1 });
+    })
+
+    notifications = JSON.parse(JSON.stringify(notifications));
+
+    notifications.sort((a, b) => {
+        return new Date(b.dateNotification) - new Date(a.dateNotification)
+    });
+
     res.json(notifications);
 });
 

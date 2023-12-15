@@ -15,6 +15,11 @@ import {
   CHART_OPTIONS_COUNT_SOUSCATEGORIE_REQUEST,
   CHART_OPTIONS_COUNT_SOUSCATEGORIE_RESET,
   CHART_OPTIONS_COUNT_SOUSCATEGORIE_SUCCESS,
+  CHART_DEMANDE_LINE_FAIL,
+  CHART_DEMANDE_LINE_REQUEST,
+  CHART_DEMANDE_LINE_RESET,
+  CHART_DEMANDE_LINE_SUCCESS
+
 } from "./chartTypes";
 
 export const chartGetUsersReducer = (state = {}, action) => {
@@ -78,6 +83,23 @@ export const chartGetOptionsCountOfServicesReducer = (state = {}, action) => {
     case CHART_OPTIONS_COUNT_SERVICES_FAIL:
       return { loading: false, error: payload };
     case CHART_OPTIONS_COUNT_SERVICES_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+export const chartGetLineDemandeReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case CHART_DEMANDE_LINE_REQUEST:
+      return { loading: true };
+    case CHART_DEMANDE_LINE_SUCCESS:
+      return { loading: false, success: true, data: payload };
+    case CHART_DEMANDE_LINE_FAIL:
+      return { loading: false, error: payload };
+    case CHART_DEMANDE_LINE_RESET:
       return {};
     default:
       return state;

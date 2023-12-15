@@ -22,4 +22,5 @@ router.route("/:id/approuve/:idTraitement").put(protect, signataire, approuverDe
 router.route("/:id/refuse/:idTraitement").put(protect, signataire, refuserDemande);
 router.route("/mesdemandes").get(protect, demandeur, getMesDemandes)
 router.route("/:id").get(protect,demandeur, getDemandeurDemandeByID)
+
 export default router;

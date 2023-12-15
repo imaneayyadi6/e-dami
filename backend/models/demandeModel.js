@@ -32,10 +32,7 @@ const demandeSchema = Schema({
         type: Date,
         required: [true, "veuillez saisir la date d'envoi"],
       },
-      dateTraitement: {
-        type: Date,
-        required: [true, "veuillez saisir la date de traitement"],
-      },
+
       utilisateur: {
         type: Schema.Types.ObjectId,
         required: [true, "veuillez saisire l'utilisateur "],

@@ -203,6 +203,7 @@ export const createDemande = asyncHandler(async (req, res) => {
         option: option._id,
         demandeur: user._id,
         contenu,
+        dateDemande: new Date(),
         traitement: [
           {
             dateEnvoi: new Date(),
