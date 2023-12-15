@@ -477,7 +477,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
                   contenu = `<p>
                       Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que votre directeur hiérarchique.`;
+                      a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que votre directeur hiérarchique.`;
                 }
                 else if (crtCodeItem === "pdd") {
                   let direction = await Direction.findOne({
@@ -486,7 +486,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
                   contenu = `<p>
                       Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que propriétaire de données.`;
+                      a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que propriétaire de données.`;
                 }
                 else if (crtCodeItem === "dir") {
                   let direction = await Direction.findOne({
@@ -495,7 +495,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
                   contenu = `<p>
                       Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                      a été certifiée par M. ${direction.directeur.prenom} ${service.directeur.nom} en tant que directeur de l'entité.`;
+                      a été certifiée par M. ${direction.directeur.prenom} ${direction.directeur.nom} en tant que directeur de l'entité.`;
                 }
               }
             }
