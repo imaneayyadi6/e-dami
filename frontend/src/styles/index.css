@@ -308,12 +308,48 @@ ul {
 
 /* End Text Status */
 
+/* begin Notifications */
+.notifications-container {
+  padding: 25px 400px !important;
+}
+
+@media screen and (max-width:1600px) {
+  .notifications-container {
+    padding: 25px 140px !important;
+  }
+}
+
+
+@media screen and (max-width: 1100px) {
+  .notifications-container {
+    padding: 25px 110px !important;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .notifications-container {
+    padding: 25px 70px !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .notifications-container {
+    padding: 25px 10px !important;
+  }
+}
+
+.notification.not-seen {
+  background-color: #f4f4f4;
+}
+
+/* End Notifications */
 
 /* Begin Timeline */
-.timeline-bar{
+.timeline-bar {
   height: 500px;
   background-color: gray;
   width: 5px;
   margin-right: 100px;
 }
+
 /* End Timeline */

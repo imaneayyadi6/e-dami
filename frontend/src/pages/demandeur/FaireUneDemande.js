@@ -263,7 +263,7 @@ const FaireUneDemande = () => {
               {categories.length > 0 &&
                 categories.map(categorie => (
                   <option value={categorie._id} key={categorie._id}>
-                    {categorie.libelle}
+                    {String(categorie.libelle).toLowerCase()}
                   </option>
                 ))}
             </Form.Select>
@@ -280,7 +280,7 @@ const FaireUneDemande = () => {
               {souscategories.length > 0 &&
                 souscategories.map(sousCategorie => (
                   <option value={sousCategorie._id} key={sousCategorie._id}>
-                    {sousCategorie.libelle}
+                    {String(sousCategorie.libelle).toLowerCase()}
                   </option>
                 ))}
             </Form.Select>
@@ -299,7 +299,7 @@ const FaireUneDemande = () => {
               {options.length > 0 &&
                 options.map(option => (
                   <option key={option._id} value={option._id}>
-                    {option.libelle}
+                    {String(option.libelle).toLowerCase()}
                   </option>
                 ))}
             </Form.Select>
