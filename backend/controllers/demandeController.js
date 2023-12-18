@@ -629,19 +629,15 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     // verfier est ce que le traitement est multiple :
                     const arrNextCode = nextCode.split(".");
                     if (arrNextCode.length > 1) {
-                      if (crtfCode === "hiq.pdd") {
-                        contenu = `<p>
-                        Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                        a été approuvée par M. ${direction.directeur.prenom.toLowerCase()} ${direction.directeur.nom.toLowerCase()} directeur de la direction ${direction.libelle.toLowerCase()} en tant que votre directeur hiarchique et propritaire de donnes `;
+                      if (nextCode === "hiq.pdd") {
+                        typeApp = "directeur hiarchique et propritaire de données";
                       }
 
-                      if (crtfCode === "pdd.dir") {
-                        contenu = `<p>
-                        Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                        a été approuvée par M. ${direction.directeur.prenom.toLowerCase()} ${direction.directeur.nom.toLowerCase()} directeur de la direction ${direction.libelle.toLowerCase()} en tant que propritaire de donnes et directeur de l entite`;
+                      if (nextCode === "pdd.dir") {
+                        typeApp = "propritaire de donnes et directeur de l entite";
                       }
 
-                      if (crtfCode === "hiq.pdd.dir") {
+                      if (nextCode === "hiq.pdd.dir") {
                         contenu = `<p>
                         Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
                         a été approuvée par M. ${direction.directeur.prenom.toLowerCase()} ${direction.directeur.nom.toLowerCase()} directeur de la direction ${direction.libelle.toLowerCase()} en tant que votre directeur hiarchique, propritaire de donnes et directeur de l entite`;
