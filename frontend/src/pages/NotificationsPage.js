@@ -4,17 +4,15 @@ import { useDispatch, useSelector } from "react-redux"
 import { getNotificationsList, makeAllNotificationsSeen } from "../redux/notification/notificationActions"
 import { Message, WarningMessage } from "../components"
 
-
-const itemsPerPage = 5; // Number of items to display per page
+const itemsPerPage = 10; // Number of items to display per page
 
 const NotificationsPage = () => {
     const [callOnce, setCallOnce] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [items, setItems] = useState([]);
 
-
-    // Change page
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
     const dispatch = useDispatch();
 
     const notificationList = useSelector(state => state.notificationList);
@@ -39,14 +37,54 @@ const NotificationsPage = () => {
             dispatch(getNotificationsList());
         }
         if (notificationListSuccess) {
+            setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
             dispatch(makeAllNotificationsSeen());
-            
         }
     }, [callOnce, notificationListSuccess])
 
-  
-    const paginateHandler = (pageNumber) => { setCurrentPage(pageNumber) };
 
+    const totalPages = Math.ceil(notifications.length / itemsPerPage);
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+        const indexOfLastItem = page * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage
+        setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
+    };
+
+    const handleNext = () => {
+        const nextPage = currentPage + 1;
+        if (nextPage <= totalPages) {
+            handleClick(nextPage);
+        }
+    };
+
+    const handlePrevious = () => {
+        const nextPage = currentPage - 1;
+        if (nextPage > 0) {
+            handleClick(nextPage);
+        }
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        pageNumbers.push(<button onClick={() => handlePrevious()} className="btn btn-sm btn-light">&laquo;</button>)
+        for (let i = 1; i <= totalPages; i++) {
+            pageNumbers.push(
+                <button
+                    key={i}
+                    className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+                    onClick={() => handleClick(i)}
+                >
+                    {i}
+                </button>
+            );
+        }
+        pageNumbers.push(<button onClick={handleNext} className="btn btn-sm btn-light">&raquo;</button>)
+
+
+        return pageNumbers;
+    };
 
 
     return (
@@ -118,7 +156,7 @@ const NotificationsPage = () => {
                     {notifications.length === 0 && !notificationListloading && (
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
-                    {notifications.length > 0 && notifications.map(notification => (
+                    {items.length > 0 && items.map(notification => (
                         <div
                             key={notification._id}
                             className={`notification border p-3 mb-1 ${notification.vue ? "seen" : "not-seen"}`}>
@@ -142,7 +180,9 @@ const NotificationsPage = () => {
                             </div>
                         </div>
                     ))}
-            
+                    <div className="d-flex justify-content-center mt-2">
+                        {renderPageNumbers()}
+                    </div>
                 </Card.Body>
 
             </Card>

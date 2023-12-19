@@ -225,7 +225,7 @@ export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    recuperer les demandes 'lines'
+// @desc    Recuperer les demandes 'lines'
 // @route   GET /api/charts/lines/demandes
 // @access  private
 export const chartLineGetDemandes = asyncHandler(async (req, res) => {
@@ -302,4 +302,67 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     ]);
   }
   res.json(result);
+});
+
+
+// @desc    Recuperer les demandes 'bars'
+// @route   GET /api/charts/bars/demandes
+// @access  private
+export const chartBarGetDemandes = asyncHandler(async (req, res) => {
+  const demandes = await Demande.find()
+    .populate({
+      path: 'option',
+      populate: {
+        path: 'service',
+        populate: {
+          path: "direction"
+        }
+      }
+    })
+
+  const labels = demandes.map((demandes) => demandes.option.service.direction.libelle);
+  let objToSend = {
+    labels,
+    dataEnCours: directions.map((direction) =>
+      direction.services.reduce(
+        (total, service) =>
+          total +
+          service.options.reduce(
+            (demandeTotal, option) =>
+              demandeTotal +
+              option.demandes.filter((demande) => demande.status === 'en cours').length,
+            0
+          ),
+        0
+      )
+    ),
+    dataRefuse: directions.map((direction) =>
+      direction.services.reduce(
+        (total, service) =>
+          total +
+          service.options.reduce(
+            (demandeTotal, option) =>
+              demandeTotal +
+              option.demandes.filter((demande) => demande.status === 'refuse').length,
+            0
+          ),
+        0
+      )
+    ),
+    dataApprouve: directions.map((direction) =>
+      direction.services.reduce(
+        (total, service) =>
+          total +
+          service.options.reduce(
+            (demandeTotal, option) =>
+              demandeTotal +
+              option.demandes.filter((demande) => demande.status === 'approuve').length,
+            0
+          ),
+        0
+      )
+    ),
+  }
+
+  res.json(objToSend);
 });

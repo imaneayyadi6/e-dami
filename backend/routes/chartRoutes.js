@@ -1,10 +1,9 @@
 import express from "express";
 import {
-  createur,
   protect,
-  signataire,
 } from "../middlewares/authMidlleware.js";
 import {
+  chartBarGetDemandes,
   chartGetCountOptionsOfServices,
   chartGetCountOptionsOfSousCategories,
   chartGetOptions,
@@ -20,6 +19,7 @@ router
   .route("/options/souscategories")
   .get(protect, chartGetCountOptionsOfSousCategories);
 
-  router.route("/lines/demandes").get(protect, chartLineGetDemandes);
+router.route("/lines/demandes").get(protect, chartLineGetDemandes);
+router.route("/bars/demandes").get(protect, chartBarGetDemandes);
 
 export default router;

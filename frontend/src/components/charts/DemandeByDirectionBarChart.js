@@ -22,7 +22,7 @@ const DemandeByDirectionBarChart = () => {
       datasets: [
         {
           label: "In Progress",
-          backgroundColor: "rgba(255, 165, 0, 0.2)", // Orange
+          backgroundColor: "rgba(255, 165, 0, 0.2)", 
           borderColor: "rgba(255, 165, 0, 1)",
           borderWidth: 1,
           data: [100, 40, 30, 40, 50, 60, 70, 80, 90, 34],
@@ -86,8 +86,8 @@ const DemandeByDirectionBarChart = () => {
             <i className="fa-solid fa-filter"></i>{" "}filtrer
           </Button>
           <Button variant="light" size="sm" className="mt-1 w-100" >
-                <i className="fa-solid fa-filter-circle-xmark"></i>{" "}réinitialiser le filtre
-              </Button>
+            <i className="fa-solid fa-filter-circle-xmark"></i>{" "}réinitialiser le filtre
+          </Button>
         </div>
         <hr />
         <canvas ref={directionChartRef}></canvas>
