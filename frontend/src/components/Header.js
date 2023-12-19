@@ -24,7 +24,7 @@ const Header = () => {
 
   useEffect(() => {
     if (!callOnce) {
-      getNotificationsNotSeenCount();
+      dispatch(getNotificationsNotSeenCount());
       setCallOnce(true);
     }
   }, [callOnce, recovredData])
@@ -49,7 +49,7 @@ const Header = () => {
             >
               <Nav.Link>
                 <i className='fa-solid fa-bell'></i> notifications{" "}
-                <span className='badge bg-primary mb-1'>0</span>
+                {recovredData && recovredData.count > 0 && <span className='badge bg-primary mb-1'>{recovredData.count}</span>}
               </Nav.Link>
             </LinkContainer>
 

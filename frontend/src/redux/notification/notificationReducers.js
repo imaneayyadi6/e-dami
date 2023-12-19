@@ -6,21 +6,7 @@ import {
 } from "./notificationTypes"
 
 
-export const notificationsNotSeenCountReducer = (state = {}, action) => {
-    const { type, payload } = action;
-    switch (type) {
-        case NOTIFICATION_NOTSEEN_COUNT_REQUEST:
-            return { loading: true };
-        case NOTIFICATION_NOTSEEN_COUNT_SUCCESS:
-            return { loading: false, success: true, recovredData: payload };
-        case NOTIFICATION_NOTSEEN_COUNT_FAIL:
-            return { loading: false, error: payload };
-        case NOTIFICATION_NOTSEEN_COUNT_RESET:
-            return {};
-        default:
-            return state;
-    }
-}
+
 
 
 export const notificationListReducer = (state = { notifications: [] }, action) => {
@@ -49,6 +35,22 @@ export const notificationMakeItSeenReducer = (state = {}, action) => {
         case NOTIFICATION_MAKE_IT_SEEN_FAIL:
             return { loading: false, error: payload, };
         case NOTIFICATION_MAKE_IT_SEEN_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
+
+export const notificationsNotSeenCountReducer = (state = {}, action) => {
+    const { type, payload } = action;
+    switch (type) {
+        case NOTIFICATION_NOTSEEN_COUNT_REQUEST:
+            return { loading: true };
+        case NOTIFICATION_NOTSEEN_COUNT_SUCCESS:
+            return { loading: false, success: true, recovredData: payload };
+        case NOTIFICATION_NOTSEEN_COUNT_FAIL:
+            return { loading: false, error: payload };
+        case NOTIFICATION_NOTSEEN_COUNT_RESET:
             return {};
         default:
             return state;

@@ -5,9 +5,15 @@ import { getNotificationsList, makeAllNotificationsSeen } from "../redux/notific
 import { Message, WarningMessage } from "../components"
 
 
+const itemsPerPage = 5; // Number of items to display per page
+
 const NotificationsPage = () => {
     const [callOnce, setCallOnce] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
 
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const dispatch = useDispatch();
 
@@ -34,8 +40,14 @@ const NotificationsPage = () => {
         }
         if (notificationListSuccess) {
             dispatch(makeAllNotificationsSeen());
+            
         }
     }, [callOnce, notificationListSuccess])
+
+  
+    const paginateHandler = (pageNumber) => { setCurrentPage(pageNumber) };
+
+
 
     return (
         <div className="notifications-container">
@@ -130,7 +142,9 @@ const NotificationsPage = () => {
                             </div>
                         </div>
                     ))}
+            
                 </Card.Body>
+
             </Card>
         </div>
     )

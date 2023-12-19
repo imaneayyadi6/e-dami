@@ -17,39 +17,6 @@ import {
 } from "./notificationTypes"
 import axios from "axios";
 
-export const getNotificationsNotSeenCount = () => {
-    return async (dispatch, getState) => {
-        try {
-            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    authorization: `Bearer ${userInfo.token}`,
-                },
-            };
-
-            const { data } = await axios.get("/api/notifications/notseen", config);
-
-            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: data });
-
-        } catch (error) {
-            const err =
-                error.response && error.response.data.message
-                    ? error.response.data.message
-                    : error.message;
-            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_FAIL, payload: err });
-        }
-    };
-};
-
-export const getFetchNotificationsNotSeenCount = () => {
-    return { type: NOTIFICATION_NOTSEEN_COUNT_RESET };
-};
 
 
 
@@ -119,4 +86,41 @@ export const makeAllNotificationsSeen = () => {
 
 export const resetMakeAllNotificationsSeen = () => {
     return { type: NOTIFICATION_MAKE_IT_SEEN_RESET };
+};
+
+
+
+export const getNotificationsNotSeenCount = () => {
+    console.log("call function")
+    return async (dispatch, getState) => {
+        console.log("return block")
+        try {
+            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_REQUEST });
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.get("/api/notifications/notseen", config);
+
+            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: data });
+
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_FAIL, payload: err });
+        }
+    };
+};
+
+export const getFetchNotificationsNotSeenCount = () => {
+    return { type: NOTIFICATION_NOTSEEN_COUNT_RESET };
 };
