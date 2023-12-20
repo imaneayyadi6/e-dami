@@ -12,13 +12,20 @@ import {
     NOTIFICATION_MAKE_IT_SEEN_FAIL,
     NOTIFICATION_MAKE_IT_SEEN_REQUEST,
     NOTIFICATION_MAKE_IT_SEEN_RESET,
-    NOTIFICATION_MAKE_IT_SEEN_SUCCESS
+    NOTIFICATION_MAKE_IT_SEEN_SUCCESS,
+
+    NOTIFICATION_TOAST_LIST_FAIL,
+    NOTIFICATION_TOAST_LIST_REQUEST,
+    NOTIFICATION_TOAST_LIST_RESET,
+    NOTIFICATION_TOAST_LIST_SUCCESS,
+
+    NOTIFICATION_TOAST_MAKE_IT_SEEN_FAIL,
+    NOTIFICATION_TOAST_MAKE_IT_SEEN_REQUEST,
+    NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS,
+
 
 } from "./notificationTypes"
 import axios from "axios";
-
-
-
 
 export const getNotificationsList = () => {
     return async (dispatch, getState) => {
@@ -39,6 +46,8 @@ export const getNotificationsList = () => {
             const { data } = await axios.get("/api/notifications", config);
 
             dispatch({ type: NOTIFICATION_LIST_SUCCESS, payload: data });
+            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: 0 });
+
 
         } catch (error) {
             const err =
@@ -74,6 +83,8 @@ export const makeAllNotificationsSeen = () => {
 
             dispatch({ type: NOTIFICATION_MAKE_IT_SEEN_SUCCESS, payload: data });
 
+
+
         } catch (error) {
             const err =
                 error.response && error.response.data.message
@@ -85,6 +96,77 @@ export const makeAllNotificationsSeen = () => {
 };
 
 export const resetMakeAllNotificationsSeen = () => {
+    return { type: NOTIFICATION_MAKE_IT_SEEN_RESET };
+};
+
+
+export const getToastNotificationsList = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: NOTIFICATION_TOAST_LIST_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.get("/api/notifications/toast", config);
+            console.log(data);
+            dispatch({ type: NOTIFICATION_TOAST_LIST_SUCCESS, payload: data });
+
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({ type: NOTIFICATION_TOAST_LIST_FAIL, payload: err });
+        }
+    };
+};
+
+export const resetGetToastNotificationsList = () => {
+    return { type: NOTIFICATION_TOAST_LIST_RESET };
+};
+
+export const makeAllToastNotificationsSeen = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: NOTIFICATION_TOAST_MAKE_IT_SEEN_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.put("/api/notifications/toast", {}, config);
+
+            dispatch({ type: NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS, payload: data });
+
+
+
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({ type: NOTIFICATION_TOAST_MAKE_IT_SEEN_FAIL, payload: err });
+        }
+    };
+};
+
+export const resetMakeAllToastNotificationsSeen = () => {
     return { type: NOTIFICATION_MAKE_IT_SEEN_RESET };
 };
 
@@ -109,7 +191,7 @@ export const getNotificationsNotSeenCount = () => {
 
             const { data } = await axios.get("/api/notifications/notseen", config);
 
-            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: data });
+            dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: data.count });
 
         } catch (error) {
             const err =

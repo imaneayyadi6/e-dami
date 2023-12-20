@@ -14,7 +14,7 @@ const Header = () => {
   const { userInfo } = userLogin;
 
   const notificationsNotSeenCount = useSelector(state => state.notificationsNotSeenCount);
-  const { recovredData } = notificationsNotSeenCount
+  const { count } = notificationsNotSeenCount
 
 
   const logoutHandler = e => {
@@ -27,7 +27,7 @@ const Header = () => {
       dispatch(getNotificationsNotSeenCount());
       setCallOnce(true);
     }
-  }, [callOnce, recovredData])
+  }, [callOnce, count])
 
 
   return (
@@ -49,7 +49,10 @@ const Header = () => {
             >
               <Nav.Link>
                 <i className='fa-solid fa-bell'></i> notifications{" "}
-                {recovredData && recovredData.count > 0 && <span className='badge bg-primary mb-1'>{recovredData.count}</span>}
+                {count !== 0 && (
+                  <span className='badge bg-primary mb-1'>{count}</span>
+                )
+                }
               </Nav.Link>
             </LinkContainer>
 

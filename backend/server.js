@@ -12,7 +12,18 @@ import utilisateurRoutes from "./routes/utilisateurRoutes.js";
 import chartRoutes from "./routes/chartRoutes.js";
 import demandeRoutes from "./routes/demandeRoutes.js";
 import notificationRoutes from "./routes/notificationsRoutes.js";
+import http from 'http';
+import { Server } from 'socket.io';
+import socketRoutes from "./routes/socketRoutes.js";
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ['GET', 'POST'],
+  },
+});
 
 // Init dotenv :
 dotenv.config();
@@ -35,16 +46,26 @@ app.use("/api/options", optionRoutes);
 app.use("/api/charts", chartRoutes);
 app.use("/api/demandes", demandeRoutes);
 app.use("/api/notifications", notificationRoutes);
-
+// Use socketRoutes for Socket.IO logic
+socketRoutes(io);
 
 // Init Error Middlewares :
 app.use(notFound);
 app.use(errorHandler);
 
+
+
+
+// Use socketRoutes for Socket.IO logic
+socketRoutes(io);
+// run the server : 
+
 const PORT = process.env.PORT || 5000;
-app.listen(
+server.listen(
   PORT,
   console.log(
     `Server running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold
   )
 );
+
+export default io;

@@ -49,7 +49,6 @@ const DamiLineChart = () => {
           }
           let labels = [];
           let counts = [];
-
           for (let item of data) {
             labels.push(item.month);
             counts.push(Number(item.count));

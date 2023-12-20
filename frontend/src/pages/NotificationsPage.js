@@ -3,6 +3,7 @@ import { Card, Placeholder } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getNotificationsList, makeAllNotificationsSeen } from "../redux/notification/notificationActions"
 import { Message, WarningMessage } from "../components"
+import { NOTIFICATION_NOTSEEN_COUNT_SUCCESS } from "../redux/notification/notificationTypes"
 
 const itemsPerPage = 10; // Number of items to display per page
 
@@ -36,11 +37,24 @@ const NotificationsPage = () => {
             setCallOnce(true);
             dispatch(getNotificationsList());
         }
+
         if (notificationListSuccess) {
             setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
             dispatch(makeAllNotificationsSeen());
         }
     }, [callOnce, notificationListSuccess])
+
+    useEffect(() => {
+        if (notifications.length > 0) {
+            setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
+            dispatch(makeAllNotificationsSeen());
+            setTimeout(() => {
+
+                dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: 0 });
+
+            }, 3000);
+        }
+    }, [notifications.length])
 
 
     const totalPages = Math.ceil(notifications.length / itemsPerPage);
@@ -50,6 +64,15 @@ const NotificationsPage = () => {
         const indexOfLastItem = page * itemsPerPage;
         const indexOfFirstItem = indexOfLastItem - itemsPerPage
         setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
+    };
+
+    const handleFirst = () => {
+
+        handleClick(1);
+    };
+
+    const handleLast = () => {
+        handleClick(totalPages);
     };
 
     const handleNext = () => {
@@ -65,11 +88,16 @@ const NotificationsPage = () => {
             handleClick(nextPage);
         }
     };
-
     const renderPageNumbers = () => {
         const pageNumbers = [];
-        pageNumbers.push(<button onClick={() => handlePrevious()} className="btn btn-sm btn-light">&laquo;</button>)
-        for (let i = 1; i <= totalPages; i++) {
+        const range = 5; // Number of pages to display at a time
+        const start = Math.max(1, currentPage - Math.floor(range / 2));
+        const end = Math.min(totalPages, start + range - 1);
+
+        pageNumbers.push(<button onClick={() => handleFirst()} className="btn btn-sm btn-light">&laquo;&laquo;</button>);
+        pageNumbers.push(<button onClick={() => handlePrevious()} className="btn btn-sm btn-light">&laquo;</button>);
+
+        for (let i = start; i <= end; i++) {
             pageNumbers.push(
                 <button
                     key={i}
@@ -80,12 +108,12 @@ const NotificationsPage = () => {
                 </button>
             );
         }
-        pageNumbers.push(<button onClick={handleNext} className="btn btn-sm btn-light">&raquo;</button>)
 
+        pageNumbers.push(<button onClick={handleNext} className="btn btn-sm btn-light">&raquo;</button>);
+        pageNumbers.push(<button onClick={() => handleLast()} className="btn btn-sm btn-light">&raquo;&raquo;</button>);
 
         return pageNumbers;
     };
-
 
     return (
         <div className="notifications-container">
@@ -93,6 +121,11 @@ const NotificationsPage = () => {
             {notificationListError && <Message itWillBeHidden type="danger">{notificationListError}</Message>}
             <Card>
                 <Card.Body className="py-4">
+                    <div className="d-flex justify-content-between mb-3">
+                        <h6>
+                            <i className="fas fa-bell"></i> notifcations non vue <span className="badge bg-dark pr-1">{notifications.filter(nt => !nt.vue).length}</span>
+                        </h6>
+                    </div>
                     {notificationListloading &&
                         <>
                             <div
@@ -148,11 +181,7 @@ const NotificationsPage = () => {
                             </div>
                         </>
                     }
-                    <div className="d-flex justify-content-between mb-3">
-                        <h6>
-                            <i className="fas fa-bell"></i> notifcations non vue <span className="badge bg-dark pr-1">{notifications.filter(nt => !nt.vue).length}</span>
-                        </h6>
-                    </div>
+
                     {notifications.length === 0 && !notificationListloading && (
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
@@ -181,7 +210,15 @@ const NotificationsPage = () => {
                         </div>
                     ))}
                     <div className="d-flex justify-content-center mt-2">
-                        {renderPageNumbers()}
+                        <div className="d-flex justify-content-center align-items-center">
+                            <small>
+                                Page{" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                    {currentPage + 1} de {totalPages}
+                                </span>
+                            </small>
+                            {renderPageNumbers()}
+                        </div>
                     </div>
                 </Card.Body>
 

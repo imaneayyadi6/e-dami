@@ -309,60 +309,99 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
 // @route   GET /api/charts/bars/demandes
 // @access  private
 export const chartBarGetDemandes = asyncHandler(async (req, res) => {
-  const demandes = await Demande.find()
-    .populate({
-      path: 'option',
-      populate: {
-        path: 'service',
-        populate: {
-          path: "direction"
-        }
-      }
+  if (req.query.startDate && req.query.endDate) {
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
+    const demandes = await Demande.find({
+      dateDemande: {
+        $gte: startDate,
+        $lte: endDate,
+      },
     })
+      .populate({
+        path: 'option',
+        populate: {
+          path: 'service',
+          populate: {
+            path: 'direction'
+          }
+        }
+      })
+      .populate({
+        path: 'demandeur',
+        populate: {
+          path: 'direction'
+        }
+      });
+    const stats = {
+      labels: getUniqueDirectionLabels(demandes),
+      demandeEnCours: getDirectionStats(demandes, 'en cours'),
+      demandeRefuse: getDirectionStats(demandes, 'refuse'),
+      demandeApprouver: getDirectionStats(demandes, 'approuve')
+    };
 
-  const labels = demandes.map((demandes) => demandes.option.service.direction.libelle);
-  let objToSend = {
-    labels,
-    dataEnCours: directions.map((direction) =>
-      direction.services.reduce(
-        (total, service) =>
-          total +
-          service.options.reduce(
-            (demandeTotal, option) =>
-              demandeTotal +
-              option.demandes.filter((demande) => demande.status === 'en cours').length,
-            0
-          ),
-        0
-      )
-    ),
-    dataRefuse: directions.map((direction) =>
-      direction.services.reduce(
-        (total, service) =>
-          total +
-          service.options.reduce(
-            (demandeTotal, option) =>
-              demandeTotal +
-              option.demandes.filter((demande) => demande.status === 'refuse').length,
-            0
-          ),
-        0
-      )
-    ),
-    dataApprouve: directions.map((direction) =>
-      direction.services.reduce(
-        (total, service) =>
-          total +
-          service.options.reduce(
-            (demandeTotal, option) =>
-              demandeTotal +
-              option.demandes.filter((demande) => demande.status === 'approuve').length,
-            0
-          ),
-        0
-      )
-    ),
+    res.json(stats);
+  }
+  else {
+    const fiveMonthsAgo = new Date();
+    fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
+    const demandes = await Demande.find({
+      dateDemande: { $gte: fiveMonthsAgo },
+    })
+      .populate({
+        path: 'option',
+        populate: {
+          path: 'service',
+          populate: {
+            path: 'direction'
+          }
+        }
+      })
+      .populate({
+        path: 'demandeur',
+        populate: {
+          path: 'direction'
+        }
+      });
+    const stats = {
+      labels: getUniqueDirectionLabels(demandes),
+      demandeEnCours: getDirectionStats(demandes, 'en cours'),
+      demandeRefuse: getDirectionStats(demandes, 'refuse'),
+      demandeApprouver: getDirectionStats(demandes, 'approuve')
+    };
+
+    res.json(stats);
   }
 
-  res.json(objToSend);
+
+
+
+  function getUniqueDirectionLabels(demandes) {
+    const uniqueLabels = new Set();
+    demandes.forEach((demande) => {
+      uniqueLabels.add(demande.demandeur.direction.libelle);
+    });
+    return Array.from(uniqueLabels);
+  }
+
+  function getDirectionStats(demandes, status) {
+    const directionStats = {};
+    const uniqueLabels = getUniqueDirectionLabels(demandes);
+
+    uniqueLabels.forEach((label) => {
+      directionStats[label] = 0;
+    });
+
+    const filteredDemandes = demandes.filter(
+      (demande) => demande.status === status
+    );
+
+    filteredDemandes.forEach((demande) => {
+      const directionLibelle = demande.demandeur.direction.libelle;
+      directionStats[directionLibelle]++;
+    });
+
+    return uniqueLabels.map((label) => directionStats[label]);
+  }
+
 });

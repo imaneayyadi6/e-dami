@@ -53,6 +53,7 @@ import {
 } from "./option/optionReducers";
 
 import {
+  chartGetBarDemandeReducer,
   chartGetLineDemandeReducer,
   chartGetOptionsCountOfServicesReducer,
   chartGetOptionsCountOfSousCategorieReducer,
@@ -70,7 +71,7 @@ import {
   mesDemandesReducer,
   demandeDemandeurByIdReducer
 } from "./demande/demandeReducres";
-import { notificationListReducer, notificationMakeItSeenReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
+import { notificationListReducer, notificationMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -139,6 +140,7 @@ const reducer = combineReducers({
     chartGetOptionsCountOfSousCategorieReducer,
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
   chartGetLineDemande: chartGetLineDemandeReducer,
+  chartGetBarDemande: chartGetBarDemandeReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandeToHandleReducer,
@@ -149,9 +151,12 @@ const reducer = combineReducers({
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
   // notifications : 
+  notificationToatsList: notificationToatsListReducer,
+  notificationToastMakeItSeen: notificationToastMakeItSeenReducer,  
   notificationsNotSeenCount: notificationsNotSeenCountReducer,
   notificationList: notificationListReducer,
   notificationMakeItSeen: notificationMakeItSeenReducer,
+
 });
 
 const store = configureStore({

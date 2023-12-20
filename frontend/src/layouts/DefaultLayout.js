@@ -7,6 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { logout } from "../redux/user/userActions";
 import { Toast as SToast } from "../services";
+import io from 'socket.io-client';
+import { NOTIFICATION_LIST_PUSH, NOTIFICATION_NOTSEEN_COUNT_PUSH } from "../redux/notification/notificationTypes";
+import { getToastNotificationsList } from "../redux/notification/notificationActions";
+
+const socket = io('http://localhost:5000');
 
 const DefaulLayout = () => {
   const [filteredRoutes, setFiltredRoutes] = useState([]);
@@ -14,14 +19,22 @@ const DefaulLayout = () => {
 
   const userLogin = useSelector(state => state.userLogin);
   const {
-    userInfo: { roles },
+    userInfo,
   } = userLogin;
+
+
+  const notificationToatsList = useSelector(state => state.notificationToatsList);
+  const {
+    notifications,
+    success: notificationToatsListSuccess
+  } = notificationToatsList;
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!callOnce) {
-      const roleCodes = roles.map(role => String(role.role.code));
+      dispatch(getToastNotificationsList());
+      const roleCodes = userInfo.roles.map(role => String(role.role.code));
       const filteredRoutes = routes.filter(route =>
         route.roles.some(roleCode => roleCodes.includes(String(roleCode)))
       );
@@ -41,9 +54,23 @@ const DefaulLayout = () => {
       );
       setCallOnce(true);
     }
-  }, [callOnce, roles]);
+    if (notificationToatsListSuccess) {
+      console.log(notifications)
+    }
+  }, [callOnce, userInfo, notificationToatsListSuccess]);
 
-  
+  useEffect(() => {
+    // listen to comming notifcations :
+    socket.on('notification', (obj) => {
+      if (String(obj.utilisateur) === String(userInfo.id)) {
+        dispatch({ type: NOTIFICATION_LIST_PUSH, payload: obj });
+
+        dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_PUSH })
+      }
+    });
+  }, [])
+
+
   return (
     <>
       <Dialog />

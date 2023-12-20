@@ -18,7 +18,13 @@ import {
   CHART_DEMANDE_LINE_FAIL,
   CHART_DEMANDE_LINE_REQUEST,
   CHART_DEMANDE_LINE_RESET,
-  CHART_DEMANDE_LINE_SUCCESS
+  CHART_DEMANDE_LINE_SUCCESS,
+
+
+  CHART_DEMANDE_BAR_FAIL,
+  CHART_DEMANDE_BAR_REQUEST,
+  CHART_DEMANDE_BAR_RESET,
+  CHART_DEMANDE_BAR_SUCCESS
 
 } from "./chartTypes";
 
@@ -100,6 +106,23 @@ export const chartGetLineDemandeReducer = (state = {}, action) => {
     case CHART_DEMANDE_LINE_FAIL:
       return { loading: false, error: payload };
     case CHART_DEMANDE_LINE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+export const chartGetBarDemandeReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case CHART_DEMANDE_BAR_REQUEST:
+      return { loading: true };
+    case CHART_DEMANDE_BAR_SUCCESS:
+      return { loading: false, success: true, data: payload };
+    case CHART_DEMANDE_BAR_FAIL:
+      return { loading: false, error: payload };
+    case CHART_DEMANDE_BAR_RESET:
       return {};
     default:
       return state;

@@ -19,7 +19,12 @@ import {
   CHART_DEMANDE_LINE_FAIL,
   CHART_DEMANDE_LINE_REQUEST,
   CHART_DEMANDE_LINE_RESET,
-  CHART_DEMANDE_LINE_SUCCESS
+  CHART_DEMANDE_LINE_SUCCESS,
+
+  CHART_DEMANDE_BAR_FAIL,
+  CHART_DEMANDE_BAR_REQUEST,
+  CHART_DEMANDE_BAR_RESET,
+  CHART_DEMANDE_BAR_SUCCESS
 
 } from "./chartTypes";
 
@@ -207,4 +212,43 @@ export const fetchChartLineDemande = (startDate, endDate) => {
 
 export const resetFetchChartLineDemande = () => {
   return { type: CHART_DEMANDE_LINE_RESET };
+};
+
+
+export const fetchChartBarDemande = (startDate, endDate) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: CHART_DEMANDE_BAR_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      if (startDate && endDate) {
+        const { data } = await axios.get(
+          `/api/charts/bars/demandes?startDate=${startDate}&endDate=${endDate}`,
+          config
+        );
+        dispatch({ type: CHART_DEMANDE_BAR_SUCCESS, payload: data });
+      } else {
+        const { data } = await axios.get("/api/charts/bars/demandes", config);
+        dispatch({ type: CHART_DEMANDE_BAR_SUCCESS, payload: data });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: CHART_DEMANDE_BAR_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchChartBarDemande = () => {
+  return { type: CHART_DEMANDE_BAR_RESET };
 };

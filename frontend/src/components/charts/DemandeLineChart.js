@@ -97,7 +97,7 @@ const DemandeLineChart = () => {
       {data && (
         <Card style={{ width: "100%" }} className='mb-2'>
           <div className='d-flex justify-content-center mt-2'>
-            <h6>les dami qui existe </h6>
+            <h6>demandes par moi </h6>
           </div>
           <Card.Body>
             <div>

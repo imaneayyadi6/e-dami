@@ -104,6 +104,84 @@ const Table = ({
     </Tooltip>
   );
 
+
+
+  const renderPaginationButtons = () => {
+    const pageButtons = [];
+
+    // Previous Button
+    pageButtons.push(
+      <Button
+        variant='light'
+        size='sm'
+        onClick={() => gotoPage(0)}
+        disabled={!canPreviousPage}
+        key="first"
+      >
+        &laquo;&laquo;
+      </Button>
+    );
+
+    pageButtons.push(
+      <Button
+        variant='light'
+        size='sm'
+        disabled={!canPreviousPage}
+        onClick={() => previousPage()}
+        key="previous"
+      >
+        &laquo;
+      </Button>
+    );
+
+    // Page Number Buttons
+    const range = 5; // Number of pages to display at a time
+    const start = Math.max(1, pageIndex - Math.floor(range / 2)) - 1;
+    const end = Math.min(pageCount, start + range - 1);
+
+    for (let i = start; i <= end - 1; i++) {
+      pageButtons.push(
+        <Button
+          size='sm'
+          variant='light'
+          key={i}
+          onClick={() => gotoPage(i)}
+          className={i === pageIndex ? 'active' : ''}
+        >
+          {i + 1}
+        </Button>
+      );
+    }
+
+    // Next Button
+    pageButtons.push(
+      <Button
+        variant='light'
+        size='sm'
+        disabled={!canNextPage}
+        onClick={() => nextPage()}
+        key="next"
+      >
+        &raquo;
+      </Button>
+    );
+
+    pageButtons.push(
+      <Button
+        variant='light'
+        size='sm'
+        disabled={!canNextPage}
+        onClick={() => gotoPage(pageCount - 1)}
+        key="last"
+      >
+        &raquo;&raquo;
+      </Button>
+    );
+
+    return pageButtons;
+  };
+
+
   return (
     <>
       <div className='table-responsive'>
@@ -332,48 +410,10 @@ const Table = ({
           <small>
             Page{" "}
             <span style={{ fontWeight: "bold" }}>
-              {pageIndex + 1} Of {pageOptions.length}
+              {pageIndex + 1} de {pageOptions.length}
             </span>
           </small>
-          <div>
-            <Button
-              variant='light'
-              size='sm'
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}>
-              &laquo;
-            </Button>
-            <Button
-              variant='light'
-              size='sm'
-              disabled={!canPreviousPage}
-              onClick={() => previousPage()}>
-              précédente
-            </Button>
-            {Array.from({ length: pageCount }, (_, index) => (
-              <Button
-                size='sm'
-                variant='light'
-                key={index}
-                onClick={() => gotoPage(index)}>
-                {index + 1}
-              </Button>
-            ))}
-            <Button
-              variant='light'
-              size='sm'
-              disabled={!canNextPage}
-              onClick={() => nextPage()}>
-              suivante
-            </Button>
-            <Button
-              variant='light'
-              size='sm'
-              disabled={!canNextPage}
-              onClick={() => gotoPage(pageCount - 1)}>
-              &raquo;
-            </Button>
-          </div>
+          <div>{renderPaginationButtons()}  </div>
         </div>
       </div>
     </>

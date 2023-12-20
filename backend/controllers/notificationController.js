@@ -48,3 +48,35 @@ export const seenNotifications = asyncHandler(async (req, res) => {
     }
     res.json({ message: "notifications modifiee" })
 });
+
+
+// @desc    Recuperer tous les notification d un utilisateur
+// @route   GET /api/notifications/toast
+// @access  private
+export const getToastNotifications = asyncHandler(async (req, res) => {
+    let notifications = await Notification.find({
+        utilisateur: req.user.id,
+        vueToast: false,
+    })
+
+    notifications = JSON.parse(JSON.stringify(notifications));
+    notifications.sort((a, b) => {
+        return new Date(b.dateNotification) - new Date(a.dateNotification)
+    });
+
+    res.json(notifications);
+});
+
+// @desc    Rendre tous les notification vue
+// @route   PUT /api/notifications/toast
+// @access  private
+export const seenToastNotifications = asyncHandler(async (req, res) => {
+    const notifications = await Notification.find({ utilisateur: req.user.id });
+    for (const notification of notifications) {
+        await Notification.updateOne(
+            { _id: notification._id },
+            { $set: { vueToast: true } }
+        );
+    }
+    res.json({ message: "notifications modifiee" })
+});
