@@ -10,11 +10,18 @@ import {
     NOTIFICATION_TOAST_LIST_REQUEST,
     NOTIFICATION_TOAST_LIST_RESET,
     NOTIFICATION_TOAST_LIST_SUCCESS,
+    NOTIFICATION_TOAST_LIST_REMOVE,
+    NOTIFICATION_TOAST_LIST_SEEN_ALL,
 
     NOTIFICATION_TOAST_MAKE_IT_SEEN_FAIL,
     NOTIFICATION_TOAST_MAKE_IT_SEEN_REQUEST,
     NOTIFICATION_TOAST_MAKE_IT_SEEN_RESET,
     NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS,
+
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_FAIL,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_REQUEST,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_SUCCESS,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_RESET
 
 } from "./notificationTypes"
 
@@ -64,13 +71,23 @@ export const notificationToatsListReducer = (state = { notifications: [] }, acti
         case NOTIFICATION_TOAST_LIST_REQUEST:
             return { loading: true, notifications: [] };
         case NOTIFICATION_TOAST_LIST_SUCCESS:
-            return { loading: false, success: true, notifications: payload };
+            return { loading: false, success: true, notifications: payload.slice(1, 10) };
         case NOTIFICATION_TOAST_LIST_FAIL:
             return { loading: false, error: payload, notifications: [] };
         case NOTIFICATION_TOAST_LIST_PUSH: {
             return { notifications: [payload, ...state.notifications] }
         }
-
+        case NOTIFICATION_TOAST_LIST_SEEN_ALL: {
+            return {
+                notifications: state.notifications.map(notification => {
+                    notification.vueToast = true
+                    return notification
+                })
+            }
+        }
+        case NOTIFICATION_TOAST_LIST_REMOVE: {
+            return { notifications: state.notifications.filter(notification => String(notification._id) !== String(payload)) }
+        }
         case NOTIFICATION_TOAST_LIST_RESET:
             return { notifications: [] };
         default:
@@ -93,7 +110,21 @@ export const notificationToastMakeItSeenReducer = (state = {}, action) => {
             return state;
     }
 }
-
+export const notificationOnceToastMakeItSeenReducer = (state = {}, action) => {
+    const { type, payload } = action;
+    switch (type) {
+        case NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_REQUEST:
+            return { loading: true, };
+        case NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_SUCCESS:
+            return { loading: false, success: true };
+        case NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_FAIL:
+            return { loading: false, error: payload, };
+        case NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
 export const notificationsNotSeenCountReducer = (state = {}, action) => {
     const { type, payload } = action;
     switch (type) {
@@ -111,3 +142,4 @@ export const notificationsNotSeenCountReducer = (state = {}, action) => {
             return state;
     }
 }
+

@@ -1,0 +1,40 @@
+import { useEffect, useState } from 'react';
+import Toast from 'react-bootstrap/Toast';
+import TimeAgo from './TimeAgo';
+import { useDispatch, useSelector } from 'react-redux';
+import { getToastNotificationsList, resetGetToastNotificationsList, makeAllToastNotificationsSeen } from '../redux/notification/notificationActions';
+import NotificationItem from './NotificationItem';
+
+
+const NotificationsToastContainer = () => {
+    const [callOnce, setCallOnce] = useState(false);
+    const notificationToatsList = useSelector(state => state.notificationToatsList);
+    const { notifications } = notificationToatsList;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!callOnce) {
+            dispatch(getToastNotificationsList());
+            setTimeout(() => {
+                dispatch(makeAllToastNotificationsSeen());
+                dispatch(resetGetToastNotificationsList());
+            }, 5000);
+            setCallOnce(true);
+        }
+
+    }, [callOnce]);
+
+    return (
+        <div className='w-100 d-flex justify-content-end'>
+            <div className='position-absolute' style={{ zIndex: '2000' }}>
+                {notifications && notifications.length > 0 && notifications.map((notification) => (
+                    <NotificationItem key={notification._id} notification={notification} />
+                ))}
+
+
+            </div>
+        </div>
+    );
+}
+
+export default NotificationsToastContainer;

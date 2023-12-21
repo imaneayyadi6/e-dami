@@ -14,9 +14,12 @@ import DamiLoading from "./DamiLoading";
 import ToastContainer from "./ToastContainer";
 import Toast from "./Toast";
 import DamiDemande from "./DamiDemande";
-
+import NotificationsToastContainer from "./NotificationsToastContainer";
+import TimeAgo from "./TimeAgo";
 
 export {
+  TimeAgo,
+  NotificationsToastContainer,
   Header,
   Sidebar,
   FormContainer,

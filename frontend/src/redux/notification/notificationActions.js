@@ -18,11 +18,16 @@ import {
     NOTIFICATION_TOAST_LIST_REQUEST,
     NOTIFICATION_TOAST_LIST_RESET,
     NOTIFICATION_TOAST_LIST_SUCCESS,
+    NOTIFICATION_TOAST_LIST_SEEN_ALL,
 
     NOTIFICATION_TOAST_MAKE_IT_SEEN_FAIL,
     NOTIFICATION_TOAST_MAKE_IT_SEEN_REQUEST,
     NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS,
 
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_FAIL,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_REQUEST,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_SUCCESS,
+    NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_RESET
 
 } from "./notificationTypes"
 import axios from "axios";
@@ -153,7 +158,7 @@ export const makeAllToastNotificationsSeen = () => {
             const { data } = await axios.put("/api/notifications/toast", {}, config);
 
             dispatch({ type: NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS, payload: data });
-
+            dispatch({ type: NOTIFICATION_LIST_RESET })
 
 
         } catch (error) {
@@ -169,6 +174,41 @@ export const makeAllToastNotificationsSeen = () => {
 export const resetMakeAllToastNotificationsSeen = () => {
     return { type: NOTIFICATION_MAKE_IT_SEEN_RESET };
 };
+
+export const makeOneToastNotificationsSeen = (id) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.put(`/api/notifications/toast/${id}`, {}, config);
+
+            dispatch({ type: NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_SUCCESS, payload: data });
+
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({ type: NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_FAIL, payload: err });
+        }
+    };
+};
+
+export const resetMakeOneToastNotificationsSeen = () => {
+    return { type: NOTIFICATION_ONE_TOAST_MAKE_IT_SEEN_RESET };
+};
+
 
 
 

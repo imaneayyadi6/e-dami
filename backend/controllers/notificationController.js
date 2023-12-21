@@ -57,7 +57,8 @@ export const getToastNotifications = asyncHandler(async (req, res) => {
     let notifications = await Notification.find({
         utilisateur: req.user.id,
         vueToast: false,
-    })
+    }).sort({ dateNotification: -1 }) // Sorting by _id in descending order (latest first)
+        .limit(5);
 
     notifications = JSON.parse(JSON.stringify(notifications));
     notifications.sort((a, b) => {
@@ -66,6 +67,7 @@ export const getToastNotifications = asyncHandler(async (req, res) => {
 
     res.json(notifications);
 });
+
 
 // @desc    Rendre tous les notification vue
 // @route   PUT /api/notifications/toast
@@ -79,4 +81,16 @@ export const seenToastNotifications = asyncHandler(async (req, res) => {
         );
     }
     res.json({ message: "notifications modifiee" })
+});
+
+// @desc    Rendre une  notification vue
+// @route   PUT /api/notifications/toast/:id
+// @access  private
+export const seenOneToastNotification = asyncHandler(async (req, res) => {
+
+    await Notification.updateOne(
+        { _id: req.params.id },
+        { $set: { vueToast: true } }
+    );
+    res.json({ message: "notification modifiee" })
 });

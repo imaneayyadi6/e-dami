@@ -3,6 +3,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import { LoginPage } from "./pages";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+
 const App = () => {
   return (
     <BrowserRouter>

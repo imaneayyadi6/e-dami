@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { Sidebar, Header, Dialog, Alert, Toast } from "../components";
+import { Sidebar, Header, Dialog, Alert, Toast, NotificationsToastContainer } from "../components";
 import routes from "../routes/routes";
 import { Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ import axios from "axios";
 import { logout } from "../redux/user/userActions";
 import { Toast as SToast } from "../services";
 import io from 'socket.io-client';
-import { NOTIFICATION_LIST_PUSH, NOTIFICATION_NOTSEEN_COUNT_PUSH } from "../redux/notification/notificationTypes";
+import { NOTIFICATION_LIST_PUSH, NOTIFICATION_NOTSEEN_COUNT_PUSH, NOTIFICATION_TOAST_LIST_PUSH } from "../redux/notification/notificationTypes";
 import { getToastNotificationsList } from "../redux/notification/notificationActions";
 
 const socket = io('http://localhost:5000');
@@ -64,7 +64,7 @@ const DefaulLayout = () => {
     socket.on('notification', (obj) => {
       if (String(obj.utilisateur) === String(userInfo.id)) {
         dispatch({ type: NOTIFICATION_LIST_PUSH, payload: obj });
-
+        dispatch({ type: NOTIFICATION_TOAST_LIST_PUSH, payload: obj });
         dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_PUSH })
       }
     });
@@ -76,7 +76,7 @@ const DefaulLayout = () => {
       <Dialog />
       <Alert />
       <Toast />
-
+      <NotificationsToastContainer />
       <div className='d-flex'>
         <Sidebar />
         <div className='min-vh-100 main-content'>

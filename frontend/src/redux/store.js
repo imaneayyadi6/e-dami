@@ -71,7 +71,7 @@ import {
   mesDemandesReducer,
   demandeDemandeurByIdReducer
 } from "./demande/demandeReducres";
-import { notificationListReducer, notificationMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
+import { notificationListReducer, notificationMakeItSeenReducer, notificationOnceToastMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -152,10 +152,11 @@ const reducer = combineReducers({
   demandeDemandeurById: demandeDemandeurByIdReducer,
   // notifications : 
   notificationToatsList: notificationToatsListReducer,
-  notificationToastMakeItSeen: notificationToastMakeItSeenReducer,  
+  notificationToastMakeItSeen: notificationToastMakeItSeenReducer,
   notificationsNotSeenCount: notificationsNotSeenCountReducer,
   notificationList: notificationListReducer,
   notificationMakeItSeen: notificationMakeItSeenReducer,
+  notificationOnceToastMakeItSeen: notificationOnceToastMakeItSeenReducer,
 
 });
 

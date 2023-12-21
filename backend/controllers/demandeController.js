@@ -761,6 +761,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       if (direction) {
                         dirUserID = direction.directeur;
                         typeApp = "directeur de l'entité";
+                        envCode = "dir";
                       }
 
                     }
