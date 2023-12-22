@@ -92,6 +92,7 @@ const Table = ({
     usePagination
   );
 
+
   const { pageIndex } = state;
 
   useEffect(() => {

@@ -25,12 +25,19 @@ export const getMesDemandes = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/handle
 // @access  private
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 20, ...filters } = req.query;
+  const query = { ...filters };
+
   let demandes = await Demande.find({
+    ...query,
     "traitement.utilisateur": req.user.id,
   })
     .populate("option")
     .populate("demandeur")
-    .sort({ "traitement.dateEnvoi": -1 });
+    .sort({ "traitement.dateEnvoi": -1 })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
 
   let traitements = [];
@@ -49,6 +56,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
             dateDemande: demande.dateDemande,
             demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
             option: demande.option.libelle,
+    
           })
         }
       }
@@ -58,13 +66,28 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
 
     }
   }
-
   traitements.sort((a, b) => {
     return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
   });
 
+  let count = 0
+  if (filters)
+    count = await Demande.countDocuments({
+      ...filters,
+      "traitement.utilisateur": req.user.id,
+    });
+  else count = await Demande.countDocuments({
+    "traitement.utilisateur": req.user.id,
+  });
 
-  res.json(traitements);
+
+  const totalPages = Math.ceil(count / limit)
+
+  res.json({
+    traitements,
+    totalPages: totalPages,
+    currentPage: page,
+  });
 });
 
 // @desc    Faire une demande

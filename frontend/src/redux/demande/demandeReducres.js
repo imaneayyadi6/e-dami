@@ -48,7 +48,7 @@ export const demandeToHandleReducer = (state = { demandes: [] }, action) => {
     case DEMANDE_TOHANDLE_LIST_REQUEST:
       return { loading: true, demandes: [] };
     case DEMANDE_TOHANDLE_LIST_SUCCESS:
-      return { loading: false, success: true, demandes: payload };
+      return { loading: false, success: true, data: payload };
     case DEMANDE_TOHANDLE_LIST_FAIL:
       return { loading: false, error: payload, demandes: [] };
     case DEMANDE_TOHANDLE_LIST_RESET:

@@ -56,7 +56,7 @@ export const resetCreateDemande = () => {
   return { type: DEMANDE_CREATE_RESET };
 };
 
-export const getDemandesToHandle = () => {
+export const getDemandesToHandle = (query = { page: 1}) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_TOHANDLE_LIST_REQUEST });
@@ -70,7 +70,9 @@ export const getDemandesToHandle = () => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const { data } = await axios.get("/api/demandes/handle", config);
+      const { data } = await axios.get(`/api/demandes/handle?${query !== null && Object.entries(query)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&')}`, config);
       dispatch({ type: DEMANDE_TOHANDLE_LIST_SUCCESS, payload: data });
     } catch (error) {
       const err =

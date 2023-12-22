@@ -12,8 +12,12 @@ const getTypeApprobation = code => {
       return "president-directeur generale";
     case "hiq.dir":
       return "directeur hiearchique - directeur de l'entité"
+    case "pdd.dir":
+      return "propriétaire de données - directeur de l'entité"
     case "hiq.pdd":
       return "directeur hiearchique - propriétaire de données"
+    case "hiq.pdd.dir":
+      return "directeur hiearchique - propriétaire de données - directeur de l'entité"
     default:
       return "(pas de donnees)";
   }
