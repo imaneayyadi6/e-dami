@@ -1,6 +1,6 @@
 import Toast from 'react-bootstrap/Toast';
 import TimeAgo from './TimeAgo';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { makeOneToastNotificationsSeen } from '../redux/notification/notificationActions';
 
@@ -13,6 +13,12 @@ const NotificationItem = ({ notification }) => {
         dispatch(makeOneToastNotificationsSeen(notification._id))
         setShow(false);
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            closeHandler()
+        },5000);
+    }, [])
 
 
     return (

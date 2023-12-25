@@ -56,7 +56,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
             dateDemande: demande.dateDemande,
             demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
             option: demande.option.libelle,
-    
+
           })
         }
       }
@@ -466,8 +466,6 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
 
   res.json(demande);
 });
-
-
 
 // @desc    Approuver un traitemen de demande
 // @route   PUT /api/demandes/:id/approuve/:idTraitement
@@ -980,7 +978,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
     _id: req.params.id,
   })
     .populate("demandeur")
-    .populate("option");
+    .populate("option")
+    .populate("traitement.utilisateur")
 
   if (demande) {
     demande = JSON.parse(JSON.stringify(demande));
@@ -988,11 +987,13 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
     const service = await Service.findById(demande.demandeur.service).populate("chefService");
     const direction = await Direction.findById(demande.demandeur.direction).populate("directeur");
     const optionService = await Service.findById(demande.option.service).populate("chefService");
+
     let optionPDD = null;
     if (demande.option.proprietaireDeDonnees)
       optionPDD = await Direction.findById(demande.option.proprietaireDeDonnees).populate("directeur");
 
-    const optionDirection = await Direction.findById(optionService.direction).populate("directeur"); demande.dirLibelle = optionDirection.libelle;
+    const optionDirection = await Direction.findById(optionService.direction).populate("directeur");
+    demande.dirLibelle = optionDirection.libelle;
 
     let sig = [];
     for (const s of demande.option.signataires) {
@@ -1126,6 +1127,10 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
     demande.sig = sig;
     demande.demandeur.direction = direction;
     demande.demandeur.service = service;
+
+    demande.traitement.sort((a, b) => {
+      return new Date(b.dateEnvoi) - new Date(a.dateEnvoi)
+    })
 
     res.json(demande);
 

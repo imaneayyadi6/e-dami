@@ -158,7 +158,6 @@ export const makeAllToastNotificationsSeen = () => {
             const { data } = await axios.put("/api/notifications/toast", {}, config);
 
             dispatch({ type: NOTIFICATION_TOAST_MAKE_IT_SEEN_SUCCESS, payload: data });
-            dispatch({ type: NOTIFICATION_LIST_RESET })
 
 
         } catch (error) {

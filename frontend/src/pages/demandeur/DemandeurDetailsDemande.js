@@ -3,7 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom"
 import { getDemandeurDemandeByID } from "../../redux/demande/demandeActions";
 import { DamiDemande, DamiLoading, Message, TimeLine, WarningMessage } from "../../components";
-import { Card, Col, Row } from "react-bootstrap";
+import { Alert, Card, Col, Row } from "react-bootstrap";
+import { getTypeApprobation } from "../../services";
+
+
+const STATUS = {
+    encours: 'warning',
+    approuve: 'success',
+    refuse: 'danger'
+}
 
 
 const DemandeurDetailsDemande = () => {
@@ -40,16 +48,69 @@ const DemandeurDetailsDemande = () => {
                 <DamiLoading /> :
                 recoveredDemande && (
                     <div>
+
                         <h5 className="mb-5 mt-3 ">
                             Status global la demande :{" "}
                             <span className={`table-text-status-${String(recoveredDemande.status).replace(/\s/g, "")}`}>{recoveredDemande.status}</span>
                         </h5>
-                        <DamiDemande demande={recoveredDemande} />
-                    </div>
+
+                        <div className="details-dami-dm">
+                            <div className="details-dami-dm-timline">
+                                <h3><i className="fa-solid fa-timeline"></i> CHRONOLOGIE </h3>
+                                <div className="timline-container">
+                                    {recoveredDemande.traitement.map((tr, index) => (
+                                        <>
+                                            <Alert variant={STATUS[String(tr.status).replace(/\s/g, "")]}>
+                                                {tr.status === "approuve" && (
+                                                    <p className="w-100">
+                                                        votre demande a ete approuver par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}
+                                                    </p>
+                                                )}
+                                                {tr.status === "refuse" && (
+                                                    <p className="w-100">
+                                                        votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
+                                                    </p>
+                                                )}
+                                                {tr.status === "en cours" && (
+                                                    <p className="w-100">
+                                                        votre demande a ete envoyer  M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(tr.code)}
+                                                    </p>
+                                                )}
+                                                {tr.status === "en cours" ? (
+                                                    <div className="d-flex justify-content-end">
+                                                        <small>le {new Date(tr.dateEnvoi).toLocaleDateString()} a {new Date(tr.dateEnvoi).toLocaleTimeString()}</small>
+                                                    </div>
+                                                ) : (
+                                                    <div className="d-flex justify-content-end">
+                                                        <small>le {new Date(tr.dateTraitement).toLocaleDateString()} a {new Date(tr.dateTraitement).toLocaleTimeString()}</small>
+                                                    </div>
+                                                )}
+
+                                            </Alert >
+                                        </>
+
+                                    ))}
+                                    <Alert variant="warning">
+                                        <p className="w-100">
+                                            votre demande a ete envoyer  a M. {recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.prenom.toLowerCase() + " " + recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].code)}
+                                        </p>
+                                        <div className="d-flex justify-content-end">
+                                            <small>le {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleDateString()} a {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleTimeString()}</small>
+                                        </div>
+                                    </Alert>
+                                </div>
+                            </div>
+                            <div className="details-dami-dm-demande">
+                                <DamiDemande demande={recoveredDemande} />
+                            </div>
+                        </div>
+                    </div >
                 )}
-            {!loadingDemandeByID && !recoveredDemande && (
-                <WarningMessage message={"demande introuvable !"} />
-            )}
+            {
+                !loadingDemandeByID && !recoveredDemande && (
+                    <WarningMessage message={"demande introuvable !"} />
+                )
+            }
         </>
     )
 }

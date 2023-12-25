@@ -110,7 +110,7 @@ const DemandesPage = () => {
           {loadingDemandesToHandle && <TableLoading />}
 
           {data && data.traitements.length > 0 ? (
-            <>
+            <div className="table-responsive">
               <table className="table table-sm">
                 <thead>
                   <tr>
@@ -119,14 +119,11 @@ const DemandesPage = () => {
                         <small>demandeur</small>
                         <div className="d-flex">
                           <Form.Select size="sm">
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
+                            {[...new Set(data.traitements.map(tr => tr.demandeur))].map(demandeur => (
+                              <option value={demandeur.toLowerCase()} key={demandeur}>
+                                {demandeur.toLowerCase()}
+                              </option>
+                            ))}
                           </Form.Select>
                           <Button size="sm">
                             <i className="fas fa-search"></i>
@@ -160,14 +157,11 @@ const DemandesPage = () => {
                         <small>option</small>
                         <div className="d-flex">
                           <Form.Select size="sm">
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
-                            <option>Hello world</option>
+                            {[...new Set(data.traitements.map(tr => tr.option))].map(option => (
+                              <option value={option.toLowerCase()} key={option}>
+                                {option.toLowerCase()}
+                              </option>
+                            ))}
                           </Form.Select>
                           <Button size="sm">
                             <i className="fas fa-search"></i>
@@ -180,16 +174,11 @@ const DemandesPage = () => {
                         <small>type d'approbation</small>
                         <div className="d-flex">
                           <Form.Select size="sm">
-                            <option value={"cds"}>chef de service</option>
-                            <option value={"hiq"}>directeur hiearchique</option>
-
-                            <option value={"pdd"}>propriétaire de données</option>
-                            <option value={"dir"}>directeur de l'entité</option>
-                            <option value={"pdg"}>president-directeur generale</option>
-                            <option value={"hiq.dir"}>directeur hiearchique - directeur de l'entité</option>
-                            <option value={"pdd.dir"}>propriétaire de données - directeur de l'entité</option>
-                            <option value={"hiq.pdd"}>directeur hiearchique - propriétaire de données</option>
-                            <option value={"hiq.pdd.dir"}>directeur hiearchique - propriétaire de données  directeur de l'entité</option>
+                            {[...new Set(data.traitements.map(tr => tr.code))].map(uniqueCode => (
+                              <option value={uniqueCode} key={uniqueCode}>
+                                {getTypeApprobation(uniqueCode)}
+                              </option>
+                            ))}
                           </Form.Select>
                           <Button size="sm">
                             <i className="fas fa-search"></i>
@@ -223,13 +212,12 @@ const DemandesPage = () => {
 
                   {data.traitements.map(traitement => (
                     <tr>
-                      <td><small>{traitement.demandeur}</small></td>
-                      <td><small>{moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm')}</small></td>
-                      <td><small>{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
-                      <td><small>{String(traitement.option).toLowerCase()}</small></td>
-                      <td><small>{getTypeApprobation(traitement.code)}</small></td>
-                      <td><small className={`table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
-
+                      <td><small className="inline-text">{traitement.demandeur}</small></td>
+                      <td><small className="inline-text">{moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm')}</small></td>
+                      <td><small className="inline-text">{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
+                      <td><small className="inline-text">{String(traitement.option).toLowerCase()}</small></td>
+                      <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
+                      <td><small className={`inline-text  table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
                       <td>
                         <Link to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
                           <small>traiter</small>
@@ -244,7 +232,7 @@ const DemandesPage = () => {
               <div className="d-flex justify-content-center">
                 {renderPageLinks()}
               </div>
-            </>
+            </div>
 
           ) : (
             successDemandesToHandle && (

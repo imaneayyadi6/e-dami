@@ -289,7 +289,7 @@ const DamiDemande = ({ demande }) => {
                   <input className='dami-input'
                     value={demande.sig.find(sg => sg.code === sig)
                       &&
-                      demande.sig.find(sg => sg.code === sig).dateTraitement ? new Date(demande.sig.find(sg => sg.code === sig).dateTraitement).toLocaleDateString(): ""}
+                      demande.sig.find(sg => sg.code === sig).dateTraitement ? new Date(demande.sig.find(sg => sg.code === sig).dateTraitement).toLocaleDateString() : ""}
                   />
                 </div>
                 <div className='mt-1'>

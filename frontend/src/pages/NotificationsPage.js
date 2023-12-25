@@ -182,8 +182,8 @@ const NotificationsPage = () => {
                         </>
                     }
 
-                    {notifications.length === 0 && !notificationListloading && (
-                        <WarningMessage message={"aucune notification trouvée !"} />
+                    {!notificationListloading && notifications.length === 0 &&(
+                        <WarningMessage message={"aucune notification trouvée !"} />
                     )}
                     {items.length > 0 && items.map(notification => (
                         <div
