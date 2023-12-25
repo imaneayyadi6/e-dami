@@ -22,18 +22,12 @@ const DefaulLayout = () => {
     userInfo,
   } = userLogin;
 
-
-  const notificationToatsList = useSelector(state => state.notificationToatsList);
-  const {
-    notifications,
-    success: notificationToatsListSuccess
-  } = notificationToatsList;
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!callOnce) {
-      dispatch(getToastNotificationsList());
+
+
       const roleCodes = userInfo.roles.map(role => String(role.role.code));
       const filteredRoutes = routes.filter(route =>
         route.roles.some(roleCode => roleCodes.includes(String(roleCode)))
@@ -54,10 +48,8 @@ const DefaulLayout = () => {
       );
       setCallOnce(true);
     }
-    if (notificationToatsListSuccess) {
-      console.log(notifications)
-    }
-  }, [callOnce, userInfo, notificationToatsListSuccess]);
+
+  }, [callOnce, userInfo]);
 
   useEffect(() => {
     // listen to comming notifcations :

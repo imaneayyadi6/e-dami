@@ -5,7 +5,7 @@ import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 import { sendNotification } from "../services/notificationService.js"
-
+import mongoose from "mongoose";
 
 // @desc    Recuperer les demandes de demandeur
 // @route   GET /api/demandes/mesdemandes
@@ -89,6 +89,81 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     currentPage: page,
   });
 });
+
+
+
+// @desc    Recuperer les elements de filter
+// @route   GET /api/demandes/handle/filter
+// @access  private
+export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
+  const uniqueOptions = await Demande.aggregate([
+    {
+      $match: {
+        'traitement.utilisateur': new mongoose.Types.ObjectId(req.user.id),
+      },
+    },
+    {
+      $group: {
+        _id: '$option',
+      }
+    },
+  ]);
+
+  const optionIds = uniqueOptions.map(result => result._id);
+
+  const options = await Option.find({
+    '_id': { $in: optionIds },
+  })
+
+
+
+  const uniqueDemandeurs = await Demande.aggregate([
+    {
+      $match: {
+        'traitement.utilisateur': new mongoose.Types.ObjectId(req.user.id),
+      },
+    },
+    {
+      $group: {
+        _id: '$demandeur',
+      }
+    },
+  ]);
+
+  const demandeurIds = uniqueDemandeurs.map(result => result._id);
+
+  const demandeurs = await Utilisateur.find({
+    '_id': { $in: demandeurIds },
+  })
+
+
+  const uniqueTypeApps = await Demande.aggregate([
+    {
+      $match: {
+        'traitement.utilisateur': new mongoose.Types.ObjectId(req.user.id),
+      },
+    },
+    {
+      $group: {
+        _id: '$traitement.code',
+      }
+    },
+  ]);
+
+
+
+  let typeApp = [];
+
+  for (const ta of uniqueTypeApps) {
+    for (const tr of ta._id) {
+      if (typeApp.indexOf(tr) === -1)
+        typeApp.push(tr)
+    }
+  }
+
+  res.json({ options: options, demandeurs: demandeurs, typeApp })
+});
+
 
 // @desc    Faire une demande
 // @route   POST /api/demandes
@@ -512,6 +587,12 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   contenu = `<p>
                   Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
                   a été approuvée par M. ${direction.directeur.prenom.toLowerCase()} ${direction.directeur.nom.toLowerCase()} directeur de la direction ${direction.libelle.toLowerCase()} en tant que propritaire de donnes et directeur de l entite`;
+                }
+
+                if (crtfCode === "hiq.dir") {
+                  contenu = `<p>
+                  Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                  a été approuvée par M. ${direction.directeur.prenom.toLowerCase()} ${direction.directeur.nom.toLowerCase()} directeur de la direction ${direction.libelle.toLowerCase()} en tant que directeur hiarchique et directeur de l entite`;
                 }
 
                 if (crtfCode === "hiq.pdd.dir") {

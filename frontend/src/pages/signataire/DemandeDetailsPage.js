@@ -195,7 +195,9 @@ const DemandeDetailsPage = () => {
                     )}
                   </h5>
 
-                  <DamiDemande demande={recoveredDemande} />
+                  <div className="dami-page-container">
+                    <DamiDemande demande={recoveredDemande} />
+                  </div>
 
 
                   {!demandeApprouveTraitementSuccess && statusResult && statusResult.status && statusResult.status === 'en cours' && (

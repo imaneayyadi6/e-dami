@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import Toast from 'react-bootstrap/Toast';
-import TimeAgo from './TimeAgo';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { getToastNotificationsList, resetGetToastNotificationsList, makeAllToastNotificationsSeen } from '../redux/notification/notificationActions';
+import { getToastNotificationsList, makeAllToastNotificationsSeen, resetGetToastNotificationsList } from '../redux/notification/notificationActions';
 import NotificationItem from './NotificationItem';
 
 
@@ -10,19 +9,26 @@ const NotificationsToastContainer = () => {
     const [callOnce, setCallOnce] = useState(false);
     const notificationToatsList = useSelector(state => state.notificationToatsList);
     const { notifications } = notificationToatsList;
+
+    const notificationToastMakeItSeen = useSelector(state => state.notificationToastMakeItSeen);
+    const { success: notificationToastMakeItSeenSuccess } = notificationToastMakeItSeen
+
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (!callOnce) {
             dispatch(getToastNotificationsList());
-            setTimeout(() => {
-                dispatch(makeAllToastNotificationsSeen());
-                dispatch(resetGetToastNotificationsList());
-            }, 5000);
+            // setTimeout(() => {
+            //     dispatch(makeAllToastNotificationsSeen());
+            // }, 5000);
             setCallOnce(true);
         }
 
-    }, [callOnce]);
+        // if (notificationToastMakeItSeenSuccess) {
+        //     dispatch(resetGetToastNotificationsList());
+        // }
+
+    }, [callOnce, notificationToastMakeItSeenSuccess]);
 
     return (
         <div className='w-100 d-flex justify-content-end'>
@@ -30,8 +36,6 @@ const NotificationsToastContainer = () => {
                 {notifications && notifications.length > 0 && notifications.map((notification) => (
                     <NotificationItem key={notification._id} notification={notification} />
                 ))}
-
-
             </div>
         </div>
     );

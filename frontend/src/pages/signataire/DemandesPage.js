@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getDemandesToHandle, resetGetDemandesToHandle } from "../../redux/demande/demandeActions";
+import { getDemandesFilterToHandle, getDemandesToHandle, resetGetDemandesToHandle } from "../../redux/demande/demandeActions";
 import { Message, Table, TableLoading, WarningMessage } from "../../components";
 import { Button, Card, Form } from "react-bootstrap";
 import moment from "moment";
@@ -20,6 +20,14 @@ const DemandesPage = () => {
     success: successDemandesToHandle,
     data,
   } = demandesToHandle;
+
+  const demandeToHandleFilter = useSelector(state => state.demandeToHandleFilter);
+  const {
+    loading: loadingDemandesToHandleFilter,
+    error: errorDemandesToHandleFilter,
+    success: successDemandesToHandleFilter,
+    data: dataFilter,
+  } = demandeToHandleFilter;
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -91,6 +99,7 @@ const DemandesPage = () => {
     if (!callOnce) {
       dispatch(resetGetDemandesToHandle())
       dispatch(getDemandesToHandle());
+      dispatch(getDemandesFilterToHandle())
       setCallOnce(true);
     }
     if (successDemandesToHandle) {
@@ -109,7 +118,7 @@ const DemandesPage = () => {
         <Card.Body>
           {loadingDemandesToHandle && <TableLoading />}
 
-          {data && data.traitements.length > 0 ? (
+          {successDemandesToHandleFilter && data && data.traitements.length > 0 ? (
             <div className="table-responsive">
               <table className="table table-sm">
                 <thead>
@@ -118,11 +127,9 @@ const DemandesPage = () => {
                       <div className='d-flex flex-column justify-content-center inline-text'>
                         <small>demandeur</small>
                         <div className="d-flex">
-                          <Form.Select size="sm">
-                            {[...new Set(data.traitements.map(tr => tr.demandeur))].map(demandeur => (
-                              <option value={demandeur.toLowerCase()} key={demandeur}>
-                                {demandeur.toLowerCase()}
-                              </option>
+                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
+                            {dataFilter.demandeurs.map(demandeur => (
+                              <option key={demandeur._id}>{demandeur.prenom.toLowerCase() + " " + demandeur.nom.toLowerCase()}</option>
                             ))}
                           </Form.Select>
                           <Button size="sm">
@@ -156,11 +163,9 @@ const DemandesPage = () => {
                       <div className='d-flex flex-column justify-content-center inline-text'>
                         <small>option</small>
                         <div className="d-flex">
-                          <Form.Select size="sm">
-                            {[...new Set(data.traitements.map(tr => tr.option))].map(option => (
-                              <option value={option.toLowerCase()} key={option}>
-                                {option.toLowerCase()}
-                              </option>
+                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
+                            {dataFilter.options.map(option => (
+                              <option key={option._id}>{option.libelle.toLowerCase()}</option>
                             ))}
                           </Form.Select>
                           <Button size="sm">
@@ -173,11 +178,9 @@ const DemandesPage = () => {
                       <div className='d-flex flex-column justify-content-center inline-text'>
                         <small>type d'approbation</small>
                         <div className="d-flex">
-                          <Form.Select size="sm">
-                            {[...new Set(data.traitements.map(tr => tr.code))].map(uniqueCode => (
-                              <option value={uniqueCode} key={uniqueCode}>
-                                {getTypeApprobation(uniqueCode)}
-                              </option>
+                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
+                            {dataFilter.typeApp.map(typeA => (
+                              <option key={typeA}>{getTypeApprobation(typeA)}</option>
                             ))}
                           </Form.Select>
                           <Button size="sm">

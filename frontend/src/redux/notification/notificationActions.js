@@ -122,7 +122,6 @@ export const getToastNotificationsList = () => {
             };
 
             const { data } = await axios.get("/api/notifications/toast", config);
-            console.log(data);
             dispatch({ type: NOTIFICATION_TOAST_LIST_SUCCESS, payload: data });
 
         } catch (error) {

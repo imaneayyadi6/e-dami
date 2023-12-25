@@ -1,6 +1,12 @@
 .dami {
-  min-width: 800px;
-  max-width: 100%;
+  /* background-color: #fff !important; */
+  /* height: 100%; */
+}
+
+@media screen and (min-width:1400px) {
+  .dami-page-container {
+    padding: 0% 15%;
+  }
 }
 
 .dami-logo {
@@ -28,7 +34,6 @@
   border-bottom: 1px solid lightgray;
   padding: 0;
   background-color: #fff;
-  width: 100% !important;
 }
 
 .dami-lb-tp {
@@ -119,7 +124,6 @@
   border-left: 1px solid lightgray;
   border-right: 1px solid lightgray;
   background-color: #fff;
-  width: 100%;
 }
 
 .dami-body table tr {
@@ -129,7 +133,6 @@
 .dami-footer {
   font-size: 12px;
   background-color: #fff;
-  width: 100%  !important;
 
 }
 

@@ -10,12 +10,15 @@ import {
   refuserDemande,
   getMesDemandes,
   getDemandeurDemandeByID,
+  getFilterOptionsDemandes,
 } from "../controllers/demandeController.js";
 
 const router = express.Router();
 
 router.route("/").post(protect, createDemande);
 router.route("/handle").get(protect, signataire, getDemandesForHandling);
+router.route("/handle/filter").get(protect, signataire, getFilterOptionsDemandes);
+
 router.route("/:id/traitement/:idTraitement").get(protect, signataire, getDemandesByID);
 router.route("/:id/status/:idTraitement").get(protect, signataire, getStatusTraitementDeDemande);
 router.route("/:id/approuve/:idTraitement").put(protect, signataire, approuverDemande);

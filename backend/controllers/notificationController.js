@@ -57,7 +57,7 @@ export const getToastNotifications = asyncHandler(async (req, res) => {
     let notifications = await Notification.find({
         utilisateur: req.user.id,
         vueToast: false,
-    }).sort({ dateNotification: -1 }) // Sorting by _id in descending order (latest first)
+    }).sort({ dateNotification: -1 })
         .limit(5);
 
     notifications = JSON.parse(JSON.stringify(notifications));

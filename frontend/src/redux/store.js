@@ -69,7 +69,8 @@ import {
   demandeApprouveTraitementReducer,
   demanderRefuseTraitementReducer,
   mesDemandesReducer,
-  demandeDemandeurByIdReducer
+  demandeDemandeurByIdReducer,
+  demandeToHandleFilterReducer
 } from "./demande/demandeReducres";
 import { notificationListReducer, notificationMakeItSeenReducer, notificationOnceToastMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
 
@@ -150,6 +151,7 @@ const reducer = combineReducers({
   demanderRefuseTraitement: demanderRefuseTraitementReducer,
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
+  demandeToHandleFilter: demandeToHandleFilterReducer,
   // notifications : 
   notificationToatsList: notificationToatsListReducer,
   notificationToastMakeItSeen: notificationToastMakeItSeenReducer,
