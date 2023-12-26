@@ -1,16 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDemandesFilterToHandle, getDemandesToHandle, resetGetDemandesToHandle } from "../../redux/demande/demandeActions";
-import { Message, Table, TableLoading, WarningMessage } from "../../components";
+import { Message, TableLoading, WarningMessage } from "../../components";
 import { Button, Card, Form } from "react-bootstrap";
 import moment from "moment";
 import { getTypeApprobation } from "../../services";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const DemandesPage = () => {
   const [callOnce, setCallOnce] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [option, setOption] = useState(null);
+  const [demandeur, setDemandeur] = useState(null);
+  const [typeApp, setTypeApp] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [dateEnvoi, setDateEnvoi] = useState(null);
+  const [dateDemande, setDateDemande] = useState(null);
+
+
+
+  const filterHnadler = () => {
+    let qurey = { page: 1 };
+    if (option) qurey.option = option
+    if (demandeur) qurey.demandeur = demandeur
+    if (typeApp) qurey.typeApp = typeApp
+    if (status) qurey.status = status
+    if (dateEnvoi) qurey.dateEnvoi = dateEnvoi
+    if (dateDemande) qurey.dateDemande = dateDemande
+
+    dispatch(getDemandesToHandle(qurey));
+  }
+
+
+
 
   const dispatch = useDispatch();
   const demandesToHandle = useSelector(state => state.demandesToHandle);
@@ -114,136 +138,170 @@ const DemandesPage = () => {
           {errorDemandesToHandle}
         </Message>
       )}
+      {errorDemandesToHandleFilter && (
+        <Message itWillBeHidden type='danger'>
+          {errorDemandesToHandleFilter}
+        </Message>
+      )}
       <Card className='h-100'>
         <Card.Body>
           {loadingDemandesToHandle && <TableLoading />}
 
-          {successDemandesToHandleFilter && data && data.traitements.length > 0 ? (
+
+          <>
+            {!loadingDemandesToHandle && successDemandesToHandleFilter && (<Button variant="dark" onClick={filterHnadler}>
+              <i className="fa-solid fa-filter"></i> {" "} filtrer</Button>)}
+
+            <hr />
             <div className="table-responsive">
+
               <table className="table table-sm">
-                <thead>
-                  <tr>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>demandeur</small>
-                        <div className="d-flex">
-                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
-                            {dataFilter.demandeurs.map(demandeur => (
-                              <option key={demandeur._id}>{demandeur.prenom.toLowerCase() + " " + demandeur.nom.toLowerCase()}</option>
-                            ))}
-                          </Form.Select>
-                          <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>date demande</small>
-                        <div className="d-flex">
-                          <Form.Control size="sm" type="date" /> <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>date envoi</small>
-                        <div className="d-flex">
-                          <Form.Control size="sm" type="date" />
-                          <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>option</small>
-                        <div className="d-flex">
-                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
-                            {dataFilter.options.map(option => (
-                              <option key={option._id}>{option.libelle.toLowerCase()}</option>
-                            ))}
-                          </Form.Select>
-                          <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>type d'approbation</small>
-                        <div className="d-flex">
-                          <Form.Select disabled={loadingDemandesToHandleFilter} size="sm">
-                            {dataFilter.typeApp.map(typeA => (
-                              <option key={typeA}>{getTypeApprobation(typeA)}</option>
-                            ))}
-                          </Form.Select>
-                          <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>status</small>
-                        <div className="d-flex">
-                          <Form.Select size="sm">
-                            <option value={"en cours"}>en cours</option>
-                            <option value={"approuve"}>approuve</option>
-                            <option value={"refuse"}>refuse</option>
-                          </Form.Select>
-                          <Button size="sm">
-                            <i className="fas fa-search"></i>
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                    <th>
-                      <div className='d-flex flex-column justify-content-center inline-text'>
-                        <small>details</small>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                  {data.traitements.map(traitement => (
+                {successDemandesToHandleFilter && (
+                  <thead>
                     <tr>
-                      <td><small className="inline-text">{traitement.demandeur}</small></td>
-                      <td><small className="inline-text">{moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm')}</small></td>
-                      <td><small className="inline-text">{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
-                      <td><small className="inline-text">{String(traitement.option).toLowerCase()}</small></td>
-                      <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
-                      <td><small className={`inline-text  table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
-                      <td>
-                        <Link to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
-                          <small>traiter</small>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>demandeur</small>
+                          <div className="d-flex">
+                            <Form.Select
+                              value={demandeur}
+                              onChange={(e) => setDemandeur(e.target.value)}
+                              disabled={loadingDemandesToHandleFilter} size="sm">
+                              {dataFilter.demandeurs.map(demandeur => (
+                                <option key={demandeur._id} value={demandeur._id}>{demandeur.prenom.toLowerCase() + " " + demandeur.nom.toLowerCase()}</option>
+                              ))}
+                            </Form.Select>
 
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>date demande</small>
+                          <div className="d-flex">
+                            <Form.Control
+                              value={dateDemande}
+                              onChange={(e) => setDateDemande(e.target.value)}
+                              size="sm" type="date" />
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>date envoi</small>
+                          <div className="d-flex">
+                            <Form.Control
+                              value={dateEnvoi}
+                              onChange={(e) => setDateEnvoi(e.target.value)}
+                              size="sm" type="date" />
+
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>option</small>
+                          <div className="d-flex">
+                            <Form.Select
+                              value={option}
+                              onChange={(e) => setOption(e.target.value)}
+                              disabled={loadingDemandesToHandleFilter} size="sm">
+                              {dataFilter.options.map(option => (
+                                <option key={option._id} value={option._id} >{option.libelle.toLowerCase()}</option>
+                              ))}
+                            </Form.Select>
+
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>type d'approbation</small>
+                          <div className="d-flex">
+                            <Form.Select
+                              value={typeApp}
+                              onChange={(e) => setTypeApp(e.target.value)}
+                              disabled={loadingDemandesToHandleFilter} size="sm">
+                              {dataFilter.typeApp.map(typeA => (
+                                <option key={typeA} value={typeA} >{getTypeApprobation(typeA)}</option>
+                              ))}
+                            </Form.Select>
+
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>status</small>
+                          <div
+                            className="d-flex">
+                            <Form.Select size="sm"
+                              value={status}
+                              onChange={(e) => setStatus(e.target.value)}>
+                              <option value={"en cours"}>en cours</option>
+                              <option value={"approuve"}>approuve</option>
+                              <option value={"refuse"}>refuse</option>
+                            </Form.Select>
+
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div className='d-flex flex-column justify-content-center inline-text'>
+                          <small>traiter</small>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                )}
+
+                <tbody>
+                  {successDemandesToHandleFilter && data && data.traitements.length > 0 ? (
+
+                    data.traitements.map(traitement => (
+                      <tr>
+                        <td><small className="inline-text">{traitement.demandeur}</small></td>
+                        <td><small className="inline-text">{moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm')}</small></td>
+                        <td><small className="inline-text">{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
+                        <td><small className="inline-text">{String(traitement.option).toLowerCase()}</small></td>
+                        <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
+                        <td><small className={`inline-text  table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
+                        <td>
+                          <Link to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
+                            <small>traiter</small>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+
+                  ) : (
+                    successDemandesToHandle && (
+                      <tr>
+                        <td colSpan={1000}>
+                          <div className="d-flex justify-content-center py-5">
+                            <WarningMessage message={"Aucune demande trouvée"} />
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  )}
                 </tbody>
               </table>
 
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-center align-items-center">
+                <small>
+                  Page{" "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {currentPage} de {totalPages}
+                  </span>
+                </small>
                 {renderPageLinks()}
               </div>
             </div>
+          </>
 
-          ) : (
-            successDemandesToHandle && (
-              <div className="d-flex justify-content-center">
-                <WarningMessage message={"Aucune demande trouvée"} />
-              </div>
-            )
-          )}
+
+
 
         </Card.Body>
       </Card >

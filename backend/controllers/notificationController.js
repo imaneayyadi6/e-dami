@@ -16,17 +16,30 @@ export const getCountNotSeenNotifications = asyncHandler(async (req, res) => {
 // @route   GET /api/notifications/
 // @access  private
 export const getNotifications = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+
     let notifications = await Notification.find({
         utilisateur: req.user.id
-    })
+
+    }).sort({ "dateNotification": -1 }).limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
 
     notifications = JSON.parse(JSON.stringify(notifications));
 
-    notifications.sort((a, b) => {
-        return new Date(b.dateNotification) - new Date(a.dateNotification)
+    let count = await Notification.countDocuments({
+        utilisateur: req.user.id
     });
 
-    res.json(notifications);
+
+    const totalPages = Math.ceil(count / limit)
+
+
+    res.json({
+        notifications,
+        totalPages: totalPages,
+        currentPage: page,
+    });
 });
 
 

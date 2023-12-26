@@ -32,7 +32,7 @@ import {
 } from "./notificationTypes"
 import axios from "axios";
 
-export const getNotificationsList = () => {
+export const getNotificationsList = (page = 1) => {
     return async (dispatch, getState) => {
         try {
             dispatch({ type: NOTIFICATION_LIST_REQUEST });
@@ -48,7 +48,7 @@ export const getNotificationsList = () => {
                 },
             };
 
-            const { data } = await axios.get("/api/notifications", config);
+            const { data } = await axios.get(`/api/notifications?page=${page}`, config);
 
             dispatch({ type: NOTIFICATION_LIST_SUCCESS, payload: data });
             dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: 0 });

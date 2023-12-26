@@ -5,31 +5,93 @@ import { getNotificationsList, makeAllNotificationsSeen } from "../redux/notific
 import { Message, WarningMessage } from "../components"
 import { NOTIFICATION_NOTSEEN_COUNT_SUCCESS } from "../redux/notification/notificationTypes"
 
-const itemsPerPage = 10; // Number of items to display per page
+
 
 const NotificationsPage = () => {
     const [callOnce, setCallOnce] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [items, setItems] = useState([]);
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage
     const dispatch = useDispatch();
-
     const notificationList = useSelector(state => state.notificationList);
     const {
         loading: notificationListloading,
         error: notificationListError,
         success: notificationListSuccess,
-        notifications
+        data
     } = notificationList;
 
     const notificationMakeItSeen = useSelector(state => state.notificationMakeItSeen);
     const {
-        // loading: notificationMakeItSeenloading,
         error: notificationMakeItSeenError,
-        // success: notificationMakeItSeenSuccess,
     } = notificationMakeItSeen;
+
+
+
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        dispatch(getNotificationsList(newPage));
+    };
+
+    const renderPageLinks = () => {
+
+        const links = [];
+
+        const range = 20;
+        const start = Math.max(1, currentPage - Math.floor(range / 2));
+        const end = Math.min(totalPages, start + range);
+
+        links.push(
+            <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+                &laquo;&laquo;
+            </button>,
+            <button
+                key="previous"
+                className="btn btn-sm btn-light"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+            >
+                &laquo;
+            </button>
+        );
+
+
+        for (let i = start; i <= end; i++) {
+            links.push(
+                <button
+                    key={i}
+                    onClick={() => handlePageChange(i)}
+                    className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+                >
+                    {i}
+                </button>
+            );
+        }
+
+
+        links.push(
+            <button
+                key="next"
+                className="btn btn-sm btn-light"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+            >
+                &raquo;
+            </button>,
+            <button
+                key="last"
+                className="btn btn-sm btn-light"
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+            >
+                &raquo;&raquo;
+            </button>
+        );
+
+        return links;
+
+
+    };
 
 
     useEffect(() => {
@@ -37,83 +99,26 @@ const NotificationsPage = () => {
             setCallOnce(true);
             dispatch(getNotificationsList());
         }
+        if (notificationListSuccess)
+            setTotalPages(data.totalPages)
 
-        if (notificationListSuccess) {
-            setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
-            dispatch(makeAllNotificationsSeen());
-        }
+
     }, [callOnce, notificationListSuccess])
 
+
+
+
     useEffect(() => {
-        if (notifications.length > 0) {
-            setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
+        if (data && data.notifications.length > 0) {
             dispatch(makeAllNotificationsSeen());
             setTimeout(() => {
-
                 dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: 0 });
-
             }, 3000);
         }
-    }, [notifications.length])
+    }, [data])
 
 
-    const totalPages = Math.ceil(notifications.length / itemsPerPage);
 
-    const handleClick = (page) => {
-        setCurrentPage(page);
-        const indexOfLastItem = page * itemsPerPage;
-        const indexOfFirstItem = indexOfLastItem - itemsPerPage
-        setItems(notifications.slice(indexOfFirstItem, indexOfLastItem));
-    };
-
-    const handleFirst = () => {
-
-        handleClick(1);
-    };
-
-    const handleLast = () => {
-        handleClick(totalPages);
-    };
-
-    const handleNext = () => {
-        const nextPage = currentPage + 1;
-        if (nextPage <= totalPages) {
-            handleClick(nextPage);
-        }
-    };
-
-    const handlePrevious = () => {
-        const nextPage = currentPage - 1;
-        if (nextPage > 0) {
-            handleClick(nextPage);
-        }
-    };
-    const renderPageNumbers = () => {
-        const pageNumbers = [];
-        const range = 5; // Number of pages to display at a time
-        const start = Math.max(1, currentPage - Math.floor(range / 2));
-        const end = Math.min(totalPages, start + range - 1);
-
-        pageNumbers.push(<button onClick={() => handleFirst()} className="btn btn-sm btn-light">&laquo;&laquo;</button>);
-        pageNumbers.push(<button onClick={() => handlePrevious()} className="btn btn-sm btn-light">&laquo;</button>);
-
-        for (let i = start; i <= end; i++) {
-            pageNumbers.push(
-                <button
-                    key={i}
-                    className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
-                    onClick={() => handleClick(i)}
-                >
-                    {i}
-                </button>
-            );
-        }
-
-        pageNumbers.push(<button onClick={handleNext} className="btn btn-sm btn-light">&raquo;</button>);
-        pageNumbers.push(<button onClick={() => handleLast()} className="btn btn-sm btn-light">&raquo;&raquo;</button>);
-
-        return pageNumbers;
-    };
 
     return (
         <div className="notifications-container">
@@ -123,7 +128,8 @@ const NotificationsPage = () => {
                 <Card.Body className="py-4">
                     <div className="d-flex justify-content-between mb-3">
                         <h6>
-                            <i className="fas fa-bell"></i> notifcations non vue <span className="badge bg-dark pr-1">{notifications.filter(nt => !nt.vue).length}</span>
+                            <i className="fas fa-bell"></i> notifcations non vue <span className="badge bg-dark pr-1">0</span>
+                            {/* {data && data.notifications.filter(nt => !nt.vue).length} */}
                         </h6>
                     </div>
                     {notificationListloading &&
@@ -182,11 +188,11 @@ const NotificationsPage = () => {
                         </>
                     }
 
-                    {!notificationListloading && notifications.length === 0 && (
+                    {!notificationListloading && data && data.notifications.length === 0 && (
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
 
-                    {items.length > 0 && items.map(notification => (
+                    {data && data.notifications.length > 0 && data.notifications.map(notification => (
                         <div
                             key={notification._id}
                             className={`notification border p-3 mb-1 ${notification.vue ? "seen" : "not-seen"}`}>
@@ -219,7 +225,8 @@ const NotificationsPage = () => {
                                     {currentPage} de {totalPages}
                                 </span>
                             </small>
-                            {renderPageNumbers()}
+                            {renderPageLinks()}
+
                         </div>
                     </div>
                 </Card.Body>

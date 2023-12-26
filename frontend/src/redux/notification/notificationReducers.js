@@ -29,17 +29,23 @@ import {
 
 
 
-export const notificationListReducer = (state = { notifications: [] }, action) => {
+export const notificationListReducer = (state = {}, action) => {
     const { type, payload } = action;
     switch (type) {
         case NOTIFICATION_LIST_REQUEST:
-            return { loading: true, notifications: [] };
+            return { loading: true, };
         case NOTIFICATION_LIST_SUCCESS:
-            return { loading: false, success: true, notifications: payload };
+            return { loading: false, success: true, data: payload };
         case NOTIFICATION_LIST_FAIL:
-            return { loading: false, error: payload, notifications: [] };
+            return { loading: false, error: payload, };
         case NOTIFICATION_LIST_PUSH: {
-            return { notifications: [payload, ...state.notifications] }
+            return {
+                data: {
+                    totalPages: state.totalPages,
+                    currentPage: state.currentPage,
+                    notifications: [payload, ...state.data.notifications]
+                }
+            }
         }
 
         case NOTIFICATION_LIST_RESET:

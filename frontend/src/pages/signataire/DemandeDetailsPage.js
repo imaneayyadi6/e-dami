@@ -180,7 +180,9 @@ const DemandeDetailsPage = () => {
           {demandeApprouveTraitementLoading && <Loader />}
           {demanderRefuseTraitementLoading && <Loader />}
           {loadingDemandeByID ? (
-            <DamiLoading />
+            <div className="dami-page-container">
+              <DamiLoading />
+            </div>
           ) : (
             recoveredDemande && (
               !recoveredDemande.not ? (

@@ -71,9 +71,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   });
 
   let count = 0
-  if (filters)
+  if (query)
     count = await Demande.countDocuments({
-      ...filters,
+      ...query,
       "traitement.utilisateur": req.user.id,
     });
   else count = await Demande.countDocuments({
