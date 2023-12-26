@@ -182,9 +182,10 @@ const NotificationsPage = () => {
                         </>
                     }
 
-                    {!notificationListloading && notifications.length === 0 &&(
+                    {!notificationListloading && notifications.length === 0 && (
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
+
                     {items.length > 0 && items.map(notification => (
                         <div
                             key={notification._id}
@@ -209,12 +210,13 @@ const NotificationsPage = () => {
                             </div>
                         </div>
                     ))}
+
                     <div className="d-flex justify-content-center mt-2">
                         <div className="d-flex justify-content-center align-items-center">
                             <small>
                                 Page{" "}
                                 <span style={{ fontWeight: "bold" }}>
-                                    {currentPage + 1} de {totalPages}
+                                    {currentPage} de {totalPages}
                                 </span>
                             </small>
                             {renderPageNumbers()}

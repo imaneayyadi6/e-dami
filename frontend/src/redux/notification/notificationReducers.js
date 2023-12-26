@@ -71,7 +71,7 @@ export const notificationToatsListReducer = (state = { notifications: [] }, acti
         case NOTIFICATION_TOAST_LIST_REQUEST:
             return { loading: true, notifications: [] };
         case NOTIFICATION_TOAST_LIST_SUCCESS:
-            return { loading: false, success: true, notifications: payload.slice(1, 10) };
+            return { loading: false, success: true, notifications: payload };
         case NOTIFICATION_TOAST_LIST_FAIL:
             return { loading: false, error: payload, notifications: [] };
         case NOTIFICATION_TOAST_LIST_PUSH: {

@@ -48,7 +48,6 @@ const DemandeurDetailsDemande = () => {
                 <DamiLoading /> :
                 recoveredDemande && (
                     <div>
-
                         <h3 className="mb-5 mt-3 ">
                             Status global la demande :{" "}
                             <span className={`table-text-status-${String(recoveredDemande.status).replace(/\s/g, "")}`}>{recoveredDemande.status}</span>
@@ -70,50 +69,49 @@ const DemandeurDetailsDemande = () => {
                                             <div className="timeline-content">
                                                 {recoveredDemande.traitement.map((tr, index) => (
                                                     <>
-                                                        <div className="timline-item">
-                                                            <span className="timline-item-line"></span>
-                                                            <Alert variant={STATUS[String(tr.status).replace(/\s/g, "")]}>
-                                                                {tr.status === "approuve" && (
-                                                                    <p className="w-100">
-                                                                        votre demande a ete approuver par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}
-                                                                    </p>
-                                                                )}
-                                                                {tr.status === "refuse" && (
-                                                                    <p className="w-100">
-                                                                        votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
-                                                                    </p>
-                                                                )}
-                                                                {tr.status === "en cours" && (
-                                                                    <p className="w-100">
-                                                                        votre demande a ete envoyer  M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(tr.code)}
-                                                                    </p>
-                                                                )}
-                                                                {tr.status === "en cours" ? (
-                                                                    <div className="d-flex justify-content-end">
-                                                                        <small>le {new Date(tr.dateEnvoi).toLocaleDateString()} a {new Date(tr.dateEnvoi).toLocaleTimeString()}</small>
-                                                                    </div>
-                                                                ) : (
+                                                        {tr.status !== "en cours" && (
+                                                            <div className="timline-item">
+                                                                <span className="timline-item-line"></span>
+                                                                <Alert variant={STATUS[String(tr.status).replace(/\s/g, "")]}>
+                                                                    {tr.status === "approuve" && (
+                                                                        <p className="w-100">
+                                                                            votre demande a ete approuver par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}
+                                                                            {Number(index) === 0 && (
+                                                                                <span>
+                                                                                    , et pour cela, elle a été finalisée et traitée avec succès
+                                                                                </span>
+                                                                            )}
+                                                                        </p>
+                                                                    )}
+                                                                    {tr.status === "refuse" && (
+                                                                        <p className="w-100">
+                                                                            votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
+                                                                        </p>
+                                                                    )}
                                                                     <div className="d-flex justify-content-end">
                                                                         <small>le {new Date(tr.dateTraitement).toLocaleDateString()} a {new Date(tr.dateTraitement).toLocaleTimeString()}</small>
                                                                     </div>
-                                                                )}
+                                                                </Alert >
+                                                            </div>
+                                                        )}
+
+                                                        <div className="timline-item">
+                                                            <span className="timline-item-line"></span>
+                                                            <Alert variant={"warning"}>
+                                                                <p className="w-100">
+                                                                    votre demande a ete envoyer  M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(tr.code)}
+                                                                </p>
+
+                                                                <div className="d-flex justify-content-end">
+                                                                    <small>le {new Date(tr.dateEnvoi).toLocaleDateString()} a {new Date(tr.dateEnvoi).toLocaleTimeString()}</small>
+                                                                </div>
 
                                                             </Alert >
                                                         </div>
                                                     </>
 
                                                 ))}
-                                                <div className="timline-item">
-                                                    <span className="timline-item-line"></span>
-                                                    <Alert variant="warning">
-                                                        <p className="w-100">
-                                                            votre demande a ete envoyer  a M. {recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.prenom.toLowerCase() + " " + recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].code)}
-                                                        </p>
-                                                        <div className="d-flex justify-content-end">
-                                                            <small>le {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleDateString()} a {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleTimeString()}</small>
-                                                        </div>
-                                                    </Alert>
-                                                </div>
+
                                             </div>
                                         </div>
                                     </Modal.Body>
@@ -127,50 +125,50 @@ const DemandeurDetailsDemande = () => {
                                     <div className="timeline-content">
                                         {recoveredDemande.traitement.map((tr, index) => (
                                             <>
-                                                <div className="timline-item">
-                                                    <span className="timline-item-line"></span>
-                                                    <Alert variant={STATUS[String(tr.status).replace(/\s/g, "")]}>
-                                                        {tr.status === "approuve" && (
-                                                            <p className="w-100">
-                                                                votre demande a ete approuver par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}
-                                                            </p>
-                                                        )}
-                                                        {tr.status === "refuse" && (
-                                                            <p className="w-100">
-                                                                votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
-                                                            </p>
-                                                        )}
-                                                        {tr.status === "en cours" && (
-                                                            <p className="w-100">
-                                                                votre demande a ete envoyer  M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(tr.code)}
-                                                            </p>
-                                                        )}
-                                                        {tr.status === "en cours" ? (
-                                                            <div className="d-flex justify-content-end">
-                                                                <small>le {new Date(tr.dateEnvoi).toLocaleDateString()} a {new Date(tr.dateEnvoi).toLocaleTimeString()}</small>
-                                                            </div>
-                                                        ) : (
+                                                {tr.status !== "en cours" && (
+                                                    <div className="timline-item">
+                                                        <span className="timline-item-line"></span>
+                                                        <Alert variant={STATUS[String(tr.status).replace(/\s/g, "")]}>
+
+                                                            {tr.status === "approuve" && (
+                                                                <p className="w-100">
+                                                                    votre demande a ete approuver par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}
+                                                                    {Number(index) === 0 && (
+                                                                        <span>
+                                                                            , et pour cela, elle a été finalisée et traitée avec succès
+                                                                        </span>
+                                                                    )}
+                                                                </p>
+                                                            )}
+                                                            {tr.status === "refuse" && (
+                                                                <p className="w-100">
+                                                                    votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
+                                                                </p>
+                                                            )}
                                                             <div className="d-flex justify-content-end">
                                                                 <small>le {new Date(tr.dateTraitement).toLocaleDateString()} a {new Date(tr.dateTraitement).toLocaleTimeString()}</small>
                                                             </div>
-                                                        )}
+                                                        </Alert >
+                                                    </div>
+                                                )}
+
+                                                <div className="timline-item">
+                                                    <span className="timline-item-line"></span>
+                                                    <Alert variant={"warning"}>
+                                                        <p className="w-100">
+                                                            votre demande a ete envoyer  M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(tr.code)}
+                                                        </p>
+
+                                                        <div className="d-flex justify-content-end">
+                                                            <small>le {new Date(tr.dateEnvoi).toLocaleDateString()} a {new Date(tr.dateEnvoi).toLocaleTimeString()}</small>
+                                                        </div>
 
                                                     </Alert >
                                                 </div>
                                             </>
 
                                         ))}
-                                        <div className="timline-item">
-                                            <span className="timline-item-line"></span>
-                                            <Alert variant="warning">
-                                                <p className="w-100">
-                                                    votre demande a ete envoyer  a M. {recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.prenom.toLowerCase() + " " + recoveredDemande.traitement[recoveredDemande.traitement.length - 1].utilisateur.nom.toLowerCase()} pour la traiter en tant que {getTypeApprobation(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].code)}
-                                                </p>
-                                                <div className="d-flex justify-content-end">
-                                                    <small>le {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleDateString()} a {new Date(recoveredDemande.traitement[recoveredDemande.traitement.length - 1].dateEnvoi).toLocaleTimeString()}</small>
-                                                </div>
-                                            </Alert>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
