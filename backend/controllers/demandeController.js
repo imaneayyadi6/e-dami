@@ -28,10 +28,29 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, ...filters } = req.query;
   const query = { ...filters };
 
-  let demandes = await Demande.find({
+  let objfilter = {
     ...query,
     "traitement.utilisateur": req.user.id,
-  })
+  }
+
+
+  const startDate = new Date(query.dateDemande);
+  const endDate = new Date(query.dateDemande);
+  endDate.setDate(endDate.getDate() + 1);
+
+  if (query.status)
+    objfilter["traitement.status"] = query.status
+
+  if (query.dateDemande)
+    objfilter["dateDemande"] = {
+      $gte: startDate,
+      $lte: endDate
+    }
+
+
+
+
+  let demandes = await Demande.find(objfilter)
     .populate("option")
     .populate("demandeur")
     .sort({ "traitement.dateEnvoi": -1 })
@@ -48,16 +67,67 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
       let demandeTraitements = [];
       for (let traitement of demande.traitement) {
         if (String(traitement.utilisateur) === String(req.user.id)) {
-          traitement = JSON.parse(JSON.stringify(traitement))
-          demandeTraitements.push({
-            ...traitement,
-            idTraitement: traitement._id,
-            idDemande: demande._id,
-            dateDemande: demande.dateDemande,
-            demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
-            option: demande.option.libelle,
 
-          })
+          traitement = JSON.parse(JSON.stringify(traitement))
+
+          if (query.typeApp && query.status) {
+            if (String(traitement.code) === String(query.typeApp) && String(traitement.status) === String(query.status)) {
+              if (query.dateEnvoi) {
+
+              }
+              else {
+                demandeTraitements.push({
+                  ...traitement,
+                  idTraitement: traitement._id,
+                  idDemande: demande._id,
+                  dateDemande: demande.dateDemande,
+                  demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
+                  option: demande.option.libelle,
+
+                })
+              }
+
+            }
+          }
+          else {
+            if (query.typeApp) {
+              if (new Date(query.dateEnvoi) === new Date(traitement.dateEnvoi)) {
+                demandeTraitements.push({
+                  ...traitement,
+                  idTraitement: traitement._id,
+                  idDemande: demande._id,
+                  dateDemande: demande.dateDemande,
+                  demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
+                  option: demande.option.libelle,
+
+                });
+
+              }
+            }
+            else if (query.status) {
+              if (String(traitement.status) === String(query.status)) {
+                demandeTraitements.push({
+                  ...traitement,
+                  idTraitement: traitement._id,
+                  idDemande: demande._id,
+                  dateDemande: demande.dateDemande,
+                  demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
+                  option: demande.option.libelle,
+                });
+              }
+            }
+            else {
+              demandeTraitements.push({
+                ...traitement,
+                idTraitement: traitement._id,
+                idDemande: demande._id,
+                dateDemande: demande.dateDemande,
+                demandeur: demande.demandeur.prenom + " " + demande.demandeur.nom,
+                option: demande.option.libelle,
+              });
+            }
+          }
+
         }
       }
 
@@ -72,10 +142,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
 
   let count = 0
   if (query)
-    count = await Demande.countDocuments({
-      ...query,
-      "traitement.utilisateur": req.user.id,
-    });
+    count = await Demande.countDocuments(objfilter);
   else count = await Demande.countDocuments({
     "traitement.utilisateur": req.user.id,
   });

@@ -21,8 +21,8 @@ const DemandesPage = () => {
 
 
 
-  const filterHnadler = () => {
-    let qurey = { page: 1 };
+  const filterHnadler = ({ page }) => {
+    let qurey = { page: page || 1 };
     if (option) qurey.option = option
     if (demandeur) qurey.demandeur = demandeur
     if (typeApp) qurey.typeApp = typeApp
@@ -55,7 +55,7 @@ const DemandesPage = () => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    dispatch(getDemandesToHandle({ page: newPage }));
+    filterHnadler(newPage)
   };
 
   const renderPageLinks = () => {
@@ -149,8 +149,17 @@ const DemandesPage = () => {
 
 
           <>
-            {!loadingDemandesToHandle && successDemandesToHandleFilter && (<Button variant="dark" onClick={filterHnadler}>
-              <i className="fa-solid fa-filter"></i> {" "} filtrer</Button>)}
+            {!loadingDemandesToHandle && successDemandesToHandleFilter && (
+              <>
+                <Button variant="dark" onClick={filterHnadler}>
+                  <i className="fa-solid fa-filter"></i> {" "} filtrer
+                </Button>
+                <Button variant="light" onClick={() => dispatch(getDemandesToHandle())}>
+                  <i className="fa-solid fa-filter-circle-xmark"></i> annuler le filter
+                </Button>
+              </>
+
+            )}
 
             <hr />
             <div className="table-responsive">
@@ -167,6 +176,7 @@ const DemandesPage = () => {
                               value={demandeur}
                               onChange={(e) => setDemandeur(e.target.value)}
                               disabled={loadingDemandesToHandleFilter} size="sm">
+                              <option value={""} >----veuillez selectionner un demandeur ----</option>
                               {dataFilter.demandeurs.map(demandeur => (
                                 <option key={demandeur._id} value={demandeur._id}>{demandeur.prenom.toLowerCase() + " " + demandeur.nom.toLowerCase()}</option>
                               ))}
@@ -206,6 +216,8 @@ const DemandesPage = () => {
                               value={option}
                               onChange={(e) => setOption(e.target.value)}
                               disabled={loadingDemandesToHandleFilter} size="sm">
+                              <option value={""} >----veuillez selectionner une option ----</option>
+
                               {dataFilter.options.map(option => (
                                 <option key={option._id} value={option._id} >{option.libelle.toLowerCase()}</option>
                               ))}
@@ -222,6 +234,8 @@ const DemandesPage = () => {
                               value={typeApp}
                               onChange={(e) => setTypeApp(e.target.value)}
                               disabled={loadingDemandesToHandleFilter} size="sm">
+                              <option value={""} >----veuillez selectionner un type d'approbation ----</option>
+
                               {dataFilter.typeApp.map(typeA => (
                                 <option key={typeA} value={typeA} >{getTypeApprobation(typeA)}</option>
                               ))}
@@ -238,6 +252,8 @@ const DemandesPage = () => {
                             <Form.Select size="sm"
                               value={status}
                               onChange={(e) => setStatus(e.target.value)}>
+                              <option value={""} >----veuillez selectionner un type un status ----</option>
+
                               <option value={"en cours"}>en cours</option>
                               <option value={"approuve"}>approuve</option>
                               <option value={"refuse"}>refuse</option>
