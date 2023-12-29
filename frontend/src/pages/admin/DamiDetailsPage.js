@@ -41,18 +41,24 @@ const DamiDetailsPage = () => {
         </Link>
       </div>
       {errorOptionByID && <Message type='danger' itWillBeHidden>{errorOptionByID}</Message>}
-      <Card>
-        <Card.Body>
-          {loadingOptionByID ? (
+      <>
+
+        {loadingOptionByID ? (
+          <div className="dami-page-container">
             <DamiLoading />
-          ) : (
-            recoveredOption && <Dami option={recoveredOption} showAdmin />
-          )}
-          {!loadingOptionByID && !recoveredOption && (
-            <WarningMessage message={"option (DAMI) introuvable !"}/>
-          )}
-        </Card.Body>
-      </Card>
+          </div>
+        ) : (
+          recoveredOption && (<div className="dami-page-container mt-5">
+
+            <Dami option={recoveredOption} showAdmin />
+          </div>
+          )
+        )}
+        {!loadingOptionByID && !recoveredOption && (
+          <WarningMessage message={"option (DAMI) introuvable !"} />
+        )}
+
+      </>
     </>
   );
 };

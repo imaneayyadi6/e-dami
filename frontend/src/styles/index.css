@@ -196,6 +196,13 @@ ul {
   text-transform: lowercase;
 }
 
+.first-letter-uppercase {
+  text-transform: lowercase;
+}
+
+.first-letter-uppercase:first-letter {
+  text-transform: uppercase;
+}
 
 /* End Global Rules */
 

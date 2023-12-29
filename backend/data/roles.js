@@ -5,6 +5,7 @@ const roles = [
     libelle: "créateur",
     code: "crt",
   },
+
   {
     _id: new mongoose.Types.ObjectId(),
     libelle: "demandeur",
@@ -15,6 +16,12 @@ const roles = [
     libelle: "signataire",
     code: "sig",
   },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    libelle: "créateur d'option",
+    code: "crt-op",
+  },
+
 ];
 
 export default roles;

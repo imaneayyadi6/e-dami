@@ -14,9 +14,9 @@ import {
 } from "../controllers/demandeController.js";
 
 const router = express.Router();
-
-router.route("/").post(protect, createDemande);
 router.route("/handle").get(protect, signataire, getDemandesForHandling);
+router.route("/").post(protect, createDemande);
+
 router.route("/handle/filter").get(protect, signataire, getFilterOptionsDemandes);
 
 router.route("/:id/traitement/:idTraitement").get(protect, signataire, getDemandesByID);

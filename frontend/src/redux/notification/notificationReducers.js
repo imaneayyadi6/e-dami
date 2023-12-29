@@ -41,9 +41,9 @@ export const notificationListReducer = (state = {}, action) => {
         case NOTIFICATION_LIST_PUSH: {
             return {
                 data: {
-                    totalPages: state.totalPages,
-                    currentPage: state.currentPage,
-                    notifications: [payload, ...state.data.notifications]
+                    totalPages: state.data && state.data.totalPages ? state.data.totalPages : 1,
+                    currentPage: state.data && state.data.currentPage ? state.data.currentPage : 1,
+                    notifications: state.data && state.data.notifications ? [payload, ...state.data.notifications].slice(0, 5) : [payload]
                 }
             }
         }
@@ -81,7 +81,7 @@ export const notificationToatsListReducer = (state = { notifications: [] }, acti
         case NOTIFICATION_TOAST_LIST_FAIL:
             return { loading: false, error: payload, notifications: [] };
         case NOTIFICATION_TOAST_LIST_PUSH: {
-            return { notifications: [payload, ...state.notifications] }
+            return { notifications: [payload, ...state.notifications].slice(0, 5) }
         }
         case NOTIFICATION_TOAST_LIST_SEEN_ALL: {
             return {
@@ -92,7 +92,7 @@ export const notificationToatsListReducer = (state = { notifications: [] }, acti
             }
         }
         case NOTIFICATION_TOAST_LIST_REMOVE: {
-            return { notifications: state.notifications.filter(notification => String(notification._id) !== String(payload)) }
+            return { notifications: state.notifications.filter(notification => String(notification._id) !== String(payload)).slice(0, 5) }
         }
         case NOTIFICATION_TOAST_LIST_RESET:
             return { notifications: [] };

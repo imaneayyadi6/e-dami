@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { capitalizeFirstLetter } from "../services";
 
 const DamiDemande = ({ demande }) => {
   const cleanDocRef = useRef(null);
+
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin
 
   const [sigTypes] = useState({
     cds: "Approbation Chef de Service",
@@ -248,13 +253,29 @@ const DamiDemande = ({ demande }) => {
                 <div className=''>
                   <label>Nom:</label>
                   <input className='dami-input'
-                    value={demande.sig.find(sg => sg.code === sig) && demande.sig.find(sg => sg.code === sig).nom}
+                    value={
+                      demande.sig.find(sg => sg.code === sig) ? capitalizeFirstLetter(demande.sig.find(sg => sg.code === sig).nom)
+                        : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)) && demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)).code.split(".").length > 1
+                          ?
+                          demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code.split(".").find(cd => String(cd) === String(sig)))
+                          && capitalizeFirstLetter(userInfo.nom)
+                          : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code === String(sig))
+                          && capitalizeFirstLetter(userInfo.nom)
+                    }
                   />
                 </div>
                 <div className=''>
                   <label>Prenom:</label>
                   <input className='dami-input'
-                    value={demande.sig.find(sg => sg.code === sig) && demande.sig.find(sg => sg.code === sig).prenom}
+                    value={
+                      demande.sig.find(sg => sg.code === sig) ? capitalizeFirstLetter(demande.sig.find(sg => sg.code === sig).prenom)
+                        : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)) && demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)).code.split(".").length > 1
+                          ?
+                          demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code.split(".").find(cd => String(cd) === String(sig)))
+                          && capitalizeFirstLetter(userInfo.prenom)
+                          : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code === String(sig))
+                          && capitalizeFirstLetter(userInfo.prenom)
+                    }
                   />
                 </div>
                 <div
@@ -263,18 +284,29 @@ const DamiDemande = ({ demande }) => {
                   <label>Decision:</label>
                   <div className='ml-1'>
                     <label>Oui</label>
+                    <input type="checkbox" className={`dami-check-box mr-1 
+                    ${demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)) && demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)).code.split(".").length > 1
+                        ?
+                        demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code.split(".").find(cd => String(cd) === String(sig)))
+                        && `chk-app-${userInfo.id}`
+                        : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code === String(sig))
+                        && `chk-app-${userInfo.id}`}
 
-                    <input type="checkbox" className={`dami-check-box mr-1  ${demande.sig.find(sg => sg.code === sig)
-                      &&
-                      demande.sig.find(sg => sg.code === sig).approuve ? 'checked' : ""} `}
-
+                    ${demande.sig.find(sg => sg.code === sig)
+                        &&
+                        demande.sig.find(sg => sg.code === sig).approuve ? 'checked' : ""} `}
                     />
                   </div>
                   <div>
                     <label>Non</label>
-                    <input type="checkbox" className={`dami-check-box mr-1 ${demande.sig.find(sg => sg.code === sig)
-                      &&
-                      demande.sig.find(sg => sg.code === sig).refuse ? 'checked' : ""} `}
+                    <input type="checkbox" className={`dami-check-box mr-1  ${demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)) && demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)).code.split(".").length > 1
+                      ?
+                      demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code.split(".").find(cd => String(cd) === String(sig)))
+                      && `chk-rfs-${userInfo.id}`
+                      : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code === String(sig))
+                      && `chk-rfs-${userInfo.id}`} ${demande.sig.find(sg => sg.code === sig)
+                        &&
+                        demande.sig.find(sg => sg.code === sig).refuse ? 'checked' : ""} `}
                     />
                   </div>
                 </div>
@@ -289,7 +321,15 @@ const DamiDemande = ({ demande }) => {
                   <input className='dami-input'
                     value={demande.sig.find(sg => sg.code === sig)
                       &&
-                      demande.sig.find(sg => sg.code === sig).dateTraitement ? new Date(demande.sig.find(sg => sg.code === sig).dateTraitement).toLocaleDateString() : ""}
+                      demande.sig.find(sg => sg.code === sig).dateTraitement ? new Date(demande.sig.find(sg => sg.code === sig).dateTraitement).toLocaleDateString() :
+
+                      demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)) && demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id)).code.split(".").length > 1
+                        ?
+                        demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code.split(".").find(cd => String(cd) === String(sig)))
+                        && new Date().toLocaleDateString()
+                        : demande.traitement.find(tr => String(tr.utilisateur) === String(userInfo.id) && tr.code === String(sig))
+                        && new Date().toLocaleDateString()
+                    }
                   />
                 </div>
                 <div className='mt-1'>

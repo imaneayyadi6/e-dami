@@ -11,6 +11,7 @@ const DemandesPage = () => {
   const [callOnce, setCallOnce] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isNextPages, setIsNextPages] = useState(false);
 
   const [option, setOption] = useState(null);
   const [demandeur, setDemandeur] = useState(null);
@@ -22,15 +23,16 @@ const DemandesPage = () => {
 
 
   const filterHnadler = ({ page }) => {
-    let qurey = { page: page || 1 };
-    if (option) qurey.option = option
-    if (demandeur) qurey.demandeur = demandeur
-    if (typeApp) qurey.typeApp = typeApp
-    if (status) qurey.status = status
-    if (dateEnvoi) qurey.dateEnvoi = dateEnvoi
-    if (dateDemande) qurey.dateDemande = dateDemande
+    setIsNextPages(false);
+    let query = { page: page || 1 };
+    if (option !== null) query.option = option
+    if (demandeur !== null) query.demandeur = demandeur
+    if (typeApp !== null) query.typeApp = typeApp
+    if (status !== null) query.status = status
+    if (dateEnvoi !== null) query.dateEnvoi = dateEnvoi
+    if (dateDemande !== null) query.dateDemande = dateDemande
 
-    dispatch(getDemandesToHandle(qurey));
+    dispatch(getDemandesToHandle(query));
   }
 
 
@@ -56,67 +58,91 @@ const DemandesPage = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     filterHnadler(newPage)
+    setIsNextPages(true);
   };
 
   const renderPageLinks = () => {
 
     const links = [];
 
-    const range = 20;
-    const start = Math.max(1, currentPage - Math.floor(range / 2));
-    const end = Math.min(totalPages, start + range);
+    if (totalPages > 1) {
 
-    links.push(
-      <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
-        &laquo;&laquo;
-      </button>,
-      <button
-        key="previous"
-        className="btn btn-sm btn-light"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        &laquo;
-      </button>
-    );
+      const range = 20;
+      const start = Math.max(1, currentPage - Math.floor(range / 2));
+      const end = Math.min(totalPages, start + range);
 
-
-    for (let i = start; i <= end; i++) {
       links.push(
+        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+          &laquo;&laquo;
+        </button>,
         <button
-          key={i}
-          onClick={() => handlePageChange(i)}
-          className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+          key="previous"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
         >
-          {i}
+          &laquo;
         </button>
       );
+
+
+      for (let i = start; i <= end; i++) {
+        links.push(
+          <button
+            key={i}
+            onClick={() => handlePageChange(i)}
+            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+          >
+            {i}
+          </button>
+        );
+      }
+
+
+      links.push(
+        <button
+          key="next"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          &raquo;
+        </button>,
+        <button
+          key="last"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          &raquo;&raquo;
+        </button>
+      );
+
+      return links;
+    }
+    else {
+      links.push(
+        <button
+          className={`btn btn-sm btn-light active ml-1`}
+        >
+          1
+        </button>
+      );
+      return links;
     }
 
 
-    links.push(
-      <button
-        key="next"
-        className="btn btn-sm btn-light"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        &raquo;
-      </button>,
-      <button
-        key="last"
-        className="btn btn-sm btn-light"
-        onClick={() => handlePageChange(totalPages)}
-        disabled={currentPage === totalPages}
-      >
-        &raquo;&raquo;
-      </button>
-    );
-
-    return links;
-
-
   };
+
+  const resetFilterHandler = () => {
+    setOption(null);
+    setDemandeur(null);
+    setTypeApp(null);
+    setStatus(null);
+    setDateEnvoi(null);
+    setDateDemande(null);
+    dispatch(getDemandesToHandle())
+  }
 
 
   useEffect(() => {
@@ -126,10 +152,15 @@ const DemandesPage = () => {
       dispatch(getDemandesFilterToHandle())
       setCallOnce(true);
     }
+
     if (successDemandesToHandle) {
       setTotalPages(data.totalPages);
+      if (isNextPages) {
+        window.scrollTo(1000000, 100000);
+      }
     }
-  }, [callOnce, successDemandesToHandle]);
+
+  }, [callOnce, successDemandesToHandle, isNextPages]);
 
   return (
     <>
@@ -154,7 +185,7 @@ const DemandesPage = () => {
                 <Button variant="dark" onClick={filterHnadler}>
                   <i className="fa-solid fa-filter"></i> {" "} filtrer
                 </Button>
-                <Button variant="light" onClick={() => dispatch(getDemandesToHandle())}>
+                <Button variant="light" onClick={resetFilterHandler}>
                   <i className="fa-solid fa-filter-circle-xmark"></i> annuler le filter
                 </Button>
               </>
@@ -236,7 +267,7 @@ const DemandesPage = () => {
                               disabled={loadingDemandesToHandleFilter} size="sm">
                               <option value={""} >----veuillez selectionner un type d'approbation ----</option>
 
-                              {dataFilter.typeApp.map(typeA => (
+                              {dataFilter.typeApp.map((typeA) => (
                                 <option key={typeA} value={typeA} >{getTypeApprobation(typeA)}</option>
                               ))}
                             </Form.Select>
@@ -283,12 +314,16 @@ const DemandesPage = () => {
                         <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
                         <td><small className={`inline-text  table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
                         <td>
-                          <Link to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
-                            <small>traiter</small>
+                          <Link className="btn btn-sm btn-light" to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
+                            traiter
                           </Link>
                         </td>
                       </tr>
                     ))
+
+
+
+
 
                   ) : (
                     successDemandesToHandle && (
@@ -303,16 +338,19 @@ const DemandesPage = () => {
                   )}
                 </tbody>
               </table>
+              {successDemandesToHandleFilter && data && (
+                <div className="d-flex justify-content-center align-items-center">
+                  <small>
+                    Page{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      {currentPage} de {totalPages}
+                    </span>
+                  </small>
+                  {renderPageLinks()}
+                </div>
+              )}
 
-              <div className="d-flex justify-content-center align-items-center">
-                <small>
-                  Page{" "}
-                  <span style={{ fontWeight: "bold" }}>
-                    {currentPage} de {totalPages}
-                  </span>
-                </small>
-                {renderPageLinks()}
-              </div>
+
             </div>
           </>
 

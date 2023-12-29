@@ -79,9 +79,14 @@ export const getDemandesToHandle = (query = { page: 1 }) => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const { data } = await axios.get(`/api/demandes/handle?${query !== null && Object.entries(query)
+
+      let objFilter = Object.entries(query)
         .map(([key, value]) => `${key}=${value}`)
-        .join('&')}`, config);
+        .join('&');
+
+      console.log(objFilter)
+
+      const { data } = await axios.get(`/api/demandes/handle?${objFilter}`, config);
       dispatch({ type: DEMANDE_TOHANDLE_LIST_SUCCESS, payload: data });
     } catch (error) {
       const err =

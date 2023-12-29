@@ -315,7 +315,9 @@ const FaireUneDemande = () => {
                 {option ? (
                   <div className="">
 
-                    <Dami option={option} />
+                    <div className="dami-page-container mt-5">
+                      <Dami option={option} />
+                    </div>
                     <div className="d-flex justify-content-center mt-2">
                       <Button
                         className='mr-1'

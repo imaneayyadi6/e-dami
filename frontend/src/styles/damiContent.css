@@ -243,10 +243,13 @@
   user-select: auto;
   white-space: nowrap;
   margin: 5px 0;
+
 }
 
 .dami-label.block {
   width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .dami-comp-ui {

@@ -192,43 +192,52 @@ const NotificationsPage = () => {
                         <WarningMessage message={"aucune notification trouvée !"} />
                     )}
 
-                    {data && data.notifications.length > 0 && data.notifications.map(notification => (
-                        <div
-                            key={notification._id}
-                            className={`notification border p-3 mb-1 ${notification.vue ? "seen" : "not-seen"}`}>
-                            <p
-                                dangerouslySetInnerHTML={{
-                                    __html: notification.content
-                                }}>
-                            </p>
-                            <div className="d-flex justify-content-end">
+                    {data && data.notifications && data.notifications.length > 0 &&
+                        data.notifications.map(notification => (
+                            <div
+                                key={notification._id}
+                                className={`notification border p-3 mb-1 ${notification.vue ? "seen" : "not-seen"}`}>
+                                <p
+                                    dangerouslySetInnerHTML={{
+                                        __html: notification.content
+                                    }}>
+                                </p>
+                                <div className="d-flex justify-content-end">
+                                    <small>
+                                        {new Date(
+                                            notification.dateNotification
+                                        ).toLocaleDateString()}
+                                        {" "}à{" "}
+                                        {new Date(notification.dateNotification).toLocaleTimeString("en-US", {
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: false, // Set to false if you want 24-hour format
+                                        })}
+                                    </small>
+                                </div>
+                            </div>
+
+                        ))
+
+                    }
+                    {data && data.notifications && data.notifications.length > 0 && (
+                        <div className="d-flex justify-content-center mt-2">
+                            <div className="d-flex justify-content-center align-items-center">
                                 <small>
-                                    {new Date(
-                                        notification.dateNotification
-                                    ).toLocaleDateString()}
-                                    {" "}à{" "}
-                                    {new Date(notification.dateNotification).toLocaleTimeString("en-US", {
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: false, // Set to false if you want 24-hour format
-                                    })}
+                                    Page{" "}
+                                    <span style={{ fontWeight: "bold" }}>
+                                        {currentPage} de {totalPages}
+                                    </span>
                                 </small>
+                                {renderPageLinks()}
+
                             </div>
                         </div>
-                    ))}
+                    )}
 
-                    <div className="d-flex justify-content-center mt-2">
-                        <div className="d-flex justify-content-center align-items-center">
-                            <small>
-                                Page{" "}
-                                <span style={{ fontWeight: "bold" }}>
-                                    {currentPage} de {totalPages}
-                                </span>
-                            </small>
-                            {renderPageLinks()}
 
-                        </div>
-                    </div>
+
+
                 </Card.Body>
 
             </Card>

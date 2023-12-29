@@ -32,6 +32,11 @@ const DemandeDetailsPage = () => {
 
   const { id, idTraitement } = useParams();
   const dispatch = useDispatch();
+
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin
+
+
   const demandeById = useSelector(state => state.demandeById);
   const {
     loading: loadingDemandeByID,
@@ -69,14 +74,14 @@ const DemandeDetailsPage = () => {
       title: "Confirmation",
       message: "Êtes vous sûr de vouloir approuver cette demande ?",
       onYes: () => {
-        window.scrollTo(0, 0);
+        window.scrollTo(-1000000, -100000);
         dispatch(approuveTraitement(id, idTraitement));
       }
     })
   }
 
   const refuseeHandler = () => {
-    window.scrollTo(0, 0);
+    window.scrollTo(-1000000, -100000);
     if (motif !== "") {
       dispatch(refuseTraitement(id, idTraitement, motif));
       setShowRefuseModal(false);
@@ -98,17 +103,26 @@ const DemandeDetailsPage = () => {
     }
 
     if (demandeApprouveTraitementSuccess) {
+      document.querySelectorAll(`.chk-app-${userInfo.id}`).forEach(chk => {
+        chk.classList.add("checked");
+      })
       Toast.open({ type: "success", message: "Demande approuvée avec succès." });
       setTimeout(() => {
         dispatch(resetApprouveTraitement())
       }, 5000)
+
+
     }
 
     if (demanderRefuseTraitementSuccess) {
+      document.querySelectorAll(`.chk-rfs-${userInfo.id}`).forEach(chk => {
+        chk.classList.add("checked");
+      })
       Toast.open({ type: "success", message: "Demande refusée avec succès." });
       setTimeout(() => {
         dispatch(resetRefuseTraitement())
       }, 5000)
+
     }
   }, [
     callOnce,

@@ -31,6 +31,7 @@ const validationSchema = Yup.object({
   demandeur: Yup.boolean(),
   signataire: Yup.boolean(),
   createur: Yup.boolean(),
+  createurOption: Yup.boolean(),
   password: Yup.string().required("il faut saisire le mot de passe !"),
   confirmPassword: Yup.string().required(
     "il faut saisire le mot de passe de confirmation !"
@@ -54,7 +55,7 @@ const UtilisateurCreatePage = () => {
     isDirecteur: false,
     demandeur: false,
     signataire: false,
-    createur: false,
+    createur: false, createurOption: false,
     password: "",
     confirmPassword: "",
   });
@@ -113,6 +114,7 @@ const UtilisateurCreatePage = () => {
         demandeur,
         signataire,
         createur,
+        createurOption,
         password,
         confirmPassword,
       } = values;
@@ -126,7 +128,8 @@ const UtilisateurCreatePage = () => {
         if (demandeur) roles.push("dmr");
         if (createur) roles.push("crt");
         if (signataire) roles.push("sig");
-
+        if (createurOption) roles.push("crt-op");
+        
         const user = {
           matricule,
           email,

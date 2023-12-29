@@ -47,35 +47,35 @@ const routes = [
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt"],
+    roles: ["crt", "crt-op"]
   },
   {
     path: "/creer-option/:id",
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt"],
+    roles: ["crt", "crt-op"]
   },
   {
     path: "/modifier-option/:id",
     name: "Modifier option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt"],
+    roles: ["crt", "crt-op"]
   },
   {
     path: "/details-option/:id",
     name: "Details option",
     element: <DamiDetailsPage />,
     exact: true,
-    roles: ["crt"],
+    roles: ["crt", "crt-op"]
   },
   {
     path: "/options",
     name: "Options",
     element: <OptionListPage />,
     exact: true,
-    roles: ["crt"],
+    roles: ["crt", "crt-op"]
   },
   {
     path: "/directions",

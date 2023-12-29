@@ -38,6 +38,8 @@ const validationSchema = Yup.object({
   demandeur: Yup.boolean(),
   signataire: Yup.boolean(),
   createur: Yup.boolean(),
+  createurOption: Yup.boolean(),
+
 });
 const changePasswordvalidationSchema = Yup.object({
   password: Yup.string().required("il faut saisire le mot de passe !"),
@@ -75,6 +77,7 @@ const UtilisateurUpdatePage = () => {
     demandeur: false,
     signataire: false,
     createur: false,
+    createurOption: false,
   });
 
   const userUpdate = useSelector(state => state.userUpdate);
@@ -142,6 +145,7 @@ const UtilisateurUpdatePage = () => {
         demandeur,
         signataire,
         createur,
+        createurOption
       } = values;
 
       if (isChefDeService && (!service || service === "")) {
@@ -154,6 +158,8 @@ const UtilisateurUpdatePage = () => {
         if (demandeur) roles.push("dmr");
         if (createur) roles.push("crt");
         if (signataire) roles.push("sig");
+        if (createurOption) roles.push("crt-op");
+
 
         const user = {
           matricule,
@@ -225,17 +231,22 @@ const UtilisateurUpdatePage = () => {
           isDirecteur: recoveredUser ? recoveredUser.isDirecteur : "",
           createur:
             recoveredUser &&
-            recoveredUser.roles.find(role => String(role.role.code) === "crt")
+              recoveredUser.roles.find(role => String(role.role.code) === "crt")
+              ? true
+              : false,
+          createurOption:
+            recoveredUser &&
+              recoveredUser.roles.find(role => String(role.role.code) === "crt-op")
               ? true
               : false,
           signataire:
             recoveredUser &&
-            recoveredUser.roles.find(role => String(role.role.code) === "sig")
+              recoveredUser.roles.find(role => String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             recoveredUser &&
-            recoveredUser.roles.find(role => String(role.role.code) === "dmr")
+              recoveredUser.roles.find(role => String(role.role.code) === "dmr")
               ? true
               : false,
         });
@@ -263,17 +274,22 @@ const UtilisateurUpdatePage = () => {
           isDirecteur: updatedUser ? updatedUser.isDirecteur : "",
           createur:
             updatedUser &&
-            updatedUser.roles.find(role => String(role.role.code) === "crt")
+              updatedUser.roles.find(role => String(role.role.code) === "crt")
+              ? true
+              : false,
+          createurOption:
+            updatedUser &&
+              updatedUser.roles.find(role => String(role.role.code) === "crt-op")
               ? true
               : false,
           signataire:
             updatedUser &&
-            updatedUser.roles.find(role => String(role.role.code) === "sig")
+              updatedUser.roles.find(role => String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             updatedUser &&
-            updatedUser.roles.find(role => String(role.role.code) === "dmr")
+              updatedUser.roles.find(role => String(role.role.code) === "dmr")
               ? true
               : false,
         });
@@ -574,6 +590,7 @@ const UtilisateurUpdatePage = () => {
                               demandeur: form.values.demandeur,
                               createur: form.values.createur,
                               signataire: form.values.signataire,
+                              createurOption: form.values.createurOption,
                               isDirecteur: false,
                               isChefDeService: true,
                             });
@@ -608,6 +625,7 @@ const UtilisateurUpdatePage = () => {
                               demandeur: form.values.demandeur,
                               createur: form.values.createur,
                               signataire: form.values.signataire,
+                              createurOption: form.values.createurOption,
                               isChefDeService: false,
                               isDirecteur: true,
                             });
@@ -633,7 +651,7 @@ const UtilisateurUpdatePage = () => {
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
                     <Row>
-                      <Col xl={4} lg={4} md={12} sm={12}>
+                      <Col xl={3} lg={3} md={12} sm={12}>
                         <div className='d-flex justify-content-start align-items-center mr-2'>
                           <label className='mr-1'>Demandeur :</label>
                           <Form.Check
@@ -651,7 +669,7 @@ const UtilisateurUpdatePage = () => {
                           )}
                         </div>
                       </Col>
-                      <Col xl={4} lg={4} md={12} sm={12}>
+                      <Col xl={3} lg={3} md={12} sm={12}>
                         <div className='d-flex justify-content-start align-items-center mr-2'>
                           <label className='mr-1'>Signataire :</label>
                           <Form.Check
@@ -670,7 +688,7 @@ const UtilisateurUpdatePage = () => {
                             )}
                         </div>
                       </Col>
-                      <Col xl={4} lg={4} md={12} sm={12}>
+                      <Col xl={3} lg={3} md={12} sm={12}>
                         <div className='d-flex justify-content-start align-items-center mr-2'>
                           <label className='mr-1'>Createur :</label>
                           <Form.Check
@@ -684,6 +702,24 @@ const UtilisateurUpdatePage = () => {
                           {form.touched.createur && form.errors.createur && (
                             <small className='text-danger d-block'>
                               {form.errors.createur}
+                            </small>
+                          )}
+                        </div>
+                      </Col>
+                      <Col xl={3} lg={3} md={12} sm={12}>
+                        <div className='d-flex justify-content-start align-items-center mr-2'>
+                          <label className='mr-1'>Createur d'option :</label>
+                          <Form.Check
+                            disabled={loadingUserUpdate}
+                            name='createurOption'
+                            onChange={form.handleChange}
+                            onBlur={form.handleBlur}
+                            value={form.values.createurOption}
+                            checked={form.values.createurOption}
+                          />
+                          {form.touched.createurOption && form.errors.createurOption && (
+                            <small className='text-danger d-block'>
+                              {form.errors.createurOption}
                             </small>
                           )}
                         </div>
