@@ -69,6 +69,7 @@ export const seenNotifications = asyncHandler(async (req, res) => {
 export const getToastNotifications = asyncHandler(async (req, res) => {
     let notifications = await Notification.find({
         utilisateur: req.user.id,
+        vue: false,
         vueToast: false,
     }).sort({ dateNotification: -1 })
         .limit(5);

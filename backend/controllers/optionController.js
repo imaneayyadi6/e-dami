@@ -17,19 +17,43 @@ export const getOptions = asyncHandler(async (req, res) => {
 });
 
 // @desc    Recuperer les options d'une sous-categorie par ID
-// @route   GET /api/options/souscategorie/:id
+// @route   GET /api/options/souscategorie
 // @access  private
 export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
-  const sousCategorie = await SousCategorie.findById(req.params.id);
-  if (sousCategorie) {
-    const options = await Option.find({
-      sousCategorie: req.params.id,
-    }).populate("proprietaireDeDonnees");
-    res.json(options);
-  } else {
-    res.status(404);
-    throw new Error("categorie introuvable !");
+  const { page = 1, limit = 20, sousCategorie: sousCategorieId } = req.query;
+
+  const query = {}
+  if (sousCategorieId) {
+    const sousCategorie = await SousCategorie.findById(sousCategorieId);
+    if (sousCategorie) query.sousCategorie = sousCategorieId;
+    else {
+      res.status(404);
+      throw new Error("categorie introuvable !");
+    }
   }
+
+  const options = await Option.find({
+    ...query
+  })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+
+  // Count total documents based on filters
+  const count = await SousCategorie.countDocuments(query);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(count / limit);
+
+  // Respond with processed data
+  res.json({
+    options,
+    totalPages,
+    currentPage: page,
+  });
+
+  res.json(options);
+
 });
 
 // @desc    Recuperer une option par ID

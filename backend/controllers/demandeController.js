@@ -156,92 +156,173 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
 // @route   POST /api/demandes
 // @access  private
 export const createDemande = asyncHandler(async (req, res) => {
-  // Extract optionID and contenu from the request body
+  // creation de la demande :
   const { option: optionID, contenu } = req.body;
-
-  // Retrieve option and user information from the database
   const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
+  if (option) {
+    if (user) {
 
-  // Check if option and user exist, throw an error if not
-  if (!option) {
-    throw new Error("Option introuvable !");
-  }
+      let code = "";
+      let userID = "";
+      let typeApp = "";
+      // verification de code de signataires :
+      if (option.signataires[0] === "cds") {
+        const service = await Service.findById(user.service);
+        if (service.chefService) {
+          userID = service.chefService;
+          code = "cds";
+          typeApp = "chef de service";
+        } else {
+          res.status(400);
+          throw new Error("le service n'a pas de chef de service !");
+        }
+      } else if (option.signataires[0] === "hiq") {
+        const direction = await Direction.findById(user.direction);
+        if (direction) {
+          if (direction.directeur) {
+            userID = direction.directeur;
 
-  if (!user) {
-    throw new Error("Utilisateur introuvable !");
-  }
+            if (option.signataires[1] === "pdd" && option.signataires[2] === "dir") {
+              const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
+              const dirDirection = await Direction.findById(option.service.direction);
+              if (dirDirection && pddDirection) {
+                if (String(pddDirection.directeur) === String(direction.directeur) &&
+                  String(dirDirection.directeur) === String(direction.directeur)) {
+                  code = "hiq.pdd.dir";
+                  typeApp = "directeur hiérarchique, propriétaire de données et directeur de l'entité";
+                }
+                else {
+                  if (option.signataires[1] === "dir") {
+                    const dirDirection = await Direction.findById(option.service.direction);
+                    if (dirDirection) {
+                      if (String(dirDirection.directeur) === String(direction.directeur)) {
+                        code = "hiq.dir";
+                        typeApp = "directeur hiérarchique et directeur de l'entité";
+                      }
+                      else {
+                        code = "hiq";
+                        typeApp = "directeur hiérarchique";
+                      }
+                    }
+                    else {
+                      res.status(400);
+                      throw new Error("directeur de  l'entité introuvable !");
+                    }
+                  }
+                  else if (option.signataires[1] === "pdd") {
+                    const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
+                    if (pddDirection) {
+                      if (String(pddDirection.directeur) === String(direction.directeur)) {
+                        code = "hiq.pdd";
+                        typeApp = "directeur hiérarchique et propriétaire de données";
+                      } else {
+                        code = "hiq";
+                        typeApp = "directeur hiérarchique";
+                      }
+                    }
+                    else {
+                      res.status(400);
+                      throw new Error("proprietaire de donnees introuvable !");
+                    }
+                  }
+                  else {
+                    code = "hiq";
+                    typeApp = "directeur hiérarchique";
+                  }
+                };
+              }
+              else {
+                if (!pddDirection) {
+                  res.status(400);
+                  throw new Error("proprietaire de donnees introuvable !");
+                }
+                if (!dirDirection) {
+                  res.status(400);
+                  throw new Error("directeur de  l'entité introuvable !");
+                }
+              }
+            }
+            else {
+              if (option.signataires[1] === "dir") {
+                const dirDirection = await Direction.findById(option.service.direction);
+                if (dirDirection) {
+                  if (String(dirDirection.directeur) === String(direction.directeur)) {
+                    code = "hiq.dir";
+                    typeApp = "directeur hiérarchique et directeur de l'entité";
+                  }
+                  else {
+                    code = "hiq";
+                    typeApp = "directeur hiérarchique";
+                  }
+                }
+                else {
+                  res.status(400);
+                  throw new Error("directeur de l'entité introuvable !");
+                }
+              }
+              else if (option.signataires[1] === "pdd") {
+                const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
+                if (pddDirection) {
+                  if (String(pddDirection.directeur) === String(direction.directeur)) {
+                    code = "hiq.pdd";
+                    typeApp = "directeur hiérarchique et propriétaire de données";
+                  } else {
+                    code = "hiq";
+                    typeApp = "directeur hiérarchique";
+                  }
+                }
+                else {
+                  res.status(400);
+                  throw new Error("proprietaire de donnees introuvable !");
+                }
 
-  // Initialize variables for code, userID, and typeApp
-  let code = "";
-  let userID = "";
-  let typeApp = "";
+              }
+              else {
+                code = "hiq";
+                typeApp = "directeur hiérarchique";
+              }
+            }
 
-  // Check the type of signataire in the option
-  if (option.signataires[0] === "cds") {
-    // If the signataire is "cds", find the service and check for chefService
-    const service = await Service.findById(user.service);
-    if (!service) {
-      throw new Error("Le service n'a pas de chef de service !");
-    }
-    userID = service;
-    code = "cds";
-    typeApp = "chef de service";
-  } else if (option.signataires[0] === "hiq") {
-    // If the signataire is "hiq", find the direction and related information
-    const direction = await Direction.findById(user.direction);
-    if (!direction || !direction.directeur) {
-      throw new Error("La direction n'a pas de directeur !");
-    }
-
-    // Set userID to the director of the direction
-    userID = direction.directeur;
-    const pddDirectionId = option.proprietaireDeDonnees;
-    const pddDirection = pddDirectionId ? await Direction.findById(String(pddDirectionId)) : null;
-    const dirDirection = await Direction.findById(option.service.direction);
-
-    // Helper function to check if a director is valid
-    const checkDirector = (dir) => dir && String(dir.directeur) === String(direction.directeur);
-
-    if (option.signataires[1] === "pdd" && option.signataires[2] === "dir") {
-      // If signataires include "pdd" and "dir", check and set code and typeApp accordingly
-      if (!pddDirection || !dirDirection || !checkDirector(pddDirection) || !checkDirector(dirDirection)) {
-        throw new Error("Propriétaire de données ou directeur introuvable !");
+          } else {
+            res.status(400);
+            throw new Error("la direction n'a pas de directeur !");
+          }
+        }
       }
-      code = "hiq.pdd.dir";
-      typeApp = "directeur hiérarchique, propriétaire de données et directeur de l'entité";
+      else {
+        res.status(404);
+        throw new Error("direction introuvable !");
+
+      }
+
+      const demande = new Demande({
+        option: option._id,
+        demandeur: user._id,
+        contenu,
+        dateDemande: new Date(),
+        traitement: [
+          {
+            dateEnvoi: new Date(),
+            code: code,
+            utilisateur: userID,
+          },
+        ],
+      });
+
+      await demande.save();
+      const messageContent = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`
+      sendNotification(userID, messageContent)
+      res.status(201).json({ message: "demande a été effectuée avec succès" });
+
     } else {
-      // Handle other signataire combinations and set code and typeApp accordingly
-      if (option.signataires[1] === "dir" && checkDirector(dirDirection)) {
-        code = "hiq.dir";
-        typeApp = "directeur hiérarchique et directeur de l'entité";
-      } else if (option.signataires[1] === "pdd" && checkDirector(pddDirection)) {
-        code = "hiq.pdd";
-        typeApp = "directeur hiérarchique et propriétaire de données";
-      } else {
-        code = "hiq";
-        typeApp = "directeur hiérarchique";
-      }
+      res.status(404);
+      throw new Error("utilisateur introuvable !");
     }
   } else {
-    // If the signataire is neither "cds" nor "hiq", throw an error
-    throw new Error("Direction introuvable !");
+    res.status(404);
+    throw new Error("option introuvable !");
   }
-  // Create a new Demande instance and save it to the database
-  const demande = new Demande({
-    option: option._id,
-    demandeur: user._id,
-    contenu,
-    dateDemande: new Date(),
-    traitement: [{ dateEnvoi: new Date(), code, utilisateur: userID }],
-  });
-  await demande.save();
-  // Generate notification message content
-  const messageContent = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`;
-  // Send a notification to the specified user
-  sendNotification(userID, messageContent);
-  // Respond with a success message
-  res.status(201).json({ message: "Demande a été effectuée avec succès" });
 
 });
 
@@ -874,18 +955,22 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                     a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l'entité. motif de refus: ${req.body.motif} </p>`;
                   }
 
+                  if (crtfCode === "hiq.dir") {
+                    contenu = `<p>
+                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
+                  }
+
                   if (crtfCode === "hiq.pdd.dir") {
                     contenu = `<p>
                     Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l entite. motif de refus: ${req.body.motif} </p>`;
-
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
                   }
                 }
                 else {
                   res.status(404);
                   throw Error("direction introuvable !")
                 }
-
               }
               else {
                 if (crtfCode === "cds") {

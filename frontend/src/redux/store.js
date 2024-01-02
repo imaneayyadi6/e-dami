@@ -73,6 +73,7 @@ import {
   demandeToHandleFilterReducer
 } from "./demande/demandeReducres";
 import { notificationListReducer, notificationMakeItSeenReducer, notificationOnceToastMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
+import { imageGenerateReducer } from "./generate/generateReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -91,7 +92,6 @@ const reducer = combineReducers({
   alert: alertReducer,
   // toast :
   toast: toastReducer,
-
   // direction:
   directionList: directionListReducer,
   directionCreate: directionCreateReducer,
@@ -133,7 +133,6 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userByID: userByIDReducer,
   userUpdatePassword: userUpdatePasswordReducer,
-
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,
@@ -159,6 +158,8 @@ const reducer = combineReducers({
   notificationList: notificationListReducer,
   notificationMakeItSeen: notificationMakeItSeenReducer,
   notificationOnceToastMakeItSeen: notificationOnceToastMakeItSeenReducer,
+  // generate :
+  imageGenerate: imageGenerateReducer,
 
 });
 

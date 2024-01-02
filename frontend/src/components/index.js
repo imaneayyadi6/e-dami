@@ -16,8 +16,10 @@ import Toast from "./Toast";
 import DamiDemande from "./DamiDemande";
 import NotificationsToastContainer from "./NotificationsToastContainer";
 import TimeAgo from "./TimeAgo";
+import Option from "./Option";
 
 export {
+  Option,
   TimeAgo,
   NotificationsToastContainer,
   Header,

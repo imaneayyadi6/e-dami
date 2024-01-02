@@ -12,6 +12,8 @@ import utilisateurRoutes from "./routes/utilisateurRoutes.js";
 import chartRoutes from "./routes/chartRoutes.js";
 import demandeRoutes from "./routes/demandeRoutes.js";
 import notificationRoutes from "./routes/notificationsRoutes.js";
+import generateFileRoutes from "./routes/generateFileRoutes.js";
+
 import http from 'http';
 import { Server } from 'socket.io';
 import socketRoutes from "./routes/socketRoutes.js";
@@ -46,6 +48,8 @@ app.use("/api/options", optionRoutes);
 app.use("/api/charts", chartRoutes);
 app.use("/api/demandes", demandeRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/generate", generateFileRoutes);
+
 // Use socketRoutes for Socket.IO logic
 socketRoutes(io);
 

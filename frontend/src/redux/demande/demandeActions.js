@@ -84,7 +84,6 @@ export const getDemandesToHandle = (query = { page: 1 }) => {
         .map(([key, value]) => `${key}=${value}`)
         .join('&');
 
-      console.log(objFilter)
 
       const { data } = await axios.get(`/api/demandes/handle?${objFilter}`, config);
       dispatch({ type: DEMANDE_TOHANDLE_LIST_SUCCESS, payload: data });

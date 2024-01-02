@@ -28,7 +28,7 @@ import {
 
 import axios from "axios";
 
-export const fetchOptionsBySousCategorieID = (sousCategorieID) => {
+export const fetchOptionsBySousCategorieID = (query) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: OPTION_LIST_BY_SOUSCATEGORIE_ID_REQUEST });
@@ -42,10 +42,18 @@ export const fetchOptionsBySousCategorieID = (sousCategorieID) => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
+
+      let objFilter = Object.entries(query)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+
       const { data } = await axios.get(
-        `/api/options/souscategorie/${sousCategorieID}`,
+        `/api/options/souscategorie?${objFilter}`,
         config
       );
+
+      console.log(data);
+      
       dispatch({
         type: OPTION_LIST_BY_SOUSCATEGORIE_ID_SUCCESS,
         payload: data,

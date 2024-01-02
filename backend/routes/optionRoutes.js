@@ -14,12 +14,15 @@ router
   .route("/")
   .get(protect, getOptions)
   .post(protect, createur, createOption);
+
+router.route("/souscategorie").get(protect, getOptionsBySousCategorieID);
+
 router
   .route("/:id")
   .get(protect, getOptionByID)
   .put(protect, createur, updateOption)
   .delete(protect, createur, deleteOption);
 
-router.route("/souscategorie/:id").get(protect, getOptionsBySousCategorieID);
+
 
 export default router;

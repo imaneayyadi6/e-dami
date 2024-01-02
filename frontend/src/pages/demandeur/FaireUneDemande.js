@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCategories } from "../../redux/categorie/categorieActions";
+import { fetchCategories, resetFetchCategories } from "../../redux/categorie/categorieActions";
 import {
   fetchSousCategoriesByCategorieID,
   resetFetchSousCategoriesByCategorieID,
@@ -18,6 +18,7 @@ import {
   DamiLoading,
   Loader,
   Message,
+  Option,
   WarningMessage,
 } from "../../components";
 import {
@@ -29,6 +30,11 @@ import { Toast } from "../../services";
 const FaireUneDemande = () => {
   const [callOnce, setCallOnce] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sousCategorie, setSousCategorie] = useState(null);
+  const [categorie, setCategorie] = useState(null);
+
   const disptach = useDispatch();
 
   const categorieList = useSelector(state => state.categorieList);
@@ -54,7 +60,7 @@ const FaireUneDemande = () => {
   const {
     loading: loadingOptionListBySousCategorieID,
     error: errorOptionListBySousCategorieID,
-    options,
+    data,
   } = optionListBySousCategorieID;
 
   const optionByID = useSelector(state => state.optionByID);
@@ -68,30 +74,33 @@ const FaireUneDemande = () => {
   } = demandeCreate;
 
   const getSousCategoriesChangeHandler = event => {
-    setSelectedOption(null);
+    disptach(resetFetchCategories())
     disptach(resetFetchSousCategoriesByCategorieID());
-    disptach(resetFetchOptionByID());
+    setCategorie(event.target.value)
     if (event.target.value !== "") {
       disptach(fetchSousCategoriesByCategorieID(event.target.value));
     }
 
   };
 
-  const getOptionsChangeHandler = event => {
-    setSelectedOption(null);
-    if (event.target.value !== "") {
-      disptach(fetchOptionsBySousCategorieID(event.target.value));
-    }
+
+  const getSousCategorieHandler = (event) => {
+    setSousCategorie(event.target.value);
+  }
+
+  const getOptionsFilterHandler = (page = 1) => {
+    disptach(resetFetchOptionBySousCategorieID())
+    let query = { page: page || 1 };
+    if (sousCategorie)
+      query.sousCategorie = sousCategorie;
+    disptach(fetchOptionsBySousCategorieID(query));
+  }
+
+  const getOptionsHandler = (event) => {
+    if (sousCategorie) getOptionsFilterHandler()
   };
 
-  const getOptionHandler = event => {
-    setSelectedOption(null);
-    disptach(resetFetchOptionByID());
-    if (event.target.value !== "") {
-      setSelectedOption(event.target.value);
-      disptach(fetchOptionByID(event.target.value))
-    }
-  };
+
 
   const resetDamiFormHandler = () => {
     document.querySelectorAll(".dami-body input").forEach(input => {
@@ -184,6 +193,7 @@ const FaireUneDemande = () => {
   useEffect(() => {
     if (!callOnce) {
       disptach(fetchCategories());
+      getOptionsFilterHandler();
       setCallOnce(true);
     }
     if (successDemandeCreate || errorDemandeCreate) {
@@ -256,6 +266,7 @@ const FaireUneDemande = () => {
             <Form.Select
               className='m-1'
               disabled={loadingCategorieList}
+              value={categorie}
               onChange={getSousCategoriesChangeHandler}>
               <option value={""}>
                 ----- veuillez selectionne une categorie -----
@@ -269,7 +280,8 @@ const FaireUneDemande = () => {
             </Form.Select>
             <Form.Select
               className='m-1'
-              onChange={getOptionsChangeHandler}
+              value={sousCategorie}
+              onChange={getSousCategorieHandler}
               disabled={
                 loadingSouscategorieListByCategorieID ||
                 souscategories.length === 0
@@ -284,72 +296,22 @@ const FaireUneDemande = () => {
                   </option>
                 ))}
             </Form.Select>
-            <Form.Select
-              className='m-1'
-              disabled={
-                loadingSouscategorieListByCategorieID ||
-                souscategories.length === 0 ||
-                loadingOptionListBySousCategorieID ||
-                options.length === 0
-              }
-              onChange={getOptionHandler}>
-              <option value={""}>
-                ----- veuillez selectionne une option -----
-              </option>
-              {options.length > 0 &&
-                options.map(option => (
-                  <option key={option._id} value={option._id}>
-                    {String(option.libelle).toLowerCase()}
-                  </option>
-                ))}
-            </Form.Select>
+            <Button onClick={getOptionsHandler}>
+              <i className="fas fa-search"></i>
+            </Button>
           </div>
         </Card.Body>
       </Card>
-      <>
-        <>
-          {selectedOption ? (
-            <Row className=' '>
-              <Col xl={12} lg={12} md={12} sm={12}>
-                {loadingOptionID && <DamiLoading />}
-                {option ? (
-                  <div className="">
+      <Row className="mt-5">
+        {
+          data && data.options.length > 0 && data.options.map(option => (
+            <Col xl={4} lg={4} md={4} sm={12}>
+              <Option option={option} key={option._id} />
+            </Col>
+          ))
 
-                    <div className="dami-page-container mt-5">
-                      <Dami option={option} />
-                    </div>
-                    <div className="d-flex justify-content-center mt-2">
-                      <Button
-                        className='mr-1'
-                        variant='dark'
-                        disabled={loadingDemandeCreate}
-                        onClick={faireUneDemandeHandler}>
-                        <i className='fa-solid fa-code-pull-request'></i> Demander
-                      </Button>
-                      <Button
-                        className=''
-                        variant='light'
-                        disabled={loadingDemandeCreate}
-                        onClick={resetDamiFormHandler}>
-                        <i className='fa-solid fa-filter-circle-xmark'></i>{" "}
-                        Réinitialiser
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  !loadingOptionID && (
-                    <WarningMessage message={"aucune option trouvee"} />
-                  )
-                )}
-              </Col>
-            </Row>
-          ) : (
-            <div className='mt-5'>
-              <WarningMessage message={"aucune option selectionne"} />
-            </div>
-          )}
-        </>
-      </>
+        }
+      </Row>
     </>
   );
 };

@@ -92,22 +92,22 @@ export const optionListReducer = (state = { options: [] }, action) => {
 };
 
 export const optionListBySousCategorieIDReducer = (
-  state = { options: [] },
+  state = {},
   action
 ) => {
   const { type, payload } = action;
   switch (type) {
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_REQUEST:
-      return { loading: true, options: [] };
+      return { loading: true, };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_SUCCESS:
       return {
         loading: false,
-        options: payload,
+        data: payload,
       };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_FAIL:
-      return { loading: false, error: payload, options: [] };
+      return { loading: false, error: payload, };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_RESET:
-      return { options: [] };
+      return {};
     default:
       return state;
   }

@@ -50,7 +50,7 @@ const Header = () => {
               <Nav.Link>
                 <i className='fa-solid fa-bell'></i> notifications{" "}
                 {count !== 0 && (
-                  <span className='badge bg-danger mb-1 p-2'>{count}</span>
+                  <span className='badge bg-danger mb-1'>{count}</span>
                 )
                 }
               </Nav.Link>
