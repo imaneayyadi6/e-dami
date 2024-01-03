@@ -33,6 +33,9 @@ dotenv.config();
 // Connect Database :
 connectDB();
 
+// Serve static files from the "uploads" folder
+app.use('/uploads', express.static('uploads'));
+
 // Init Middlewares :
 app.use(express.json({ extended: false }));
 

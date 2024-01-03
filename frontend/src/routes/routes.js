@@ -11,7 +11,7 @@ import {
   UtilisateurCreatePage,
   UtilisateurDetailsPage,
 } from "../pages/admin";
-import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage } from "../pages/demandeur";
+import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage, FaireUneDemandeOption } from "../pages/demandeur";
 import { DemandeDetailsPage, DemandesPage } from "../pages/signataire";
 
 const routes = [
@@ -121,8 +121,15 @@ const routes = [
   },
   {
     path: "/faire-une-demande",
-    name: "Faire une dmeande",
+    name: "Faire une demande",
     element: <FaireUneDemande />,
+    exact: true,
+    roles: ["dmr"],
+  },
+  {
+    path: "/faire-une-demande/option/:id",
+    name: "Faire une demande option ",
+    element: <FaireUneDemandeOption />,
     exact: true,
     roles: ["dmr"],
   },

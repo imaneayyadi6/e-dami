@@ -1,6 +1,7 @@
-.dami {
-  /* background-color: #fff !important; */
-  /* height: 100%; */
+.mini-dami {
+  /* max-height: 400px; */
+  height: 400px;
+  overflow: hidden;
 }
 
 @media screen and (min-width:1400px) {
@@ -17,6 +18,11 @@
   text-align: center;
 }
 
+.mini-dami .dami-logo {
+  width: 20px;
+  height: 20px;
+}
+
 .dami-snrt-logo {
   border-right: 1px solid lightgray;
   border-left: 1px solid lightgray;
@@ -25,6 +31,10 @@
   justify-content: center;
   align-items: center;
   width: 13% !important;
+}
+
+.mini-dami .dami-snrt-logo {
+  padding: 10px 5px;
 }
 
 .dami-header {
@@ -43,7 +53,6 @@
   justify-content: center;
   border-right: 1px solid lightgray;
   width: 77%;
-
 }
 
 .dami-type-de-processus {
@@ -56,6 +65,10 @@
   width: 100%;
 }
 
+.mini-dami .dami-type-de-processus {
+  font-size: 7px !important;
+}
+
 .dami-libelle {
   font-weight: bold;
   font-size: 16px;
@@ -65,11 +78,18 @@
   width: 100%;
 }
 
+.mini-dami .dami-libelle {
+  font-size: 7px !important;
+}
+
 .dami-codification-table {
   font-size: 12px;
   height: 100%;
   width: 10% !important;
+}
 
+.mini-dami .dami-codification-table {
+  font-size: 7px !important;
 }
 
 .dami-codification-table tr {
@@ -104,10 +124,13 @@
   background-color: #fff;
 }
 
+.mini-dami .demandeur-section {
+  font-size: 7px !important;
+}
+
 .demandeur-section table .dami-input {
   margin: 0;
 }
-
 .demandeur-section table {
   width: 100%;
 }
@@ -116,9 +139,12 @@
   width: 200px;
   margin-right: 15px;
 }
+.mini-dami .demandeur-section table .dami-input {
+  font-size: 7px !important;
+  width: 100px !important;
+}
 
 .dami-body {
-  /* min-height: 1000px; */
   min-height: 500px;
   border-bottom: 1px solid lightgray;
   border-left: 1px solid lightgray;
@@ -133,12 +159,19 @@
 .dami-footer {
   font-size: 12px;
   background-color: #fff;
+}
 
+.mini-dami .dami-footer {
+  font-size: 9px !important;
 }
 
 .dami-footer .dami-input {
   margin: 0;
   width: 80%;
+}
+
+.mini-dami .dami-footer .dami-input {
+  font-size: 9px !important;
 }
 
 .signataires {
@@ -192,6 +225,20 @@
 .sig-item:last-child {
   border-right: none;
 }
+
+
+.mini-dami p,
+.mini-dami .dami-label,
+.mini-dami .dami-body .dami-label {
+  font-size: 9px !important;
+  margin: 0 !important;
+}
+
+.mini-dami .dami-check-box {
+  width: 12px !important;
+  height: 12px !important;
+}
+
 
 /* begin document */
 @media screen and (max-width: 990px) {

@@ -60,26 +60,14 @@ const FaireUneDemande = () => {
   const {
     loading: loadingOptionListBySousCategorieID,
     error: errorOptionListBySousCategorieID,
+    success: successOptionListBySousCategorieID,
     data,
   } = optionListBySousCategorieID;
 
-  const optionByID = useSelector(state => state.optionByID);
-  const { loading: loadingOptionID, error: errorOptionID, option } = optionByID;
-
-  const demandeCreate = useSelector(state => state.demandeCreate);
-  const {
-    loading: loadingDemandeCreate,
-    error: errorDemandeCreate,
-    success: successDemandeCreate,
-  } = demandeCreate;
 
   const getSousCategoriesChangeHandler = event => {
-    disptach(resetFetchCategories())
-    disptach(resetFetchSousCategoriesByCategorieID());
     setCategorie(event.target.value)
-    if (event.target.value !== "") {
-      disptach(fetchSousCategoriesByCategorieID(event.target.value));
-    }
+    disptach(fetchSousCategoriesByCategorieID(event.target.value));
 
   };
 
@@ -89,7 +77,6 @@ const FaireUneDemande = () => {
   }
 
   const getOptionsFilterHandler = (page = 1) => {
-    disptach(resetFetchOptionBySousCategorieID())
     let query = { page: page || 1 };
     if (sousCategorie)
       query.sousCategorie = sousCategorie;
@@ -102,93 +89,179 @@ const FaireUneDemande = () => {
 
 
 
-  const resetDamiFormHandler = () => {
-    document.querySelectorAll(".dami-body input").forEach(input => {
-      input.value = "";
-      if (
-        String(input.getAttribute("type")) === "checkbox" ||
-        String(input.getAttribute("type")) === "radio"
-      ) {
-        input.checked = false;
-      }
-    });
+
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    getOptionsFilterHandler(newPage)
   };
 
-  const convertTheValueToAttribute = () => {
-    const damiBody = document.querySelector(".dami-body div");
-    const damiInputs = damiBody.querySelectorAll(".dami-input");
-    for (const damiInput of damiInputs)
-      damiInput.setAttribute("value", damiInput.value);
+  const renderPageLinks = () => {
 
-    const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
-    for (const damiCheckBox of damiCheckBoxes) {
-      if (damiCheckBox.checked) {
-        damiCheckBox.setAttribute("value", damiCheckBox.checked);
-        damiCheckBox.setAttribute("checked", damiCheckBox.checked);
-      }
-    }
-    const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
-    for (const damiRadioButton of damiRadioButtons) {
-      if (damiRadioButton.checked) {
-        damiRadioButton.setAttribute("value", damiRadioButton.checked);
-        damiRadioButton.setAttribute("checked", damiRadioButton.checked);
-      }
-    }
-    const damiTextAreaLines = damiBody.querySelectorAll(".dami-textarea-line");
-    for (const damiTextAreaLine of damiTextAreaLines)
-      damiTextAreaLine.setAttribute("value", damiTextAreaLine.value);
-  };
+    const links = [];
 
-  const faireUneDemandeHandler = () => {
-    if (selectedOption) {
-      let isEmpty = true;
-      const damiBody = document.querySelector(".dami-body div");
-      const damiInputs = damiBody.querySelectorAll(".dami-input");
+    if (totalPages > 1) {
 
-      for (const damiInput of damiInputs) {
-        if (damiInput.value !== "") {
-          isEmpty = false;
-          break;
-        }
-      }
+      const range = 20;
+      const start = Math.max(1, currentPage - Math.floor(range / 2));
+      const end = Math.min(totalPages, start + range);
 
-      const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
-      for (const damiCheckBox of damiCheckBoxes) {
-        if (damiCheckBox.checked) {
-          isEmpty = false;
-          break;
-        }
-      }
-
-      const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
-      for (const damiRadioButton of damiRadioButtons) {
-        if (damiRadioButton.checked) {
-          isEmpty = false;
-          break;
-        }
-      }
-      const damiTextAreaLines = damiBody.querySelectorAll(
-        ".dami-textarea-line"
+      links.push(
+        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+          &laquo;&laquo;
+        </button>,
+        <button
+          key="previous"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          &laquo;
+        </button>
       );
-      for (const damiTextAreaLine of damiTextAreaLines) {
-        if (damiTextAreaLine.value !== "") {
-          isEmpty = false;
-          break;
-        }
+
+
+      for (let i = start; i <= end; i++) {
+        links.push(
+          <button
+            key={i}
+            onClick={() => handlePageChange(i)}
+            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+          >
+            {i}
+          </button>
+        );
       }
-      if (!isEmpty) {
-        convertTheValueToAttribute();
-        const contenu = damiBody.outerHTML;
-        disptach(createDemande(selectedOption, contenu));
-      } else {
-        Toast.open({
-          type: "danger",
-          message: "il faut remplire le formulaire !",
-        });
-      }
-      window.scrollTo(0, 0);
+
+
+      links.push(
+        <button
+          key="next"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          &raquo;
+        </button>,
+        <button
+          key="last"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          &raquo;&raquo;
+        </button>
+      );
+
+      return links;
     }
+    else {
+      links.push(
+        <button
+          className={`btn btn-sm btn-light active ml-1`}
+        >
+          1
+        </button>
+      );
+      return links;
+    }
+
+
   };
+
+
+
+
+  // const resetDamiFormHandler = () => {
+  //   document.querySelectorAll(".dami-body input").forEach(input => {
+  //     input.value = "";
+  //     if (
+  //       String(input.getAttribute("type")) === "checkbox" ||
+  //       String(input.getAttribute("type")) === "radio"
+  //     ) {
+  //       input.checked = false;
+  //     }
+  //   });
+  // };
+
+
+
+  // const faireUneDemandeHandler = () => {
+  //   if (selectedOption) {
+  //     let isEmpty = true;
+  //     const damiBody = document.querySelector(".dami-body div");
+  //     const damiInputs = damiBody.querySelectorAll(".dami-input");
+
+  //     for (const damiInput of damiInputs) {
+  //       if (damiInput.value !== "") {
+  //         isEmpty = false;
+  //         break;
+  //       }
+  //     }
+
+  //     const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
+  //     for (const damiCheckBox of damiCheckBoxes) {
+  //       if (damiCheckBox.checked) {
+  //         isEmpty = false;
+  //         break;
+  //       }
+  //     }
+
+  //     const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
+  //     for (const damiRadioButton of damiRadioButtons) {
+  //       if (damiRadioButton.checked) {
+  //         isEmpty = false;
+  //         break;
+  //       }
+  //     }
+  //     const damiTextAreaLines = damiBody.querySelectorAll(
+  //       ".dami-textarea-line"
+  //     );
+  //     for (const damiTextAreaLine of damiTextAreaLines) {
+  //       if (damiTextAreaLine.value !== "") {
+  //         isEmpty = false;
+  //         break;
+  //       }
+  //     }
+  //     if (!isEmpty) {
+  //       convertTheValueToAttribute();
+  //       const contenu = damiBody.outerHTML;
+  //       disptach(createDemande(selectedOption, contenu));
+  //     } else {
+  //       Toast.open({
+  //         type: "danger",
+  //         message: "il faut remplire le formulaire !",
+  //       });
+  //     }
+  //     window.scrollTo(0, 0);
+  //   }
+  // };
+
+
+  // if (successDemandeCreate) {
+  //   const damiBody = document.querySelector(".dami-body");
+
+  //   damiBody.querySelectorAll(".dami-input").forEach(el => {
+  //     el.value = "";
+  //   });
+  //   damiBody.querySelectorAll(".dami-check-box").forEach(el => {
+  //     el.checked = false;
+  //   });
+  //   damiBody.querySelectorAll(".dami-radio-button").forEach(el => {
+  //     el.checked = false;
+  //   });
+  //   damiBody.querySelectorAll(".dami-textarea-line").forEach(el => {
+  //     el.value = "";
+  //   });
+
+  //   Toast.open({
+  //     type: "success",
+  //     message: "La demande a été effectuée avec succès.",
+  //   });
+
+  //   disptach(resetCreateDemande());
+
+  // }
 
   useEffect(() => {
     if (!callOnce) {
@@ -196,39 +269,11 @@ const FaireUneDemande = () => {
       getOptionsFilterHandler();
       setCallOnce(true);
     }
-    if (successDemandeCreate || errorDemandeCreate) {
-      window.scrollTo(0, 0);
-    }
-    if (successDemandeCreate) {
-      const damiBody = document.querySelector(".dami-body");
+    if (successOptionListBySousCategorieID)
+      setTotalPages(data.totalPages);
 
-      damiBody.querySelectorAll(".dami-input").forEach(el => {
-        el.value = "";
-      });
-      damiBody.querySelectorAll(".dami-check-box").forEach(el => {
-        el.checked = false;
-      });
-      damiBody.querySelectorAll(".dami-radio-button").forEach(el => {
-        el.checked = false;
-      });
-      damiBody.querySelectorAll(".dami-textarea-line").forEach(el => {
-        el.value = "";
-      });
 
-      Toast.open({
-        type: "success",
-        message: "La demande a été effectuée avec succès.",
-      });
-
-      disptach(resetCreateDemande());
-
-      if (selectedOption) {
-
-        disptach(fetchOptionByID(selectedOption))
-      }
-
-    }
-  }, [callOnce, disptach, successDemandeCreate, errorDemandeCreate, selectedOption]);
+  }, [callOnce, disptach, successOptionListBySousCategorieID]);
 
   return (
     <>
@@ -247,22 +292,14 @@ const FaireUneDemande = () => {
           {errorOptionListBySousCategorieID}
         </Message>
       )}
-      {errorOptionID && (
-        <Message type='danger' itWillBeHidden={true}>
-          {errorOptionID}
-        </Message>
-      )}
-      {errorDemandeCreate && (
-        <Message type='danger' itWillBeHidden={true}>
-          {errorDemandeCreate}
-        </Message>
-      )}
 
-      {loadingDemandeCreate && <Loader />}
+
+
+
 
       <Card>
         <Card.Body>
-          <div className='d-flex justify-content-between'>
+          <div className='d-flex align-items-center'>
             <Form.Select
               className='m-1'
               disabled={loadingCategorieList}
@@ -296,22 +333,48 @@ const FaireUneDemande = () => {
                   </option>
                 ))}
             </Form.Select>
-            <Button onClick={getOptionsHandler}>
+            <Button onClick={getOptionsHandler} variant="dark">
               <i className="fas fa-search"></i>
             </Button>
           </div>
         </Card.Body>
       </Card>
+
       <Row className="mt-5">
+        {loadingOptionListBySousCategorieID && (
+          <>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+          </>
+
+        )}
         {
           data && data.options.length > 0 && data.options.map(option => (
-            <Col xl={4} lg={4} md={4} sm={12}>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
               <Option option={option} key={option._id} />
             </Col>
           ))
-
         }
+        <hr />
+        <Card >
+          <Card.Body>
+            <div className="d-flex justify-content-center">
+              {renderPageLinks()}
+            </div>
+          </Card.Body>
+        </Card>
       </Row>
+
     </>
   );
 };

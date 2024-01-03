@@ -101,6 +101,7 @@ export const optionListBySousCategorieIDReducer = (
       return { loading: true, };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_SUCCESS:
       return {
+        success: true,
         loading: false,
         data: payload,
       };

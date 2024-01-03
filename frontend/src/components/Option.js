@@ -1,52 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
+import { Card } from "react-bootstrap";
+import { capitalizeFirstLetter } from "../services";
+import { Link } from "react-router-dom";
 import Dami from "./Dami";
-import html2canvas from 'html2canvas';
-import { useDispatch, useSelector } from "react-redux";
-import { generateImage } from "../redux/generate/generateActions";
 
 const Option = ({ option }) => {
-    const [damiImageSrc, setDamiImageSrc] = useState(null);
-    const [callOnce, setCallOnce] = useState(false);
-
-    const dispatch = useDispatch();
-    const imageGenerate = useSelector(state => state.imageGenerate);
-    const {
-        dataImage,
-        success,
-    } = imageGenerate;
-
-    const damiContainerRef = useRef(null);
-
-
-    useEffect(() => {
-        if (!callOnce) {
-            dispatch(generateImage(damiContainerRef.current.innerHTML))
-            setCallOnce(true);
-        }
-
-        if (success) {
-            console.log(dataImage)
-        }
-    }, [success, callOnce])
-
-
     return (
-        <div className="h-100 " ref={damiContainerRef}        >
-           
-            {dataImage ? (
-                <div
-                    dangerouslySetInnerHTML={{
-                        __html: dataImage,
-                    }}
-                >
+        <Card className="option-container">
+            <Link to={`/faire-une-demande/option/${option._id}`} className="option-link">
+                <div className="option-container-overlay"></div>
+                <Dami mini option={option} />
+                <div className="option-dami-info">
+                    <h6>{capitalizeFirstLetter(option.libelle)}</h6>
                 </div>
-            )
-        :
-        (
-            <Dami option={option} />
-        )
-        }
-        </div>
+            </Link>
+        </Card>
     )
 }
 

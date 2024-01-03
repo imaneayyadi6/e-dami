@@ -204,6 +204,46 @@ ul {
   text-transform: uppercase;
 }
 
+.option-container {
+  position: relative;
+
+}
+
+.option-container-overlay {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+}
+
+.option-dami-info {
+  height: 60px;
+  position: absolute;
+  width: 100%;
+  /* background-color: var(--bs-dark); */
+  background-color: var(--bs-white);
+
+  bottom: 0;
+  margin-right: 10px;
+  border-top: 1px solid lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px
+}
+/* .option-dami-info h6{
+  color: #fff !important;
+} */
+.option-link {
+  text-decoration: none !important;
+}
+
+
 /* End Global Rules */
 
 /* Begin Toast */

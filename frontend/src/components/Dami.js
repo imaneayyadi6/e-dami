@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
-const Dami = ({ option, showAdmin = false }) => {
+const Dami = ({ option, showAdmin = false, mini = false }) => {
   const cleanDocRef = useRef(null);
   const [sigTypes] = useState({
     cds: "Approbation Chef de Service",
@@ -91,7 +91,7 @@ const Dami = ({ option, showAdmin = false }) => {
   }, []);
 
   return (
-    <div className={`dami`} id='dami'>
+    <div className={`dami ${mini ? "mini-dami" : ""}`} id='dami'>
       <div className='dami-header'>
         <div className='dami-snrt-logo'>
           <img alt='dami-logo' src='/images/logo.png' className='dami-logo' />

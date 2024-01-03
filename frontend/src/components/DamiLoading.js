@@ -1,10 +1,10 @@
 import React from "react";
 import { Placeholder } from "react-bootstrap";
 
-const DamiLoading = () => {
+const DamiLoading = ({ mini = false }) => {
   return (
     <Placeholder animation='glow'>
-      <div className={`dami`}>
+      <div className={`dami ${mini ? "mini-dami" : ""}`}>
         <div className='dami-header'>
           <div className='dami-snrt-logo'>
             <img alt='dami-logo' src='/images/logo.png' className='dami-logo' />
@@ -22,25 +22,25 @@ const DamiLoading = () => {
               <tr>
                 <td>document</td>
                 <td>
-                  <Placeholder xs={12} style={{width:'100px'}} />
+                  <Placeholder xs={12} style={{ width: '100px' }} />
                 </td>
               </tr>
               <tr>
                 <td>classification</td>
                 <td>
-                  <Placeholder xs={12} style={{width:'100px'}} />
+                  <Placeholder xs={12} style={{ width: '100px' }} />
                 </td>
               </tr>
               <tr>
                 <td>creation</td>
                 <td>
-                  <Placeholder xs={12} style={{width:'100px'}} />
+                  <Placeholder xs={12} style={{ width: '100px' }} />
                 </td>
               </tr>
               <tr>
                 <td>maj</td>
                 <td>
-                  <Placeholder xs={12} style={{width:'100px'}} />
+                  <Placeholder xs={12} style={{ width: '100px' }} />
                 </td>
               </tr>
             </table>

@@ -35,6 +35,12 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   const options = await Option.find({
     ...query
   })
+    .populate({
+      path: "sousCategorie",
+      populate: {
+        path: "categorie",
+      }
+    })
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .exec();
