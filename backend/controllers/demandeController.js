@@ -311,8 +311,8 @@ export const createDemande = asyncHandler(async (req, res) => {
       });
 
       await demande.save();
-      const messageContent = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`
-      sendNotification(userID, messageContent)
+      const messageContent = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`
+      sendNotification(userID, messageContent, `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`)
       res.status(201).json({ message: "demande a été effectuée avec succès" });
 
     } else {
@@ -570,25 +570,25 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               if (direction) {
                 if (crtfCode === "hiq.pdd") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de donnes `;
                 }
 
                 if (crtfCode === "pdd.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l entite`;
                 }
 
                 if (crtfCode === "hiq.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l entite`;
                 }
 
                 if (crtfCode === "hiq.pdd.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de donnes et directeur de l entite`;
 
                 }
@@ -606,7 +606,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }).populate("chefService");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service`;
               }
               else if (crtfCode === "hiq") {
@@ -615,7 +615,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }).populate("directeur");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique`;
               }
               else if (crtfCode === "pdd") {
@@ -624,7 +624,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }).populate("directeur");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données`;
               }
               else if (crtfCode === "dir") {
@@ -632,7 +632,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   directeur: req.user.id
                 }).populate("directeur");
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité`;
               }
             }
@@ -693,7 +693,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   // envoyer les notifications :
                   contenu += "</p>"
                   sendNotification(demande.demandeur._id, contenu);
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
                   sendNotification(dirUserID, dirContenu);
 
                   res.json(demande);
@@ -872,8 +872,8 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   contenu += "</p>";
                   // envoyer les notifications :
                   sendNotification(demande.demandeur._id, contenu);
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu);
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
+                  sendNotification(dirUserID, dirContenu, `Votre demande a été approuvée`);
                   res.json({ message: "demande approvee avec success !" });
                 }
               }
@@ -945,25 +945,25 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                 if (direction) {
                   if (crtfCode === "hiq.pdd") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de données. motif de refus: ${req.body.motif} </p>`;
                   }
 
                   if (crtfCode === "pdd.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l'entité. motif de refus: ${req.body.motif} </p>`;
                   }
 
                   if (crtfCode === "hiq.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
                   }
 
                   if (crtfCode === "hiq.pdd.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                     a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
                   }
                 }
@@ -979,7 +979,7 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                   }).populate("chefService");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                       a été refusée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service. motif de refus: ${req.body.motif} </p>`;
                 }
                 else if (crtfCode === "hiq") {
@@ -988,7 +988,7 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                   }).populate("directeur");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                       a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique. motif de refus: ${req.body.motif} </p>`;
                 }
                 else if (crtfCode === "pdd") {
@@ -997,7 +997,7 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                   }).populate("directeur");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                       a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: ${req.body.motif} </p>`;
                 }
                 else if (crtfCode === "dir") {
@@ -1005,12 +1005,12 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                     directeur: req.user.id
                   }).populate("directeur");
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="/details-demande/${demande._id}">demande</a> 
+                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
                       a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: ${req.body.motif} </p>`;
                 }
               }
 
-              sendNotification(demande.demandeur, contenu);
+              sendNotification(demande.demandeur, contenu, `Votre demande a été refusée`);
               res.json({ message: "demande refuse!" })
             }
             else {

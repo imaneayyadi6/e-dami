@@ -148,7 +148,7 @@ const FaireUneDemandeOption = () => {
 
     return (
         <>
-            <Link to="/faire-une-demande" className="btn btn-light">
+            <Link to="/faire-une-demande" className="btn btn-light mb-2">
                 <i className="fas fa-arrow-left"></i>{" "}
                 options
             </Link>

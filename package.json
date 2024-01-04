@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.1",
     "jspdf": "^2.5.1",
     "mongoose": "^7.4.5",
+    "nodemailer": "^6.9.8",
     "puppeteer": "^21.6.1",
     "react-pdf": "^7.3.3",
     "react-to-pdf": "^1.0.1",
