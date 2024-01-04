@@ -13,22 +13,21 @@ import chartRoutes from "./routes/chartRoutes.js";
 import demandeRoutes from "./routes/demandeRoutes.js";
 import notificationRoutes from "./routes/notificationsRoutes.js";
 import generateFileRoutes from "./routes/generateFileRoutes.js";
-
 import http from 'http';
 import { Server } from 'socket.io';
 import socketRoutes from "./routes/socketRoutes.js";
+
+// Init dotenv :
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_ADDRESS,
     methods: ['GET', 'POST'],
   },
 });
-
-// Init dotenv :
-dotenv.config();
 
 // Connect Database :
 connectDB();
@@ -60,14 +59,12 @@ socketRoutes(io);
 app.use(notFound);
 app.use(errorHandler);
 
-
-
-
 // Use socketRoutes for Socket.IO logic
 socketRoutes(io);
-// run the server : 
 
+// run the server : 
 const PORT = process.env.PORT || 5000;
+
 server.listen(
   PORT,
   console.log(

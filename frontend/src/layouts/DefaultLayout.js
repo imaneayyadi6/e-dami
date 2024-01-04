@@ -9,9 +9,11 @@ import { logout } from "../redux/user/userActions";
 import { Toast as SToast } from "../services";
 import io from 'socket.io-client';
 import { NOTIFICATION_LIST_PUSH, NOTIFICATION_NOTSEEN_COUNT_PUSH, NOTIFICATION_TOAST_LIST_PUSH } from "../redux/notification/notificationTypes";
-import { getToastNotificationsList } from "../redux/notification/notificationActions";
 
-const socket = io('http://localhost:5000');
+
+
+
+const socket = io("/");
 
 const DefaulLayout = () => {
   const [filteredRoutes, setFiltredRoutes] = useState([]);

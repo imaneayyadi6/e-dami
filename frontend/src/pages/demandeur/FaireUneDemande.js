@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCategories, resetFetchCategories } from "../../redux/categorie/categorieActions";
+import { fetchCategories } from "../../redux/categorie/categorieActions";
 import {
   fetchSousCategoriesByCategorieID,
-  resetFetchSousCategoriesByCategorieID,
 } from "../../redux/sousCategorie/sousCategorieActions";
 import {
-  fetchOptionByID,
+
   fetchOptionsBySousCategorieID,
-  resetFetchOptionByID,
-  resetFetchOptionBySousCategorieID,
+
 } from "../../redux/option/optionActions";
 
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import {
-  Dami,
+
   DamiLoading,
-  Loader,
+
   Message,
   Option,
-  WarningMessage,
+
 } from "../../components";
-import {
-  createDemande,
-  resetCreateDemande,
-} from "../../redux/demande/demandeActions";
+
 import { Toast } from "../../services";
 
 const FaireUneDemande = () => {
@@ -294,9 +289,6 @@ const FaireUneDemande = () => {
       )}
 
 
-
-
-
       <Card>
         <Card.Body>
           <div className='d-flex align-items-center'>
@@ -362,6 +354,15 @@ const FaireUneDemande = () => {
             <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
               <DamiLoading mini />
             </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
+            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+              <DamiLoading mini />
+            </Col>
           </>
 
         )}
@@ -373,13 +374,11 @@ const FaireUneDemande = () => {
           ))
         }
         <hr />
-        <Card >
-          <Card.Body>
-            <div className="d-flex justify-content-center">
-              {renderPageLinks()}
-            </div>
-          </Card.Body>
-        </Card>
+
+        <div className="d-flex justify-content-center">
+          {renderPageLinks()}
+        </div>
+
       </Row>
 
     </>
