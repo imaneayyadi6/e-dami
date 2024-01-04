@@ -300,42 +300,49 @@ const FaireUneDemande = () => {
       <Card>
         <Card.Body>
           <div className='d-flex align-items-center'>
-            <Form.Select
-              className='m-1'
-              disabled={loadingCategorieList}
-              value={categorie}
-              onChange={getSousCategoriesChangeHandler}>
-              <option value={""}>
-                ----- veuillez selectionne une categorie -----
-              </option>
-              {categories.length > 0 &&
-                categories.map(categorie => (
-                  <option value={categorie._id} key={categorie._id}>
-                    {String(categorie.libelle).toLowerCase()}
-                  </option>
-                ))}
-            </Form.Select>
-            <Form.Select
-              className='m-1'
-              value={sousCategorie}
-              onChange={getSousCategorieHandler}
-              disabled={
-                loadingSouscategorieListByCategorieID ||
-                souscategories.length === 0
-              }>
-              <option value={""}>
-                ----- veuillez selectionne une sous-categorie -----
-              </option>
-              {souscategories.length > 0 &&
-                souscategories.map(sousCategorie => (
-                  <option value={sousCategorie._id} key={sousCategorie._id}>
-                    {String(sousCategorie.libelle).toLowerCase()}
-                  </option>
-                ))}
-            </Form.Select>
-            <Button onClick={getOptionsHandler} variant="dark">
+            <div className="w-100 m-1">
+              <label>categorie</label>
+              <Form.Select
+                disabled={loadingCategorieList}
+                value={categorie}
+                onChange={getSousCategoriesChangeHandler}>
+                <option value={""}>
+                  ----- veuillez selectionne une categorie -----
+                </option>
+                {categories.length > 0 &&
+                  categories.map(categorie => (
+                    <option value={categorie._id} key={categorie._id}>
+                      {String(categorie.libelle).toLowerCase()}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+
+            <div className="w-100 m-1">
+              <label>sous-categorie</label>
+              <Form.Select
+                value={sousCategorie}
+                onChange={getSousCategorieHandler}
+                disabled={
+                  loadingSouscategorieListByCategorieID ||
+                  souscategories.length === 0
+                }>
+                <option value={""}>
+                  ----- veuillez selectionne une sous-categorie -----
+                </option>
+                {souscategories.length > 0 &&
+                  souscategories.map(sousCategorie => (
+                    <option value={sousCategorie._id} key={sousCategorie._id}>
+                      {String(sousCategorie.libelle).toLowerCase()}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+
+            <Button onClick={getOptionsHandler} variant="dark" className="mt-4">
               <i className="fas fa-search"></i>
             </Button>
+
           </div>
         </Card.Body>
       </Card>

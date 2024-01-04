@@ -4,16 +4,13 @@ import { createDemande, resetCreateDemande } from "../../redux/demande/demandeAc
 import { Toast } from "../../services";
 import { Link, useParams } from "react-router-dom";
 import { fetchOptionByID } from "../../redux/option/optionActions";
-import { Dami, DamiDemande, DamiLoading, Message, WarningMessage } from "../../components";
+import { Dami, DamiLoading, Message, WarningMessage } from "../../components";
 import { Button } from "react-bootstrap";
 
 
 const FaireUneDemandeOption = () => {
     const [callOnce, setCallOnce] = useState(false);
-
-
     const { id } = useParams();
-
     const optionByID = useSelector(state => state.optionByID);
     const { loading: loadingOptionID, error: errorOptionID, option } = optionByID;
 
@@ -158,6 +155,11 @@ const FaireUneDemandeOption = () => {
             {errorOptionID && (
                 <Message itWillBeHidden type="danger">
                     {errorOptionID}
+                </Message>
+            )}
+            {errorDemandeCreate && (
+                <Message itWillBeHidden type="danger">
+                    {errorDemandeCreate}
                 </Message>
             )}
             {loadingOptionID && (
