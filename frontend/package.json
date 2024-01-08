@@ -2,7 +2,7 @@
   "name": "e-dami-frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://172.16.0.111:4000",
+  "proxy": "http://localhost:4000",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",

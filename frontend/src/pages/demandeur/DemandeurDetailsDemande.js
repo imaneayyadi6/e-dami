@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom"
 import { getDemandeurDemandeByID } from "../../redux/demande/demandeActions";
-import { DamiDemande, DamiLoading, Message, TimeLine, WarningMessage } from "../../components";
+import { DamiDemande, DamiLoading, Message, WarningMessage } from "../../components";
 import { Alert, Button, Modal } from "react-bootstrap";
 import { getTypeApprobation } from "../../services";
 
@@ -36,7 +36,7 @@ const DemandeurDetailsDemande = () => {
 
     return (
         <>
-            <Link className="btn btn-sm btn-light" to="mes-demandes">
+            <Link className="btn btn-light" to="mes-demandes">
                 <i className="fas fa-arrow-left"></i> demandes
             </Link>
             {errorDemandeByID && (
@@ -85,7 +85,7 @@ const DemandeurDetailsDemande = () => {
                                                                     )}
                                                                     {tr.status === "refuse" && (
                                                                         <p className="w-100">
-                                                                            votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
+                                                                            votre demande a ete refusee par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
                                                                         </p>
                                                                     )}
                                                                     <div className="d-flex justify-content-end">
@@ -142,7 +142,7 @@ const DemandeurDetailsDemande = () => {
                                                             )}
                                                             {tr.status === "refuse" && (
                                                                 <p className="w-100">
-                                                                    votre demande a ete refuser par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
+                                                                    votre demande a ete refusee par M.{tr.utilisateur.prenom.toLowerCase() + " " + tr.utilisateur.nom.toLowerCase()} en tant que {getTypeApprobation(tr.code)}. <br /> <span style={{ fontWeight: "bold" }}>Motifi de refus :</span> {tr.motifRefus}
                                                                 </p>
                                                             )}
                                                             <div className="d-flex justify-content-end">

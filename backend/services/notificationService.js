@@ -6,16 +6,25 @@ import { sendMail } from "./sendMailService.js";
 export const sendNotification = async (utilisateurID, content, subject) => {
     const utilisateur = await Utilisateur.findById(utilisateurID);
     if (utilisateur) {
-
-        const notification = new Notification({ utilisateurID, content, subject, dateNotification: new Date() });
+        const notification = new Notification({
+            utilisateur: utilisateurID,
+            content, subject,
+            dateNotification: new Date()
+        });
         await notification.save();
 
         io.emit("notification", notification);
-        sendMail({
+
+        let mailOptions = {
+            from: '"e-dami" <e-dami@snrt.com>',
             to: utilisateur.email,
             subject: subject || "Message from e-dami",
             html: content,
-        })
+        }
+
+        console.log(mailOptions);
+
+        sendMail(mailOptions)
     }
     else {
         throw new Error("utilisateur introuvable !")

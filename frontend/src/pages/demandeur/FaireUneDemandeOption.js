@@ -179,7 +179,7 @@ const FaireUneDemandeOption = () => {
                         </Button>
                         <Button className="m-1" variant="outline-secondary" onClick={resetDamiFormHandler}>
                             <i className="fa-solid fa-file-circle-xmark"></i>{" "}
-                            réinitialiser les formulaire
+                            réinitialiser le formulaire
                         </Button>
                     </div>
                 </>

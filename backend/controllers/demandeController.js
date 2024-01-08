@@ -311,6 +311,7 @@ export const createDemande = asyncHandler(async (req, res) => {
       });
 
       await demande.save();
+      await demande.populate("demandeur")
       const messageContent = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`
       sendNotification(userID, messageContent, `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`)
       res.status(201).json({ message: "demande a été effectuée avec succès" });
@@ -649,7 +650,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.status = "approuve";
                   await demande.save();
                   contenu += " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(demande.demandeur._id, contenu);
+                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée et finalisée`);
                   res.json({ message: "demande approuve" });
                 }
                 else {
@@ -690,11 +691,12 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
 
                   await demande.save();
+                  await demande.populate("demandeur")
                   // envoyer les notifications :
                   contenu += "</p>"
-                  sendNotification(demande.demandeur._id, contenu);
+                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
                   let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu);
+                  sendNotification(dirUserID, dirContenu, `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`);
 
                   res.json(demande);
                 }
@@ -712,7 +714,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.status = "approuve";
                   await demande.save();
                   contenu += " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(demande.demandeur._id, contenu);
+                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
                   res.json({ message: "demande approuve " });
                 }
                 else {
@@ -871,9 +873,9 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   await demande.save();
                   contenu += "</p>";
                   // envoyer les notifications :
-                  sendNotification(demande.demandeur._id, contenu);
+                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
                   let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu, `Votre demande a été approuvée`);
+                  sendNotification(dirUserID, dirContenu, `Une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}.`);
                   res.json({ message: "demande approvee avec success !" });
                 }
               }
