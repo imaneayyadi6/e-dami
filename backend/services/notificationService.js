@@ -22,8 +22,6 @@ export const sendNotification = async (utilisateurID, content, subject) => {
             html: content,
         }
 
-        console.log(mailOptions);
-
         sendMail(mailOptions)
     }
     else {

@@ -140,6 +140,7 @@ const FaireUneDemandeOption = () => {
             });
 
             dispatch(resetCreateDemande());
+            dispatch(fetchOptionByID(id));
 
         }
 
