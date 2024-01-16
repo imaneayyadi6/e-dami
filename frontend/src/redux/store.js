@@ -45,11 +45,19 @@ import {
 } from "./sousCategorie/sousCategorieReducers";
 import {
   optionListBySousCategorieIDReducer,
+  optionByIDReducer,
+
   optionListReducer,
   optionCreateReducer,
-  optionByIDReducer,
   optionDeleteReducer,
   optionUpdateReducer,
+
+  optionCrtOpListReducer,
+  optionCrtOpCreateReducer,
+  optionCrtOpDeleteReducer,
+  optionCrtOpUpdateReducer,
+
+
 } from "./option/optionReducers";
 
 import {
@@ -117,12 +125,18 @@ const reducer = combineReducers({
   sousCategorieRemove: sousCategorieRemoveReducer,
   sousCategorieUpdate: sousCategorieUpdateReducer,
   // options :
-  optionCreate: optionCreateReducer,
   optionListBySousCategorieID: optionListBySousCategorieIDReducer,
-  optionList: optionListReducer,
   optionByID: optionByIDReducer,
+  optionCreate: optionCreateReducer,
+  optionList: optionListReducer,
   optionDelete: optionDeleteReducer,
   optionUpdate: optionUpdateReducer,
+
+  optionCrtOpCreate: optionCrtOpCreateReducer,
+  optionCrtOpList: optionCrtOpListReducer,
+  optionCrtOpDelete: optionCrtOpDeleteReducer,
+  optionCrtOpUpdate: optionCrtOpUpdateReducer,
+
   // user :
   userLogin: userLoginReducer,
   userDirecteursList: userDirecteursListReducer,

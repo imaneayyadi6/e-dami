@@ -29,7 +29,10 @@ const optionSchema = Schema(
       type: String,
       required: [true, "veuillez saisir le type de processus"],
     },
-
+    createur: {
+      type: Schema.Types.ObjectId,
+      ref: "utilisateur",
+    },
     contenu: {
       type: String,
       required: [true, "veuillez entrer le contenu de l'option"],

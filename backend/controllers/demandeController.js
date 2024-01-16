@@ -48,19 +48,18 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
 
   if (filters.option) userFilter["option"] = filters.option;
 
-  // Fetch documents with pagination and population
+
   const demandes = await Demande.find(userFilter)
     .populate("option demandeur")
     .sort({ "traitement.dateEnvoi": -1 })
-    .limit(parseInt(limit)) // Ensure that limit is parsed as an integer
-    .skip((parseInt(page) - 1) * parseInt(limit)) // Ensure that page and limit are parsed as integers
+    .limit(parseInt(limit))
+    .skip((parseInt(page) - 1) * parseInt(limit))
     .exec();
 
   let traitements = demandes.flatMap(demande =>
     demande.traitement
       .filter(tr => String(tr.utilisateur) === String(req.user.id))
       .reduce((acc, tr) => {
-        // Check if the current tr is not already in traitements
         if (!acc.some(dtr => String(dtr.idTraitement) === String(tr._id))) {
           acc.push({
             idDemande: demande._id,

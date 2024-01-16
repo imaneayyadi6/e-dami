@@ -42,7 +42,25 @@ export const createur = asyncHandler(async (req, res, next) => {
       next();
     } else {
       res.status(401);
-      throw new Error("Non autorisé en tant que créateur ");
+      throw new Error("Non autorisé en tant que créateur");
+    }
+  } else {
+    res.status(401);
+    throw new Error("Non autorisé, pas de roles !");
+  }
+});
+
+export const createurOption = asyncHandler(async (req, res, next) => {
+  const role = await Role.findOne({ code: "crt-op" });
+  if (req.user && req.user.roles && req.user.roles.length > 0) {
+    const findIndex = req.user.roles.findIndex(
+      item => String(item.role) === String(role._id)
+    );
+    if (findIndex !== -1) {
+      next();
+    } else {
+      res.status(401);
+      throw new Error("Non autorisé en tant que créateur d'option ");
     }
   } else {
     res.status(401);

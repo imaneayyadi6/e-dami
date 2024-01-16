@@ -13,12 +13,12 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(protect, createur, getServices)
+  .get(protect, getServices)
   .post(protect, createur, createService);
 
 router
   .route("/:id")
-  .get(protect, createur, getServiceByID)
+  .get(protect, getServiceByID)
   .put(protect, createur, updateService)
   .delete(protect, createur, deleteService);
 router.route("/direction/:id").get(protect, createur, getServicesByDirectionID);

@@ -11,6 +11,13 @@ import {
   UtilisateurCreatePage,
   UtilisateurDetailsPage,
 } from "../pages/admin";
+
+import {
+  DamiEditPageCrtOp,
+  OptionListPageCrtOp,
+  DamiDetailsPageCrtOp,
+} from "../pages/createurOption";
+
 import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage, FaireUneDemandeOption } from "../pages/demandeur";
 import { DemandeDetailsPage, DemandesPage } from "../pages/signataire";
 
@@ -47,36 +54,85 @@ const routes = [
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt", "crt-op"]
+    roles: ["crt",]
   },
   {
     path: "/creer-option/:id",
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt", "crt-op"]
+    roles: ["crt",]
   },
   {
     path: "/modifier-option/:id",
     name: "Modifier option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt", "crt-op"]
+    roles: ["crt",]
   },
   {
     path: "/details-option/:id",
     name: "Details option",
     element: <DamiDetailsPage />,
     exact: true,
-    roles: ["crt", "crt-op"]
+    roles: ["crt",]
   },
   {
     path: "/options",
     name: "Options",
     element: <OptionListPage />,
     exact: true,
-    roles: ["crt", "crt-op"]
+    roles: ["crt",]
   },
+
+
+  {
+    path: "/creer-option/crt-op",
+    name: "Creer Option",
+    element: <DamiEditPageCrtOp />,
+    exact: true,
+    roles: ["crt-op"]
+  },
+  {
+    path: "/creer-option/crt-op/:id",
+    name: "Creer Option",
+    element: <DamiEditPageCrtOp />,
+    exact: true,
+    roles: ["crt-op"]
+  },
+  {
+    path: "/modifier-option/crt-op/:id",
+    name: "Modifier option",
+    element: <DamiEditPageCrtOp />,
+    exact: true,
+    roles: ["crt-op"]
+  },
+  {
+    path: "/details-option/crt-op/:id",
+    name: "Details option",
+    element: <DamiDetailsPageCrtOp />,
+    exact: true,
+    roles: ["crt-op"]
+  },
+  {
+    path: "/options/crt-op",
+    name: "Options",
+    element: <OptionListPageCrtOp />,
+    exact: true,
+    roles: ["crt-op"]
+  },
+
+
+
+
+
+
+
+
+
+
+
+
   {
     path: "/directions",
     name: "Directions",
