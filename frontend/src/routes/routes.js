@@ -19,7 +19,7 @@ import {
 } from "../pages/createurOption";
 
 import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage, FaireUneDemandeOption } from "../pages/demandeur";
-import { DemandeDetailsPage, DemandesPage } from "../pages/signataire";
+import { DemandeDetailsPage, DemandesPage, SignataireDashboardPage } from "../pages/signataire";
 
 const routes = [
   {
@@ -34,14 +34,28 @@ const routes = [
     name: "Tableau de bord",
     element: <DashboardPage />,
     exact: true,
-    roles: ["crt", "sig"],
+    roles: ["crt"],
+  },
+  {
+    path: "/",
+    name: "Tableau de bord",
+    element: <SignataireDashboardPage />,
+    exact: true,
+    roles: ["sig"],
   },
   {
     path: "/dashboard",
     name: "Tableau de bord",
     element: <DashboardPage />,
     exact: true,
-    roles: ["crt", "sig"],
+    roles: ["crt"],
+  },
+  {
+    path: "/dashboard",
+    name: "Tableau de bord",
+    element: <SignataireDashboardPage />,
+    exact: true,
+    roles: ["sig"],
   },
   {
     path: "/Categories",

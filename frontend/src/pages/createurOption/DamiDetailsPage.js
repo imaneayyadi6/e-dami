@@ -31,7 +31,7 @@ const DamiDetailsPageCrtOp = () => {
     <>
       <div className='d-flex justify-content-between align-items-center'>
         <Link
-          to='/options'
+          to='/options/crt-op'
           className='btn btn-sm btn-light mb-3'
           onClick={() => {
             dispatch(resetFetchOptionByID());

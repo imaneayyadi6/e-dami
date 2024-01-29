@@ -48,15 +48,15 @@ const DemandeurDetailsDemande = () => {
                 <DamiLoading /> :
                 recoveredDemande && (
                     <div>
-                        <h3 className="mb-5 mt-3 ">
+                        <h5 className="mb-5 mt-3 d-flex align-items-center w-100">
                             Status global la demande :{" "}
-                            <span className={`table-text-status-${String(recoveredDemande.status).replace(/\s/g, "")}`}>{recoveredDemande.status}</span>
-                        </h3>
+                            <span className={`ml-2 title-text-status-${String(recoveredDemande.status).replace(/\s/g, "")}`}>{recoveredDemande.status}</span>
+                        </h5>
 
                         <div className="details-dami-dm">
                             <div className="d-flex justify-content-end">
                                 <Button className="details-dami-dm-timline-button-show mb-3" variant="dark" onClick={() => setShowTimeLine(true)}>
-                                    <i className="fa-solid fa-timeline"></i>     CHRONOLOGIE
+                                    <i className="fa-solid fa-timeline"></i>    CHRONOLOGIE
                                 </Button>
                                 <Modal show={showTimeLine} size="xl" onHide={() => setShowTimeLine(false)} fullscreen>
                                     <Modal.Header closeButton>

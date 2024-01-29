@@ -5,7 +5,11 @@ import DamiLineChart from "./DamiLineChart";
 
 import DamiBySousCategorieDoughnutChart from "./DamiBySousCategorieDoughnutChart";
 import DamiByServiceDoughnutChart from "./DamiByServiceDoughnutChart";
+import DemandesLinesByDirectionChart from "./DemandesLinesByDirectionChart"
+
+
 export {
+  DemandesLinesByDirectionChart,
   DemandeByDirectionBarChart,
   UsersLineChart,
   DemandeLineChart,

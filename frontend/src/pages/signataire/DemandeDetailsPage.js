@@ -201,9 +201,10 @@ const DemandeDetailsPage = () => {
             recoveredDemande && (
               !recoveredDemande.not ? (
                 <>
-                  <h5 className="mb-5">
+                  <h5 className="mb-5 d-flex align-items-center">
                     Status de traitement de la demande :{" "}
-                    {statusResult && <span className={`table-text-status-${String(statusResult.status).replace(/\s/g, "")}`}>{statusResult.status}</span>}
+                    {statusResult && <span
+                      className={`ml-2 title-text-status-${String(statusResult.status).replace(/\s/g, "")}`}>{statusResult.status}</span>}
                     {loadingDemandeGetTraitementStatus && (
                       <Placeholder animation="glow">
                         <Placeholder xs={1} />

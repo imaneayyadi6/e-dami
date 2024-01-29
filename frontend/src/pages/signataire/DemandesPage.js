@@ -22,7 +22,7 @@ const DemandesPage = () => {
 
 
 
-  const filterHnadler = ({ page }) => {
+  const filterHnadler = (page) => {
     setIsNextPages(false);
     let query = { page: page || 1 };
     if (option !== null) query.option = option
@@ -56,6 +56,8 @@ const DemandesPage = () => {
   } = demandeToHandleFilter;
 
   const handlePageChange = (newPage) => {
+    console.log(newPage);
+
     setCurrentPage(newPage);
     filterHnadler(newPage)
     setIsNextPages(true);
@@ -312,7 +314,7 @@ const DemandesPage = () => {
                         <td><small className="inline-text">{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
                         <td><small className="inline-text">{String(traitement.option).toLowerCase()}</small></td>
                         <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
-                        <td><small className={`inline-text  table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
+                        <td><small className={`table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
                         <td>
                           <Link className="btn btn-sm btn-light" to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
                             traiter

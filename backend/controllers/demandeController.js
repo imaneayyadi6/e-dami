@@ -29,10 +29,10 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, ...filters } = req.query;
 
   // Define base filter for user-specific requests
-  const userFilter = { "traitement.utilisateur": req.user.id };
+  const userFilter = { "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id) };
 
   // Update filter based on query parameters
-  if (filters.status) userFilter["traitement.status"] = filters.status;
+  if (filters.status) userFilter["traitement.status"] = String(filters.status);
 
   if (filters.dateDemande) {
     const startDate = new Date(filters.dateDemande);
@@ -49,12 +49,14 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   if (filters.option) userFilter["option"] = filters.option;
 
 
-  const demandes = await Demande.find(userFilter)
-    .populate("option demandeur")
-    .sort({ "traitement.dateEnvoi": -1 })
-    .limit(parseInt(limit))
-    .skip((parseInt(page) - 1) * parseInt(limit))
-    .exec();
+  let demandes = JSON.parse(JSON.stringify(
+    await Demande.find(userFilter)
+      .populate("option demandeur")
+      .sort({ "traitement.dateEnvoi": -1 })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit))
+      .exec()
+  ));
 
   let traitements = demandes.flatMap(demande =>
     demande.traitement
@@ -79,6 +81,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   traitements.sort((a, b) => {
     return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
   });
+
   if (filters.status)
     traitements = traitements.filter(tr => String(tr.status) === String(filters.status))
 
@@ -117,6 +120,11 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
       $facet: {
         uniqueOptions: [
           {
+            $match: {
+              'traitement.utilisateur': userObjectId,
+            },
+          },
+          {
             $group: {
               _id: '$option',
             },
@@ -124,12 +132,22 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
         ],
         uniqueDemandeurs: [
           {
+            $match: {
+              'traitement.utilisateur': userObjectId,
+            },
+          },
+          {
             $group: {
               _id: '$demandeur',
             },
           },
         ],
         uniqueTypeApps: [
+          {
+            $match: {
+              'traitement.utilisateur': userObjectId,
+            },
+          },
           {
             $group: {
               _id: '$traitement.code',
@@ -141,10 +159,12 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
   ];
 
   const [aggregationResult] = await Demande.aggregate(aggregationPipeline);
+  console.log(aggregationResult);
 
   const optionIds = aggregationResult.uniqueOptions.map((result) => result._id);
   const demandeurIds = aggregationResult.uniqueDemandeurs.map((result) => result._id);
-  const typeApp = Array.from(new Set(aggregationResult.uniqueTypeApps.flatMap((result) => result._id)));
+  let typeApp = Array.from(new Set(aggregationResult.uniqueTypeApps.flatMap((result) => result._id)));
+
 
   const [options, demandeurs] = await Promise.all([
     Option.find({ '_id': { $in: optionIds } }),
@@ -166,7 +186,7 @@ export const createDemande = asyncHandler(async (req, res) => {
   if (option) {
     if (user) {
 
-      const checkDemande = await Demande.findOnd({
+      const checkDemande = await Demande.findOne({
         demandeur: user._id,
         option: option._id,
         status: "en cours"

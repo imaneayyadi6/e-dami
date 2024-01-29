@@ -405,3 +405,17 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
   }
 
 });
+
+
+
+
+
+
+// @desc    Recuperer les demandes par direction pour un signataire
+// @route   GET /api/charts/bars/demandes
+// @access  private
+export const chartLinesByDirectionDemandes = asyncHandler(async (req, res) => {
+    
+
+});
+

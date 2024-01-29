@@ -310,12 +310,7 @@ const DamiDemande = ({ demande }) => {
                     />
                   </div>
                 </div>
-                {/* 
-                <div className=''>
-                  <label>Observation:</label>
-                  <input className='dami-input w-75' />
-                </div> */}
-
+          
                 <div className=''>
                   <label>Date:</label>
                   <input className='dami-input'
