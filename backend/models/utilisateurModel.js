@@ -47,6 +47,16 @@ const utilisateurSchema = Schema(
       required: true,
       default: false,
     },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    firstTimeLogin: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
     roles: [
       {
         role: {

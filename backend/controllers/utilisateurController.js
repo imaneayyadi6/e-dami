@@ -11,8 +11,9 @@ import Role from "../models/roleModel.js";
 // @access  Public
 export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  const lowercaseEmail = String(email).toLocaleLowerCase();
   const utilisateur = await Utilisateur.findOne({
-    email: String(email).toLocaleLowerCase(),
+    email: { $regex: new RegExp(`^${lowercaseEmail}$`, 'i') },
   })
     .populate("roles.role")
     .populate("service")
