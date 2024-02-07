@@ -12,7 +12,7 @@ const DamiDemande = ({ demande }) => {
     cds: "Approbation Chef de Service",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
-    dir: `Approbation Directeur de la direction `,
+    dir: `Approbation Directeur de la  `,
     pdg: "Approbation President-directeur generale",
   });
 
@@ -109,7 +109,7 @@ const DamiDemande = ({ demande }) => {
           <span className='d-block dami-type-de-processus'>
             {demande.option.typeProcessus}
           </span>
-          <span className='d-block dami-libelle'>{demande.option.libelle}</span>
+          <span className='d-block dami-libelle'>{demande.option.libelle.toLowerCase()}</span>
         </div>
         <div className='dami-codification'>
           <table className='dami-codification-table '>
@@ -168,7 +168,7 @@ const DamiDemande = ({ demande }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={demande.demandeur.direction.libelle}
+                value={capitalizeFirstLetter(demande.demandeur.direction.libelle)}
               />
             </td>
           </tr>
@@ -177,7 +177,7 @@ const DamiDemande = ({ demande }) => {
               <label>Nom:</label>
             </td>
             <td>
-              <input className='dami-input ' value={demande.demandeur.nom} />
+              <input className='dami-input ' value={capitalizeFirstLetter(demande.demandeur.nom)} />
             </td>
             <td>
               <label>Prenom</label>
@@ -185,7 +185,7 @@ const DamiDemande = ({ demande }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={demande.demandeur.prenom}
+                value={capitalizeFirstLetter(demande.demandeur.prenom)}
               />
             </td>
           </tr>
@@ -205,7 +205,7 @@ const DamiDemande = ({ demande }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={demande.demandeur.service.libelle}
+                value={capitalizeFirstLetter(demande.demandeur.service.libelle)}
               />
             </td>
           </tr>
@@ -214,7 +214,7 @@ const DamiDemande = ({ demande }) => {
               <label>Email:</label>
             </td>
             <td>
-              <input className='dami-input' value={demande.demandeur.email} />
+              <input className='dami-input' value={demande.demandeur.email.toLowerCase()} />
             </td>
             <td>
               <label>Gsm</label>
@@ -242,7 +242,7 @@ const DamiDemande = ({ demande }) => {
               <div className='directeur-lib' key={sig}>
                 <span>{sigTypes[sig]}</span>
                 {sig === "dir" && (
-                  <span>{demande.dirLibelle}</span>
+                  <span>{demande.dirLibelle.toLowerCase()}</span>
                 )}
               </div>
             ))}
@@ -310,7 +310,7 @@ const DamiDemande = ({ demande }) => {
                     />
                   </div>
                 </div>
-          
+
                 <div className=''>
                   <label>Date:</label>
                   <input className='dami-input'

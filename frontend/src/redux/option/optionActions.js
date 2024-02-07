@@ -178,7 +178,7 @@ export const createOption = (option) => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const { data } = await axios.post(`/api/options/crtop`, option, config);
+      const { data } = await axios.post(`/api/options`, option, config);
       dispatch({
         type: OPTION_CREATE_SUCCESS,
         payload: data,

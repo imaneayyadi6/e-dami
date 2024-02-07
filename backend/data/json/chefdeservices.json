@@ -1,1 +1,1056 @@
-[{"_id":"65c246c0586ce0accd1c70b1","isActive":true,"firstTimeLogin":true,"nom":"BENMOUSSA","prenom":"MOHAMMED","matricule":1042607,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE ACHAT LOCAL ET MOYENS GENERAUX","isChefDeService":true,"email":"M.BENMOUSSA@snrt.ma","password":"$2a$10$/TdJWbD29XXsBCILeSlubOZcWELf9drkTJbQsOlkClTtcOSWgqZOu","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c0586ce0accd1c70b2"}],"service":"65c246bc586ce0accd1c7040"},{"_id":"65c246c0586ce0accd1c70b3","isActive":true,"firstTimeLogin":true,"nom":"BENADDI","prenom":"HANANE","matricule":1042871,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE DES SYSTEMES RESEAUX ET SECURITE","isChefDeService":true,"email":"H.BENADDI@snrt.ma","password":"$2a$10$.iL4LskDjQOnOzzVWPIlK.2uGoZ2Nlu9VWdRmw38bUKFltnSMHhYi","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70b4"}],"service":"65c246bc586ce0accd1c7016"},null,{"_id":"65c246c1586ce0accd1c70b5","isActive":true,"firstTimeLogin":true,"nom":"SEFRIUI","prenom":"OMAR","matricule":1076929,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE MAINTENANCE FORMATION ET ASSISTANCE","isChefDeService":true,"email":"O.SEFRIUI@snrt.ma","password":"$2a$10$VvWL1wksTgvbwqqOY78ts.JFWXMX/y11k5msoaVhZc.6I5h.o5yzu","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70b6"}],"service":"65c246bc586ce0accd1c7018"},null,null,null,{"_id":"65c246c1586ce0accd1c70b7","isActive":true,"firstTimeLogin":true,"nom":"AHOUJIL","prenom":"NAJIA","matricule":1077952,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE ADMINISTRATION ET SUIVI DES MARCHES","isChefDeService":true,"email":"N.AHOUJIL@snrt.ma","password":"$2a$10$2yZ3jK.ipTjFcg.ONm27sORcPl2pzJ8/R0A0bE2aCnhm3.t/vRQLy","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70b8"}],"service":"65c246bc586ce0accd1c7039"},{"_id":"65c246c1586ce0accd1c70b9","isActive":true,"firstTimeLogin":true,"nom":"EL ALAOUI","prenom":"FATIMA ZAHRA","matricule":1112767,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE PLANIFICATION/PRESTATION","isChefDeService":true,"email":"","password":"$2a$10$6AUislMSi58Z8HlCpPhXBOsS8C3Iiu1CLaZRgjWTk9RYtCeePyuBS","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70ba"}],"service":"65c246bc586ce0accd1c7014"},null,{"_id":"65c246c1586ce0accd1c70bb","isActive":true,"firstTimeLogin":true,"nom":"MAHJOUBI","prenom":"EL HASSANE","matricule":1134148,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE GESTION D’ANTENNE","isChefDeService":true,"email":"E.MAHJOUBI@snrt.ma","password":"$2a$10$C0NtDFFNFaUbBkQj7ck.P.Zg550FWA2HU45jayvEbufRHI6hNW0Qe","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70bc"}],"service":"65c246bc586ce0accd1c7025"},null,null,{"_id":"65c246c1586ce0accd1c70bd","isActive":true,"firstTimeLogin":true,"nom":"HADDAD","prenom":"BOUCHAIB","matricule":1134550,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE REGIONAL DE MARRAKECH","isChefDeService":true,"email":"B.HADDAD@snrt.ma","password":"$2a$10$ZsxwEiG5c4pU.uJoazzF2.X84ZYKzHz8x36Ch9XWil2QZC/J5lrsm","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70be"}],"service":"65c246bc586ce0accd1c7052"},{"_id":"65c246c1586ce0accd1c70bf","isActive":true,"firstTimeLogin":true,"nom":"KHALED","prenom":"OMAR","matricule":118159,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE ECLAIRAGE ET MACHINERIE","isChefDeService":true,"email":null,"password":"$2a$10$VMb7xRBzy6b22Z83spRVH.jU9L9bnycuVThmtTtBdWy8eIQg7AzFq","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70c0"}],"service":"65c246bc586ce0accd1c702f"},null,null,null,null,null,{"_id":"65c246c1586ce0accd1c70c1","isActive":true,"firstTimeLogin":true,"nom":"AKKAD","prenom":"SAMIRA","matricule":1425405,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE MOYENS GENERAUX ET SYSTEME QUALITE A LA REGIE PUBILICITAIRE","isChefDeService":true,"email":"S.AKKAD@snrt.ma","password":"$2a$10$TzrvD0KGb4qPYok.2ad4eeLUq3OtX.bdTXDQrM1LoxcPApSoW8QGG","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70c2"}],"service":"65c246bc586ce0accd1c701f"},{"_id":"65c246c1586ce0accd1c70c3","isActive":true,"firstTimeLogin":true,"nom":"BENTAIR","prenom":"SAID","matricule":1425411,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBILICITAIRE","isChefDeService":true,"email":"S.BENTAIR@snrt.ma","password":"$2a$10$gxuiLYAVD/baacAsW986JeL4ZAO4KNhMsUa8Be.Mq1FcIaBRqU7D6","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70c4"}],"service":"65c246bc586ce0accd1c7021"},null,{"_id":"65c246c1586ce0accd1c70c5","isActive":true,"firstTimeLogin":true,"nom":"CHAHID","prenom":"MOHAMMED","matricule":1425414,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE ADMINISTRATION DES VENTES A LA REGIE PUBILICITAIRE","isChefDeService":true,"email":null,"password":"$2a$10$uAb2OGIsvxusV./H0sPV/e1vCwGagZwZhbXPuglRUOzVo5KiDdYgi","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c1586ce0accd1c70c6"}],"service":"65c246bc586ce0accd1c701e"},{"_id":"65c246c1586ce0accd1c70c7","isActive":true,"firstTimeLogin":true,"nom":"NAJEDDINE","prenom":"FOUZIA","matricule":1425420,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE PLANNING A LA REGIE PUBILICITAIRE","isChefDeService":true,"email":"F.NAJEDDINE@snrt.ma","password":"$2a$10$Q7BRksZYbEGt2Kvtz1RpsuwfvxoQWzLMcCDMMefuHwzFKLBT15Hkm","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70c8"}],"service":"65c246bc586ce0accd1c7020"},{"_id":"65c246c2586ce0accd1c70c9","isActive":true,"firstTimeLogin":true,"nom":"MAJAJ","prenom":"MOHAMED","matricule":1425429,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE TECHNIQUE","isChefDeService":true,"email":"M.MAJAJ@snrt.ma","password":"$2a$10$vmfQl2y0X83wA9BAedlw9e2Mnjy.7M6ETJxaHAgfIpyLqeutd3zFO","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70ca"}],"service":"65c246bc586ce0accd1c7022"},{"_id":"65c246c2586ce0accd1c70cb","isActive":true,"firstTimeLogin":true,"nom":"OUASS","prenom":"AHMED","matricule":1425438,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DES JOURNAUX TELEVISES ET MAGAZINES D'INFORMATION","isChefDeService":true,"email":"A.OUASS@snrt.ma","password":"$2a$10$4KiNCU5dI9Imasdt67At5.sETuPUtKuEs8OyHAif8h7PbpI9/ES1m","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70cc"}],"service":"65c246bc586ce0accd1c7026"},null,{"_id":"65c246c2586ce0accd1c70cd","isActive":true,"firstTimeLogin":true,"nom":"ZOUIR","prenom":"AMINE","matricule":1425501,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DEVELOPPEMENT INFORMATIQUE","isChefDeService":true,"email":"A.ZOUIR@snrt.ma","password":"$2a$10$0SkZbF2IP/SC1GNhBeXnb.46kTL.t6gLDo3KXyxtPjULTD5DIwJyW","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70ce"}],"service":"65c246bc586ce0accd1c7017"},{"_id":"65c246c2586ce0accd1c70cf","isActive":true,"firstTimeLogin":true,"nom":"MISBAH","prenom":"HASSAN","matricule":1425503,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DE LA COMPTABILITE","isChefDeService":true,"email":"H.MISBAH@snrt.ma","password":"$2a$10$WYtEl.fOGwyViglCHugc5Ozcg/7BWxzwwCShTlYbzCYXj2rnhMGV6","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70d0"}],"service":"65c246bc586ce0accd1c7056"},{"_id":"65c246c2586ce0accd1c70d1","isActive":true,"firstTimeLogin":true,"nom":"EL ALAOUI EL BAHI","prenom":"ANASS","matricule":1425505,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE PRODUCTION INFORMATIQUE","isChefDeService":true,"email":"a.elalaoui@snrt.ma","password":"$2a$10$B2.0HwblMoQxgWNUvaksPO7d4L4DulqeOTUz4iRGx5f43Oa.GQIqC","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70d2"}],"service":"65c246bc586ce0accd1c701b"},{"_id":"65c246c2586ce0accd1c70d3","isActive":true,"firstTimeLogin":true,"nom":"IDRISSI KAITOUNI ","prenom":"MOHAMMED","matricule":1425507,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DEPLOIEMENT ET EXPLOITATION","isChefDeService":true,"email":"m.idrissi@snrt.ma","password":"$2a$10$i/Kdm5HKqANakmwdaLIdUOXGUWwU5Ud64/erk4LF0zYyH.UWx8RfW","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70d4"}],"service":"65c246bc586ce0accd1c7015"},null,null,{"_id":"65c246c2586ce0accd1c70d5","isActive":true,"firstTimeLogin":true,"nom":"AIT AICHA","prenom":"RACHID","matricule":1425638,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL AGADIR","isChefDeService":true,"email":null,"password":"$2a$10$7jSiwyBNf/HAWhe8ivlv7OVWLDXWKyCdnUlc1VCCYiqjnRlGRaT/q","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70d6"}],"service":"65c246bc586ce0accd1c704f"},{"_id":"65c246c2586ce0accd1c70d7","isActive":true,"firstTimeLogin":true,"nom":"AIT BRAHIM","prenom":"ABDELAZIZ","matricule":1425640,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL LAAYOUNE","isChefDeService":true,"email":null,"password":"$2a$10$51Ba6dkOsS4.kcLucLxgluTuiRe/HC.llHY1xs6HdJmX12qQxzKj6","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c2586ce0accd1c70d8"}],"service":"65c246bc586ce0accd1c704d"},{"_id":"65c246c2586ce0accd1c70d9","isActive":true,"firstTimeLogin":true,"nom":"NAIT SERHANE","prenom":"NABIL","matricule":1425683,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE GESTION DES ARCHIVES RADIO ET DES BASES DE DONNEES DOCUMENTAIRES","isChefDeService":true,"email":null,"password":"$2a$10$7o8PmIMl4P2t5Ke1E8Q.le2cVBy6RD8nLHbS030lsKUomnfaCCsS2","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70da"}],"service":"65c246bc586ce0accd1c7038"},{"_id":"65c246c3586ce0accd1c70db","isActive":true,"firstTimeLogin":true,"nom":"EL JEBARI","prenom":"KHALID","matricule":1425686,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE NUMERISATION","isChefDeService":true,"email":null,"password":"$2a$10$8Xecp11NvuMxA6vvHpwmTuHSeyBBdfM0EK6NYfkOEnUR81raeFqWO","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70dc"}],"service":"65c246bc586ce0accd1c7038"},null,{"_id":"65c246c3586ce0accd1c70dd","isActive":true,"firstTimeLogin":true,"nom":"OBTEL","prenom":"AISSAM","matricule":1425818,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DE CONTROLE ET DE DISTRIBUTION","isChefDeService":true,"email":"A.OBTEL@snrt.ma","password":"$2a$10$K0SOGuwzAmd32YIzklur.OoAMabDLGNTGNXEAwBRSlKvJthZb0ZnS","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70de"}],"service":"65c246bc586ce0accd1c7045"},{"_id":"65c246c3586ce0accd1c70df","isActive":true,"firstTimeLogin":true,"nom":"HAMAME","prenom":"EL HOUCINE","matricule":1425834,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DES MOYENS DE CONTRIBUTION MOBILE","isChefDeService":true,"email":"E.HAMAME@snrt.ma","password":"$2a$10$iiTC78qrGo2ydpVKkEgBQuR4dDaLZPkebcvHQb3ymlDZbbMbQ0ozu","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70e0"}],"service":"65c246bc586ce0accd1c702d"},{"_id":"65c246c3586ce0accd1c70e1","isActive":true,"firstTimeLogin":true,"nom":"MOUHANNI","prenom":"MALIKA","matricule":1425859,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE DE LA PRODUCTION ET DES PROGRAMMES À LA RADIO AMAZIGH","isChefDeService":true,"email":"M.MOUHANNI@snrt.ma","password":"$2a$10$sOjGn/x7C7e/efBCJv62iOc8Jz0CsBsLRWopDsWZrNPYrznaRmI96","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70e2"}],"service":"65c246bc586ce0accd1c7023"},{"_id":"65c246c3586ce0accd1c70e3","isActive":true,"firstTimeLogin":true,"nom":"HADJ SADEK","prenom":"AYOUB","matricule":1425894,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DES FAISCEAUX HERTZIENS","isChefDeService":true,"email":null,"password":"$2a$10$y9s.3uaL0.4vD0ZvYKOR2uA9BGmzEjDWSwk/yngYEgFa087bvHeQq","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70e4"}],"service":"65c246bc586ce0accd1c7048"},null,{"_id":"65c246c3586ce0accd1c70e5","isActive":true,"firstTimeLogin":true,"nom":"BENKIRANE","prenom":"NADA","matricule":1425923,"civilite":"F","gsm":null,"fonction":"CHEF DE SERVICE TRESORIER","isChefDeService":true,"email":"N.BENKIRANE@snrt.ma","password":"$2a$10$Hl9diZejIw/h81L/Q1mXeOcVjKxhLj43jikdSYVJoaIgEbjkzw5i2","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70e6"}],"service":"65c246bc586ce0accd1c7058"},null,null,{"_id":"65c246c3586ce0accd1c70e7","isActive":true,"firstTimeLogin":true,"nom":"FARIANE","prenom":"HOUDA","matricule":1426036,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE PROGRAMMATION INTERNATIONALE","isChefDeService":true,"email":"H.FARIANE@snrt.ma","password":"$2a$10$64Ctr/tGQV3q5W8R1bBbO.z3aHVwh4uEVw9zvgbxWifyUw.gpCwXO","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70e8"}],"service":"65c246bc586ce0accd1c702b"},null,null,null,null,{"_id":"65c246c3586ce0accd1c70e9","isActive":true,"firstTimeLogin":true,"nom":"BENHACHEM EL HARROUNI","prenom":"ISMAIL","matricule":1502815,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DE LA GPEC ET DE LA FORMATION","isChefDeService":true,"email":"","password":"$2a$10$K159r.ZA4xwz5nHTS8g7We/xoFjVIr6n48MdQAuFwk9os5Yzjb7me","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c3586ce0accd1c70ea"}],"service":"65c246bc586ce0accd1c703a"},null,null,{"_id":"65c246c3586ce0accd1c70eb","isActive":true,"firstTimeLogin":true,"nom":"KIRAT","prenom":"YOUSEF","matricule":224876,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL OUJDA","isChefDeService":true,"email":null,"password":"$2a$10$KPVnTUUwDd9Sgr.z4M6UluO14MOnhAJFJMfMI8YpiNVFnzusxVtFO","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70ec"}],"service":"65c246bc586ce0accd1c7053"},null,{"_id":"65c246c4586ce0accd1c70ed","isActive":true,"firstTimeLogin":true,"nom":"ADDOULI","prenom":"ABDERRAHMANE","matricule":261917,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL FES-MEKNES","isChefDeService":true,"email":null,"password":"$2a$10$kLDAzYYOM8CM2dlnwlKJk.wn2HSmxltiG8jGCIhMnMHHVUcgum/9i","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70ee"}],"service":"65c246bc586ce0accd1c704f"},{"_id":"65c246c4586ce0accd1c70ef","isActive":true,"firstTimeLogin":true,"nom":"ZELOUANI","prenom":"AHMED","matricule":261967,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE REGIONAL AGADIR","isChefDeService":true,"email":"","password":"$2a$10$3EceMuLc8mE26eBccSrlI.H.BMzdth/1L8BKwFDBaiPP2C8OYQS3S","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70f0"}],"service":"65c246bc586ce0accd1c704f"},{"_id":"65c246c4586ce0accd1c70f1","isActive":true,"firstTimeLogin":true,"nom":"JELLAL","prenom":"ABDELILAH","matricule":271394,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE MAGASIN","isChefDeService":true,"email":"A.JELLAL@snrt.ma","password":"$2a$10$bdfB84LiLqSsK7gUYGndI.0yFd.kMMeFBjw9xEYrnjXIctpY7bS7e","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70f2"}],"service":"65c246bc586ce0accd1c7036"},{"_id":"65c246c4586ce0accd1c70f3","isActive":true,"firstTimeLogin":true,"nom":"FARHAT","prenom":"SAID","matricule":287192,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE REGIONAL TANGER","isChefDeService":true,"email":"","password":"$2a$10$ftP8Yeyqmw0YLezRD0Jc3eZ8GSBvI4AtghPDURlb20MBpJTWnVdVu","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70f4"}],"service":"65c246bc586ce0accd1c7054"},{"_id":"65c246c4586ce0accd1c70f5","isActive":true,"firstTimeLogin":true,"nom":"DOUKAT","prenom":" DRISS","matricule":314829,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DE L'ENERGIE","isChefDeService":true,"email":null,"password":"$2a$10$ONfGuhXEZSJmkj0WnFs.fOvQ6iqxsGRGtIfzSf3pIlvzsIRdXBCe6","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70f6"}],"service":"65c246bc586ce0accd1c7046"},null,{"_id":"65c246c4586ce0accd1c70f7","isActive":true,"firstTimeLogin":true,"nom":"AR-REYOUCHI","prenom":"EL MILOUD","matricule":327104,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL AL HOUCEIMA","isChefDeService":true,"email":"E.AR-REYOUCHI@snrt.ma","password":"$2a$10$UJOLewEjLXGVZsCeiMDTHuiWAXEThPob8i1lM/UHS76//r07NEmLy","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70f8"}],"service":"65c246bc586ce0accd1c7050"},{"_id":"65c246c4586ce0accd1c70f9","isActive":true,"firstTimeLogin":true,"nom":"AISSAOUI","prenom":"MOHAMMED","matricule":327143,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DE L'EQUIPEMENT","isChefDeService":true,"email":"M.AISSAOUI@snrt.ma","password":"$2a$10$n1Oil4efVQEUeYP.egcU1OJkxE8iYYrWVHH8h/S4E6J70oJSxLgqK","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70fa"}],"service":"65c246bc586ce0accd1c7047"},{"_id":"65c246c4586ce0accd1c70fb","isActive":true,"firstTimeLogin":true,"nom":"BENNAGHMOUCH","prenom":"AZIZ","matricule":327149,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DES STATIONS TERRIENNES","isChefDeService":true,"email":null,"password":"$2a$10$P7RgHmrc09yMg4GKWnPsq.kIfK.Vobtdsph5seNYR73gl0ttdCs4G","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70fc"}],"service":"65c246bc586ce0accd1c704a"},null,{"_id":"65c246c4586ce0accd1c70fd","isActive":true,"firstTimeLogin":true,"nom":"LAABIDAT","prenom":"AZIZ","matricule":350951,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE PROGRAMMATION ARABE","isChefDeService":true,"email":"A.LAABIDAT@snrt.ma","password":"$2a$10$sCavd2CaOFSBWgtlrhkbsOZX7Gc6BY9KtB.LLP4xGc4.U/yhDCVIK","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c70fe"}],"service":"65c246bc586ce0accd1c702a"},null,null,{"_id":"65c246c4586ce0accd1c70ff","isActive":true,"firstTimeLogin":true,"nom":"LAMRI-HASSANI","prenom":"MOHAMMED","matricule":351622,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE ETUDES ET PLANIFICATION","isChefDeService":true,"email":"m.lamri@snrt.ma","password":"$2a$10$RwkQjF3fJptYZY75B1jCl.QWsj.OtObABi.dXhSuaT9a/ummMl6CK","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c7100"}],"service":"65c246bc586ce0accd1c704b"},{"_id":"65c246c4586ce0accd1c7101","isActive":true,"firstTimeLogin":true,"nom":"SAHTOUT","prenom":"RACHID","matricule":351714,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE ECLAIRAGE ET MACHINERIE","isChefDeService":true,"email":"R.SAHTOUT@snrt.ma","password":"$2a$10$cAJArulQAK3p6EUSYWxSs.tGtbPtbOooSRlBAotsXjA1I5lkaFnPy","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c4586ce0accd1c7102"}],"service":"65c246bc586ce0accd1c702f"},null,null,{"_id":"65c246c4586ce0accd1c7103","isActive":true,"firstTimeLogin":true,"nom":"CHOUBIKI","prenom":"AHMED","matricule":619912,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DE REGLEMENTATION","isChefDeService":true,"email":"","password":"$2a$10$Hqq27Cdl80ZGQqu7VZ8vEuDIhdp22coX9ILD.X1H.C/2oF.lgYq6S","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7104"}],"service":"65c246bc586ce0accd1c703f"},null,{"_id":"65c246c5586ce0accd1c7105","isActive":true,"firstTimeLogin":true,"nom":"EL-ASRI","prenom":"JAOUAD","matricule":66693,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE COORDINATION TECHNIQUE RADIO","isChefDeService":true,"email":"J.EL-ASRI@snrt.ma","password":"$2a$10$R8tiby68kGPWE0TagNet0unPdBfKoKlD9M3D0m2JA0aF48Dihv9QO","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7106"}],"service":"65c246bc586ce0accd1c7033"},null,{"_id":"65c246c5586ce0accd1c7107","isActive":true,"firstTimeLogin":true,"nom":"KOUROU","prenom":"DRISS","matricule":731825,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DE LA MAINTENANCE TV","isChefDeService":true,"email":"D.KOUROU@snrt.ma","password":"$2a$10$x536yEzTmdxFbjAcDREzWOWBX1nQSVNoxtvZhl0brfVxmwwMf6cL.","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7108"}],"service":"65c246bc586ce0accd1c7019"},{"_id":"65c246c5586ce0accd1c7109","isActive":true,"firstTimeLogin":true,"nom":"ALLALOU","prenom":"MOHAMED","matricule":731935,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL RABAT","isChefDeService":true,"email":"M.ALLALOU@snrt.ma","password":"$2a$10$5c7rmINjWLwsIW1FZq1ZcOe0342gCowFSs5MV2hdxtoGWD7nqETJe","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c710a"}],"service":"65c246bc586ce0accd1c704e"},{"_id":"65c246c5586ce0accd1c710b","isActive":true,"firstTimeLogin":true,"nom":"EL HAFED","prenom":"HICHAM","matricule":732565,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE REGIONAL TANGER","isChefDeService":true,"email":null,"password":"$2a$10$P8Oiy7eg1T7lV5vORKfr.u1Ibqd6rR1qgWJ9vsTUKoA9XJexrOFWG","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c710c"}],"service":"65c246bc586ce0accd1c7054"},{"_id":"65c246c5586ce0accd1c710d","isActive":true,"firstTimeLogin":true,"nom":"OULD MHANI","prenom":"NOUR EDDINE","matricule":744711,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE REGIONAL DE CASABLANCA","isChefDeService":true,"email":"","password":"$2a$10$TM6svb6w0pfLk9JmmADHDeATc0YwwpYBz.xAHG4QGMmkuMJLpv7jq","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c710e"}],"service":"65c246bc586ce0accd1c704c"},{"_id":"65c246c5586ce0accd1c710f","isActive":true,"firstTimeLogin":true,"nom":"EL MOUNADIL","prenom":"HASSAN","matricule":756724,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE PLANNING ET MOYENS DE PRODUCTION","isChefDeService":true,"email":"","password":"$2a$10$OhnRVaPrVYG6N1UXR//TiOCLI3nAP/MexWJfwRudvCvljEwMN.Lxi","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7110"}],"service":"65c246bc586ce0accd1c7027"},{"_id":"65c246c5586ce0accd1c7111","isActive":true,"firstTimeLogin":true,"nom":"SABA","prenom":"LATIFA","matricule":756772,"civilite":"F","gsm":null,"fonction":"CHEF DE SERVICE EN CHARGE DE LA PRODUCTION ARABE","isChefDeService":true,"email":"L.SABA@snrt.ma","password":"$2a$10$8wFXoNKGiM6RDrYopuTGjOM5Y06Zoln00mA5UZIy9ap/KsB9.otXW","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7112"}],"service":"65c246bc586ce0accd1c702c"},{"_id":"65c246c5586ce0accd1c7113","isActive":true,"firstTimeLogin":true,"nom":"MAJLAL","prenom":"AMINA","matricule":770802,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE DE LA PRODUCTION INTERNATIONALE","isChefDeService":true,"email":"A.MAJLAL@snrt.ma","password":"$2a$10$OHScDXu4EZilG/AAQ1VkiOh2ko4NdezofaLlMr2pBqzP5knjdodM2","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7114"}],"service":"65c246bc586ce0accd1c7029"},{"_id":"65c246c5586ce0accd1c7115","isActive":true,"firstTimeLogin":true,"nom":"SOUISSI","prenom":"SOUAD","matricule":82657,"civilite":"F","gsm":"","fonction":"CHEF DE SERVICE RECOUVREMENT","isChefDeService":true,"email":"S.SOUISSI@snrt.ma","password":"$2a$10$0wBgVYsno4C09yyRBVfUrOUh7yutjbn2IwlqCttOcqTnhnSS/qI5S","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7116"}],"service":"65c246bc586ce0accd1c7057"},{"_id":"65c246c5586ce0accd1c7117","isActive":true,"firstTimeLogin":true,"nom":"BOURAS","prenom":"ABDERRAHMANE","matricule":837243,"civilite":"M","gsm":"","fonction":"CHEF DE SERVICE DES MOYENS DE PRODUCTION TV MOBILES","isChefDeService":true,"email":"A.BOURAS@snrt.ma","password":"$2a$10$npVCy7YdBVll1Mawq1by5.LGhbv8FSflZRnbM.lCa10N0woNqAcpu","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c5586ce0accd1c7118"}],"service":"65c246bc586ce0accd1c702e"},{"_id":"65c246c5586ce0accd1c7119","isActive":true,"firstTimeLogin":true,"nom":"MESKOURI","prenom":"KHALID","matricule":837303,"civilite":"M","gsm":null,"fonction":"CHEF DE SERVICE DES CARS REGIES","isChefDeService":true,"email":"K.MESKOURI@snrt.ma","password":"$2a$10$A3skR2sSpvHrTGUuGnqwvejXG6EhJtzMfRz81eT95KqiFx3ZG/ijC","roles":[{"role":"657b1914c9d20eb476013fda","_id":"65c246c6586ce0accd1c711a"}],"service":"65c246bc586ce0accd1c7030"}]
+[
+    {
+        "_id": {
+            "$oid": "65c352ec4ba3913a5ef4c385"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "BENMOUSSA",
+        "prenom": "MOHAMMED",
+        "matricule": 1042607,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE ACHAT LOCAL ET MOYENS GENERAUX",
+        "isChefDeService": true,
+        "email": "M.BENMOUSSA@snrt.ma",
+        "password": "$2a$10$B8ohVBmSvcWbKYXyouoTEOl8kg4nUN0m0efLNtiHoi0krRW5U7MGW",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ec4ba3913a5ef4c386"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c332"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f9"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ec4ba3913a5ef4c387"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "BENADDI",
+        "prenom": "HANANE",
+        "matricule": 1042871,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE DES SYSTEMES RESEAUX ET SECURITE",
+        "isChefDeService": true,
+        "email": "H.BENADDI@snrt.ma",
+        "password": "$2a$10$3ESJfXXB8heM7DWziMt3beYUBVv/PJU29.JTzb3b8IOQB2xSiT9ty",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ec4ba3913a5ef4c388"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c308"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ec4ba3913a5ef4c389"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "SEFRIUI",
+        "prenom": "OMAR",
+        "matricule": 1076929,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE MAINTENANCE FORMATION ET ASSISTANCE",
+        "isChefDeService": true,
+        "email": "O.SEFRIUI@snrt.ma",
+        "password": "$2a$10$5ryhPJfspBzvuMUk01HFJOzAnJ8kmMFkN.izJ5tqLAPMQ2Ov0rlla",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c38a"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c30a"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c38b"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "AHOUJIL",
+        "prenom": "NAJIA",
+        "matricule": 1077952,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE ADMINISTRATION ET SUIVI DES MARCHES",
+        "isChefDeService": true,
+        "email": "N.AHOUJIL@snrt.ma",
+        "password": "$2a$10$Z/VzMqFPS6HrIgPHFE/8w.jmMdJmkGzP.AsWXnVb2ZgXYwkOBIFpe",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c38c"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c32b"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f7"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c38d"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MAHJOUBI",
+        "prenom": "EL HASSANE",
+        "matricule": 1134148,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE GESTION D’ANTENNE",
+        "isChefDeService": true,
+        "email": "E.MAHJOUBI@snrt.ma",
+        "password": "$2a$10$pb2H8/9UM4L4Lmlh5NcMyOtcb9R08/nZZ9rLW9wXn21Wqcfz0NEiW",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c38e"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c317"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2ed"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c38f"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "HADDAD",
+        "prenom": "BOUCHAIB",
+        "matricule": 1134550,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE REGIONAL DE MARRAKECH",
+        "isChefDeService": true,
+        "email": "B.HADDAD@snrt.ma",
+        "password": "$2a$10$QtiDhvZNiwKN6781Qr9QO.eRLPECqE7u9jkLiq.oQr1WjPRKe2Yqe",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c390"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c344"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c391"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "AKKAD",
+        "prenom": "SAMIRA",
+        "matricule": 1425405,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE MOYENS GENERAUX ET SYSTEME QUALITE A LA REGIE PUBILICITAIRE",
+        "isChefDeService": true,
+        "email": "S.AKKAD@snrt.ma",
+        "password": "$2a$10$Bj8iSWSWcEaiEIIt1dhobOp4KJTab3CuLrxNzivmEJ/reAeas8vKK",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c392"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c311"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2eb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c393"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "BENTAIR",
+        "prenom": "SAID",
+        "matricule": 1425411,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBILICITAIRE",
+        "isChefDeService": true,
+        "email": "S.BENTAIR@snrt.ma",
+        "password": "$2a$10$bmH9Db6JcUYKxRZax0hl8O4pHbE52jG2OuljZDm0aze0CMY5exk52",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c394"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c313"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2eb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c395"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "NAJEDDINE",
+        "prenom": "FOUZIA",
+        "matricule": 1425420,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE PLANNING A LA REGIE PUBILICITAIRE",
+        "isChefDeService": true,
+        "email": "F.NAJEDDINE@snrt.ma",
+        "password": "$2a$10$9pPunGJiI70LuJL0sSa3nuI2t4TRWHGxOTN4AD7DDe2l6mdyto5O6",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c396"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c312"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2eb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c397"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MAJAJ",
+        "prenom": "MOHAMED",
+        "matricule": 1425429,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE TECHNIQUE",
+        "isChefDeService": true,
+        "email": "M.MAJAJ@snrt.ma",
+        "password": "$2a$10$N0aPDBZt3S/6z5qWLmF2g.ZwDaPeptSw.Uv7CzogT9I5Ev.KbvnJy",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c398"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c314"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2eb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c399"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "OUASS",
+        "prenom": "AHMED",
+        "matricule": 1425438,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DES JOURNAUX TELEVISES ET MAGAZINES D'INFORMATION",
+        "isChefDeService": true,
+        "email": "A.OUASS@snrt.ma",
+        "password": "$2a$10$i.YAGvp9SaQkPp1e9XUrP.HGYAXPGlX0SqCiOhD9/qJlqabCH.GPm",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c39a"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c318"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2ed"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c39b"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "ZOUIR",
+        "prenom": "AMINE",
+        "matricule": 1425501,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DEVELOPPEMENT INFORMATIQUE",
+        "isChefDeService": true,
+        "email": "A.ZOUIR@snrt.ma",
+        "password": "$2a$10$YGcGWIS0sEFe7pC2FSZ7uuv5wQ82KoICZtTj9q9ZmBdWGNTy3ufjq",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c39c"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c309"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c39d"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MISBAH",
+        "prenom": "HASSAN",
+        "matricule": 1425503,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DE LA COMPTABILITE",
+        "isChefDeService": true,
+        "email": "H.MISBAH@snrt.ma",
+        "password": "$2a$10$dbVVLu.4wv3se/LB2.i/Ye6axZa5SEXVu0dV1ht/sT2qcTVVIQzHi",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c39e"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c348"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fe"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c39f"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "EL ALAOUI EL BAHI",
+        "prenom": "ANASS",
+        "matricule": 1425505,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE PRODUCTION INFORMATIQUE",
+        "isChefDeService": true,
+        "email": "a.elalaoui@snrt.ma",
+        "password": "$2a$10$/klehllwaN/D7Up8pM1u1uYbHoJG9Hn7DNpf/az/70.aQMCz9o9Ai",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ed4ba3913a5ef4c3a0"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c30d"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ed4ba3913a5ef4c3a1"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "IDRISSI KAITOUNI ",
+        "prenom": "MOHAMMED",
+        "matricule": 1425507,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DEPLOIEMENT ET EXPLOITATION",
+        "isChefDeService": true,
+        "email": "m.idrissi@snrt.ma",
+        "password": "$2a$10$otI9vfCNQkuHBN7zUMQJwOr9IxX.XUonCLFM4e503xj8mZ/X0uNZu",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3a2"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c307"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3a3"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "OBTEL",
+        "prenom": "AISSAM",
+        "matricule": 1425818,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DE CONTROLE ET DE DISTRIBUTION",
+        "isChefDeService": true,
+        "email": "A.OBTEL@snrt.ma",
+        "password": "$2a$10$/3U2zYiwmZCXX27qMxji7O1tyZj0vkAJn7efHGAy.KwoxnpoFm4S2",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3a4"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c337"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fa"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3a5"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "HAMAME",
+        "prenom": "EL HOUCINE",
+        "matricule": 1425834,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DES MOYENS DE CONTRIBUTION MOBILE",
+        "isChefDeService": true,
+        "email": "E.HAMAME@snrt.ma",
+        "password": "$2a$10$h.BI81l0cUDhOFjl10nh9OuCggtKmh4guGd9XDiZCbrZ69TojlwGi",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3a6"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c31f"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3a7"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MOUHANNI",
+        "prenom": "MALIKA",
+        "matricule": 1425859,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE DE LA PRODUCTION ET DES PROGRAMMES À LA RADIO AMAZIGH",
+        "isChefDeService": true,
+        "email": "M.MOUHANNI@snrt.ma",
+        "password": "$2a$10$6MKSRPczYpRXHTw4JY294OWN6R/jQkWPz7n3kthAlSWBJV12HTeRy",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3a8"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c315"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2ed"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3a9"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "BENKIRANE",
+        "prenom": "NADA",
+        "matricule": 1425923,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE TRESORIER",
+        "isChefDeService": true,
+        "email": "N.BENKIRANE@snrt.ma",
+        "password": "$2a$10$rOh/vN/.6pYp7dwPcGAIUO.4sZavD3ySfI6xdWMIZSDkxVZs9F56G",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3aa"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c34a"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fe"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3ab"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "FARIANE",
+        "prenom": "HOUDA",
+        "matricule": 1426036,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE PROGRAMMATION INTERNATIONALE",
+        "isChefDeService": true,
+        "email": "H.FARIANE@snrt.ma",
+        "password": "$2a$10$xFN/MDb4v6xyRbOhrCXlT.msQOeuPAiLz.veU4MgCd8TI46t9pAUe",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3ac"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c31d"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3ad"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "JELLAL",
+        "prenom": "ABDELILAH",
+        "matricule": 271394,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE MAGASIN",
+        "isChefDeService": true,
+        "email": "A.JELLAL@snrt.ma",
+        "password": "$2a$10$hWwco7WFoZxIg53ftlH1Q.TMpZYeGTQiOsm9kWo3/D8n16irjvVJi",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3ae"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c328"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3af"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "AR-REYOUCHI",
+        "prenom": "EL MILOUD",
+        "matricule": 327104,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE REGIONAL AL HOUCEIMA",
+        "isChefDeService": true,
+        "email": "E.AR-REYOUCHI@snrt.ma",
+        "password": "$2a$10$xfborhG8D9loY5nQLQGyu.JezydvnAilhfSqqYHZ30/O8Xrg1H7Xm",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3b0"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c342"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3b1"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "AISSAOUI",
+        "prenom": "MOHAMMED",
+        "matricule": 327143,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DE L'EQUIPEMENT",
+        "isChefDeService": true,
+        "email": "M.AISSAOUI@snrt.ma",
+        "password": "$2a$10$MkhCr23EoJgwBvEPkegh/O/9/T4CKGnQ5mhGEum/RJSkzxhC6qSDy",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3b2"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c339"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fa"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3b3"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "LAABIDAT",
+        "prenom": "AZIZ",
+        "matricule": 350951,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE PROGRAMMATION ARABE",
+        "isChefDeService": true,
+        "email": "A.LAABIDAT@snrt.ma",
+        "password": "$2a$10$hWkY.1JGWw0OD/3V/YvjcuA6nwuQaATkG1sTkbR1n9zB0G9T.3x8m",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3b4"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c31c"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3b5"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "LAMRI-HASSANI",
+        "prenom": "MOHAMMED",
+        "matricule": 351622,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE ETUDES ET PLANIFICATION",
+        "isChefDeService": true,
+        "email": "m.lamri@snrt.ma",
+        "password": "$2a$10$iPwJI4IvPuIvCXGs.oiVmeg/xEX6fvtSjA8aFwCIbPNAqBWDz1xXC",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3b6"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c33d"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fa"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3b7"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "SAHTOUT",
+        "prenom": "RACHID",
+        "matricule": 351714,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE ECLAIRAGE ET MACHINERIE",
+        "isChefDeService": true,
+        "email": "R.SAHTOUT@snrt.ma",
+        "password": "$2a$10$jDNIxLJiqAdfZqudvp.dhOdrYYngM25cPJl2bJzO3geQEuaWWdhhK",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ee4ba3913a5ef4c3b8"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c321"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ee4ba3913a5ef4c3b9"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "EL-ASRI",
+        "prenom": "JAOUAD",
+        "matricule": 66693,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE COORDINATION TECHNIQUE RADIO",
+        "isChefDeService": true,
+        "email": "J.EL-ASRI@snrt.ma",
+        "password": "$2a$10$t265jcyQnRP7gCzU9dzn2e0RzXK.0PR1f3ASZRwsA/Lp./JR/DwE2",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3ba"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c325"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3bb"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "KOUROU",
+        "prenom": "DRISS",
+        "matricule": 731825,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DE LA MAINTENANCE TV",
+        "isChefDeService": true,
+        "email": "D.KOUROU@snrt.ma",
+        "password": "$2a$10$sWIO4T4NY29Nf6x7Yzgb8OcAKtAdQ13GjL94499I575eBMQq.ogFi",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3bc"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c30b"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3bd"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "ALLALOU",
+        "prenom": "MOHAMED",
+        "matricule": 731935,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE REGIONAL RABAT",
+        "isChefDeService": true,
+        "email": "M.ALLALOU@snrt.ma",
+        "password": "$2a$10$CD2UzgzcAHamn/2IdAvN4unggdu0wtfO1aqTgEzJZfC.f9Htc9iCm",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3be"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c340"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fb"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3bf"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "SABA",
+        "prenom": "LATIFA",
+        "matricule": 756772,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE EN CHARGE DE LA PRODUCTION ARABE",
+        "isChefDeService": true,
+        "email": "L.SABA@snrt.ma",
+        "password": "$2a$10$q/u5keKCd98VslWRAuE6He2diwtgiQbfLDED/SOO60zRdmfctf6W6",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3c0"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c31e"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3c1"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MAJLAL",
+        "prenom": "AMINA",
+        "matricule": 770802,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE DE LA PRODUCTION INTERNATIONALE",
+        "isChefDeService": true,
+        "email": "A.MAJLAL@snrt.ma",
+        "password": "$2a$10$mVJ8ywevnZXX1CZ652dZaefYNsQbXPGFWTQC4g.pZmKmInMaw2SWy",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3c2"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c31b"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3c3"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "SOUISSI",
+        "prenom": "SOUAD",
+        "matricule": 82657,
+        "civilite": "F",
+        "fonction": "CHEF DE SERVICE RECOUVREMENT",
+        "isChefDeService": true,
+        "email": "S.SOUISSI@snrt.ma",
+        "password": "$2a$10$um8ZxMWMrr/a3S.EDb.R9OVfbDH.DMNlK8E2A65yFG4CwtWFF8s5a",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3c4"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c349"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2fe"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3c5"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "BOURAS",
+        "prenom": "ABDERRAHMANE",
+        "matricule": 837243,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DES MOYENS DE PRODUCTION TV MOBILES",
+        "isChefDeService": true,
+        "email": "A.BOURAS@snrt.ma",
+        "password": "$2a$10$Gp3uUc.NHvCMBu/lZDCAJu6SpAx.uaVP.HLWEpiSQ5.c/zxr7YXY2",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3c6"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c320"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ef4ba3913a5ef4c3c7"
+        },
+        "isActive": true,
+        "firstTimeLogin": true,
+        "nom": "MESKOURI",
+        "prenom": "KHALID",
+        "matricule": 837303,
+        "civilite": "M",
+        "fonction": "CHEF DE SERVICE DES CARS REGIES",
+        "isChefDeService": true,
+        "email": "K.MESKOURI@snrt.ma",
+        "password": "$2a$10$hx3YUDFfv86seGzlimZNzePixAHUjXisqiYtAX1cWZs6jDc6uNR/u",
+        "roles": [
+            {
+                "role": {
+                    "$oid": "65c34e0c4d1e2f50c262a139"
+                },
+                "_id": {
+                    "$oid": "65c352ef4ba3913a5ef4c3c8"
+                }
+            }
+        ],
+        "service": {
+            "$oid": "65c352ea4ba3913a5ef4c322"
+        },
+        "direction": {
+            "$oid": "65c352ea4ba3913a5ef4c2f3"
+        }
+    }
+]

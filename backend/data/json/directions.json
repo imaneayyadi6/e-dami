@@ -1,1 +1,313 @@
-[{"_id":"65c246bc586ce0accd1c6fef","libelle":"DIRECTION DE L'INFORMATION TV","uo":"N102","directeur":"65c246c0586ce0accd1c709f"},{"_id":"65c246bc586ce0accd1c6ff0","libelle":"DIRECTION TECHNIQUE ET DES SYSTEMES D'INFORMATION","uo":"N103","directeur":"65c246bf586ce0accd1c7097"},{"_id":"65c246bc586ce0accd1c6ff1","libelle":"DIRECTION CENTRALE ADMINISTRATIVE ET FINANCIERE","uo":"N104"},{"_id":"65c246bc586ce0accd1c6ff2","libelle":"DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION","uo":"N106","directeur":"65c246be586ce0accd1c707f"},{"_id":"65c246bc586ce0accd1c6ff3","libelle":"DIRECTION DE L'INFORMATION RADIO","uo":"N107","directeur":"65c246bf586ce0accd1c708d"},{"_id":"65c246bc586ce0accd1c6ff4","libelle":"DIRECTION  DE L'AUDIT ET DU CONTROLE DE GESTION","uo":"N108"},{"_id":"65c246bc586ce0accd1c6ff5","libelle":"DIRECTION CENTRALE DE LA PRODUCTION ET DE L’ANTENNE","uo":"N109","directeur":"65c246c0586ce0accd1c70ad"},{"_id":"65c246bc586ce0accd1c6ff6","libelle":"DIRECTION DE LA TELEDIFFUSION","uo":"N111","directeur":"65c246c0586ce0accd1c70a1"},{"_id":"65c246bc586ce0accd1c6ff7","libelle":"DIRECTION DES PROGRAMMES ET DE LA PRODUCTION DES CHAINES CORANIQUES RADIO ET TELEVISION","uo":"N113"},{"_id":"65c246bc586ce0accd1c6ff8","libelle":"DIRECTION CENTRALE CHARGEE DE LA CHAINE SPORTIVE","uo":"N114","directeur":"65c246bf586ce0accd1c7093"},{"_id":"65c246bc586ce0accd1c6ff9","libelle":"DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES","uo":"N115","directeur":"65c246bd586ce0accd1c706f"},{"_id":"65c246bc586ce0accd1c6ffa","libelle":"DIRECTION CENTRALE DE LA CHAINE TV LAAYOUNE","uo":"N116","directeur":"65c246bd586ce0accd1c706b"},{"_id":"65c246bc586ce0accd1c6ffb","libelle":"DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION","uo":"N117","directeur":"65c246bf586ce0accd1c709b"},{"_id":"65c246bc586ce0accd1c6ffc","libelle":"DIRECTION JURIDIQUE","uo":"N118","directeur":"65c246c0586ce0accd1c70a7"},{"_id":"65c246bc586ce0accd1c6ffd","libelle":"DIRECTION DE LA COMMUNICATION ET DES RELATIONS INSTITUTIONNELLES","uo":"N120","directeur":"65c246bc586ce0accd1c7061"},{"_id":"65c246bc586ce0accd1c6ffe","libelle":"DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO","uo":"N121","directeur":"65c246bf586ce0accd1c7091"},{"_id":"65c246bc586ce0accd1c6fff","libelle":"DIRECTION DES RELATIONS AVEC LES ORGANISMES INTERNATIONAUX","uo":"N122","directeur":"65c246c0586ce0accd1c70af"},{"_id":"65c246bc586ce0accd1c7000","libelle":"DIRECTION  MARKETING ET PROGRAMMATION TV","uo":"N124"},{"_id":"65c246bc586ce0accd1c7001","libelle":"DIRECTION EXPLOITATION MOYENS MOBILES","uo":"N206","directeur":"65c246be586ce0accd1c7083"},{"_id":"65c246bc586ce0accd1c7002","libelle":"DIRECTION SUPPORT TECHNIQUE ET COORDINATION","uo":"N207","directeur":"65c246c0586ce0accd1c70a5"},{"_id":"65c246bc586ce0accd1c7003","libelle":"DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES","uo":"N2077"},{"_id":"65c246bc586ce0accd1c7004","libelle":"DIRECTION EN CHARGE DU SUPPORT TECHNIQUE","uo":"N2078"},{"_id":"65c246bc586ce0accd1c7005","libelle":"DIRECTION DES ACHATS","uo":"N208","directeur":"65c246c0586ce0accd1c70a3"},{"_id":"65c246bc586ce0accd1c7006","libelle":"DIRECTION DES RESSOURCES HUMAINES","uo":"N209","directeur":"65c246be586ce0accd1c707b"},{"_id":"65c246bc586ce0accd1c7007","libelle":"DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX","uo":"N210","directeur":"65c246c0586ce0accd1c70a9"},{"_id":"65c246bc586ce0accd1c7008","libelle":"DIRECTION DES SITES","uo":"N216"},{"_id":"65c246bc586ce0accd1c7009","libelle":"DIRECTION  EXPLOITATION ET MAINTENANCE","uo":"N217"},{"_id":"65c246bc586ce0accd1c700a","libelle":"DIRECTION DE LA REDACTION ET DE LA PROGRAMMATION","uo":"N219"},{"_id":"65c246bc586ce0accd1c700b","libelle":"DIRECTION COMMERCIALE DE LA REGIE PUBLICITAIRE","uo":"N220","directeur":"65c246be586ce0accd1c7077"},{"_id":"65c246bc586ce0accd1c700c","libelle":"DIRECTION FINANCIERE","uo":"N221","directeur":"65c246be586ce0accd1c7081"},{"_id":"65c246bc586ce0accd1c700d","libelle":"DIRECTION DES OFFRES ET OPTIMISATION DES REVENUES","uo":"N223","directeur":"65c246bd586ce0accd1c7075"},{"_id":"65c246bc586ce0accd1c700e","libelle":"DIRECTION DE LA PRODUCTION CHARGEE DE LA FICTION","uo":"N225"},{"_id":"65c246bc586ce0accd1c700f","libelle":"DIRECTION DES SYSTEMES D'INFORMATION ET ADMINISTRATION DES VENTES","uo":"N242"},{"_id":"65c246bc586ce0accd1c7010","libelle":"DIRECTION DE L'ANTENNE","uo":"N323"},{"_id":"65c246bc586ce0accd1c7011","libelle":"DIRECTION DE LA PRODUCTION AL OULA","uo":"N446","directeur":"65c246bf586ce0accd1c7099"}]
+[
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e1"
+        },
+        "libelle": "DIRECTION DE L'INFORMATION TV",
+        "uo": "N102",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c37f"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e2"
+        },
+        "libelle": "DIRECTION TECHNIQUE ET DES SYSTEMES D'INFORMATION",
+        "uo": "N103",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c379"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e3"
+        },
+        "libelle": "DIRECTION CENTRALE ADMINISTRATIVE ET FINANCIERE",
+        "uo": "N104"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e4"
+        },
+        "libelle": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+        "uo": "N106",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c365"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e5"
+        },
+        "libelle": "DIRECTION DE L'INFORMATION RADIO",
+        "uo": "N107",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c36f"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e6"
+        },
+        "libelle": "DIRECTION  DE L'AUDIT ET DU CONTROLE DE GESTION",
+        "uo": "N108"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e7"
+        },
+        "libelle": "DIRECTION CENTRALE DE LA PRODUCTION ET DE L’ANTENNE",
+        "uo": "N109",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c383"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e8"
+        },
+        "libelle": "DIRECTION DE LA TELEDIFFUSION",
+        "uo": "N111",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c37d"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2e9"
+        },
+        "libelle": "DIRECTION DES PROGRAMMES ET DE LA PRODUCTION DES CHAINES CORANIQUES RADIO ET TELEVISION",
+        "uo": "N113"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ea"
+        },
+        "libelle": "DIRECTION CENTRALE CHARGEE DE LA CHAINE SPORTIVE",
+        "uo": "N114",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c375"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2eb"
+        },
+        "libelle": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+        "uo": "N115",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c359"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ec"
+        },
+        "libelle": "DIRECTION CENTRALE DE LA CHAINE TV LAAYOUNE",
+        "uo": "N116",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c357"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ed"
+        },
+        "libelle": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+        "uo": "N117",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c35b"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ee"
+        },
+        "libelle": "DIRECTION JURIDIQUE",
+        "uo": "N118",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c363"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ef"
+        },
+        "libelle": "DIRECTION DE LA COMMUNICATION ET DES RELATIONS INSTITUTIONNELLES",
+        "uo": "N120",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c34f"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f0"
+        },
+        "libelle": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+        "uo": "N121",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c373"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f1"
+        },
+        "libelle": "DIRECTION DES RELATIONS AVEC LES ORGANISMES INTERNATIONAUX",
+        "uo": "N122",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c381"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f2"
+        },
+        "libelle": "DIRECTION  MARKETING ET PROGRAMMATION TV",
+        "uo": "N124"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f3"
+        },
+        "libelle": "DIRECTION EXPLOITATION MOYENS MOBILES",
+        "uo": "N206"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f4"
+        },
+        "libelle": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
+        "uo": "N207",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c377"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f5"
+        },
+        "libelle": "DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
+        "uo": "N2077"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f6"
+        },
+        "libelle": "DIRECTION EN CHARGE DU SUPPORT TECHNIQUE",
+        "uo": "N2078"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f7"
+        },
+        "libelle": "DIRECTION DES ACHATS",
+        "uo": "N208",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c34d"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f8"
+        },
+        "libelle": "DIRECTION DES RESSOURCES HUMAINES",
+        "uo": "N209",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c355"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2f9"
+        },
+        "libelle": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+        "uo": "N210",
+        "directeur": {
+            "$oid": "65c352ea4ba3913a5ef4c34b"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2fa"
+        },
+        "libelle": "DIRECTION DES SITES",
+        "uo": "N216"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2fb"
+        },
+        "libelle": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+        "uo": "N217"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2fc"
+        },
+        "libelle": "DIRECTION DE LA REDACTION ET DE LA PROGRAMMATION",
+        "uo": "N219"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2fd"
+        },
+        "libelle": "DIRECTION COMMERCIALE DE LA REGIE PUBLICITAIRE",
+        "uo": "N220",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c35f"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2fe"
+        },
+        "libelle": "DIRECTION FINANCIERE",
+        "uo": "N221",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c367"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c2ff"
+        },
+        "libelle": "DIRECTION DES OFFRES ET OPTIMISATION DES REVENUES",
+        "uo": "N223",
+        "directeur": {
+            "$oid": "65c352eb4ba3913a5ef4c35d"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c300"
+        },
+        "libelle": "DIRECTION DE LA PRODUCTION CHARGEE DE LA FICTION",
+        "uo": "N225"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c301"
+        },
+        "libelle": "DIRECTION DES SYSTEMES D'INFORMATION ET ADMINISTRATION DES VENTES",
+        "uo": "N242"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c302"
+        },
+        "libelle": "DIRECTION DE L'ANTENNE",
+        "uo": "N323"
+    },
+    {
+        "_id": {
+            "$oid": "65c352ea4ba3913a5ef4c303"
+        },
+        "libelle": "DIRECTION DE LA PRODUCTION AL OULA",
+        "uo": "N446",
+        "directeur": {
+            "$oid": "65c352ec4ba3913a5ef4c37b"
+        }
+    }
+]

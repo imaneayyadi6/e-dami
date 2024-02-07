@@ -25,22 +25,22 @@ connectDB();
 const importData = async () => {
   try {
     // delete data :
-    await Option.deleteMany();
+    // await Option.deleteMany();
     await Utilisateur.deleteMany();
-    await SousCategorie.deleteMany();
-    await Categorie.deleteMany();
-    await Service.deleteMany();
-    await Direction.deleteMany();
-    await Role.deleteMany();
+    // await SousCategorie.deleteMany();
+    // await Categorie.deleteMany();
+    // await Service.deleteMany();
+    // await Direction.deleteMany();
+    // await Role.deleteMany();
 
     // import data :
-    await Role.insertMany(roles);
-    await Direction.insertMany(directions);
-    await Service.insertMany(services);
-    await Categorie.insertMany(categories);
-    await SousCategorie.insertMany(sousCategories);
+    // await Role.insertMany(roles);
+    // await Direction.insertMany(directions);
+    // await Service.insertMany(services);
+    // await Categorie.insertMany(categories);
+    // await SousCategorie.insertMany(sousCategories);
     await Utilisateur.insertMany(utilisateurs);
-    await Option.insertMany(options);
+    // await Option.insertMany(options);
 
     console.log(`Data Imported !`.green.inverse);
     process.exit();

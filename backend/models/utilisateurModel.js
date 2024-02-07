@@ -35,7 +35,7 @@ const utilisateurSchema = Schema(
     },
     gsm: {
       type: String,
-      unique: [true, "gsm existe déjà"],
+      // unique: [true, "gsm existe déjà"],
     },
     isChefDeService: {
       type: Boolean,

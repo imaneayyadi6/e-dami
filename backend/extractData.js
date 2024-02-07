@@ -1,7 +1,6 @@
 import colors from "colors";
 import fs from "fs";
 import mongoose from "mongoose";
-import roles from "./data/roles.js";
 import bcrypt from "bcryptjs";
 
 const extractData = async () => {
@@ -14,7 +13,9 @@ const extractData = async () => {
 
         directions = directions.map(direction => {
             return {
-                _id: new mongoose.Types.ObjectId(),
+                _id: {
+                    "$oid": new mongoose.Types.ObjectId(),
+                },
                 libelle: direction.SIGLE,
                 uo: direction.UO
             }
@@ -27,7 +28,9 @@ const extractData = async () => {
         let services = JSON.parse(servicesFromJson);
         services = services.map(item => {
             return {
-                _id: new mongoose.Types.ObjectId(),
+                _id: {
+                    "$oid": new mongoose.Types.ObjectId(),
+                },
                 libelle: item.service,
                 uo: item.UO_service,
                 direction: directions.find(dir => String(dir.uo) === String(item.UO_direction))._id,
@@ -40,26 +43,28 @@ const extractData = async () => {
 
         directeurs = directeurs.map(item => {
             const direction = directions.find(dir => String(dir.uo) === String(item.LIEU));
-            if (direction) {
+            if (direction && item.EMAIL) {
                 const id = new mongoose.Types.ObjectId();
 
                 directions = directions.map(dir => {
                     if (String(dir.uo) === String(item.LIEU))
-                        dir.directeur = id
+                        dir.directeur = {
+                            "$oid": id
+                        }
                     return dir;
                 })
 
 
-
                 return {
-                    _id: id,
+                    _id: {
+                        "$oid": id
+                    },
                     isActive: true,
                     firstTimeLogin: true,
                     nom: item.NOM,
                     prenom: item.PRENOM,
                     matricule: Number(item.MATRICULE),
                     civilite: item.CIVILITE,
-                    gsm: item.TELEPHONE,
                     fonction: item.INTITULE,
                     isDirecteur: true,
                     email: item.EMAIL,
@@ -67,12 +72,15 @@ const extractData = async () => {
                     roles: [
                         {
 
-                            role: "657b1914c9d20eb476013fda",
-                            _id: new mongoose.Types.ObjectId(),
+                            role: { "$oid": "65c34e0c4d1e2f50c262a139" },
+                            _id: {
+                                "$oid": new mongoose.Types.ObjectId()
+                            },
 
                         }
                     ],
                     direction: directions.find(dir => String(dir.uo) === String(item.LIEU))._id,
+
                 }
             }
 
@@ -85,33 +93,41 @@ const extractData = async () => {
         let chefdeservices = JSON.parse(chefdeservicesFromJson);
         chefdeservices = chefdeservices.map(item => {
             const service = services.find(srv => String(srv.uo) === String(item.LIEU));
-            if (service) {
+            if (service && item.EMAIL) {
                 const id = new mongoose.Types.ObjectId();
                 services = services.map(srv => {
                     if (String(srv.uo) === String(item.LIEU))
-                        srv.chefService = id
+                        srv.chefService = {
+                            "$oid": id
+                        }
                     return srv;
                 })
                 return {
-                    _id: id,
+                    _id: {
+                        "$oid": id,
+                    },
                     isActive: true,
                     firstTimeLogin: true,
                     nom: item.NOM,
                     prenom: item.PRENOM,
                     matricule: Number(item.MATRICULE),
                     civilite: item.CIVILITE,
-                    gsm: item.TELEPHONE,
                     fonction: item.INTITULE,
                     isChefDeService: true,
                     email: item.EMAIL,
                     password: bcrypt.hashSync("123456", 10),
                     roles: [
                         {
-                            role: "657b1914c9d20eb476013fda",
-                            _id: new mongoose.Types.ObjectId(),
+                            role: {
+                                "$oid": "65c34e0c4d1e2f50c262a139",
+                            },
+                            _id: {
+                                "$oid": new mongoose.Types.ObjectId(),
+                            }
                         }
                     ],
                     service: services.find(srv => String(srv.uo) === String(item.LIEU))._id,
+                    direction: services.find(srv => String(srv.uo) === String(item.LIEU)).direction
                 }
             }
         })
@@ -136,58 +152,84 @@ const extractData = async () => {
             const findIsChefDeService = chefdeservices.findIndex(cdf => cdf && Number(cdf ? cdf.matricule : 0) === Number(item.MATRICULE))
             const findIsDirecteur = directeurs.findIndex(dir => dir && Number(dir ? dir.matricule : 0) === Number(item.MATRICULE))
 
-            if (service && findIsChefDeService === -1 && findIsDirecteur === -1) {
+            if (service && item.EMAIL && findIsChefDeService === -1 && findIsDirecteur === -1) {
                 const id = new mongoose.Types.ObjectId();
                 return {
-                    _id: id,
+                    _id: {
+                        "$oid": id,
+                    },
                     isActive: true,
                     firstTimeLogin: true,
                     nom: item.NOM,
                     prenom: item.PRENOM,
                     matricule: Number(item.MATRICULE),
                     civilite: item.CIVILITE,
-                    gsm: item.TELEPHONE,
                     fonction: item.QUALIFICATION,
+                    email: item.EMAIL,
                     password: bcrypt.hashSync("123456", 10),
                     roles: [
                         {
-                            role: "657b1914c9d20eb476013fd9",
-                            _id: new mongoose.Types.ObjectId(),
+                            role: {
+                                "$oid": "65c34e0c4d1e2f50c262a138",
+                            },
+                            _id: {
+                                "$oid": new mongoose.Types.ObjectId(),
+                            }
                         }
                     ],
                     service: services.find(srv => String(srv.uo) === String(item.LIEU))._id,
+                    direction: services.find(srv => String(srv.uo) === String(item.LIEU)).direction
+
                 }
             }
         })
 
+
+        let ndirections = []
+        for (let direction of directions)
+            if (direction !== null) ndirections.push(direction)
+
+        let nservices = []
+        for (let service of services)
+            if (service !== null) nservices.push(service)
+        let ndirecteurs = []
+        for (let directeur of directeurs)
+            if (directeur !== null) ndirecteurs.push(directeur)
+        let nchefdeservices = []
+        for (let chefdeservice of chefdeservices)
+            if (chefdeservice !== null) nchefdeservices.push(chefdeservice)
+        let nutilisateurs = []
+        for (let utilisateur of utilisateurs)
+            if (utilisateur !== null) nutilisateurs.push(utilisateur)
+
         /******************************   INSERT DATA  ******************************/
-        directions = JSON.stringify(directions)
-        fs.appendFileSync('./backend/data/json/directions.json', directions, (err) => {
+        ndirections = JSON.stringify(ndirections)
+        fs.appendFileSync('./backend/data/json/directions.json', ndirections, (err) => {
             if (err) throw err;
             console.log('The data was appended to the file!');
         });
 
-        services = JSON.stringify(services)
-        fs.appendFileSync('./backend/data/json/services.json', services, (err) => {
+        nservices = JSON.stringify(nservices)
+        fs.appendFileSync('./backend/data/json/services.json', nservices, (err) => {
             if (err) throw err;
             console.log('The data was appended to the file!');
         });
 
-        directeurs = JSON.stringify(directeurs)
-        fs.appendFileSync('./backend/data/json/directeurs.json', directeurs, (err) => {
+        ndirecteurs = JSON.stringify(ndirecteurs)
+        fs.appendFileSync('./backend/data/json/directeurs.json', ndirecteurs, (err) => {
             if (err) throw err;
             console.log('The data was appended to the file!');
         });
 
 
-        chefdeservices = JSON.stringify(chefdeservices)
-        fs.appendFileSync('./backend/data/json/chefdeservices.json', chefdeservices, (err) => {
+        nchefdeservices = JSON.stringify(nchefdeservices)
+        fs.appendFileSync('./backend/data/json/chefdeservices.json', nchefdeservices, (err) => {
             if (err) throw err;
             console.log('The data was appended to the file!');
         });
 
-        utilisateurs = JSON.stringify(utilisateurs)
-        fs.appendFileSync('./backend/data/json/utilisateurs.json', utilisateurs, (err) => {
+        nutilisateurs = JSON.stringify(nutilisateurs)
+        fs.appendFileSync('./backend/data/json/utilisateurs.json', nutilisateurs, (err) => {
             if (err) throw err;
             console.log('The data was appended to the file!');
         });

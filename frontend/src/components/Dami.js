@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { capitalizeFirstLetter } from "../services";
 
 const Dami = ({ option, showAdmin = false, mini = false }) => {
   const cleanDocRef = useRef(null);
@@ -7,7 +8,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     cds: "Approbation Chef de Service",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
-    dir: `Approbation Directeur de la direction Infrastructures et système d information`,
+    dir: `Approbation Directeur de la `,
     pdg: "Approbation President-directeur generale",
   });
 
@@ -159,7 +160,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                 className='dami-input w-100'
                 value={
                   !showAdmin && userInfo
-                    ? userInfo.direction.libelle
+                    && userInfo.direction ? capitalizeFirstLetter(userInfo.direction.libelle)
                     : ""
                 }
               />
@@ -172,7 +173,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             <td>
               <input
                 className='dami-input '
-                value={!showAdmin && userInfo ? userInfo.nom : ""}
+                value={!showAdmin && userInfo ? capitalizeFirstLetter(userInfo.nom) : ""}
               />
             </td>
             <td>
@@ -181,7 +182,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={!showAdmin && userInfo ? userInfo.prenom : ""}
+                value={!showAdmin && userInfo ? capitalizeFirstLetter(userInfo.prenom) : ""}
               />
             </td>
           </tr>
@@ -201,7 +202,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={!showAdmin && userInfo ? userInfo.service.libelle : ""}
+                value={!showAdmin && userInfo && userInfo.service ? capitalizeFirstLetter(userInfo.service.libelle) : ""}
               />
             </td>
           </tr>
@@ -212,7 +213,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             <td>
               <input
                 className='dami-input'
-                value={!showAdmin && userInfo ? userInfo.email : ""}
+                value={!showAdmin && userInfo && userInfo.email ? userInfo.email.toLowerCase() : ""}
               />
             </td>
             <td>
@@ -221,7 +222,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             <td>
               <input
                 className='dami-input w-100'
-                value={!showAdmin && userInfo ? userInfo.gsm : ""}
+                value={!showAdmin && userInfo && userInfo.gsm ? userInfo.gsm : ""}
               />
             </td>
           </tr>
@@ -240,6 +241,9 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
             {option.signataires.map(sig => (
               <div className='directeur-lib' key={sig}>
                 <span>{sigTypes[sig]}</span>
+                {sig === "dir" && (
+                  <span>{option && option.dirLibelle && option.dirLibelle.toLowerCase()}</span>
+                )}
               </div>
             ))}
           </div>

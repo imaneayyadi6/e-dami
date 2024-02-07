@@ -80,8 +80,13 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
 // @route   GET /api/options/:id
 // @access  private
 export const getOptionByID = asyncHandler(async (req, res) => {
-  const option = await Option.findById(req.params.id);
+  let option = await Option.findById(req.params.id);
   if (option) {
+    option = JSON.parse(JSON.stringify(option));
+    const optionService = await Service.findById(option.service);
+    const optionDirection = await Direction.findById(optionService.direction)
+    option.dirLibelle = optionDirection.libelle;
+
     res.json(option);
   } else {
     res.status(404);
