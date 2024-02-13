@@ -218,6 +218,7 @@ const DirectionListPage = () => {
     setDirectionShow(true);
     setIsDirectionUpdateForm(true);
     setUpdatedDirectionId(id);
+    console.log(id)
     const upLibelle = directions.find(
       (dir) => String(dir._id) === String(id)
     ).libelle;
