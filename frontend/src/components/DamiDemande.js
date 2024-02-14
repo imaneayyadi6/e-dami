@@ -62,9 +62,8 @@ const DamiDemande = ({ demande }) => {
         .forEach(element => {
           element.remove();
         });
-
-      // cleanDocRef.current.querySelectorAll(".disabled").forEach(element => {
-      //   element.setAttribute("disabled", true);
+      // cleanDocRef.current.querySelectorAll(".dami-check-box").forEach(element => {
+      //   console.log(element)
       // });
     }
   };
@@ -83,11 +82,13 @@ const DamiDemande = ({ demande }) => {
         .querySelectorAll(".dami-check-box")
         .forEach(damiInput => {
           damiInput.readOnly = true;
+          damiInput.disabled = true;
         });
       cleanDocRef.current
         .querySelectorAll(".dami-radio-button")
         .forEach(damiInput => {
           damiInput.readOnly = true;
+          damiInput.disabled = true;
         });
     }
   };
@@ -96,7 +97,7 @@ const DamiDemande = ({ demande }) => {
     setTimeout(() => {
       removeBtnsAndLayoutsFromCreateModal();
       makeRemoveReadOnly();
-    }, 100);
+    }, 300);
   }, []);
 
   return (

@@ -99,6 +99,9 @@ const validationSousCategorieSchema = Yup.object({
 });
 
 const DamiEditPageCrtOp = () => {
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin
+
   const [callOnce, setCallOnce] = useState(false);
   const [draggedItems, setDraggedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -133,7 +136,7 @@ const DamiEditPageCrtOp = () => {
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
-    service: "",
+    service: userInfo && userInfo.service._id,
     proprietaireDeDonnees: "",
   });
 
@@ -565,7 +568,7 @@ const DamiEditPageCrtOp = () => {
       }
     }
 
-    setOption({ ...option, signataires: signataires });
+    setOption({ ...option, signataires: signataires,dirLibelle:direction.libelle });
 
     setHtmlContent(docRef.current.innerHTML);
   };
@@ -2090,7 +2093,7 @@ const DamiEditPageCrtOp = () => {
               <Form.Select
                 className='mb-3'
                 name='service'
-                disabled={loadingServiceList}
+                disabled
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
                 value={sousCategorieForm.values.service}>

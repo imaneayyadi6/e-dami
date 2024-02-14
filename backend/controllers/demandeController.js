@@ -602,6 +602,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 directeur: req.user.id,
               }).populate("directeur")
 
+              console.log(req.user.id)
+
+              console.log("direction")
+              console.log(direction);
+
               if (direction) {
                 if (crtfCode === "hiq.pdd") {
                   contenu = `<p>
@@ -730,7 +735,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   contenu += "</p>"
                   sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
                   let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu, `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`);
+                  sendNotification(dirUserID, dirContenu, `Demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}`);
 
                   res.json(demande);
                 }
