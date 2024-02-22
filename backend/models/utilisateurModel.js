@@ -24,6 +24,11 @@ const utilisateurSchema = Schema(
         "Format d'email invalide. veuillez fournir une adresse email valide.",
       ],
     },
+    emailSent: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     password: {
       type: String,
       required: [true, "veuillez saisir un mot de passe"],

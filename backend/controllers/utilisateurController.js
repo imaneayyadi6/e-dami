@@ -5,39 +5,237 @@ import Utilisateur from "../models/utilisateurModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 import Role from "../models/roleModel.js";
+import jwt from "jsonwebtoken";
+import { sendNotification } from "../services/notificationService.js";
+import JwtBlackList from "../models/jwtBlackList.js";
 
 // @desc    Auth user & get token
 // @route   POST /api/utilisateurs/login
 // @access  Public
 export const authUser = asyncHandler(async (req, res) => {
+  console.log("#### LOGIN  ####");
+
   const { email, password } = req.body;
+  const isNumeric = (value) => !isNaN(parseFloat(value)) && isFinite(value);
+
   const lowercaseEmail = String(email).toLocaleLowerCase();
-  const utilisateur = await Utilisateur.findOne({
-    email: { $regex: new RegExp(`^${lowercaseEmail}$`, 'i') },
-  })
+
+  let query;
+  if (isNumeric(email)) {
+    query = { matricule: parseInt(email) };
+  } else {
+    query = { email: { $regex: new RegExp(`^${lowercaseEmail}$`, "i") } };
+  }
+
+  const utilisateur = await Utilisateur.findOne(query)
     .populate("roles.role")
     .populate("service")
     .populate("direction");
-  // .populate("service.direction");
 
-  if (utilisateur && (await bcrypt.compare(password, utilisateur.password))) {
+  if (utilisateur) {
+    if (await bcrypt.compare(password, utilisateur.password)) {
+      let isAdmin = false;
+      for (let role of utilisateur.roles) {
+        let findRole = await Role.findById(role.role);
+        if (findRole.code === "crt") {
+          isAdmin = true;
+          break;
+        }
+      }
 
-    res.status(200).json({
-      id: utilisateur._id,
-      nom: utilisateur.nom,
-      prenom: utilisateur.prenom,
-      email: utilisateur.email,
-      gsm: utilisateur.gsm,
-      fonction: utilisateur.fonction,
-      matricule: utilisateur.matricule,
-      service: utilisateur.service,
-      direction: utilisateur.direction,
-      roles: utilisateur.roles,
-      token: generateToken(utilisateur._id),
-    });
+      if (isAdmin) {
+        if (utilisateur.isActive) {
+          res.status(200).json({
+            id: utilisateur._id,
+            nom: utilisateur.nom,
+            prenom: utilisateur.prenom,
+            email: utilisateur.email,
+            gsm: utilisateur.gsm,
+            firstTimeLogin: utilisateur.firstTimeLogin,
+            fonction: utilisateur.fonction,
+            matricule: utilisateur.matricule,
+            service: utilisateur.service,
+            direction: utilisateur.direction,
+            roles: utilisateur.roles,
+            token: generateToken(utilisateur._id),
+          });
+        } else {
+          res.status(400);
+          throw new Error("votre compte est inactif");
+        }
+      } else {
+        if (!utilisateur.firstTimeLogin) {
+          if (utilisateur.isActive) {
+            res.status(200).json({
+              id: utilisateur._id,
+              nom: utilisateur.nom,
+              prenom: utilisateur.prenom,
+              email: utilisateur.email,
+              gsm: utilisateur.gsm,
+              firstTimeLogin: utilisateur.firstTimeLogin,
+              fonction: utilisateur.fonction,
+              matricule: utilisateur.matricule,
+              service: utilisateur.service,
+              direction: utilisateur.direction,
+              roles: utilisateur.roles,
+              token: generateToken(utilisateur._id),
+            });
+          } else {
+            res.status(400);
+            throw new Error("votre compte est inactif");
+          }
+        } else {
+          res.status(400);
+          throw new Error("veuillez recuperer votre compte !");
+        }
+      }
+    } else {
+      res.status(404);
+      throw new Error("mot de passe invalide !");
+    }
   } else {
     res.status(404);
-    throw new Error("email ou mot de passe invalide");
+    throw new Error("email ou matricule invalide !");
+  }
+});
+
+// @desc    validate token
+// @route   POST /api/utilisateurs/validatetoken
+// @access  Public
+export const validateTokenUser = asyncHandler(async (req, res) => {
+  const { token } = req.body;
+
+  const decoded = jwt.verify(String(token).trim(), process.env.JWT_SECRET);
+
+  const utilisateur = await Utilisateur.findOne({
+    matricule: Number(decoded.id),
+  });
+  if (utilisateur) {
+    const jwt = await JwtBlackList.findOne({ token });
+    if (jwt) {
+      res.status(401);
+      throw new Error("Non autorisé, token black list !");
+    }
+    res.json({ message: "done !" });
+  } else {
+    res.status(401);
+    throw new Error("Non autorisé, utilisateur introuvable !");
+  }
+});
+
+// @desc    Register
+// @route   POST /api/utilisateurs/register
+// @access  Public
+export const registerUser = asyncHandler(async (req, res) => {
+  const { matricule } = req.body;
+
+  const utilisateur = await Utilisateur.findOne({
+    matricule,
+  });
+  if (utilisateur) {
+    if (utilisateur.firstTimeLogin) {
+      // if (!utilisateur.emailSent) {
+      const jwt_secret = process.env.JWT_SECRET;
+      let jwttoken = jwt.sign({ id: matricule }, jwt_secret, {
+        expiresIn: 300,
+      });
+      let contenu = `Votre compte est validé. Veuillez accéder à ce <b><a href="${process.env.CLIENT_ADDRESS}/setmdp/${jwttoken}">lien</a> </b> pour saisir votre mot de passe`;
+      sendNotification(
+        utilisateur._id,
+        contenu,
+        `Recuperation de votre compte`,
+        true
+      );
+      utilisateur.emailSent = true;
+      await utilisateur.save();
+      res.json({ email: utilisateur.email.toLocaleLowerCase() });
+      // } else {
+      //   res.status(404);
+      //   throw new Error("email déjà envoyer");
+      // }
+    } else {
+      res.status(404);
+      throw new Error("vous avez déjà récupéré votre compte");
+    }
+  } else {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+});
+
+// @desc    set mot de passe
+// @route   POST /api/utilisateurs/setpassword
+// @access  Public
+export const setPasswordUser = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const utilisateur = await Utilisateur.findOne({
+    matricule: Number(decoded.id),
+  });
+  if (utilisateur) {
+    utilisateur.password = password;
+    utilisateur.firstTimeLogin = false;
+
+    await utilisateur.save();
+    await new JwtBlackList({
+      token,
+    }).save();
+
+    res.json({ message: "done !" });
+  } else {
+    res.status(401);
+    throw new Error("Non autorisé, utilisateur introuvable !");
+  }
+});
+
+// @desc    mot de passe oublie
+// @route   POST /api/utilisateurs/changepassword
+// @access  Public
+export const changePasswordUser = asyncHandler(async (req, res) => {
+  const { matricule } = req.body;
+  const utilisateur = await Utilisateur.findOne({
+    matricule,
+  });
+  if (utilisateur) {
+    if (!utilisateur.firstTimeLogin) {
+      const jwt_secret = process.env.JWT_SECRET;
+      let jwttoken = jwt.sign({ id: matricule }, jwt_secret, {
+        expiresIn: 300,
+      });
+      let contenu = `Veuillez accéder à ce <b><a href="${process.env.CLIENT_ADDRESS}/setmdp/${jwttoken}">lien</a> </b> pour définir un nouveau mot de passe.`;
+      sendNotification(utilisateur._id, contenu, `Mot de passe oublié`, true);
+      res.json({ email: utilisateur.email.toLocaleLowerCase() });
+    } else {
+      res.status(404);
+      throw new Error("Il faut d'abord récupérer votre compte !");
+    }
+  } else {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+});
+
+// @desc    set new mot de passe
+// @route   POST /api/utilisateurs/new/setpassword
+// @access  Public
+export const setNewPasswordUser = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const utilisateur = await Utilisateur.findOne({
+    matricule: Number(decoded.id),
+  });
+  if (utilisateur) {
+    utilisateur.password = password;
+
+    await utilisateur.save();
+    await new JwtBlackList({
+      token,
+    }).save();
+
+    res.json({ message: "done !" });
+  } else {
+    res.status(401);
+    throw new Error("Non autorisé, utilisateur introuvable !");
   }
 });
 
@@ -228,7 +426,6 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
     isDirecteur,
   } = req.body;
 
-
   let utilisateur = await Utilisateur.findById(req.params.id);
 
   if (utilisateur) {
@@ -267,7 +464,6 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
       }
     }
 
-
     if (serviceID && String(serviceID) !== String(utilisateur.service)) {
       let service = await Service.findById(serviceID);
       if (service) {
@@ -282,8 +478,6 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
         throw new Error("service introuvable !");
       }
     }
-
-
 
     if (email && String(email) !== String(utilisateur.email)) {
       const findUserByEmail = await Utilisateur.findOne({ email });
@@ -326,8 +520,6 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
     await updatedUser.populate("roles.role");
     await updatedUser.populate("service");
     await updatedUser.populate("direction");
-
-
 
     res.json(updatedUser);
   } else {

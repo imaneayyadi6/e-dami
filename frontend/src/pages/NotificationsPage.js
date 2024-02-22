@@ -9,6 +9,7 @@ import { NOTIFICATION_NOTSEEN_COUNT_SUCCESS } from "../redux/notification/notifi
 
 const NotificationsPage = () => {
     const [callOnce, setCallOnce] = useState(false);
+    const [callOnceNotification, setCallOnceNotification] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
@@ -99,17 +100,22 @@ const NotificationsPage = () => {
             setCallOnce(true);
             dispatch(getNotificationsList());
         }
-        if (notificationListSuccess)
-            setTotalPages(data.totalPages)
+        if (!callOnceNotification) {
+            if (notificationListSuccess) {
+                setTotalPages(data.totalPages)
+                setCallOnceNotification(true);
+            }
+
+        }
 
 
-    }, [callOnce, notificationListSuccess])
+    }, [callOnce, callOnceNotification, notificationListSuccess])
 
 
 
 
     useEffect(() => {
-        if (data && data.notifications.length > 0) {
+        if (data && Array(data.notifications).length > 0) {
             dispatch(makeAllNotificationsSeen());
             setTimeout(() => {
                 dispatch({ type: NOTIFICATION_NOTSEEN_COUNT_SUCCESS, payload: 0 });

@@ -165,99 +165,6 @@ const FaireUneDemande = () => {
   };
 
 
-
-
-  // const resetDamiFormHandler = () => {
-  //   document.querySelectorAll(".dami-body input").forEach(input => {
-  //     input.value = "";
-  //     if (
-  //       String(input.getAttribute("type")) === "checkbox" ||
-  //       String(input.getAttribute("type")) === "radio"
-  //     ) {
-  //       input.checked = false;
-  //     }
-  //   });
-  // };
-
-
-
-  // const faireUneDemandeHandler = () => {
-  //   if (selectedOption) {
-  //     let isEmpty = true;
-  //     const damiBody = document.querySelector(".dami-body div");
-  //     const damiInputs = damiBody.querySelectorAll(".dami-input");
-
-  //     for (const damiInput of damiInputs) {
-  //       if (damiInput.value !== "") {
-  //         isEmpty = false;
-  //         break;
-  //       }
-  //     }
-
-  //     const damiCheckBoxes = damiBody.querySelectorAll(".dami-check-box");
-  //     for (const damiCheckBox of damiCheckBoxes) {
-  //       if (damiCheckBox.checked) {
-  //         isEmpty = false;
-  //         break;
-  //       }
-  //     }
-
-  //     const damiRadioButtons = damiBody.querySelectorAll(".dami-radio-button");
-  //     for (const damiRadioButton of damiRadioButtons) {
-  //       if (damiRadioButton.checked) {
-  //         isEmpty = false;
-  //         break;
-  //       }
-  //     }
-  //     const damiTextAreaLines = damiBody.querySelectorAll(
-  //       ".dami-textarea-line"
-  //     );
-  //     for (const damiTextAreaLine of damiTextAreaLines) {
-  //       if (damiTextAreaLine.value !== "") {
-  //         isEmpty = false;
-  //         break;
-  //       }
-  //     }
-  //     if (!isEmpty) {
-  //       convertTheValueToAttribute();
-  //       const contenu = damiBody.outerHTML;
-  //       disptach(createDemande(selectedOption, contenu));
-  //     } else {
-  //       Toast.open({
-  //         type: "danger",
-  //         message: "il faut remplire le formulaire !",
-  //       });
-  //     }
-  //     window.scrollTo(0, 0);
-  //   }
-  // };
-
-
-  // if (successDemandeCreate) {
-  //   const damiBody = document.querySelector(".dami-body");
-
-  //   damiBody.querySelectorAll(".dami-input").forEach(el => {
-  //     el.value = "";
-  //   });
-  //   damiBody.querySelectorAll(".dami-check-box").forEach(el => {
-  //     el.checked = false;
-  //   });
-  //   damiBody.querySelectorAll(".dami-radio-button").forEach(el => {
-  //     el.checked = false;
-  //   });
-  //   damiBody.querySelectorAll(".dami-textarea-line").forEach(el => {
-  //     el.value = "";
-  //   });
-
-  //   Toast.open({
-  //     type: "success",
-  //     message: "La demande a été effectuée avec succès.",
-  //   });
-
-  //   disptach(resetCreateDemande());
-
-  // }
-
   useEffect(() => {
     if (!callOnce) {
       disptach(fetchCategories());
@@ -364,7 +271,6 @@ const FaireUneDemande = () => {
               <DamiLoading mini />
             </Col>
           </>
-
         )}
         {
           data && data.options.length > 0 && data.options.map(option => (

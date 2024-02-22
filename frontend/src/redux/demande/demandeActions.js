@@ -269,7 +269,11 @@ export const getMesDemandes = () => {
         },
       };
       const { data } = await axios.get("/api/demandes/mesdemandes", config);
-      dispatch({ type: DEMANDE_MES_DEMANDES_SUCCESS, payload: data });
+      dispatch({
+        type: DEMANDE_MES_DEMANDES_SUCCESS,
+        payload: data
+      });
+
     } catch (error) {
       const err =
         error.response && error.response.data.message

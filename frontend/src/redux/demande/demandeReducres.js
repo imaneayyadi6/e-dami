@@ -37,13 +37,13 @@ export const mesDemandesReducer = (state = { demandes: [] }, action) => {
   const { type, payload } = action;
   switch (type) {
     case DEMANDE_MES_DEMANDES_REQUEST:
-      return { loading: true };
+      return { loading: true, demandes: [] };
     case DEMANDE_MES_DEMANDES_SUCCESS:
       return { loading: false, success: true, demandes: payload };
     case DEMANDE_MES_DEMANDES_FAIL:
-      return { loading: false, error: payload };
+      return { loading: false, error: payload, demandes: [] };
     case DEMANDE_MES_DEMANDES_RESET:
-      return {};
+      return { demandes: [] };
     default:
       return state;
   }

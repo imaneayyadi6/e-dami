@@ -10,9 +10,6 @@ import { Toast as SToast } from "../services";
 import io from 'socket.io-client';
 import { NOTIFICATION_LIST_PUSH, NOTIFICATION_NOTSEEN_COUNT_PUSH, NOTIFICATION_TOAST_LIST_PUSH } from "../redux/notification/notificationTypes";
 
-
-
-
 const socket = io("/");
 
 const DefaulLayout = () => {
@@ -28,8 +25,6 @@ const DefaulLayout = () => {
 
   useEffect(() => {
     if (!callOnce) {
-
-
       const roleCodes = userInfo.roles.map(role => String(role.role.code));
       const filteredRoutes = routes.filter(route =>
         route.roles.some(roleCode => roleCodes.includes(String(roleCode)))
@@ -67,9 +62,7 @@ const DefaulLayout = () => {
 
   return (
     <>
-      <Dialog />
-      <Alert />
-      <Toast />
+     
       <NotificationsToastContainer />
       <div className='d-flex'>
         <Sidebar />

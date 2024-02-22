@@ -16,6 +16,8 @@ import generateFileRoutes from "./routes/generateFileRoutes.js";
 import http from 'http';
 import { Server } from 'socket.io';
 import socketRoutes from "./routes/socketRoutes.js";
+import path from "path"
+import fs from "fs";
 
 // Init dotenv :
 dotenv.config();
@@ -34,13 +36,9 @@ connectDB();
 
 // Serve static files from the "uploads" folder
 app.use('/uploads', express.static('uploads'));
-
 // Init Middlewares :
 app.use(express.json({ extended: false }));
-
 // Define Routes :
-app.get("/", (req, res) => res.send("API is running..."));
-
 app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/directions", directionRoutes);
 app.use("/api/services", serviceRoutes);
@@ -51,6 +49,31 @@ app.use("/api/charts", chartRoutes);
 app.use("/api/demandes", demandeRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/generate", generateFileRoutes);
+
+
+// Define the uploads as static folder :
+const __dirname = path.resolve();
+// ---------------------------------------------------------------------------
+if (process.env.NODE_ENV === "production") {
+  const buildFolder = path.join(__dirname, "frontend", "build");
+  // Place the static middleware before the route handling middleware
+  app.use(express.static(buildFolder));
+  app.get("*", (req, res) => {
+    const indexFile = path.join(buildFolder, "index.html");
+    if (fs.existsSync(indexFile)) {
+      res.sendFile(indexFile);
+    } else {
+      res.status(500).send({
+        message: "index.html not found!",
+        path: indexFile,
+      });
+    }
+  });
+
+} else {
+  app.get("/", (req, res) => res.send("API is running..."));
+}
+
 
 // Use socketRoutes for Socket.IO logic
 socketRoutes(io);
@@ -63,7 +86,7 @@ app.use(errorHandler);
 socketRoutes(io);
 
 // run the server : 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 server.listen(
   PORT,

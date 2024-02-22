@@ -36,7 +36,7 @@ const DemandeurDetailsDemande = () => {
 
     return (
         <>
-            <Link className="btn btn-light" to="mes-demandes">
+            <Link className="btn btn-light" to="/mes-demandes">
                 <i className="fas fa-arrow-left"></i> demandes
             </Link>
             {errorDemandeByID && (

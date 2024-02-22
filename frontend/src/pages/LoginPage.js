@@ -3,7 +3,7 @@ import { FormContainer, Loader, Message, Toast } from "../components";
 import { Button, Card, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/user/userActions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,12 +49,15 @@ const LoginPage = () => {
               <h6>Connectez-vous ici</h6>
             </div>
             {loading && <Loader size={"md"} />}
-            {error && <Message type="danger">{error}</Message>}
+            {error && (
+              <Message type="danger" itWillBeHidden>
+                {error}
+              </Message>
+            )}
             <Form onSubmit={submitHandler}>
-              <label>Email</label>
+              <label>Email ou Matricule</label>
               <Form.Control
                 className="mb-3"
-                type="email"
                 placeholder="veuillez saisir un email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -68,13 +71,15 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <Form.Check
-                label="montrer le mot de passe"
-                className="mb-3"
-                value={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-              />
-
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <Form.Check
+                  label="montrer le mot de passe"
+                  className="mb-3"
+                  value={showPassword}
+                  onChange={() => setShowPassword(!showPassword)}
+                />
+                <Link to="/mdp-oublie">Mot de passe oublié</Link>
+              </div>
               <Button
                 className="w-100"
                 variant="dark"
@@ -85,11 +90,13 @@ const LoginPage = () => {
                 se connecter
               </Button>
             </Form>
+            <div className="d-flex justify-content-center mt-3">
+              <Link to="/recupertaion-compte">Recuperer mon compte</Link>
+            </div>
           </Card.Body>
         </Card>
       </FormContainer>
     </>
-
   );
 };
 

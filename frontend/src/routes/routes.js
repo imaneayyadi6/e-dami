@@ -1,5 +1,6 @@
 import { DashboardPage, RedirectPage } from "../pages";
 import NotificationsPage from "../pages/NotificationsPage";
+import ProfilePage from "../pages/ProfilePage";
 import {
   CategorieListPage,
   DamiEditPage,
@@ -18,8 +19,17 @@ import {
   DamiDetailsPageCrtOp,
 } from "../pages/createurOption";
 
-import { DemandeurDetailsDemande, FaireUneDemande, MesDemandesPage, FaireUneDemandeOption } from "../pages/demandeur";
-import { DemandeDetailsPage, DemandesPage, SignataireDashboardPage } from "../pages/signataire";
+import {
+  DemandeurDetailsDemande,
+  FaireUneDemande,
+  MesDemandesPage,
+  FaireUneDemandeOption,
+} from "../pages/demandeur";
+import {
+  DemandeDetailsPage,
+  DemandesPage,
+  SignataireDashboardPage,
+} from "../pages/signataire";
 
 const routes = [
   {
@@ -50,6 +60,15 @@ const routes = [
     exact: true,
     roles: ["crt"],
   },
+
+  {
+    path: "/profile",
+    name: "Profile",
+    element: <ProfilePage />,
+    exact: true,
+    roles: ["crt", "dmr", "sig"],
+  },
+
   {
     path: "/dashboard",
     name: "Tableau de bord",
@@ -68,84 +87,72 @@ const routes = [
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt",]
+    roles: ["crt"],
   },
   {
     path: "/creer-option/:id",
     name: "Creer Option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt",]
+    roles: ["crt"],
   },
   {
     path: "/modifier-option/:id",
     name: "Modifier option",
     element: <DamiEditPage />,
     exact: true,
-    roles: ["crt",]
+    roles: ["crt"],
   },
   {
     path: "/details-option/:id",
     name: "Details option",
     element: <DamiDetailsPage />,
     exact: true,
-    roles: ["crt",]
+    roles: ["crt"],
   },
   {
     path: "/options",
     name: "Options",
     element: <OptionListPage />,
     exact: true,
-    roles: ["crt",]
+    roles: ["crt"],
   },
-
 
   {
     path: "/creer-option/crt-op",
     name: "Creer Option",
     element: <DamiEditPageCrtOp />,
     exact: true,
-    roles: ["crt-op"]
+    roles: ["crt-op"],
   },
   {
     path: "/creer-option/crt-op/:id",
     name: "Creer Option",
     element: <DamiEditPageCrtOp />,
     exact: true,
-    roles: ["crt-op"]
+    roles: ["crt-op"],
   },
   {
     path: "/modifier-option/crt-op/:id",
     name: "Modifier option",
     element: <DamiEditPageCrtOp />,
     exact: true,
-    roles: ["crt-op"]
+    roles: ["crt-op"],
   },
   {
     path: "/details-option/crt-op/:id",
     name: "Details option",
     element: <DamiDetailsPageCrtOp />,
     exact: true,
-    roles: ["crt-op"]
+    roles: ["crt-op"],
   },
   {
     path: "/options/crt-op",
     name: "Options",
     element: <OptionListPageCrtOp />,
     exact: true,
-    roles: ["crt-op"]
+    roles: ["crt-op"],
   },
-
-
-
-
-
-
-
-
-
-
-
 
   {
     path: "/directions",
@@ -229,8 +236,8 @@ const routes = [
     name: "notifications",
     exact: true,
     roles: ["dmr", "sig", "crt"],
-    element: <NotificationsPage />
-  }
+    element: <NotificationsPage />,
+  },
 ];
 
 export default routes;

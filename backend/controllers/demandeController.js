@@ -913,8 +913,8 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   contenu += "</p>";
                   // envoyer les notifications :
                   sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom} ${demande.demandeur.nom}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu, `Une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}.`);
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
+                  sendNotification(dirUserID, dirContenu, `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`);
                   res.json({ message: "demande approvee avec success !" });
                 }
               }

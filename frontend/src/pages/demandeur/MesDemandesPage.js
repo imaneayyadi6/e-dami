@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getMesDemandes } from '../../redux/demande/demandeActions';
 import { Message, TableLoading, WarningMessage, Table } from '../../components';
 import { Card } from 'react-bootstrap';
-import moment from "moment";
+
 import { useNavigate } from 'react-router-dom';
 
 const MesDemandesPage = () => {
   const [callOnce, setCallOnce] = useState(false);
-
   const mesDemandes = useSelector(state => state.mesDemandes);
   const {
     loading: mesDemandesLoading,
@@ -21,14 +20,13 @@ const MesDemandesPage = () => {
 
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
+    console.log("### [use effect from mes demandes] ###")
     if (!callOnce) {
+      console.log("### [call once] ###")
       dispatch(getMesDemandes());
       setCallOnce(true);
     }
-
   }, [callOnce])
 
   return (
@@ -45,11 +43,9 @@ const MesDemandesPage = () => {
             <Table
               columns={[
                 {
-                  Header: "date de demande",
-                  accessor: row =>
-                    `${moment(row.dateDemande).format("YYYY-MM-DD HH:mm")}`,
-                  filter: "dateDemande",
-                  type: "date",
+                  Header: "ID",
+                  accessor: "_id",
+                  show: false,
                 },
 
                 {
@@ -71,7 +67,7 @@ const MesDemandesPage = () => {
               showDetailsRow={(id) => {
                 navigate(`/details-demande/${id}`)
               }}
-            ></Table>
+            />
           ) : (
             mesDemandesSuccess && (
               <WarningMessage message={"Aucune demande trouvée"} />

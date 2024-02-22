@@ -34,8 +34,28 @@ import {
   USER_BY_ID_REQUEST,
   USER_BY_ID_RESET,
   USER_BY_ID_SUCCESS,
-
-  USER_UPDATE_PASSWORD_FAIL, USER_UPDATE_PASSWORD_REQUEST, USER_UPDATE_PASSWORD_RESET, USER_UPDATE_PASSWORD_SUCCESS
+  USER_GET_ACCOUNT_REQUEST,
+  USER_GET_ACCOUNT_SUCCESS,
+  USER_GET_ACCOUNT_FAIL,
+  USER_GET_ACCOUNT_RESET,
+  USER_UPDATE_PASSWORD_FAIL,
+  USER_UPDATE_PASSWORD_REQUEST,
+  USER_UPDATE_PASSWORD_RESET,
+  USER_UPDATE_PASSWORD_SUCCESS,
+  USER_VALIDATE_TOKEN_REQUEST,
+  USER_VALIDATE_TOKEN_SUCCESS,
+  USER_VALIDATE_TOKEN_FAIL,
+  USER_SET_PASSWORD_REQUEST,
+  USER_SET_PASSWORD_SUCCESS,
+  USER_SET_PASSWORD_FAIL,
+  USER_CHANGE_PASSWORD_REQUEST,
+  USER_CHANGE_PASSWORD_SUCCESS,
+  USER_CHANGE_PASSWORD_FAIL,
+  USER_CHANGE_PASSWORD_RESET,
+  USER_SET_NEW_PASSWORD_REQUEST,
+  USER_SET_NEW_PASSWORD_SUCCESS,
+  USER_SET_NEW_PASSWORD_FAIL,
+  USER_SET_NEW_PASSWORD_RESET,
 } from "./userTypes";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -47,6 +67,81 @@ export const userLoginReducer = (state = {}, action) => {
     case USER_LOGIN_FAIL:
       return { loading: false, error: action.payload };
     case USER_LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userValidateTokenReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_VALIDATE_TOKEN_REQUEST:
+      return { loading: true };
+    case USER_VALIDATE_TOKEN_SUCCESS:
+      return { loading: false, success: true, result: action.payload };
+    case USER_VALIDATE_TOKEN_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userGetAccountReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_GET_ACCOUNT_REQUEST:
+      return { loading: true };
+    case USER_GET_ACCOUNT_SUCCESS:
+      return { loading: false, success: true, result: action.payload };
+    case USER_GET_ACCOUNT_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_GET_ACCOUNT_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userSetPasswordTokenReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_SET_PASSWORD_REQUEST:
+      return { loading: true };
+    case USER_SET_PASSWORD_SUCCESS:
+      return { loading: false, success: true, result: action.payload };
+    case USER_SET_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userChangePasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_CHANGE_PASSWORD_REQUEST:
+      return { loading: true };
+    case USER_CHANGE_PASSWORD_SUCCESS:
+      return { loading: false, success: true, result: action.payload };
+    case USER_CHANGE_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_CHANGE_PASSWORD_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userSetNewPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_SET_NEW_PASSWORD_REQUEST:
+      return { loading: true };
+    case USER_SET_NEW_PASSWORD_SUCCESS:
+      return { loading: false, success: true, result: action.payload };
+    case USER_SET_NEW_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_SET_NEW_PASSWORD_RESET:
       return {};
     default:
       return state;
@@ -107,12 +202,14 @@ export const userListReducer = (state = { users: [] }, action) => {
     case USER_LIST_REMOVE:
       return {
         success: true,
-        users: state.users.filter(user => String(user._id) !== String(payload)),
+        users: state.users.filter(
+          (user) => String(user._id) !== String(payload)
+        ),
       };
     case USER_LIST_UPDATE:
       return {
         success: true,
-        users: state.users.map(user => {
+        users: state.users.map((user) => {
           if (String(user._id) === String(payload._id)) {
             user.libelle = payload.libelle;
             user.direction = payload.direction;
@@ -176,7 +273,6 @@ export const userUpdateReducer = (state = {}, action) => {
       return state;
   }
 };
-
 
 export const userUpdatePasswordReducer = (state = {}, action) => {
   const { type, payload } = action;

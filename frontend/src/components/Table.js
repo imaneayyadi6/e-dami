@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useTable, usePagination, useFilters } from "react-table";
 
@@ -62,11 +62,11 @@ const Table = ({
   dropdownFilters,
   showDetailsRowSpecificData
 }) => {
-  const COLUMNS = useMemo(
-    () => columns.filter(column => !true || column.accessor !== "_id"),
-    []
-  );
-  const DATA = useMemo(() => data, [data]);
+
+  const [callOnce, setCallOnce] = useState(false);
+
+  const filteredColumns = useMemo(() => columns.filter(column => column.accessor !== "_id"), [columns]);
+  const filteredData = useMemo(() => data, []);
 
   const {
     getTableProps,
@@ -85,19 +85,23 @@ const Table = ({
     state,
   } = useTable(
     {
-      columns: COLUMNS,
-      data: DATA,
+      columns: filteredColumns,
+      data: filteredData
     },
     useFilters,
     usePagination
-  );
+  )
 
 
   const { pageIndex } = state;
 
   useEffect(() => {
-    setPageSize(7);
-  }, [setPageSize]);
+    if (!callOnce) {
+
+      setPageSize(7);
+      setCallOnce(true)
+    }
+  }, [callOnce]);
 
   const renderTooltip = props => (
     <Tooltip id='button-tooltip' {...props} className='bg-warning'>

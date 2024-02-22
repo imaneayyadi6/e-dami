@@ -11,6 +11,11 @@ import {
   userUpdateReducer,
   userByIDReducer,
   userUpdatePasswordReducer,
+  userGetAccountReducer,
+  userValidateTokenReducer,
+  userSetPasswordTokenReducer,
+  userChangePasswordReducer,
+  userSetNewPasswordReducer,
 } from "./user/userReducers.js";
 import { dialogReducer } from "./dialog/dialogReducers.js";
 import { alertReducer } from "./alert/alertReducers.js";
@@ -46,18 +51,14 @@ import {
 import {
   optionListBySousCategorieIDReducer,
   optionByIDReducer,
-
   optionListReducer,
   optionCreateReducer,
   optionDeleteReducer,
   optionUpdateReducer,
-
   optionCrtOpListReducer,
   optionCrtOpCreateReducer,
   optionCrtOpDeleteReducer,
   optionCrtOpUpdateReducer,
-
-
 } from "./option/optionReducers";
 
 import {
@@ -78,9 +79,16 @@ import {
   demanderRefuseTraitementReducer,
   mesDemandesReducer,
   demandeDemandeurByIdReducer,
-  demandeToHandleFilterReducer
+  demandeToHandleFilterReducer,
 } from "./demande/demandeReducres";
-import { notificationListReducer, notificationMakeItSeenReducer, notificationOnceToastMakeItSeenReducer, notificationToastMakeItSeenReducer, notificationToatsListReducer, notificationsNotSeenCountReducer } from "./notification/notificationReducers";
+import {
+  notificationListReducer,
+  notificationMakeItSeenReducer,
+  notificationOnceToastMakeItSeenReducer,
+  notificationToastMakeItSeenReducer,
+  notificationToatsListReducer,
+  notificationsNotSeenCountReducer,
+} from "./notification/notificationReducers";
 import { imageGenerateReducer } from "./generate/generateReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
@@ -147,6 +155,11 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userByID: userByIDReducer,
   userUpdatePassword: userUpdatePasswordReducer,
+  userGetAccount: userGetAccountReducer,
+  userValidateToken: userValidateTokenReducer,
+  userSetPassword: userSetPasswordTokenReducer,
+  userChangePassword: userChangePasswordReducer,
+  userSetNewPasswordToken: userSetNewPasswordReducer,
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,
@@ -165,7 +178,7 @@ const reducer = combineReducers({
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
   demandeToHandleFilter: demandeToHandleFilterReducer,
-  // notifications : 
+  // notifications :
   notificationToatsList: notificationToatsListReducer,
   notificationToastMakeItSeen: notificationToastMakeItSeenReducer,
   notificationsNotSeenCount: notificationsNotSeenCountReducer,
@@ -174,7 +187,6 @@ const reducer = combineReducers({
   notificationOnceToastMakeItSeen: notificationOnceToastMakeItSeenReducer,
   // generate :
   imageGenerate: imageGenerateReducer,
-
 });
 
 const store = configureStore({

@@ -1,6 +1,9 @@
 import express from "express";
 import {
-    getCountNotSeenNotifications, getNotifications, getToastNotifications, seenNotifications,
+    getCountNotSeenNotifications,
+    getNotifications,
+    getToastNotifications,
+    seenNotifications,
     seenToastNotifications,
     seenOneToastNotification
 } from "../controllers/notificationController.js";
@@ -17,6 +20,7 @@ router
     .put(protect, seenToastNotifications)
 
 router.route("/toast/:id").put(protect, seenOneToastNotification)
+
 
 router
     .route("/:id")
