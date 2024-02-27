@@ -50,6 +50,10 @@ const optionSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "service",
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     signataires: [{ type: String }],
   },
   {

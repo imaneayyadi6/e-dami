@@ -140,42 +140,44 @@ const DamiEditPage = () => {
   const currentPath = location.pathname;
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const directionList = useSelector(state => state.directionList);
+  const directionList = useSelector((state) => state.directionList);
   const {
     loading: loadingDirectionList,
     error: errorDirectionList,
     directions,
   } = directionList;
 
-  const serviceList = useSelector(state => state.serviceList);
+  const serviceList = useSelector((state) => state.serviceList);
   const {
     loading: loadingServiceList,
     error: errorServiceList,
     services,
   } = serviceList;
 
-  const sousCategorieList = useSelector(state => state.sousCategorieList);
+  const sousCategorieList = useSelector((state) => state.sousCategorieList);
   const {
     loading: loadingSousCategorieList,
     error: errorSousCategorieList,
     souscategories,
   } = sousCategorieList;
 
-  const directionByServiceID = useSelector(state => state.directionByServiceID);
+  const directionByServiceID = useSelector(
+    (state) => state.directionByServiceID
+  );
   const {
     loading: loadingDirectionByServiceID,
     error: errorDirectionByServiceID,
     direction,
   } = directionByServiceID;
 
-  const serviceByID = useSelector(state => state.serviceByID);
+  const serviceByID = useSelector((state) => state.serviceByID);
   const {
     loading: loadingServiceByID,
     error: errorServiceByID,
     service,
   } = serviceByID;
 
-  const optionCreate = useSelector(state => state.optionCreate);
+  const optionCreate = useSelector((state) => state.optionCreate);
   const {
     loading: loadingOptionCreate,
     error: errorOptionCreate,
@@ -183,7 +185,7 @@ const DamiEditPage = () => {
     success: successOptionCreate,
   } = optionCreate;
 
-  const optionByID = useSelector(state => state.optionByID);
+  const optionByID = useSelector((state) => state.optionByID);
   const {
     loading: loadingOptionByID,
     error: errorOptionByID,
@@ -191,7 +193,7 @@ const DamiEditPage = () => {
     success: successOptionByID,
   } = optionByID;
 
-  const optionUpdate = useSelector(state => state.optionUpdate);
+  const optionUpdate = useSelector((state) => state.optionUpdate);
   const {
     loading: loadingOptionUpdate,
     error: errorOptionUpdate,
@@ -203,7 +205,7 @@ const DamiEditPage = () => {
     event.dataTransfer.setData("text/plain", item);
   };
 
-  const handleDrop = event => {
+  const handleDrop = (event) => {
     event.preventDefault();
     try {
       const data = event.dataTransfer.getData("text/plain");
@@ -211,7 +213,7 @@ const DamiEditPage = () => {
       if (data) {
         if (String(data) !== "divider") {
           const dividers = draggedItems.filter(
-            item => String(item.type) === "divider"
+            (item) => String(item.type) === "divider"
           );
           const mouseY = event.clientY;
           const mouseX = event.clientX;
@@ -235,7 +237,7 @@ const DamiEditPage = () => {
                 mouseX <= div1Rect.right
               ) {
                 // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map(item => {
+                let nDraggedItems = draggedItems.map((item) => {
                   if (String(item.id) === String(divider.id)) {
                     item.children1.push({
                       id: uuidv4(),
@@ -255,7 +257,7 @@ const DamiEditPage = () => {
                 mouseX <= div2Rect.right
               ) {
                 // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map(item => {
+                let nDraggedItems = draggedItems.map((item) => {
                   if (String(item.id) === String(divider.id)) {
                     item.children2.push({
                       id: uuidv4(),
@@ -270,7 +272,7 @@ const DamiEditPage = () => {
                 div2.style.backgroundColor = "#fff";
               } else {
                 if (UICOMPONENTS[data]) {
-                  setDraggedItems(prevItems => [
+                  setDraggedItems((prevItems) => [
                     ...prevItems,
                     {
                       id: uuidv4(),
@@ -285,7 +287,7 @@ const DamiEditPage = () => {
             }
           } else {
             if (UICOMPONENTS[data]) {
-              setDraggedItems(prevItems => [
+              setDraggedItems((prevItems) => [
                 ...prevItems,
                 {
                   id: uuidv4(),
@@ -299,7 +301,7 @@ const DamiEditPage = () => {
           }
         } else {
           if (UICOMPONENTS[data]) {
-            setDraggedItems(prevItems => [
+            setDraggedItems((prevItems) => [
               ...prevItems,
               {
                 id: uuidv4(),
@@ -321,13 +323,13 @@ const DamiEditPage = () => {
     }
   };
 
-  const handleDragOver = event => {
+  const handleDragOver = (event) => {
     event.preventDefault();
   };
 
-  const handleDrag = event => {
+  const handleDrag = (event) => {
     const dividers = draggedItems.filter(
-      item => String(item.type) === "divider"
+      (item) => String(item.type) === "divider"
     );
 
     const mouseY = event.clientY;
@@ -369,37 +371,39 @@ const DamiEditPage = () => {
     }
   };
 
-  const removeBtnsAndLayoutsHandler = el => {
+  const removeBtnsAndLayoutsHandler = (el) => {
     try {
       el.querySelectorAll(".divider .btn-remove-divider-children").forEach(
-        element => {
+        (element) => {
           element.remove();
         }
       );
-      el.querySelectorAll(".divider div").forEach(element => {
+      el.querySelectorAll(".divider div").forEach((element) => {
         element.style.borderRight = "none";
       });
-      el.querySelectorAll(".btn-add-chk").forEach(element => {
+      el.querySelectorAll(".btn-add-chk").forEach((element) => {
         element.remove();
       });
-      el.querySelectorAll(".btn-remove-chk").forEach(element => {
+      el.querySelectorAll(".btn-remove-chk").forEach((element) => {
         element.remove();
       });
-      el.querySelectorAll(".btn-remove-component").forEach(element => {
+      el.querySelectorAll(".btn-remove-component").forEach((element) => {
         element.remove();
       });
       el.querySelectorAll(".btn-remove-checkbox-label-header").forEach(
-        element => {
+        (element) => {
           element.remove();
         }
       );
-      el.querySelectorAll(".btn-add-checkbox-label-header").forEach(element => {
+      el.querySelectorAll(".btn-add-checkbox-label-header").forEach(
+        (element) => {
+          element.remove();
+        }
+      );
+      el.querySelectorAll(".btn-remove-checkbox-line").forEach((element) => {
         element.remove();
       });
-      el.querySelectorAll(".btn-remove-checkbox-line").forEach(element => {
-        element.remove();
-      });
-      el.querySelectorAll(".btn-add-checkbox-line").forEach(element => {
+      el.querySelectorAll(".btn-add-checkbox-line").forEach((element) => {
         element.remove();
       });
     } catch (error) {
@@ -421,12 +425,14 @@ const DamiEditPage = () => {
     setTimeout(removeBtnsAndLayouts, 100);
   };
 
-  const removeComponentHandler = id => {
-    const nItems = draggedItems.filter(item => String(item.id) !== String(id));
+  const removeComponentHandler = (id) => {
+    const nItems = draggedItems.filter(
+      (item) => String(item.id) !== String(id)
+    );
     setDraggedItems(nItems);
   };
 
-  const onDragEnd = result => {
+  const onDragEnd = (result) => {
     if (!result.destination) return;
     const updatedItems = [...draggedItems];
     const [reorderedItem] = updatedItems.splice(result.source.index, 1);
@@ -440,7 +446,7 @@ const DamiEditPage = () => {
     for (const item of draggedItems) {
       if (item.type === "divider" && String(item.id) === String(idDivider)) {
         const updatedChildren1 = item.children1.filter(
-          ch => String(ch.id) !== String(idChild1)
+          (ch) => String(ch.id) !== String(idChild1)
         );
         updatedItems.push({
           ...item,
@@ -466,7 +472,7 @@ const DamiEditPage = () => {
     for (const item of draggedItems) {
       if (item.type === "divider" && String(item.id) === String(idDivider)) {
         const updatedChildren2 = item.children2.filter(
-          ch => String(ch.id) !== String(idChild2)
+          (ch) => String(ch.id) !== String(idChild2)
         );
         updatedItems.push({
           ...item,
@@ -510,7 +516,7 @@ const DamiEditPage = () => {
   const headerForm = useFormik({
     initialValues: headerInitialValues,
     validationSchema: validationHeaderSchema,
-    onSubmit: values => {
+    onSubmit: (values) => {
       const {
         libelle,
         typeProcessus,
@@ -541,7 +547,7 @@ const DamiEditPage = () => {
   const sousCategorieForm = useFormik({
     initialValues: sousCategorieInitialValues,
     validationSchema: validationSousCategorieSchema,
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(resetGetByServiceID());
       setOption({ ...option, ...values });
       dispatch(fetchServiceByID(values.service));
@@ -561,15 +567,19 @@ const DamiEditPage = () => {
       }
     }
 
-    setOption({ ...option, signataires: signataires });
+    setOption({
+      ...option,
+      dirLibelle: direction.libelle,
+      signataires: signataires,
+    });
 
     setHtmlContent(docRef.current.innerHTML);
   };
 
-  const sigChangeHandler = event => {
+  const sigChangeHandler = (event) => {
     let nbr = 0;
 
-    document.querySelectorAll(".check-signataire").forEach(check => {
+    document.querySelectorAll(".check-signataire").forEach((check) => {
       if (check.firstChild.checked) {
         nbr++;
       }
@@ -648,7 +658,7 @@ const DamiEditPage = () => {
     }
   };
 
-  const getUpdatedComponent = recoveredOption => {
+  const getUpdatedComponent = (recoveredOption) => {
     try {
       setGetUpdatedComponentsLoading(true);
       const div = document.createElement("div");
@@ -821,7 +831,7 @@ const DamiEditPage = () => {
           const body = el.querySelector("tbody");
           const lines = body.querySelectorAll("tr");
 
-          const filteredlines = Array.from(lines).filter(row => {
+          const filteredlines = Array.from(lines).filter((row) => {
             return !row.querySelector(".btn-add-checkbox-line");
           });
 
@@ -888,7 +898,7 @@ const DamiEditPage = () => {
           const body = el.querySelector("tbody");
           const lines = body.querySelectorAll("tr");
 
-          const filteredlines = Array.from(lines).filter(row => {
+          const filteredlines = Array.from(lines).filter((row) => {
             return !row.querySelector(".btn-add-checkbox-line");
           });
 
@@ -1121,7 +1131,7 @@ const DamiEditPage = () => {
               const body = el.querySelector("tbody");
               const lines = body.querySelectorAll("tr");
 
-              const filteredlines = Array.from(lines).filter(row => {
+              const filteredlines = Array.from(lines).filter((row) => {
                 return !row.querySelector(".btn-add-checkbox-line");
               });
 
@@ -1188,7 +1198,7 @@ const DamiEditPage = () => {
               const body = el.querySelector("tbody");
               const lines = body.querySelectorAll("tr");
 
-              const filteredlines = Array.from(lines).filter(row => {
+              const filteredlines = Array.from(lines).filter((row) => {
                 return !row.querySelector(".btn-add-checkbox-line");
               });
 
@@ -1413,7 +1423,7 @@ const DamiEditPage = () => {
               const body = el.querySelector("tbody");
               const lines = body.querySelectorAll("tr");
 
-              const filteredlines = Array.from(lines).filter(row => {
+              const filteredlines = Array.from(lines).filter((row) => {
                 return !row.querySelector(".btn-add-checkbox-line");
               });
 
@@ -1480,7 +1490,7 @@ const DamiEditPage = () => {
               const body = el.querySelector("tbody");
               const lines = body.querySelectorAll("tr");
 
-              const filteredlines = Array.from(lines).filter(row => {
+              const filteredlines = Array.from(lines).filter((row) => {
                 return !row.querySelector(".btn-add-checkbox-line");
               });
 
@@ -1583,15 +1593,17 @@ const DamiEditPage = () => {
 
         if (options) {
           if (id) {
-            let savedOption = options.find(op => String(op._id) === String(id));
+            let savedOption = options.find(
+              (op) => String(op._id) === String(id)
+            );
             if (savedOption) {
-              options = options.map(option => {
+              options = options.map((option) => {
                 if (option._id === id) {
                   option.contenu =
                     docRef &&
-                      docRef.current &&
-                      docRef.current.querySelector("div") &&
-                      docRef.current.querySelector("div").innerHTML !== ""
+                    docRef.current &&
+                    docRef.current.querySelector("div") &&
+                    docRef.current.querySelector("div").innerHTML !== ""
                       ? docRef.current.querySelector("div").innerHTML
                       : "";
                   option.updatedAt = new Date();
@@ -1610,9 +1622,9 @@ const DamiEditPage = () => {
               notSavedYet: true,
               contenu:
                 docRef &&
-                  docRef.current &&
-                  docRef.current.querySelector("div") &&
-                  docRef.current.querySelector("div").innerHTML !== ""
+                docRef.current &&
+                docRef.current.querySelector("div") &&
+                docRef.current.querySelector("div").innerHTML !== ""
                   ? docRef.current.querySelector("div").innerHTML
                   : "",
               createdAt: new Date(),
@@ -1631,9 +1643,9 @@ const DamiEditPage = () => {
             notSavedYet: true,
             contenu:
               docRef &&
-                docRef.current &&
-                docRef.current.querySelector("div") &&
-                docRef.current.querySelector("div").innerHTML !== ""
+              docRef.current &&
+              docRef.current.querySelector("div") &&
+              docRef.current.querySelector("div").innerHTML !== ""
                 ? docRef.current.querySelector("div").innerHTML
                 : "",
             createdAt: new Date(),
@@ -1679,7 +1691,7 @@ const DamiEditPage = () => {
           ? JSON.parse(localStorage.getItem("options"))
           : null;
         if (stoptions) {
-          stoptions = stoptions.filter(op => String(op._id) !== String(id));
+          stoptions = stoptions.filter((op) => String(op._id) !== String(id));
           localStorage.setItem("options", JSON.stringify(stoptions));
           dispatch({ type: OPTION_LIST_REMOVE, payload: id });
         }
@@ -1796,7 +1808,7 @@ const DamiEditPage = () => {
 
           if (options && options.length > 0) {
             if (docRef && docRef.current) {
-              let option = options.find(op => String(op._id) === String(id));
+              let option = options.find((op) => String(op._id) === String(id));
               if (option) {
                 const obj = { contenu: option.contenu };
                 getUpdatedComponent(obj);
@@ -1814,7 +1826,7 @@ const DamiEditPage = () => {
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
     console.log("is alreadey saved value :", isAlreadySaved);
     if (String(currentPath.split("/")[1].split("/")[0]) !== "modifier-option") {
-      document.querySelectorAll("a").forEach(element => {
+      document.querySelectorAll("a").forEach((element) => {
         element.addEventListener("click", () => {
           if (!isAlreadySaved) {
             saveContentWorkHandler();
@@ -1823,7 +1835,7 @@ const DamiEditPage = () => {
         });
       });
     }
-    const handleBeforeUnload = e => {
+    const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = "";
       if (!isAlreadySaved) {
@@ -1847,16 +1859,17 @@ const DamiEditPage = () => {
       <Modal
         show={showModal}
         fullscreen={true}
-        size='xl'
+        size="xl"
         centered
-        onHide={() => setShowModal(false)}>
+        onHide={() => setShowModal(false)}
+      >
         <Modal.Header closeButton>
-          <Modal.Title as='h5'>Voire le contenu de dami</Modal.Title>
+          <Modal.Title as="h5">Voire le contenu de dami</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {draggedItems.length === 0 && (
-            <Alert variant='warning'>
-              <i className='fas fa-exclamation-circle mt-1'></i> vous n'avez pas
+            <Alert variant="warning">
+              <i className="fas fa-exclamation-circle mt-1"></i> vous n'avez pas
               encore rempli le document
             </Alert>
           )}
@@ -1868,7 +1881,8 @@ const DamiEditPage = () => {
                 className={`p-2 ${draggedItems.length !== 0 && "border"}`}
                 dangerouslySetInnerHTML={{
                   __html: htmlContent,
-                }}></div>
+                }}
+              ></div>
             </Col>
             <Col xl={2} lg={2} md={12} sm={12}></Col>
           </Row>
@@ -1881,62 +1895,64 @@ const DamiEditPage = () => {
         show={showCreateOpModal}
         centered
         fullscreen={true}
-        size='xl'
-        onHide={closeCreateOptionModalHandler}>
+        size="xl"
+        onHide={closeCreateOptionModalHandler}
+      >
         <Modal.Header closeButton>
-          <Modal.Title as='h5'>créer l'option (dami)</Modal.Title>
+          <Modal.Title as="h5">créer l'option (dami)</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <StepsProgress activeStep={activeStep} steps={steps} />
           <hr />
           {errorDirectionList && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorDirectionList}
             </Message>
           )}
           {errorServiceList && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorServiceList}
             </Message>
           )}
           {errorSousCategorieList && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorSousCategorieList}
             </Message>
           )}
           {errorDirectionByServiceID && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorDirectionByServiceID}
             </Message>
           )}
           {errorOptionCreate && (
-            <Message type='danger' itWillBeHidden={true}>
+            <Message type="danger" itWillBeHidden={true}>
               {errorOptionCreate}
             </Message>
           )}
 
           {errorServiceByID && (
-            <Message type='danger' itWillBeHidden={true}>
+            <Message type="danger" itWillBeHidden={true}>
               {errorServiceByID}
             </Message>
           )}
 
           {errorOptionUpdate && (
-            <Message type='danger' itWillBeHidden={true}>
+            <Message type="danger" itWillBeHidden={true}>
               {errorOptionUpdate}
             </Message>
           )}
 
-          <div className='d-flex justify-content-between align-items-center'>
+          <div className="d-flex justify-content-between align-items-center">
             <Button
-              variant='light'
-              className='d-block my-3'
-              onClick={goBackStepsHandler}>
-              <i className='fas fa-arrow-left'></i> retour
+              variant="light"
+              className="d-block my-3"
+              onClick={goBackStepsHandler}
+            >
+              <i className="fas fa-arrow-left"></i> retour
             </Button>
             {activeStep === 3 && (
-              <Button variant='dark' onClick={handleConvertToPDF}>
-                <i className='fa-solid fa-file-import'></i> Voir comment le PDF
+              <Button variant="dark" onClick={handleConvertToPDF}>
+                <i className="fa-solid fa-file-import"></i> Voir comment le PDF
                 va être généré
               </Button>
             )}
@@ -1945,129 +1961,131 @@ const DamiEditPage = () => {
           {activeStep === 0 ? (
             <Form onSubmit={headerForm.handleSubmit}>
               <label>
-                <small className='text-danger mt-3'>*</small> libelle:
+                <small className="text-danger mt-3">*</small> libelle:
               </label>
               <Form.Control
-                placeholder='Exp: access SI, demande material x ...'
-                name='libelle'
+                placeholder="Exp: access SI, demande material x ..."
+                name="libelle"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.libelle}
               />
               {headerForm.touched.libelle && headerForm.errors.libelle && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {headerForm.errors.libelle}
                 </small>
               )}
               <label>
-                <small className='text-danger mt-3'>*</small> Type de
+                <small className="text-danger mt-3">*</small> Type de
                 processsus:
               </label>
               <Form.Control
-                placeholder='Exp: livraison des services x ...'
-                name='typeProcessus'
+                placeholder="Exp: livraison des services x ..."
+                name="typeProcessus"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.typeProcessus}
               />{" "}
               {headerForm.touched.typeProcessus &&
                 headerForm.errors.typeProcessus && (
-                  <small className='text-danger d-block'>
+                  <small className="text-danger d-block">
                     {headerForm.errors.typeProcessus}
                   </small>
                 )}
               <label>
-                <small className='text-danger mt-3'>*</small>
+                <small className="text-danger mt-3">*</small>
                 document:
               </label>
               <Form.Control
-                placeholder='Exp: AAA.BBB.000.X ...'
-                name='document'
+                placeholder="Exp: AAA.BBB.000.X ..."
+                name="document"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.document}
               />{" "}
               {headerForm.touched.document && headerForm.errors.document && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {headerForm.errors.document}
                 </small>
               )}
               <label>
-                <small className='text-danger mt-3'>*</small>
+                <small className="text-danger mt-3">*</small>
                 classification:
               </label>
               <Form.Select
-                className='mb-3'
-                placeholder='Exp: AAA.BBB.000.X ...'
-                name='classification'
+                className="mb-3"
+                placeholder="Exp: AAA.BBB.000.X ..."
+                name="classification"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
-                value={headerForm.values.classification}>
-                <option value=''>
+                value={headerForm.values.classification}
+              >
+                <option value="">
                   ---- veuillez choisire le type de classification ----
                 </option>
-                <option value='interne'>Interne</option>
-                <option value='externe'>Externe</option>
+                <option value="interne">Interne</option>
+                <option value="externe">Externe</option>
               </Form.Select>{" "}
               {headerForm.touched.classification &&
                 headerForm.errors.classification && (
-                  <small className='text-danger d-block'>
+                  <small className="text-danger d-block">
                     {headerForm.errors.classification}
                   </small>
                 )}
               <label>
-                <small className='text-danger mt-3'>*</small>
+                <small className="text-danger mt-3">*</small>
                 creation :
               </label>
               <Form.Control
-                type='date'
-                name='creation'
+                type="date"
+                name="creation"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.creation}
               />{" "}
               {headerForm.touched.creation && headerForm.errors.creation && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {headerForm.errors.creation}
                 </small>
               )}
               <label>
-                <small className='text-danger mt-3'>*</small>
+                <small className="text-danger mt-3">*</small>
                 Mise a jour :
               </label>
               <Form.Control
-                type='date'
-                name='maj'
+                type="date"
+                name="maj"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.maj}
               />{" "}
               {headerForm.touched.maj && headerForm.errors.maj && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {headerForm.errors.maj}
                 </small>
               )}
-              <Button variant='dark' className='w-100 mt-3' type='submit'>
-                continue <i className='fas fa-arrow-right'></i>
+              <Button variant="dark" className="w-100 mt-3" type="submit">
+                continue <i className="fas fa-arrow-right"></i>
               </Button>
             </Form>
           ) : activeStep === 1 ? (
             <Form onSubmit={sousCategorieForm.handleSubmit}>
               <label>
-                <small className='text-danger mt-3'>*</small>sous-categorie :
+                <small className="text-danger mt-3">*</small>sous-categorie :
               </label>
               <Form.Select
-                className='mb-3'
-                name='sousCategorie'
+                className="mb-3"
+                name="sousCategorie"
                 disabled={loadingSousCategorieList}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
-                value={sousCategorieForm.values.sousCategorie}>
-                <option value=''>
+                value={sousCategorieForm.values.sousCategorie}
+              >
+                <option value="">
                   ---- veuillez choisire une categorie ----
                 </option>
                 {souscategories.length > 0 &&
-                  souscategories.map(sousCategorie => (
+                  souscategories.map((sousCategorie) => (
                     <option key={sousCategorie._id} value={sousCategorie._id}>
                       {sousCategorie.libelle}
                     </option>
@@ -2075,24 +2093,25 @@ const DamiEditPage = () => {
               </Form.Select>{" "}
               {sousCategorieForm.touched.sousCategorie &&
                 sousCategorieForm.errors.sousCategorie && (
-                  <small className='text-danger d-block'>
+                  <small className="text-danger d-block">
                     {sousCategorieForm.errors.sousCategorie}
                   </small>
                 )}
               <label>
-                <small className='text-danger mt-3'>*</small>
+                <small className="text-danger mt-3">*</small>
                 service :
               </label>
               <Form.Select
-                className='mb-3'
-                name='service'
+                className="mb-3"
+                name="service"
                 disabled={loadingServiceList}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
-                value={sousCategorieForm.values.service}>
-                <option value=''>---- veuillez choisire un service ----</option>
+                value={sousCategorieForm.values.service}
+              >
+                <option value="">---- veuillez choisire un service ----</option>
                 {services.length > 0 &&
-                  services.map(service => (
+                  services.map((service) => (
                     <option key={service._id} value={service._id}>
                       {service.libelle}
                     </option>
@@ -2100,23 +2119,24 @@ const DamiEditPage = () => {
               </Form.Select>{" "}
               {sousCategorieForm.touched.service &&
                 sousCategorieForm.errors.service && (
-                  <small className='text-danger d-block'>
+                  <small className="text-danger d-block">
                     {sousCategorieForm.errors.service}
                   </small>
                 )}
               <label>proprietaire de donnees(direction) : </label>
               <Form.Select
-                className='mb-3'
-                name='proprietaireDeDonnees'
+                className="mb-3"
+                name="proprietaireDeDonnees"
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
                 value={sousCategorieForm.values.proprietaireDeDonnees}
-                disabled={loadingDirectionList}>
-                <option value=''>
+                disabled={loadingDirectionList}
+              >
+                <option value="">
                   ---- veuillez choisire une direction ----
                 </option>
                 {directions.length > 0 &&
-                  directions.map(direction => (
+                  directions.map((direction) => (
                     <option key={direction._id} value={direction._id}>
                       {direction.libelle}
                     </option>
@@ -2124,63 +2144,63 @@ const DamiEditPage = () => {
               </Form.Select>{" "}
               {sousCategorieForm.touched.proprietaireDeDonnees &&
                 sousCategorieForm.errors.proprietaireDeDonnees && (
-                  <small className='text-danger d-block'>
+                  <small className="text-danger d-block">
                     {sousCategorieForm.errors.proprietaireDeDonnees}
                   </small>
                 )}
-              <Button variant='dark' className='w-100 mt-3' type='submit'>
-                continue <i className='fas fa-arrow-right'></i>
+              <Button variant="dark" className="w-100 mt-3" type="submit">
+                continue <i className="fas fa-arrow-right"></i>
               </Button>
             </Form>
           ) : activeStep === 2 ? (
             <>
-              <div className='d-flex justify-content-center mb-2'>
+              <div className="d-flex justify-content-center mb-2">
                 <h3>les signataires de cette option</h3>
               </div>
-              <Message type='info'>
+              <Message type="info">
                 Pour choisir qui va signer dans cette option, il faut cocher la
                 case à cocher
               </Message>
-              <Message type='warning'>
+              <Message type="warning">
                 Le nombre maximum de signataires autorisés est de 4.
               </Message>
-              <div className='px-1 py-4'>
+              <div className="px-1 py-4">
                 <div style={{ height: "250px" }}>
                   {(loadingDirectionByServiceID || loadingServiceByID) && (
                     <Loader />
                   )}
                   {direction && service && (
                     <>
-                      <div className='w-100 py-2'>
+                      <div className="w-100 py-2">
                         <Form.Check
-                          id='cds'
+                          id="cds"
                           value={checkValues["cds"]}
                           label={`Chef de service de ${service.libelle}`}
-                          className='check-signataire'
+                          className="check-signataire"
                           onChange={sigChangeHandler}
                           checked={checkValues["cds"]}
                         />
                       </div>
-                      <div className='w-100 py-2 '>
+                      <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
-                          id='hiq'
+                          id="hiq"
                           value={checkValues["hiq"]}
                           checked={checkValues["hiq"]}
-                          label='Directeur hiarchique'
-                          className='d-block mr-2 check-signataire'
+                          label="Directeur hiarchique"
+                          className="d-block mr-2 check-signataire"
                           disabled
                           readOnly
                         />
-                        <small className='d-block text-warning'>
-                          <i className='fa-solid fa-triangle-exclamation'></i>{" "}
+                        <small className="d-block text-warning">
+                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
                           Directeur hiérarchique doit signer toutes les demandes
                         </small>
                       </div>
-                      <div className='w-100 py-2 '>
+                      <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
-                          id='pdd'
+                          id="pdd"
                           value={checkValues["pdd"]}
                           checked={
                             option.proprietaireDeDonnees
@@ -2188,35 +2208,35 @@ const DamiEditPage = () => {
                               : false
                           }
                           disabled={!option.proprietaireDeDonnees}
-                          label='proprietaire de donnees'
-                          className='d-block mr-2 check-signataire'
+                          label="proprietaire de donnees"
+                          className="d-block mr-2 check-signataire"
                         />
                       </div>
-                      <div className='w-100 py-2 '>
+                      <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
-                          id='dir'
+                          id="dir"
                           value={checkValues["dir"]}
                           checked={checkValues["dir"]}
                           label={`directeur de ${direction.libelle}`}
-                          className='d-block mr-2 check-signataire'
+                          className="d-block mr-2 check-signataire"
                           readOnly
                           disabled
                         />
-                        <small className='d-block text-warning'>
-                          <i className='fa-solid fa-triangle-exclamation'></i>{" "}
+                        <small className="d-block text-warning">
+                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
                           Le directeur de la direction {direction.libelle} doit
                           obligatoirement signer dans cette option.
                         </small>
                       </div>
-                      <div className='w-100 py-2 '>
+                      <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
-                          id='pdg'
+                          id="pdg"
                           value={checkValues["pdg"]}
                           checked={checkValues["pdg"]}
-                          label='president directeur general'
-                          className='d-block mr-2 check-signataire'
+                          label="president directeur general"
+                          className="d-block mr-2 check-signataire"
                         />
                       </div>
                     </>
@@ -2224,17 +2244,18 @@ const DamiEditPage = () => {
                 </div>
               </div>
               <Button
-                variant='dark'
-                className='w-100 mt-3'
-                onClick={putSignatairesHandler}>
-                continue <i className='fas fa-arrow-right'></i>
+                variant="dark"
+                className="w-100 mt-3"
+                onClick={putSignatairesHandler}
+              >
+                continue <i className="fas fa-arrow-right"></i>
               </Button>
             </>
           ) : (
             <>
               {loadingOptionCreate && <Loader />}
               {loadingOptionUpdate && <Loader />}
-              <Message type='info'>
+              <Message type="info">
                 Voici l'option (DAMI) telle qu'elle sera présentée. Si vous avez
                 quelque chose à changer, retournez et modifiez avant de
                 confirmer
@@ -2250,16 +2271,18 @@ const DamiEditPage = () => {
 
               {isUpdateForm ? (
                 <Button
-                  variant='dark'
-                  className='w-100'
-                  onClick={modifierOptionHandler}>
+                  variant="dark"
+                  className="w-100"
+                  onClick={modifierOptionHandler}
+                >
                   Modifier
                 </Button>
               ) : (
                 <Button
-                  variant='dark'
-                  className='w-100'
-                  onClick={addOptionHandler}>
+                  variant="dark"
+                  className="w-100"
+                  onClick={addOptionHandler}
+                >
                   Ajouter
                 </Button>
               )}
@@ -2269,56 +2292,61 @@ const DamiEditPage = () => {
       </Modal>
 
       {errorOptionByID && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorOptionByID}
         </Message>
       )}
 
       {/* End Modal Create option */}
-      <div className='d-flex justify-content-between align-items-center'>
+      <div className="d-flex justify-content-between align-items-center">
         <Link
-          to='/options'
-          className='btn btn-sm btn-light'
+          to="/options"
+          className="btn btn-sm btn-light"
           onClick={() => {
             setIsUpdateForm(false);
             setCallOptionByIDOnce(false);
             dispatch(resetFetchOptionByID());
-          }}>
-          <i className='fas fa-arrow-left'></i> retour
+          }}
+        >
+          <i className="fas fa-arrow-left"></i> retour
         </Link>
-        <Button variant='dark' onClick={openModalHandler} size='sm'>
-          <i className='fa-solid fa-maximize'></i> voire
+        <Button variant="dark" onClick={openModalHandler} size="sm">
+          <i className="fa-solid fa-maximize"></i> voire
         </Button>
       </div>
 
-      <Row className='doc-row'>
+      <Row className="doc-row">
         <Col xl={12} lg={12} md={12} sm={12}></Col>
         <Col xl={9} lg={9} md={12} sm={12}>
           <TextStyles />
           <div
             ref={docRef}
-            className='doc'
+            className="doc"
             onDrop={handleDrop}
-            onDragOver={handleDragOver}>
+            onDragOver={handleDragOver}
+          >
             {loadingOptionByID && <TableLoading />}
             {getUpdatedComponentsLoading && <TableLoading />}
             <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId='droppable'>
-                {provided => (
+              <Droppable droppableId="droppable">
+                {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
                     {draggedItems.map((item, index) => (
                       <Draggable
                         key={item.id}
                         draggableId={item.id}
-                        index={index}>
-                        {provided => (
+                        index={index}
+                      >
+                        {(provided) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            {...provided.dragHandleProps}>
+                            {...provided.dragHandleProps}
+                          >
                             <div
                               className={`position-relative comp-ui type-${item.type}`}
-                              id={`comp-ui-${item.id}`}>
+                              id={`comp-ui-${item.id}`}
+                            >
                               {React.createElement(item.component.type, {
                                 ...item.component.props,
                                 children1: item.children1,
@@ -2329,9 +2357,10 @@ const DamiEditPage = () => {
                               })}
 
                               <span
-                                className='btn-remove-component'
-                                onClick={() => removeComponentHandler(item.id)}>
-                                <i className='fas fa-times text-danger'></i>
+                                className="btn-remove-component"
+                                onClick={() => removeComponentHandler(item.id)}
+                              >
+                                <i className="fas fa-times text-danger"></i>
                               </span>
                             </div>
                           </div>
@@ -2345,112 +2374,122 @@ const DamiEditPage = () => {
           </div>
         </Col>
         <Col xl={3} lg={3} md={12} sm={12}>
-          <Card className='mt-3'>
+          <Card className="mt-3">
             <ListGroup>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "label", draggedItems.length)
-                }>
+                }
+              >
                 Label
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "textinput", draggedItems.length)
-                }>
+                }
+              >
                 Zone de text
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "checkboxes", draggedItems.length)
-                }>
+                }
+              >
                 Case à cocher
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "radiobuttons", draggedItems.length)
-                }>
+                }
+              >
                 Bouton radio
               </ListGroup.Item>
             </ListGroup>
           </Card>
 
-          <Card className='mt-2'>
+          <Card className="mt-2">
             <ListGroup>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "lsttextinput", draggedItems.length)
-                }>
+                }
+              >
                 Liste des zones de textes
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "lstcheckboxes", draggedItems.length)
-                }>
+                }
+              >
                 Liste des cases à cocher
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e =>
+                onDragStart={(e) =>
                   handleDragStart(e, "lstradiobuttons", draggedItems.length)
-                }>
+                }
+              >
                 Liste des boutons radios
               </ListGroup.Item>
             </ListGroup>
           </Card>
 
-          <Card className='mt-2'>
+          <Card className="mt-2">
             <ListGroup>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e => handleDragStart(e, "divider")}>
+                onDragStart={(e) => handleDragStart(e, "divider")}
+              >
                 Diviseur
               </ListGroup.Item>
               <ListGroup.Item
-                className='cursor-pointer crt-dami-com-item'
+                className="cursor-pointer crt-dami-com-item"
                 draggable
                 onDrag={handleDrag}
-                onDragStart={e => handleDragStart(e, "line")}>
+                onDragStart={(e) => handleDragStart(e, "line")}
+              >
                 Ligne
               </ListGroup.Item>
             </ListGroup>
           </Card>
 
           <Button
-            className='mt-3 w-100'
-            variant='dark'
+            className="mt-3 w-100"
+            variant="dark"
             disabled={loadingOptionByID || getUpdatedComponentsLoading}
-            onClick={showCreateOptionModalHandler}>
+            onClick={showCreateOptionModalHandler}
+          >
             {loadingOptionByID || getUpdatedComponentsLoading ? (
               <span>loading ....</span>
             ) : !isUpdateForm ? (
               <>
-                <i className='fa-solid fa-file-circle-plus'></i> créer
+                <i className="fa-solid fa-file-circle-plus"></i> créer
               </>
             ) : (
               <>
-                <i className='fa-solid fa-file-pen'></i> modifier
+                <i className="fa-solid fa-file-pen"></i> modifier
               </>
             )}
           </Button>

@@ -79,6 +79,10 @@ const utilisateurSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "direction",
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

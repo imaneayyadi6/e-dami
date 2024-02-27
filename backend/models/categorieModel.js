@@ -12,6 +12,10 @@ const categorieSchema = Schema(
       ref: "direction",
       required: [true, "veuillez entrer une direction"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

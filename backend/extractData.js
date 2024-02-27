@@ -1,249 +1,282 @@
 import colors from "colors";
+
 import fs from "fs";
+import dotenv from "dotenv";
+import { Sequelize } from "sequelize";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import Direction from "./models/directionModel.js";
+import Service from "./models/serviceModel.js";
+import Utilisateur from "./models/utilisateurModel.js";
 
-const extractData = async () => {
-    try {
+import connectDB from "./config/database.js";
 
-        /******************************   DIRECTIONS   ******************************/
+dotenv.config();
+connectDB();
 
-        const directionsFromJson = fs.readFileSync("./backend/data/aghirjson/directions.json", 'utf8');
-        let directions = JSON.parse(directionsFromJson);
+function generatePassword(length) {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+  let password = "";
 
-        directions = directions.map(direction => {
-            return {
-                _id: {
-                    "$oid": new mongoose.Types.ObjectId(),
-                },
-                libelle: direction.SIGLE,
-                uo: direction.UO
-            }
-        })
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset.charAt(randomIndex);
+  }
 
+  return password;
+}
 
+const main = async () => {
+  try {
+    const sequelize = new Sequelize({
+      username: process.env.SQLSERVER_USER_NAME,
+      password: process.env.SQLSERVER_PASSWORD,
+      database: process.env.SQLSERVER_DATABASE,
+      host: process.env.SQLSERVER_SERVER_NAME,
+      dialect: "mssql",
+      dialectOptions: {
+        options: {
+          instanceName: "SQLEXPRESS",
+          trustServerCertificate: true, // Add this line to accept self-signed certificates
+          encrypt: false, // Add this line to enable encryption
+          crypto: {
+            // Add a compatible cipher suite
+            minVersion: "TLSv1.2",
+            cipherName: "AES128-GCM-SHA256",
+          },
+        },
+      },
+      ssl: false, // You can remove this line or set it to true based on your needs
+    });
 
-        /******************************   SERVICES   ******************************/
-        const servicesFromJson = fs.readFileSync("./backend/data/aghirjson/services.json", 'utf8');
-        let services = JSON.parse(servicesFromJson);
-        services = services.map(item => {
-            return {
-                _id: {
-                    "$oid": new mongoose.Types.ObjectId(),
-                },
-                libelle: item.service,
-                uo: item.UO_service,
-                direction: directions.find(dir => String(dir.uo) === String(item.UO_direction))._id,
-            }
-        })
+    /******************************   DIRECTIONS   ******************************/
+    const query1 =
+      "select SIGLE,UO from dbo.UNITE_ORG WHERE SIGLE like 'direction%'";
+    const resSql1 = await sequelize.query(query1, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
-        /******************************   DIRECTEURS   ******************************/
-        const directeursFromJson = fs.readFileSync("./backend/data/aghirjson/directeurs.json", 'utf8');
-        let directeurs = JSON.parse(directeursFromJson);
+    let directions = resSql1.map((item) => {
+      return {
+        _id: new mongoose.Types.ObjectId(),
+        libelle: item.SIGLE,
+        uo: item.UO,
+      };
+    });
 
-        directeurs = directeurs.map(item => {
-            const direction = directions.find(dir => String(dir.uo) === String(item.LIEU));
-            if (direction && item.EMAIL) {
-                const id = new mongoose.Types.ObjectId();
+    /******************************   SERVICES   ******************************/
+    const query2 = `SELECT DISTINCT dir.UO 'UO_direction', dir.SIGLE 'direction', srv.UO 'UO_service',  srv.SIGLE 'service'
+          FROM dbo.UNITE_ORG  as srv inner join dbo.UNITE_ORG  as dep
+          on srv.UO_RATTACHEMENT = dep.UO
+          inner join dbo.UNITE_ORG as dir
+          on dep.UO_RATTACHEMENT = dir.UO
+          WHERE srv.SIGLE like 'service%'
+          group by dir.UO, dir.SIGLE , srv.SIGLE ,srv.UO`;
 
-                directions = directions.map(dir => {
-                    if (String(dir.uo) === String(item.LIEU))
-                        dir.directeur = {
-                            "$oid": id
-                        }
-                    return dir;
-                })
+    let resSql2 = await sequelize.query(query2, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
+    let services = resSql2.map((item) => {
+      return {
+        _id: new mongoose.Types.ObjectId(),
+        libelle: item.service,
+        uo: item.UO_service,
+        direction: directions.find(
+          (dir) => String(dir.uo) === String(item.UO_direction)
+        )._id,
+      };
+    });
 
-                return {
-                    _id: {
-                        "$oid": id
-                    },
-                    isActive: true,
-                    firstTimeLogin: true,
-                    nom: item.NOM,
-                    prenom: item.PRENOM,
-                    matricule: Number(item.MATRICULE),
-                    civilite: item.CIVILITE,
-                    fonction: item.INTITULE,
-                    isDirecteur: true,
-                    email: item.EMAIL,
-                    password: bcrypt.hashSync("123456", 10),
-                    roles: [
-                        {
+    /******************************  CHEFS DE SERVICES   ******************************/
+    let query4 = `SELECT distinct ag.MATRICULE,ag.NOM,ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL,cl.QUALIFICATION ,tr.INTITULE, af.LIEU
+          from dbo.AGENT ag inner join dbo.ADRESSE adr
+          on adr.MATRICULE = ag.MATRICULE
+          inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
+          inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
+          inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
+          inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO
+          INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+          WHERE  YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE()) and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31
+          and cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE
+          WHERE Table_name = 'responsabilite') and tr.INTITULE like 'CHEF DE SERVICE%'`;
 
-                            role: { "$oid": "65c34e0c4d1e2f50c262a139" },
-                            _id: {
-                                "$oid": new mongoose.Types.ObjectId()
-                            },
+    const resSql4 = await sequelize.query(query4, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
-                        }
-                    ],
-                    direction: directions.find(dir => String(dir.uo) === String(item.LIEU))._id,
+    let chefdeservices = resSql4.map((item) => {
+      const service = services.find(
+        (srv) => String(srv.uo) === String(item.LIEU)
+      );
+      if (service && item.EMAIL) {
+        const id = new mongoose.Types.ObjectId();
+        services = services.map((srv) => {
+          if (String(srv.uo) === String(item.LIEU)) srv.chefService = id;
+          return srv;
+        });
+        return {
+          _id: id,
+          isActive: true,
+          firstTimeLogin: true,
+          nom: item.NOM,
+          prenom: item.PRENOM,
+          matricule: Number(item.MATRICULE),
+          civilite: item.CIVILITE,
+          fonction: item.INTITULE,
+          isChefDeService: true,
+          email: item.EMAIL,
+          password: bcrypt.hashSync(generatePassword(6), 10),
+          roles: [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
 
-                }
-            }
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+              _id: new mongoose.Types.ObjectId(),
+            },
 
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ],
+          service: services.find((srv) => String(srv.uo) === String(item.LIEU))
+            ._id,
+          direction: services.find(
+            (srv) => String(srv.uo) === String(item.LIEU)
+          ).direction,
+        };
+      }
+    });
 
-        })
+    /******************************  DIRECTEURS  ******************************/
+    let query5 = `SELECT distinct ag.MATRICULE,ag.NOM,ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL,cl.QUALIFICATION ,tr.INTITULE, af.LIEU
+          from dbo.AGENT ag inner join dbo.ADRESSE adr
+          on adr.MATRICULE = ag.MATRICULE
+          inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
+          inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
+          inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
+          inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO
+          INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+          WHERE  YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE()) and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31
+          and   cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE WHERE Table_name = 'responsabilite') and tr.INTITULE like 'DIRECTEUR%'`;
 
+    const resSql5 = await sequelize.query(query5, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
-        /******************************   CHEF DE SERVICES   ******************************/
-        const chefdeservicesFromJson = fs.readFileSync("./backend/data/aghirjson/chefdeservices.json", 'utf8');
-        let chefdeservices = JSON.parse(chefdeservicesFromJson);
-        chefdeservices = chefdeservices.map(item => {
-            const service = services.find(srv => String(srv.uo) === String(item.LIEU));
-            if (service && item.EMAIL) {
-                const id = new mongoose.Types.ObjectId();
-                services = services.map(srv => {
-                    if (String(srv.uo) === String(item.LIEU))
-                        srv.chefService = {
-                            "$oid": id
-                        }
-                    return srv;
-                })
-                return {
-                    _id: {
-                        "$oid": id,
-                    },
-                    isActive: true,
-                    firstTimeLogin: true,
-                    nom: item.NOM,
-                    prenom: item.PRENOM,
-                    matricule: Number(item.MATRICULE),
-                    civilite: item.CIVILITE,
-                    fonction: item.INTITULE,
-                    isChefDeService: true,
-                    email: item.EMAIL,
-                    password: bcrypt.hashSync("123456", 10),
-                    roles: [
-                        {
-                            role: {
-                                "$oid": "65c34e0c4d1e2f50c262a139",
-                            },
-                            _id: {
-                                "$oid": new mongoose.Types.ObjectId(),
-                            }
-                        }
-                    ],
-                    service: services.find(srv => String(srv.uo) === String(item.LIEU))._id,
-                    direction: services.find(srv => String(srv.uo) === String(item.LIEU)).direction
-                }
-            }
-        })
-
-
-        directeurs = directeurs.map(item => {
-            if (item !== null)
-                return item;
-        })
-
-        chefdeservices = chefdeservices.map(item => {
-            if (item !== null)
-                return item;
-        })
-
-
-        /******************************   NORMAL URILISATEURS   ******************************/
-        const utilisateursFromJson = fs.readFileSync("./backend/data/aghirjson/utilisateurs.json", 'utf8');
-        let utilisateurs = JSON.parse(utilisateursFromJson);
-        utilisateurs = utilisateurs.map(item => {
-            const service = services.find(srv => String(srv.uo) === String(item.LIEU));
-            const findIsChefDeService = chefdeservices.findIndex(cdf => cdf && Number(cdf ? cdf.matricule : 0) === Number(item.MATRICULE))
-            const findIsDirecteur = directeurs.findIndex(dir => dir && Number(dir ? dir.matricule : 0) === Number(item.MATRICULE))
-
-            if (service && item.EMAIL && findIsChefDeService === -1 && findIsDirecteur === -1) {
-                const id = new mongoose.Types.ObjectId();
-                return {
-                    _id: {
-                        "$oid": id,
-                    },
-                    isActive: true,
-                    firstTimeLogin: true,
-                    nom: item.NOM,
-                    prenom: item.PRENOM,
-                    matricule: Number(item.MATRICULE),
-                    civilite: item.CIVILITE,
-                    fonction: item.QUALIFICATION,
-                    email: item.EMAIL,
-                    password: bcrypt.hashSync("123456", 10),
-                    roles: [
-                        {
-                            role: {
-                                "$oid": "65c34e0c4d1e2f50c262a138",
-                            },
-                            _id: {
-                                "$oid": new mongoose.Types.ObjectId(),
-                            }
-                        }
-                    ],
-                    service: services.find(srv => String(srv.uo) === String(item.LIEU))._id,
-                    direction: services.find(srv => String(srv.uo) === String(item.LIEU)).direction
-
-                }
-            }
-        })
-
-
-        let ndirections = []
-        for (let direction of directions)
-            if (direction !== null) ndirections.push(direction)
-
-        let nservices = []
-        for (let service of services)
-            if (service !== null) nservices.push(service)
-        let ndirecteurs = []
-        for (let directeur of directeurs)
-            if (directeur !== null) ndirecteurs.push(directeur)
-        let nchefdeservices = []
-        for (let chefdeservice of chefdeservices)
-            if (chefdeservice !== null) nchefdeservices.push(chefdeservice)
-        let nutilisateurs = []
-        for (let utilisateur of utilisateurs)
-            if (utilisateur !== null) nutilisateurs.push(utilisateur)
-
-        /******************************   INSERT DATA  ******************************/
-        ndirections = JSON.stringify(ndirections)
-        fs.appendFileSync('./backend/data/json/directions.json', ndirections, (err) => {
-            if (err) throw err;
-            console.log('The data was appended to the file!');
+    let directeurs = resSql5.map((item) => {
+      const direction = directions.find(
+        (dir) => String(dir.uo) === String(item.LIEU)
+      );
+      if (direction && item.EMAIL) {
+        const id = new mongoose.Types.ObjectId();
+        directions = directions.map((dir) => {
+          if (String(dir.uo) === String(item.LIEU)) dir.directeur = id;
+          return dir;
         });
 
-        nservices = JSON.stringify(nservices)
-        fs.appendFileSync('./backend/data/json/services.json', nservices, (err) => {
-            if (err) throw err;
-            console.log('The data was appended to the file!');
-        });
+        return {
+          _id: id,
+          isActive: true,
+          firstTimeLogin: true,
+          nom: item.NOM,
+          prenom: item.PRENOM,
+          matricule: Number(item.MATRICULE),
+          civilite: item.CIVILITE,
+          fonction: item.INTITULE,
+          isDirecteur: true,
+          email: item.EMAIL,
+          password: bcrypt.hashSync(generatePassword(6), 10),
+          roles: [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
 
-        ndirecteurs = JSON.stringify(ndirecteurs)
-        fs.appendFileSync('./backend/data/json/directeurs.json', ndirecteurs, (err) => {
-            if (err) throw err;
-            console.log('The data was appended to the file!');
-        });
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ],
+          direction: direction._id,
+        };
+      }
+    });
 
+    /******************************  UTILISATEURS NORMAL  ******************************/
+    let query3 = `SELECT DISTINCT ag.MATRICULE, ag.NOM, ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL, cl.QUALIFICATION, af.LIEU, dir.SIGLE AS 'service'
+          FROM dbo.AGENT ag INNER JOIN dbo.ADRESSE adr ON adr.MATRICULE = ag.MATRICULE
+          INNER JOIN CLASSIFICATION cl ON ag.MATRICULE = cl.MATRICULE
+          INNER JOIN dbo.AFFECTATION af ON af.MATRICULE = ag.MATRICULE
+          INNER JOIN dbo.UNITE_ORG dir ON af.LIEU = dir.UO
+          INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+          where YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE()) and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31`;
 
-        nchefdeservices = JSON.stringify(nchefdeservices)
-        fs.appendFileSync('./backend/data/json/chefdeservices.json', nchefdeservices, (err) => {
-            if (err) throw err;
-            console.log('The data was appended to the file!');
-        });
+    const resSql3 = await sequelize.query(query3, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
-        nutilisateurs = JSON.stringify(nutilisateurs)
-        fs.appendFileSync('./backend/data/json/utilisateurs.json', nutilisateurs, (err) => {
-            if (err) throw err;
-            console.log('The data was appended to the file!');
-        });
+    let utilisateurs = resSql3.map((item) => {
+      const findIsChefDeService = chefdeservices.findIndex(
+        (cdf) =>
+          cdf && Number(cdf ? cdf.matricule : 0) === Number(item.MATRICULE)
+      );
+      const findIsDirecteur = directeurs.findIndex(
+        (dir) =>
+          dir && Number(dir ? dir.matricule : 0) === Number(item.MATRICULE)
+      );
+      const service = services.find(
+        (srv) => String(srv.uo) === String(item.LIEU)
+      );
 
+      if (item.EMAIL && findIsChefDeService === -1 && findIsDirecteur === -1) {
+        return {
+          _id: new mongoose.Types.ObjectId(),
+          isActive: true,
+          firstTimeLogin: true,
+          nom: item.NOM,
+          prenom: item.PRENOM,
+          matricule: Number(item.MATRICULE),
+          civilite: item.CIVILITE,
+          fonction: item.QUALIFICATION,
+          isChefDeService: true,
+          email: item.EMAIL,
+          password: bcrypt.hashSync(generatePassword(6), 10),
+          roles: [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ],
+          service: service ? service._id : null,
+          direction: service ? service.direction : null,
+        };
+      }
+    });
 
-        console.log(`Data Extracted !`.green.inverse);
+    /******************************  INSERT DATA IN DATABASE  ******************************/
+    const options = {
+      ordered: false, // Continue inserting other documents even if one fails
+      raw: true, // Return the raw result from the MongoDB driver
+      wtimeout: 15000, // Set the write concern timeout (in milliseconds)
+    };
 
-        process.exit();
+    await Direction.insertMany(directions, options);
+    await Service.insertMany(services, options);
+    await Utilisateur.insertMany(directeurs, options);
+    await Utilisateur.insertMany(chefdeservices, options);
+    await Utilisateur.insertMany(utilisateurs, options);
 
-
-    } catch (error) {
-        console.error(`${error.message}`.red.inverse);
-        process.exit(1);
-    }
+    console.log(`Data Inserted succcessfully !`.green.inverse);
+    process.exit();
+  } catch (error) {
+    console.log(`Error : ${error}`.red.inverse);
+    process.exit();
+  }
 };
-
-extractData();
+main();

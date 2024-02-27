@@ -89,8 +89,11 @@ export const updateCategorie = asyncHandler(async (req, res) => {
 // @route   DELETE /api/categories/:id
 // @access  private
 export const deleteCategorie = asyncHandler(async (req, res) => {
-  const { deletedCount } = await Categorie.deleteOne({ _id: req.params.id });
-  if (deletedCount === 1) {
+  const categorie = await Categorie.findOne({ _id: req.params.id });
+  if (categorie) {
+    categorie.isDeleted = true;
+    await categorie.save();
+
     res.json({
       message: "categorie supprimé !",
     });

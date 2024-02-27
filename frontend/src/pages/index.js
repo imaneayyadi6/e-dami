@@ -5,6 +5,7 @@ import RegisterPage from "./RegisterPage";
 import SetPasswordPage from "./SetPasswordPage";
 import ForgotPasswordPage from "./ForgotPasswordPage";
 import NewPasswordPage from "./NewPasswordPage";
+import ChangePassword from "./ChangePassword";
 
 export {
   DashboardPage,
@@ -14,4 +15,5 @@ export {
   SetPasswordPage,
   ForgotPasswordPage,
   NewPasswordPage,
+  ChangePassword,
 };

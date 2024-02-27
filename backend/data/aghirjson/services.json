@@ -1,428 +1,428 @@
 [
-    {
-        "UO_direction": "N102",
-        "direction": "DIRECTION DE L'INFORMATION TV",
-        "UO_service": "N401",
-        "service": "SERVICE DE MONTAGE"
-    },
-    {
-        "UO_direction": "N102",
-        "direction": "DIRECTION DE L'INFORMATION TV",
-        "UO_service": "N402",
-        "service": "SERVICE ENG"
-    },
-    {
-        "UO_direction": "N103",
-        "direction": "DIRECTION TECHNIQUE ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N412",
-        "service": "SERVICE PLANIFICATION/PRESTATION"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N439",
-        "service": "SERVICE DEPLOIEMENT ET EXPLOITATION"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N441",
-        "service": "SERVICE DES SYSTEMES, RESEAUX ET SECURITE"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N600",
-        "service": "SERVICE DEVELOPPEMENT INFORMATIQUE"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N440",
-        "service": "SERVICE MAINTENANCE ASSISTANCE ET FORMATION"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N406",
-        "service": "SERVICE MAINTENANCE TV"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N405",
-        "service": "SERVICE MAINTENENCE RADIO"
-    },
-    {
-        "UO_direction": "N106",
-        "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "UO_service": "N438",
-        "service": "SERVICE PRODUCTION INFORMATIQUE"
-    },
-    {
-        "UO_direction": "N111",
-        "direction": "DIRECTION DE LA TELEDIFFUSION",
-        "UO_service": "N486",
-        "service": "SERVICE EMETTEURS RADIO"
-    },
-    {
-        "UO_direction": "N113",
-        "direction": "DIRECTION DES PROGRAMMES ET DE LA PRODUCTION DES CHAINES CORANIQUES RADIO ET TELEVISION",
-        "UO_service": "N4098",
-        "service": "SERVICE DE PRORAMMATION  RADIO AUX CHAINES CORANIQUE RADIO ET TV"
-    },
-    {
-        "UO_direction": "N115",
-        "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "UO_service": "N4100",
-        "service": "SERVICE ADMINISTRATION DES VENTES A LA REGIE PUBLICITAIRE"
-    },
-    {
-        "UO_direction": "N115",
-        "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "UO_service": "N4015",
-        "service": "SERVICE MOYENS GENEREAUX ET SYSTEME QUALITE A LA REGIE PUBLICITAIRE"
-    },
-    {
-        "UO_direction": "N115",
-        "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "UO_service": "N4099",
-        "service": "SERVICE PLANNING A LA REGIE PUBLICITAIRE"
-    },
-    {
-        "UO_direction": "N115",
-        "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "UO_service": "N4096",
-        "service": "SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBLICITAIRE"
-    },
-    {
-        "UO_direction": "N115",
-        "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "UO_service": "N4016",
-        "service": "SERVICE TECHNIQUE"
-    },
-    {
-        "UO_direction": "N117",
-        "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "UO_service": "N498",
-        "service": "SERVICE DE LA PRODUCTION ET DES PROGRAMMES A LA RADIO AMAZIGH"
-    },
-    {
-        "UO_direction": "N117",
-        "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "UO_service": "N497",
-        "service": "SERVICE DE LA PROGRAMMATION PAD ET DE LA GESTION D’ANTENNE A LA RADIO AMAZIGH"
-    },
-    {
-        "UO_direction": "N117",
-        "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "UO_service": "N499",
-        "service": "SERVICE GESTION D'ANTENNE  A LA CHAINE TV AMAZIGH"
-    },
-    {
-        "UO_direction": "N117",
-        "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "UO_service": "N4095",
-        "service": "SERVICE JOURNAUX TELEVISE ET MAGAZINE D'INFORMATION"
-    },
-    {
-        "UO_direction": "N117",
-        "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "UO_service": "N4097",
-        "service": "SERVICE PLANNING ET MOYENS DE PRODUCTION A LA CHAINE TV AMAZIGH"
-    },
-    {
-        "UO_direction": "N121",
-        "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
-        "UO_service": "N459",
-        "service": "SERVICE DE LA PRODUCTION  MUSIQUE ET THEATRE"
-    },
-    {
-        "UO_direction": "N121",
-        "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
-        "UO_service": "N462",
-        "service": "SERVICE DE LA PRODUCTION INTERNATIONALE"
-    },
-    {
-        "UO_direction": "N121",
-        "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
-        "UO_service": "N463",
-        "service": "SERVICE DE LA PROGRAMATION ARABE"
-    },
-    {
-        "UO_direction": "N121",
-        "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
-        "UO_service": "N466",
-        "service": "SERVICE DE LA PROGRAMMATION INTERNATIONALE"
-    },
-    {
-        "UO_direction": "N121",
-        "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
-        "UO_service": "N464",
-        "service": "SERVICE EN CHARGE DE LA PRODUCTION ARABE"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N410",
-        "service": "SERVICE DES MOYENS DE CONTRIBUTION MOBILE"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N4101",
-        "service": "SERVICE DES MOYENS DE PRODUCTION TV MOBILES"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N411",
-        "service": "SERVICE ECLAIRAGE ET MACHINERIE"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N409",
-        "service": "SERVICE EQUIPEMENTS ET OPERATION MOBILES TV"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N408",
-        "service": "SERVICE EXPLOITATION RADIO"
-    },
-    {
-        "UO_direction": "N206",
-        "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
-        "UO_service": "N407",
-        "service": "SERVICE EXPLOITATION TV"
-    },
-    {
-        "UO_direction": "N207",
-        "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
-        "UO_service": "N414",
-        "service": "SERVICE COORDINATION TECHNIQUE RADIO"
-    },
-    {
-        "UO_direction": "N207",
-        "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
-        "UO_service": "N413",
-        "service": "SERVICE COORDINATION TECHNIQUE TV"
-    },
-    {
-        "UO_direction": "N207",
-        "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
-        "UO_service": "N403",
-        "service": "SERVICE ETUDES"
-    },
-    {
-        "UO_direction": "N207",
-        "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
-        "UO_service": "N404",
-        "service": "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT"
-    },
-    {
-        "UO_direction": "N2077",
-        "direction": "DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
-        "UO_service": "N4025",
-        "service": "SERVICE DES ARCHIVES TV"
-    },
-    {
-        "UO_direction": "N2077",
-        "direction": "DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
-        "UO_service": "N4026",
-        "service": "SERVICE NUMERISATION"
-    },
-    {
-        "UO_direction": "N208",
-        "direction": "DIRECTION DES ACHATS",
-        "UO_service": "N418",
-        "service": "SERVICE ADMINISTRATION ET SUIVI DES MARCHES"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N316",
-        "service": "SERVICE DE LA GPEC ET DE LA FROMATION"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N4017",
-        "service": "SERVICE DES PRESTATIONS"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N429",
-        "service": "SERVICE DU PERSONNEL"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N428",
-        "service": "SERVICE GESTION DE LA PAIE"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N315",
-        "service": "SERVICE RECRUTEMENT ET GESTION DE CARRIERE"
-    },
-    {
-        "UO_direction": "N209",
-        "direction": "DIRECTION DES RESSOURCES HUMAINES",
-        "UO_service": "N431",
-        "service": "SERVICE REGLEMENTATION"
-    },
-    {
-        "UO_direction": "N210",
-        "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
-        "UO_service": "N417",
-        "service": "SERVICE ACHAT LOCAL ET MOYENS GENERAUX"
-    },
-    {
-        "UO_direction": "N210",
-        "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
-        "UO_service": "N425",
-        "service": "SERVICE DE LA GESTION DES DEPLACEMENTS ET DU PARC AUTO"
-    },
-    {
-        "UO_direction": "N210",
-        "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
-        "UO_service": "N415",
-        "service": "SERVICE INVENTAIRE"
-    },
-    {
-        "UO_direction": "N210",
-        "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
-        "UO_service": "N424",
-        "service": "SERVICE PARC AUTO"
-    },
-    {
-        "UO_direction": "N210",
-        "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
-        "UO_service": "N419",
-        "service": "SERVICE SECURITE ET MAINTENANCE DES LOCAUX"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N471",
-        "service": "SERVICE DE CONTROLE ET DE DISTRIBUTION"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N473",
-        "service": "SERVICE DE L'ENERGIE"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N475",
-        "service": "SERVICE DE L'EQUIPEMENT"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N470",
-        "service": "SERVICE DES FAISCEAUX HERTZIENS"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N474",
-        "service": "SERVICE DES INFRASTRUCTURES"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N469",
-        "service": "SERVICE DES STATIONS TERRIENNES"
-    },
-    {
-        "UO_direction": "N216",
-        "direction": "DIRECTION DES SITES",
-        "UO_service": "N4076",
-        "service": "SERVICE ETUDES ET PLANIFICATION"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N4029",
-        "service": "SERVICE REGIONAL  CASABLANCA"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N480",
-        "service": "SERVICE REGIONAL  LAAYOUNE"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N485",
-        "service": "SERVICE REGIONAL  RABAT"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N477",
-        "service": "SERVICE REGIONAL AGADIR"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N482",
-        "service": "SERVICE REGIONAL AL HOUCEIMA"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N479",
-        "service": "SERVICE REGIONAL FES-MEKNES"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N483",
-        "service": "SERVICE REGIONAL MARAKECH"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N4028",
-        "service": "SERVICE REGIONAL OUJDA"
-    },
-    {
-        "UO_direction": "N217",
-        "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
-        "UO_service": "N481",
-        "service": "SERVICE REGIONAL TANGER"
-    },
-    {
-        "UO_direction": "N221",
-        "direction": "DIRECTION FINANCIERE",
-        "UO_service": "N420",
-        "service": "SERVICE ADMINISTRATION DES VENTES"
-    },
-    {
-        "UO_direction": "N221",
-        "direction": "DIRECTION FINANCIERE",
-        "UO_service": "N422",
-        "service": "SERVICE COMPTABILITE"
-    },
-    {
-        "UO_direction": "N221",
-        "direction": "DIRECTION FINANCIERE",
-        "UO_service": "N421",
-        "service": "SERVICE RECOUVREMENT"
-    },
-    {
-        "UO_direction": "N221",
-        "direction": "DIRECTION FINANCIERE",
-        "UO_service": "N423",
-        "service": "SERVICE TRESORIE"
-    }
+  {
+    "UO_direction": "N102",
+    "direction": "DIRECTION DE L'INFORMATION TV",
+    "UO_service": "N401",
+    "service": "SERVICE DE MONTAGE"
+  },
+  {
+    "UO_direction": "N102",
+    "direction": "DIRECTION DE L'INFORMATION TV",
+    "UO_service": "N402",
+    "service": "SERVICE ENG"
+  },
+  {
+    "UO_direction": "N103",
+    "direction": "DIRECTION TECHNIQUE ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N412",
+    "service": "SERVICE PLANIFICATION/PRESTATION"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N439",
+    "service": "SERVICE DEPLOIEMENT ET EXPLOITATION"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N441",
+    "service": "SERVICE DES SYSTEMES, RESEAUX ET SECURITE"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N600",
+    "service": "SERVICE DEVELOPPEMENT INFORMATIQUE"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N440",
+    "service": "SERVICE MAINTENANCE ASSISTANCE ET FORMATION"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N406",
+    "service": "SERVICE MAINTENANCE TV"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N405",
+    "service": "SERVICE MAINTENENCE RADIO"
+  },
+  {
+    "UO_direction": "N106",
+    "direction": "DIRECTION DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "UO_service": "N438",
+    "service": "SERVICE PRODUCTION INFORMATIQUE"
+  },
+  {
+    "UO_direction": "N111",
+    "direction": "DIRECTION DE LA TELEDIFFUSION",
+    "UO_service": "N486",
+    "service": "SERVICE EMETTEURS RADIO"
+  },
+  {
+    "UO_direction": "N113",
+    "direction": "DIRECTION DES PROGRAMMES ET DE LA PRODUCTION DES CHAINES CORANIQUES RADIO ET TELEVISION",
+    "UO_service": "N4098",
+    "service": "SERVICE DE PRORAMMATION  RADIO AUX CHAINES CORANIQUE RADIO ET TV"
+  },
+  {
+    "UO_direction": "N115",
+    "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "UO_service": "N4100",
+    "service": "SERVICE ADMINISTRATION DES VENTES A LA REGIE PUBLICITAIRE"
+  },
+  {
+    "UO_direction": "N115",
+    "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "UO_service": "N4015",
+    "service": "SERVICE MOYENS GENEREAUX ET SYSTEME QUALITE A LA REGIE PUBLICITAIRE"
+  },
+  {
+    "UO_direction": "N115",
+    "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "UO_service": "N4099",
+    "service": "SERVICE PLANNING A LA REGIE PUBLICITAIRE"
+  },
+  {
+    "UO_direction": "N115",
+    "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "UO_service": "N4096",
+    "service": "SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBLICITAIRE"
+  },
+  {
+    "UO_direction": "N115",
+    "direction": "DIRECTION DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "UO_service": "N4016",
+    "service": "SERVICE TECHNIQUE"
+  },
+  {
+    "UO_direction": "N117",
+    "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "UO_service": "N498",
+    "service": "SERVICE DE LA PRODUCTION ET DES PROGRAMMES A LA RADIO AMAZIGH"
+  },
+  {
+    "UO_direction": "N117",
+    "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "UO_service": "N497",
+    "service": "SERVICE DE LA PROGRAMMATION PAD ET DE LA GESTION D’ANTENNE A LA RADIO AMAZIGH"
+  },
+  {
+    "UO_direction": "N117",
+    "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "UO_service": "N499",
+    "service": "SERVICE GESTION D'ANTENNE  A LA CHAINE TV AMAZIGH"
+  },
+  {
+    "UO_direction": "N117",
+    "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "UO_service": "N4095",
+    "service": "SERVICE JOURNAUX TELEVISE ET MAGAZINE D'INFORMATION"
+  },
+  {
+    "UO_direction": "N117",
+    "direction": "DIRECTION CHARGEE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "UO_service": "N4097",
+    "service": "SERVICE PLANNING ET MOYENS DE PRODUCTION A LA CHAINE TV AMAZIGH"
+  },
+  {
+    "UO_direction": "N121",
+    "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+    "UO_service": "N459",
+    "service": "SERVICE DE LA PRODUCTION  MUSIQUE ET THEATRE"
+  },
+  {
+    "UO_direction": "N121",
+    "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+    "UO_service": "N462",
+    "service": "SERVICE DE LA PRODUCTION INTERNATIONALE"
+  },
+  {
+    "UO_direction": "N121",
+    "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+    "UO_service": "N463",
+    "service": "SERVICE DE LA PROGRAMATION ARABE"
+  },
+  {
+    "UO_direction": "N121",
+    "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+    "UO_service": "N466",
+    "service": "SERVICE DE LA PROGRAMMATION INTERNATIONALE"
+  },
+  {
+    "UO_direction": "N121",
+    "direction": "DIRECTION DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO",
+    "UO_service": "N464",
+    "service": "SERVICE EN CHARGE DE LA PRODUCTION ARABE"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N410",
+    "service": "SERVICE DES MOYENS DE CONTRIBUTION MOBILE"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N4101",
+    "service": "SERVICE DES MOYENS DE PRODUCTION TV MOBILES"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N411",
+    "service": "SERVICE ECLAIRAGE ET MACHINERIE"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N409",
+    "service": "SERVICE EQUIPEMENTS ET OPERATION MOBILES TV"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N408",
+    "service": "SERVICE EXPLOITATION RADIO"
+  },
+  {
+    "UO_direction": "N206",
+    "direction": "DIRECTION EXPLOITATION MOYENS MOBILES",
+    "UO_service": "N407",
+    "service": "SERVICE EXPLOITATION TV"
+  },
+  {
+    "UO_direction": "N207",
+    "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
+    "UO_service": "N414",
+    "service": "SERVICE COORDINATION TECHNIQUE RADIO"
+  },
+  {
+    "UO_direction": "N207",
+    "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
+    "UO_service": "N413",
+    "service": "SERVICE COORDINATION TECHNIQUE TV"
+  },
+  {
+    "UO_direction": "N207",
+    "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
+    "UO_service": "N403",
+    "service": "SERVICE ETUDES"
+  },
+  {
+    "UO_direction": "N207",
+    "direction": "DIRECTION SUPPORT TECHNIQUE ET COORDINATION",
+    "UO_service": "N404",
+    "service": "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT"
+  },
+  {
+    "UO_direction": "N2077",
+    "direction": "DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
+    "UO_service": "N4025",
+    "service": "SERVICE DES ARCHIVES TV"
+  },
+  {
+    "UO_direction": "N2077",
+    "direction": "DIRECTION EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
+    "UO_service": "N4026",
+    "service": "SERVICE NUMERISATION"
+  },
+  {
+    "UO_direction": "N208",
+    "direction": "DIRECTION DES ACHATS",
+    "UO_service": "N418",
+    "service": "SERVICE ADMINISTRATION ET SUIVI DES MARCHES"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N316",
+    "service": "SERVICE DE LA GPEC ET DE LA FROMATION"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N4017",
+    "service": "SERVICE DES PRESTATIONS"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N429",
+    "service": "SERVICE DU PERSONNEL"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N428",
+    "service": "SERVICE GESTION DE LA PAIE"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N315",
+    "service": "SERVICE RECRUTEMENT ET GESTION DE CARRIERE"
+  },
+  {
+    "UO_direction": "N209",
+    "direction": "DIRECTION DES RESSOURCES HUMAINES",
+    "UO_service": "N431",
+    "service": "SERVICE REGLEMENTATION"
+  },
+  {
+    "UO_direction": "N210",
+    "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+    "UO_service": "N417",
+    "service": "SERVICE ACHAT LOCAL ET MOYENS GENERAUX"
+  },
+  {
+    "UO_direction": "N210",
+    "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+    "UO_service": "N425",
+    "service": "SERVICE DE LA GESTION DES DEPLACEMENTS ET DU PARC AUTO"
+  },
+  {
+    "UO_direction": "N210",
+    "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+    "UO_service": "N415",
+    "service": "SERVICE INVENTAIRE"
+  },
+  {
+    "UO_direction": "N210",
+    "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+    "UO_service": "N424",
+    "service": "SERVICE PARC AUTO"
+  },
+  {
+    "UO_direction": "N210",
+    "direction": "DIRECTION DU PATRIMOINE ET DES MOYENS GENERAUX",
+    "UO_service": "N419",
+    "service": "SERVICE SECURITE ET MAINTENANCE DES LOCAUX"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N471",
+    "service": "SERVICE DE CONTROLE ET DE DISTRIBUTION"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N473",
+    "service": "SERVICE DE L'ENERGIE"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N475",
+    "service": "SERVICE DE L'EQUIPEMENT"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N470",
+    "service": "SERVICE DES FAISCEAUX HERTZIENS"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N474",
+    "service": "SERVICE DES INFRASTRUCTURES"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N469",
+    "service": "SERVICE DES STATIONS TERRIENNES"
+  },
+  {
+    "UO_direction": "N216",
+    "direction": "DIRECTION DES SITES",
+    "UO_service": "N4076",
+    "service": "SERVICE ETUDES ET PLANIFICATION"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N4029",
+    "service": "SERVICE REGIONAL  CASABLANCA"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N480",
+    "service": "SERVICE REGIONAL  LAAYOUNE"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N485",
+    "service": "SERVICE REGIONAL  RABAT"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N477",
+    "service": "SERVICE REGIONAL AGADIR"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N482",
+    "service": "SERVICE REGIONAL AL HOUCEIMA"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N479",
+    "service": "SERVICE REGIONAL FES-MEKNES"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N483",
+    "service": "SERVICE REGIONAL MARAKECH"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N4028",
+    "service": "SERVICE REGIONAL OUJDA"
+  },
+  {
+    "UO_direction": "N217",
+    "direction": "DIRECTION  EXPLOITATION ET MAINTENANCE",
+    "UO_service": "N481",
+    "service": "SERVICE REGIONAL TANGER"
+  },
+  {
+    "UO_direction": "N221",
+    "direction": "DIRECTION FINANCIERE",
+    "UO_service": "N420",
+    "service": "SERVICE ADMINISTRATION DES VENTES"
+  },
+  {
+    "UO_direction": "N221",
+    "direction": "DIRECTION FINANCIERE",
+    "UO_service": "N422",
+    "service": "SERVICE COMPTABILITE"
+  },
+  {
+    "UO_direction": "N221",
+    "direction": "DIRECTION FINANCIERE",
+    "UO_service": "N421",
+    "service": "SERVICE RECOUVREMENT"
+  },
+  {
+    "UO_direction": "N221",
+    "direction": "DIRECTION FINANCIERE",
+    "UO_service": "N423",
+    "service": "SERVICE TRESORIE"
+  }
 ]

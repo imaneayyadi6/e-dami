@@ -3,22 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCategories } from "../../redux/categorie/categorieActions";
 import {
   fetchSousCategoriesByCategorieID,
+  resetFetchSousCategoriesByCategorieID,
 } from "../../redux/sousCategorie/sousCategorieActions";
-import {
-
-  fetchOptionsBySousCategorieID,
-
-} from "../../redux/option/optionActions";
+import { fetchOptionsBySousCategorieID } from "../../redux/option/optionActions";
 
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import {
-
-  DamiLoading,
-
-  Message,
-  Option,
-
-} from "../../components";
+import { DamiLoading, Message, Option } from "../../components";
 
 import { Toast } from "../../services";
 
@@ -32,7 +22,7 @@ const FaireUneDemande = () => {
 
   const disptach = useDispatch();
 
-  const categorieList = useSelector(state => state.categorieList);
+  const categorieList = useSelector((state) => state.categorieList);
   const {
     loading: loadingCategorieList,
     error: errorCategorieList,
@@ -40,7 +30,7 @@ const FaireUneDemande = () => {
   } = categorieList;
 
   const souscategorieListByCategorieID = useSelector(
-    state => state.souscategorieListByCategorieID
+    (state) => state.souscategorieListByCategorieID
   );
 
   const {
@@ -50,7 +40,7 @@ const FaireUneDemande = () => {
   } = souscategorieListByCategorieID;
 
   const optionListBySousCategorieID = useSelector(
-    state => state.optionListBySousCategorieID
+    (state) => state.optionListBySousCategorieID
   );
   const {
     loading: loadingOptionListBySousCategorieID,
@@ -59,50 +49,50 @@ const FaireUneDemande = () => {
     data,
   } = optionListBySousCategorieID;
 
-
-  const getSousCategoriesChangeHandler = event => {
-    setCategorie(event.target.value)
-    disptach(fetchSousCategoriesByCategorieID(event.target.value));
-
+  const getSousCategoriesChangeHandler = (event) => {
+    if (event.target.value === "") {
+      disptach(resetFetchSousCategoriesByCategorieID());
+      getOptionsFilterHandler();
+    } else {
+      setCategorie(event.target.value);
+      disptach(fetchSousCategoriesByCategorieID(event.target.value));
+    }
   };
-
 
   const getSousCategorieHandler = (event) => {
     setSousCategorie(event.target.value);
-  }
+  };
 
   const getOptionsFilterHandler = (page = 1) => {
     let query = { page: page || 1 };
-    if (sousCategorie)
-      query.sousCategorie = sousCategorie;
+    if (sousCategorie) query.sousCategorie = sousCategorie;
     disptach(fetchOptionsBySousCategorieID(query));
-  }
-
-  const getOptionsHandler = (event) => {
-    if (sousCategorie) getOptionsFilterHandler()
   };
 
-
-
-
+  const getOptionsHandler = (event) => {
+    if (sousCategorie) getOptionsFilterHandler();
+  };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    getOptionsFilterHandler(newPage)
+    getOptionsFilterHandler(newPage);
   };
 
   const renderPageLinks = () => {
-
     const links = [];
 
     if (totalPages > 1) {
-
       const range = 20;
       const start = Math.max(1, currentPage - Math.floor(range / 2));
       const end = Math.min(totalPages, start + range);
 
       links.push(
-        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+        <button
+          key="first"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+        >
           &laquo;&laquo;
         </button>,
         <button
@@ -115,19 +105,19 @@ const FaireUneDemande = () => {
         </button>
       );
 
-
       for (let i = start; i <= end; i++) {
         links.push(
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+            className={`${
+              i === currentPage ? "active" : ""
+            } btn btn-sm btn-light`}
           >
             {i}
           </button>
         );
       }
-
 
       links.push(
         <button
@@ -149,21 +139,13 @@ const FaireUneDemande = () => {
       );
 
       return links;
-    }
-    else {
+    } else {
       links.push(
-        <button
-          className={`btn btn-sm btn-light active ml-1`}
-        >
-          1
-        </button>
+        <button className={`btn btn-sm btn-light active ml-1`}>1</button>
       );
       return links;
     }
-
-
   };
-
 
   useEffect(() => {
     if (!callOnce) {
@@ -171,45 +153,42 @@ const FaireUneDemande = () => {
       getOptionsFilterHandler();
       setCallOnce(true);
     }
-    if (successOptionListBySousCategorieID)
-      setTotalPages(data.totalPages);
-
-
+    if (successOptionListBySousCategorieID) setTotalPages(data.totalPages);
   }, [callOnce, disptach, successOptionListBySousCategorieID]);
 
   return (
     <>
       {errorCategorieList && (
-        <Message type='danger' itWillBeHidden={true}>
+        <Message type="danger" itWillBeHidden={true}>
           {errorCategorieList}
         </Message>
       )}
       {errorSouscategorieListByCategorieID && (
-        <Message type='danger' itWillBeHidden={true}>
+        <Message type="danger" itWillBeHidden={true}>
           {errorSouscategorieListByCategorieID}
         </Message>
       )}
       {errorOptionListBySousCategorieID && (
-        <Message type='danger' itWillBeHidden={true}>
+        <Message type="danger" itWillBeHidden={true}>
           {errorOptionListBySousCategorieID}
         </Message>
       )}
 
-
       <Card>
         <Card.Body>
-          <div className='d-flex align-items-center'>
+          <div className="d-flex align-items-center">
             <div className="w-100 m-1">
               <label>categorie</label>
               <Form.Select
                 disabled={loadingCategorieList}
                 value={categorie}
-                onChange={getSousCategoriesChangeHandler}>
+                onChange={getSousCategoriesChangeHandler}
+              >
                 <option value={""}>
                   ----- veuillez selectionne une categorie -----
                 </option>
                 {categories.length > 0 &&
-                  categories.map(categorie => (
+                  categories.map((categorie) => (
                     <option value={categorie._id} key={categorie._id}>
                       {String(categorie.libelle).toLowerCase()}
                     </option>
@@ -225,12 +204,13 @@ const FaireUneDemande = () => {
                 disabled={
                   loadingSouscategorieListByCategorieID ||
                   souscategories.length === 0
-                }>
+                }
+              >
                 <option value={""}>
                   ----- veuillez selectionne une sous-categorie -----
                 </option>
                 {souscategories.length > 0 &&
-                  souscategories.map(sousCategorie => (
+                  souscategories.map((sousCategorie) => (
                     <option value={sousCategorie._id} key={sousCategorie._id}>
                       {String(sousCategorie.libelle).toLowerCase()}
                     </option>
@@ -241,7 +221,6 @@ const FaireUneDemande = () => {
             <Button onClick={getOptionsHandler} variant="dark" className="mt-4">
               <i className="fas fa-search"></i>
             </Button>
-
           </div>
         </Card.Body>
       </Card>
@@ -272,21 +251,17 @@ const FaireUneDemande = () => {
             </Col>
           </>
         )}
-        {
-          data && data.options.length > 0 && data.options.map(option => (
+        {data &&
+          data.options.length > 0 &&
+          data.options.map((option) => (
             <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
               <Option option={option} key={option._id} />
             </Col>
-          ))
-        }
+          ))}
         <hr />
 
-        <div className="d-flex justify-content-center">
-          {renderPageLinks()}
-        </div>
-
+        <div className="d-flex justify-content-center">{renderPageLinks()}</div>
       </Row>
-
     </>
   );
 };

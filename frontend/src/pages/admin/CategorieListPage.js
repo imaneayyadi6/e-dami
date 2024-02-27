@@ -8,7 +8,7 @@ import {
   TableLoading,
   WarningMessage,
 } from "../../components";
-import {  Dialog, Toast } from "../../services/";
+import { Dialog, Toast } from "../../services/";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchDirections } from "../../redux/direction/directionActions";
@@ -64,14 +64,14 @@ const CategorieListPage = () => {
 
   const dispatch = useDispatch();
 
-  const directionList = useSelector(state => state.directionList);
+  const directionList = useSelector((state) => state.directionList);
   const {
     loading: loadingDirectionList,
     error: errorDirectionList,
     directions,
   } = directionList;
 
-  const categorieList = useSelector(state => state.categorieList);
+  const categorieList = useSelector((state) => state.categorieList);
   const {
     loading: loadingCategorieList,
     error: errorCategorieList,
@@ -80,7 +80,7 @@ const CategorieListPage = () => {
   } = categorieList;
 
   const souscategorieListByCategorieID = useSelector(
-    state => state.souscategorieListByCategorieID
+    (state) => state.souscategorieListByCategorieID
   );
 
   const {
@@ -90,14 +90,14 @@ const CategorieListPage = () => {
     souscategories,
   } = souscategorieListByCategorieID;
 
-  const categorieCreate = useSelector(state => state.categorieCreate);
+  const categorieCreate = useSelector((state) => state.categorieCreate);
   const {
     loading: loadingCreateCategorie,
     error: errorCreateCategorie,
     categorie: createdCategorie,
   } = categorieCreate;
 
-  const categorieUpdate = useSelector(state => state.categorieUpdate);
+  const categorieUpdate = useSelector((state) => state.categorieUpdate);
   const {
     loading: loadingUpdateCategorie,
     error: errorUpdateCategorie,
@@ -105,21 +105,21 @@ const CategorieListPage = () => {
     categorie: updatedCategorie,
   } = categorieUpdate;
 
-  const categorieRemove = useSelector(state => state.categorieRemove);
+  const categorieRemove = useSelector((state) => state.categorieRemove);
   const {
     loading: loadingRemoveCategorie,
     error: errorRemoveCategorie,
     success: successRemoveCategorie,
   } = categorieRemove;
 
-  const sousCategorieCreate = useSelector(state => state.sousCategorieCreate);
+  const sousCategorieCreate = useSelector((state) => state.sousCategorieCreate);
   const {
     loading: loadingCreateSousCategorie,
     error: errorCreateSousCategorie,
     sousCategorie: createdSousCategorie,
   } = sousCategorieCreate;
 
-  const sousCategorieUpdate = useSelector(state => state.sousCategorieUpdate);
+  const sousCategorieUpdate = useSelector((state) => state.sousCategorieUpdate);
   const {
     loading: loadingUpdateSousCategorie,
     error: errorUpdateSousCategorie,
@@ -127,7 +127,7 @@ const CategorieListPage = () => {
     sousCategorie: updatedSousCategorie,
   } = sousCategorieUpdate;
 
-  const sousCategorieRemove = useSelector(state => state.sousCategorieRemove);
+  const sousCategorieRemove = useSelector((state) => state.sousCategorieRemove);
   const {
     loading: loadingRemoveSousCategorie,
     error: errorRemoveSousCategorie,
@@ -137,7 +137,7 @@ const CategorieListPage = () => {
   const categorieForm = useFormik({
     initialValues: categorieInitialValues,
     validationSchema: validationCategorieSchema,
-    onSubmit: values => {
+    onSubmit: (values) => {
       const { categorieLibelle, direction } = values;
 
       if (!isCategorieUpdateForm) {
@@ -158,7 +158,7 @@ const CategorieListPage = () => {
   const sousCategorieForm = useFormik({
     initialValues: sousCategorieInitialValues,
     validationSchema: validationSousCategorieSchema,
-    onSubmit: values => {
+    onSubmit: (values) => {
       const { sousCategorieLibelle } = values;
 
       if (!isSousCategorieUpdateForm) {
@@ -185,7 +185,7 @@ const CategorieListPage = () => {
     categorieForm.resetForm();
   };
 
-  const removeCategorieHandler = id => {
+  const removeCategorieHandler = (id) => {
     Dialog.open({
       title: "Confirmation",
       message: "Etes vous sûre de vouloir supprimer cette catégorie ?",
@@ -195,15 +195,19 @@ const CategorieListPage = () => {
     });
   };
 
-  const updateCategorieHandler = id => {
+  const updateCategorieHandler = (id) => {
     setCategorieShow(true);
     setIsCategorieUpdateForm(true);
     setUpdatedCategorieId(id);
     const upLibelle = categories.find(
-      cat => String(cat._id) === String(id)
+      (cat) => String(cat._id) === String(id)
     ).libelle;
-    const upDirection = categories.find(cat => String(cat._id) === String(id))
-      .direction._id;
+
+    const categorie = categories.find(
+      (cat) => cat !== null && String(cat._id) === String(id)
+    );
+    const direction = categorie.direction;
+    const upDirection = direction ? direction._id : null;
     const categorieObject = {
       categorieLibelle: upLibelle,
       direction: upDirection,
@@ -219,16 +223,16 @@ const CategorieListPage = () => {
     sousCategorieForm.resetForm();
   };
 
-  const getSousCategoriesHandler = id => {
+  const getSousCategoriesHandler = (id) => {
     setSelectedCategorie(id);
     const upLibelle = categories.find(
-      cat => String(cat._id) === String(id)
+      (cat) => String(cat._id) === String(id)
     ).libelle;
     setSelectedCategorieLibelle(upLibelle);
     dispatch(fetchSousCategoriesByCategorieID(id));
   };
 
-  const removeSousCategorieHandler = id => {
+  const removeSousCategorieHandler = (id) => {
     Dialog.open({
       title: "Confirmation",
       message: "Etes vous sûre de vouloir supprimer cette sous-catégorie ?",
@@ -238,12 +242,12 @@ const CategorieListPage = () => {
     });
   };
 
-  const updateSousCategorieHandler = id => {
+  const updateSousCategorieHandler = (id) => {
     setSousCategorieShow(true);
     setIsSousCategorieUpdateForm(true);
     setUpdatedSousCategorieId(id);
     const upLibelle = souscategories.find(
-      cat => String(cat._id) === String(id)
+      (cat) => String(cat._id) === String(id)
     ).libelle;
 
     const categorieObject = {
@@ -334,59 +338,61 @@ const CategorieListPage = () => {
       {/* Begin Add Categorie Modal*/}
       <Modal
         centered
-        size='md'
+        size="md"
         show={categorieShow}
-        onHide={hideCategorieModalHandler}>
+        onHide={hideCategorieModalHandler}
+      >
         <Modal.Header closeButton>
           <h6>categorie</h6>
         </Modal.Header>
         <Modal.Body>
           {loadingCreateCategorie && (
-            <div className='d-flex justify-content-center'>
+            <div className="d-flex justify-content-center">
               <Loader size={"md"} />
             </div>
           )}
           {loadingUpdateCategorie && (
-            <div className='d-flex justify-content-center'>
+            <div className="d-flex justify-content-center">
               <Loader size={"md"} />
             </div>
           )}
           {errorCreateCategorie && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorCreateCategorie}
             </Message>
           )}
           {errorUpdateCategorie && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorUpdateCategorie}
             </Message>
           )}
           <Form onSubmit={categorieForm.handleSubmit}>
             <label>libelle</label>
             <Form.Control
-              placeholder='Exp: Informatique,Finance, Rh ...'
+              placeholder="Exp: Informatique,Finance, Rh ..."
               disabled={loadingCreateCategorie}
-              name='categorieLibelle'
+              name="categorieLibelle"
               onChange={categorieForm.handleChange}
               onBlur={categorieForm.handleBlur}
               value={categorieForm.values.categorieLibelle}
             />
             {categorieForm.touched.categorieLibelle &&
               categorieForm.errors.categorieLibelle && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {categorieForm.errors.categorieLibelle}
                 </small>
               )}
-            <label className='mt-3'>direction</label>
+            <label className="mt-3">direction</label>
             <Form.Select
               disabled={loadingDirectionList || loadingCreateCategorie}
-              name='direction'
+              name="direction"
               onChange={categorieForm.handleChange}
               onBlur={categorieForm.handleBlur}
-              value={categorieForm.values.direction}>
+              value={categorieForm.values.direction}
+            >
               <option>---- veuillez selectionner une direction ----</option>
               {directions.length > 0 &&
-                directions.map(direction => (
+                directions.map((direction) => (
                   <option key={direction._id} value={direction._id}>
                     {direction.libelle}
                   </option>
@@ -394,11 +400,11 @@ const CategorieListPage = () => {
             </Form.Select>
             {categorieForm.touched.direction &&
               categorieForm.errors.direction && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {categorieForm.errors.direction}
                 </small>
               )}
-            <Button variant='dark' className='mt-3 w-100' type='submit'>
+            <Button variant="dark" className="mt-3 w-100" type="submit">
               submit
             </Button>
           </Form>
@@ -409,49 +415,50 @@ const CategorieListPage = () => {
       {/* Begin Add SousCategorie  Modal*/}
       <Modal
         centered
-        size='md'
+        size="md"
         show={sousCategorieShow}
-        onHide={hideSousCategorieModalHandler}>
+        onHide={hideSousCategorieModalHandler}
+      >
         <Modal.Header closeButton>
           <h6>sous-sategorie</h6>
         </Modal.Header>
         <Modal.Body>
           {loadingCreateSousCategorie && (
-            <div className='d-flex justify-content-center'>
+            <div className="d-flex justify-content-center">
               <Loader size={"md"} />
             </div>
           )}
           {loadingUpdateSousCategorie && (
-            <div className='d-flex justify-content-center'>
+            <div className="d-flex justify-content-center">
               <Loader size={"md"} />
             </div>
           )}
           {errorCreateSousCategorie && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorCreateSousCategorie}
             </Message>
           )}
           {errorUpdateSousCategorie && (
-            <Message itWillBeHidden={true} type='danger'>
+            <Message itWillBeHidden={true} type="danger">
               {errorUpdateSousCategorie}
             </Message>
           )}
           <Form onSubmit={sousCategorieForm.handleSubmit}>
             <label>libelle</label>
             <Form.Control
-              name='sousCategorieLibelle'
+              name="sousCategorieLibelle"
               value={sousCategorieForm.values.sousCategorieLibelle}
-              placeholder='Exp: JD Edwards, Poste de travaille ...'
+              placeholder="Exp: JD Edwards, Poste de travaille ..."
               onChange={sousCategorieForm.handleChange}
               onBlur={sousCategorieForm.handleBlur}
             />
             {sousCategorieForm.touched.sousCategorieLibelle &&
               sousCategorieForm.errors.sousCategorieLibelle && (
-                <small className='text-danger d-block'>
+                <small className="text-danger d-block">
                   {sousCategorieForm.errors.sousCategorieLibelle}
                 </small>
               )}
-            <Button variant='dark' className='mt-3 w-100' type='submit'>
+            <Button variant="dark" className="mt-3 w-100" type="submit">
               submit
             </Button>
           </Form>
@@ -460,48 +467,49 @@ const CategorieListPage = () => {
       {/* End Add SousCategorie  Modal*/}
 
       {errorDirectionList && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorDirectionList}
         </Message>
       )}
       {errorCategorieList && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorCategorieList}
         </Message>
       )}
       {errorRemoveCategorie && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorRemoveCategorie}
         </Message>
       )}
 
       {errorSouscategorieListByCategorieID && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorSouscategorieListByCategorieID}
         </Message>
       )}
 
       {errorRemoveSousCategorie && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorRemoveSousCategorie}
         </Message>
       )}
-      <Message variant='info'>
+      <Message variant="info">
         Pour afficher les enfants d'une ligne (catégorie) vous devez cliquer sur
         la ligne dans le tableau
       </Message>
 
-      <Card className='h-100'>
+      <Card className="h-100">
         <Card.Body>
-          <div className='d-flex justify-content-end'>
+          <div className="d-flex justify-content-end">
             <Button
-              size='sm'
-              variant='dark'
-              onClick={e => {
+              size="sm"
+              variant="dark"
+              onClick={(e) => {
                 setIsCategorieUpdateForm(false);
                 setCategorieShow(true);
-              }}>
-              <i className='fas fa-plus'></i> Ajouter une categorie
+              }}
+            >
+              <i className="fas fa-plus"></i> Ajouter une categorie
             </Button>
           </div>
           {loadingCategorieList && <TableLoading />}
@@ -542,21 +550,22 @@ const CategorieListPage = () => {
       {selectedCategorie ? (
         <Card>
           <Card.Body>
-            <div className='d-flex justify-content-between align-items-center'>
-              <p className='mt-1'>
+            <div className="d-flex justify-content-between align-items-center">
+              <p className="mt-1">
                 <small>catégorie sélectionnée :</small>{" "}
                 <span style={{ fontWeight: "bold" }}>
                   {selectedCategorieLibelle}
                 </span>
               </p>
               <Button
-                size='sm'
-                variant='dark'
-                onClick={e => {
+                size="sm"
+                variant="dark"
+                onClick={(e) => {
                   setIsSousCategorieUpdateForm(false);
                   setSousCategorieShow(true);
-                }}>
-                <i className='fas fa-plus'></i> Ajouter une sous-categorie
+                }}
+              >
+                <i className="fas fa-plus"></i> Ajouter une sous-categorie
               </Button>
             </div>
             {loadingSouscategorieListByCategorieID && <TableLoading />}

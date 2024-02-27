@@ -33,6 +33,7 @@
     "react-to-pdf": "^1.0.1",
     "sequelize": "^6.37.1",
     "socket.io": "^4.7.2",
+    "tedious": "^17.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

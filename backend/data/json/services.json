@@ -1,814 +1,455 @@
 [
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c304"
-        },
-        "libelle": "SERVICE DE MONTAGE",
-        "uo": "N401",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c305"
-        },
-        "libelle": "SERVICE ENG",
-        "uo": "N402",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c306"
-        },
-        "libelle": "SERVICE PLANIFICATION/PRESTATION",
-        "uo": "N412",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e2"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c307"
-        },
-        "libelle": "SERVICE DEPLOIEMENT ET EXPLOITATION",
-        "uo": "N439",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c3a1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c308"
-        },
-        "libelle": "SERVICE DES SYSTEMES, RESEAUX ET SECURITE",
-        "uo": "N441",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ec4ba3913a5ef4c387"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c309"
-        },
-        "libelle": "SERVICE DEVELOPPEMENT INFORMATIQUE",
-        "uo": "N600",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c39b"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30a"
-        },
-        "libelle": "SERVICE MAINTENANCE ASSISTANCE ET FORMATION",
-        "uo": "N440",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ec4ba3913a5ef4c389"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30b"
-        },
-        "libelle": "SERVICE MAINTENANCE TV",
-        "uo": "N406",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3bb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30c"
-        },
-        "libelle": "SERVICE MAINTENENCE RADIO",
-        "uo": "N405",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30d"
-        },
-        "libelle": "SERVICE PRODUCTION INFORMATIQUE",
-        "uo": "N438",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c39f"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30e"
-        },
-        "libelle": "SERVICE EMETTEURS RADIO",
-        "uo": "N486",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c30f"
-        },
-        "libelle": "SERVICE DE PRORAMMATION  RADIO AUX CHAINES CORANIQUE RADIO ET TV",
-        "uo": "N4098",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c310"
-        },
-        "libelle": "SERVICE ADMINISTRATION DES VENTES A LA REGIE PUBLICITAIRE",
-        "uo": "N4100",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c311"
-        },
-        "libelle": "SERVICE MOYENS GENEREAUX ET SYSTEME QUALITE A LA REGIE PUBLICITAIRE",
-        "uo": "N4015",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c391"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c312"
-        },
-        "libelle": "SERVICE PLANNING A LA REGIE PUBLICITAIRE",
-        "uo": "N4099",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c395"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c313"
-        },
-        "libelle": "SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBLICITAIRE",
-        "uo": "N4096",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c393"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c314"
-        },
-        "libelle": "SERVICE TECHNIQUE",
-        "uo": "N4016",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c397"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c315"
-        },
-        "libelle": "SERVICE DE LA PRODUCTION ET DES PROGRAMMES A LA RADIO AMAZIGH",
-        "uo": "N498",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3a7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c316"
-        },
-        "libelle": "SERVICE DE LA PROGRAMMATION PAD ET DE LA GESTION D’ANTENNE A LA RADIO AMAZIGH",
-        "uo": "N497",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c317"
-        },
-        "libelle": "SERVICE GESTION D'ANTENNE  A LA CHAINE TV AMAZIGH",
-        "uo": "N499",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c38d"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c318"
-        },
-        "libelle": "SERVICE JOURNAUX TELEVISE ET MAGAZINE D'INFORMATION",
-        "uo": "N4095",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c399"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c319"
-        },
-        "libelle": "SERVICE PLANNING ET MOYENS DE PRODUCTION A LA CHAINE TV AMAZIGH",
-        "uo": "N4097",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31a"
-        },
-        "libelle": "SERVICE DE LA PRODUCTION  MUSIQUE ET THEATRE",
-        "uo": "N459",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31b"
-        },
-        "libelle": "SERVICE DE LA PRODUCTION INTERNATIONALE",
-        "uo": "N462",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3c1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31c"
-        },
-        "libelle": "SERVICE DE LA PROGRAMATION ARABE",
-        "uo": "N463",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3b3"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31d"
-        },
-        "libelle": "SERVICE DE LA PROGRAMMATION INTERNATIONALE",
-        "uo": "N466",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3ab"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31e"
-        },
-        "libelle": "SERVICE EN CHARGE DE LA PRODUCTION ARABE",
-        "uo": "N464",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3bf"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c31f"
-        },
-        "libelle": "SERVICE DES MOYENS DE CONTRIBUTION MOBILE",
-        "uo": "N410",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3a5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c320"
-        },
-        "libelle": "SERVICE DES MOYENS DE PRODUCTION TV MOBILES",
-        "uo": "N4101",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3c5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c321"
-        },
-        "libelle": "SERVICE ECLAIRAGE ET MACHINERIE",
-        "uo": "N411",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3b7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c322"
-        },
-        "libelle": "SERVICE EQUIPEMENTS ET OPERATION MOBILES TV",
-        "uo": "N409",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3c7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c323"
-        },
-        "libelle": "SERVICE EXPLOITATION RADIO",
-        "uo": "N408",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c324"
-        },
-        "libelle": "SERVICE EXPLOITATION TV",
-        "uo": "N407",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f3"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c325"
-        },
-        "libelle": "SERVICE COORDINATION TECHNIQUE RADIO",
-        "uo": "N414",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3b9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c326"
-        },
-        "libelle": "SERVICE COORDINATION TECHNIQUE TV",
-        "uo": "N413",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c327"
-        },
-        "libelle": "SERVICE ETUDES",
-        "uo": "N403",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c328"
-        },
-        "libelle": "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT",
-        "uo": "N404",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3ad"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c329"
-        },
-        "libelle": "SERVICE DES ARCHIVES TV",
-        "uo": "N4025",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32a"
-        },
-        "libelle": "SERVICE NUMERISATION",
-        "uo": "N4026",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32b"
-        },
-        "libelle": "SERVICE ADMINISTRATION ET SUIVI DES MARCHES",
-        "uo": "N418",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f7"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c38b"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32c"
-        },
-        "libelle": "SERVICE DE LA GPEC ET DE LA FROMATION",
-        "uo": "N316",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32d"
-        },
-        "libelle": "SERVICE DES PRESTATIONS",
-        "uo": "N4017",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32e"
-        },
-        "libelle": "SERVICE DU PERSONNEL",
-        "uo": "N429",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c32f"
-        },
-        "libelle": "SERVICE GESTION DE LA PAIE",
-        "uo": "N428",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c330"
-        },
-        "libelle": "SERVICE RECRUTEMENT ET GESTION DE CARRIERE",
-        "uo": "N315",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c331"
-        },
-        "libelle": "SERVICE REGLEMENTATION",
-        "uo": "N431",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c332"
-        },
-        "libelle": "SERVICE ACHAT LOCAL ET MOYENS GENERAUX",
-        "uo": "N417",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        },
-        "chefService": {
-            "$oid": "65c352ec4ba3913a5ef4c385"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c333"
-        },
-        "libelle": "SERVICE DE LA GESTION DES DEPLACEMENTS ET DU PARC AUTO",
-        "uo": "N425",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c334"
-        },
-        "libelle": "SERVICE INVENTAIRE",
-        "uo": "N415",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c335"
-        },
-        "libelle": "SERVICE PARC AUTO",
-        "uo": "N424",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c336"
-        },
-        "libelle": "SERVICE SECURITE ET MAINTENANCE DES LOCAUX",
-        "uo": "N419",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c337"
-        },
-        "libelle": "SERVICE DE CONTROLE ET DE DISTRIBUTION",
-        "uo": "N471",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3a3"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c338"
-        },
-        "libelle": "SERVICE DE L'ENERGIE",
-        "uo": "N473",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c339"
-        },
-        "libelle": "SERVICE DE L'EQUIPEMENT",
-        "uo": "N475",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3b1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33a"
-        },
-        "libelle": "SERVICE DES FAISCEAUX HERTZIENS",
-        "uo": "N470",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33b"
-        },
-        "libelle": "SERVICE DES INFRASTRUCTURES",
-        "uo": "N474",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33c"
-        },
-        "libelle": "SERVICE DES STATIONS TERRIENNES",
-        "uo": "N469",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33d"
-        },
-        "libelle": "SERVICE ETUDES ET PLANIFICATION",
-        "uo": "N4076",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fa"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3b5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33e"
-        },
-        "libelle": "SERVICE REGIONAL  CASABLANCA",
-        "uo": "N4029",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c33f"
-        },
-        "libelle": "SERVICE REGIONAL  LAAYOUNE",
-        "uo": "N480",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c340"
-        },
-        "libelle": "SERVICE REGIONAL  RABAT",
-        "uo": "N485",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3bd"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c341"
-        },
-        "libelle": "SERVICE REGIONAL AGADIR",
-        "uo": "N477",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c342"
-        },
-        "libelle": "SERVICE REGIONAL AL HOUCEIMA",
-        "uo": "N482",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3af"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c343"
-        },
-        "libelle": "SERVICE REGIONAL FES-MEKNES",
-        "uo": "N479",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c344"
-        },
-        "libelle": "SERVICE REGIONAL MARAKECH",
-        "uo": "N483",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c38f"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c345"
-        },
-        "libelle": "SERVICE REGIONAL OUJDA",
-        "uo": "N4028",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c346"
-        },
-        "libelle": "SERVICE REGIONAL TANGER",
-        "uo": "N481",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c347"
-        },
-        "libelle": "SERVICE ADMINISTRATION DES VENTES",
-        "uo": "N420",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fe"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c348"
-        },
-        "libelle": "SERVICE COMPTABILITE",
-        "uo": "N422",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fe"
-        },
-        "chefService": {
-            "$oid": "65c352ed4ba3913a5ef4c39d"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c349"
-        },
-        "libelle": "SERVICE RECOUVREMENT",
-        "uo": "N421",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fe"
-        },
-        "chefService": {
-            "$oid": "65c352ef4ba3913a5ef4c3c3"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c34a"
-        },
-        "libelle": "SERVICE TRESORIE",
-        "uo": "N423",
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fe"
-        },
-        "chefService": {
-            "$oid": "65c352ee4ba3913a5ef4c3a9"
-        }
-    }
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1818" },
+    "libelle": "SERVICE DE MONTAGE",
+    "uo": "N401",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f5" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1819" },
+    "libelle": "SERVICE ENG",
+    "uo": "N402",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f5" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181a" },
+    "libelle": "SERVICE PLANIFICATION/PRESTATION",
+    "uo": "N412",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f6" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181b" },
+    "libelle": "SERVICE DEPLOIEMENT ET EXPLOITATION",
+    "uo": "N439",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18c3" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181c" },
+    "libelle": "SERVICE DES SYSTEMES, RESEAUX ET SECURITE",
+    "uo": "N441",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18d7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181d" },
+    "libelle": "SERVICE DEVELOPPEMENT INFORMATIQUE",
+    "uo": "N600",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18db" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181e" },
+    "libelle": "SERVICE MAINTENANCE ASSISTANCE ET FORMATION",
+    "uo": "N440",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18f3" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d181f" },
+    "libelle": "SERVICE MAINTENANCE TV",
+    "uo": "N406",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18b7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1820" },
+    "libelle": "SERVICE MAINTENENCE RADIO",
+    "uo": "N405",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1821" },
+    "libelle": "SERVICE PRODUCTION INFORMATIQUE",
+    "uo": "N438",
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1822" },
+    "libelle": "SERVICE EMETTEURS RADIO",
+    "uo": "N486",
+    "direction": { "$oid": "65ddb159a1f6205e971d17fc" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1823" },
+    "libelle": "SERVICE DE PRORAMMATION  RADIO AUX CHAINES CORANIQUE RADIO ET TV",
+    "uo": "N4098",
+    "direction": { "$oid": "65ddb159a1f6205e971d17fd" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1824" },
+    "libelle": "SERVICE ADMINISTRATION DES VENTES A LA REGIE PUBLICITAIRE",
+    "uo": "N4100",
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1825" },
+    "libelle": "SERVICE MOYENS GENEREAUX ET SYSTEME QUALITE A LA REGIE PUBLICITAIRE",
+    "uo": "N4015",
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1826" },
+    "libelle": "SERVICE PLANNING A LA REGIE PUBLICITAIRE",
+    "uo": "N4099",
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1827" },
+    "libelle": "SERVICE PORTEFEUILLE CLIENTELE A LA REGIE PUBLICITAIRE",
+    "uo": "N4096",
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1828" },
+    "libelle": "SERVICE TECHNIQUE",
+    "uo": "N4016",
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1829" },
+    "libelle": "SERVICE DE LA PRODUCTION ET DES PROGRAMMES A LA RADIO AMAZIGH",
+    "uo": "N498",
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182a" },
+    "libelle": "SERVICE DE LA PROGRAMMATION PAD ET DE LA GESTION D’ANTENNE A LA RADIO AMAZIGH",
+    "uo": "N497",
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182b" },
+    "libelle": "SERVICE GESTION D'ANTENNE  A LA CHAINE TV AMAZIGH",
+    "uo": "N499",
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18eb" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182c" },
+    "libelle": "SERVICE JOURNAUX TELEVISE ET MAGAZINE D'INFORMATION",
+    "uo": "N4095",
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18cb" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182d" },
+    "libelle": "SERVICE PLANNING ET MOYENS DE PRODUCTION A LA CHAINE TV AMAZIGH",
+    "uo": "N4097",
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182e" },
+    "libelle": "SERVICE DE LA PRODUCTION  MUSIQUE ET THEATRE",
+    "uo": "N459",
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d182f" },
+    "libelle": "SERVICE DE LA PRODUCTION INTERNATIONALE",
+    "uo": "N462",
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18bb" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1830" },
+    "libelle": "SERVICE DE LA PROGRAMATION ARABE",
+    "uo": "N463",
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18f7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1831" },
+    "libelle": "SERVICE DE LA PROGRAMMATION INTERNATIONALE",
+    "uo": "N466",
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d18fb" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1832" },
+    "libelle": "SERVICE EN CHARGE DE LA PRODUCTION ARABE",
+    "uo": "N464",
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18e3" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1833" },
+    "libelle": "SERVICE DES MOYENS DE CONTRIBUTION MOBILE",
+    "uo": "N410",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18cf" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1834" },
+    "libelle": "SERVICE DES MOYENS DE PRODUCTION TV MOBILES",
+    "uo": "N4101",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18d3" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1835" },
+    "libelle": "SERVICE ECLAIRAGE ET MACHINERIE",
+    "uo": "N411",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18df" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1836" },
+    "libelle": "SERVICE EQUIPEMENTS ET OPERATION MOBILES TV",
+    "uo": "N409",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18c7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1837" },
+    "libelle": "SERVICE EXPLOITATION RADIO",
+    "uo": "N408",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1838" },
+    "libelle": "SERVICE EXPLOITATION TV",
+    "uo": "N407",
+    "direction": { "$oid": "65ddb159a1f6205e971d1807" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1839" },
+    "libelle": "SERVICE COORDINATION TECHNIQUE RADIO",
+    "uo": "N414",
+    "direction": { "$oid": "65ddb159a1f6205e971d1808" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18ab" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183a" },
+    "libelle": "SERVICE COORDINATION TECHNIQUE TV",
+    "uo": "N413",
+    "direction": { "$oid": "65ddb159a1f6205e971d1808" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183b" },
+    "libelle": "SERVICE ETUDES",
+    "uo": "N403",
+    "direction": { "$oid": "65ddb159a1f6205e971d1808" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183c" },
+    "libelle": "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT",
+    "uo": "N404",
+    "direction": { "$oid": "65ddb159a1f6205e971d1808" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18ef" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183d" },
+    "libelle": "SERVICE DES ARCHIVES TV",
+    "uo": "N4025",
+    "direction": { "$oid": "65ddb159a1f6205e971d1809" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183e" },
+    "libelle": "SERVICE NUMERISATION",
+    "uo": "N4026",
+    "direction": { "$oid": "65ddb159a1f6205e971d1809" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d183f" },
+    "libelle": "SERVICE ADMINISTRATION ET SUIVI DES MARCHES",
+    "uo": "N418",
+    "direction": { "$oid": "65ddb159a1f6205e971d180b" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18a7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1840" },
+    "libelle": "SERVICE DE LA GPEC ET DE LA FROMATION",
+    "uo": "N316",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1841" },
+    "libelle": "SERVICE DES PRESTATIONS",
+    "uo": "N4017",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1842" },
+    "libelle": "SERVICE DU PERSONNEL",
+    "uo": "N429",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1843" },
+    "libelle": "SERVICE GESTION DE LA PAIE",
+    "uo": "N428",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1844" },
+    "libelle": "SERVICE RECRUTEMENT ET GESTION DE CARRIERE",
+    "uo": "N315",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1845" },
+    "libelle": "SERVICE REGLEMENTATION",
+    "uo": "N431",
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1846" },
+    "libelle": "SERVICE ACHAT LOCAL ET MOYENS GENERAUX",
+    "uo": "N417",
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1847" },
+    "libelle": "SERVICE DE LA GESTION DES DEPLACEMENTS ET DU PARC AUTO",
+    "uo": "N425",
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1848" },
+    "libelle": "SERVICE INVENTAIRE",
+    "uo": "N415",
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1849" },
+    "libelle": "SERVICE PARC AUTO",
+    "uo": "N424",
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184a" },
+    "libelle": "SERVICE SECURITE ET MAINTENANCE DES LOCAUX",
+    "uo": "N419",
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184b" },
+    "libelle": "SERVICE DE CONTROLE ET DE DISTRIBUTION",
+    "uo": "N471",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18af" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184c" },
+    "libelle": "SERVICE DE L'ENERGIE",
+    "uo": "N473",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184d" },
+    "libelle": "SERVICE DE L'EQUIPEMENT",
+    "uo": "N475",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18bf" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184e" },
+    "libelle": "SERVICE DES FAISCEAUX HERTZIENS",
+    "uo": "N470",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d184f" },
+    "libelle": "SERVICE DES INFRASTRUCTURES",
+    "uo": "N474",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1850" },
+    "libelle": "SERVICE DES STATIONS TERRIENNES",
+    "uo": "N469",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1851" },
+    "libelle": "SERVICE ETUDES ET PLANIFICATION",
+    "uo": "N4076",
+    "direction": { "$oid": "65ddb159a1f6205e971d180e" },
+    "chefService": { "$oid": "65ddb15da1f6205e971d18e7" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1852" },
+    "libelle": "SERVICE REGIONAL  CASABLANCA",
+    "uo": "N4029",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1853" },
+    "libelle": "SERVICE REGIONAL  LAAYOUNE",
+    "uo": "N480",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1854" },
+    "libelle": "SERVICE REGIONAL  RABAT",
+    "uo": "N485",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d190b" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1855" },
+    "libelle": "SERVICE REGIONAL AGADIR",
+    "uo": "N477",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1856" },
+    "libelle": "SERVICE REGIONAL AL HOUCEIMA",
+    "uo": "N482",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d1903" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1857" },
+    "libelle": "SERVICE REGIONAL FES-MEKNES",
+    "uo": "N479",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1858" },
+    "libelle": "SERVICE REGIONAL MARAKECH",
+    "uo": "N483",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d1907" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1859" },
+    "libelle": "SERVICE REGIONAL OUJDA",
+    "uo": "N4028",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185a" },
+    "libelle": "SERVICE REGIONAL TANGER",
+    "uo": "N481",
+    "direction": { "$oid": "65ddb159a1f6205e971d180f" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185b" },
+    "libelle": "SERVICE ADMINISTRATION DES VENTES",
+    "uo": "N420",
+    "direction": { "$oid": "65ddb159a1f6205e971d1812" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185c" },
+    "libelle": "SERVICE COMPTABILITE",
+    "uo": "N422",
+    "direction": { "$oid": "65ddb159a1f6205e971d1812" },
+    "chefService": { "$oid": "65ddb15ca1f6205e971d18b3" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185d" },
+    "libelle": "SERVICE RECOUVREMENT",
+    "uo": "N421",
+    "direction": { "$oid": "65ddb159a1f6205e971d1812" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d18ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185e" },
+    "libelle": "SERVICE TRESORIE",
+    "uo": "N423",
+    "direction": { "$oid": "65ddb159a1f6205e971d1812" },
+    "chefService": { "$oid": "65ddb15ea1f6205e971d190f" }
+  }
 ]

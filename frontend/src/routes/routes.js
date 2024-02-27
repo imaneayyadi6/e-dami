@@ -1,4 +1,4 @@
-import { DashboardPage, RedirectPage } from "../pages";
+import { ChangePassword, DashboardPage, RedirectPage } from "../pages";
 import NotificationsPage from "../pages/NotificationsPage";
 import ProfilePage from "../pages/ProfilePage";
 import {
@@ -65,6 +65,14 @@ const routes = [
     path: "/profile",
     name: "Profile",
     element: <ProfilePage />,
+    exact: true,
+    roles: ["crt", "dmr", "sig"],
+  },
+
+  {
+    path: "/changer-mdp",
+    name: "Chnager le mot de passe",
+    element: <ChangePassword />,
     exact: true,
     roles: ["crt", "dmr", "sig"],
   },

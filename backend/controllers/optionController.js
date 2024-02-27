@@ -21,7 +21,7 @@ export const getOptions = asyncHandler(async (req, res) => {
 // @access  private
 export const getOptionsCrtOp = asyncHandler(async (req, res) => {
   const options = await Option.find({
-    createur: req.user.id
+    createur: req.user.id,
   })
     .populate("service")
     .populate("proprietaireDeDonnees")
@@ -36,7 +36,7 @@ export const getOptionsCrtOp = asyncHandler(async (req, res) => {
 export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, sousCategorie: sousCategorieId } = req.query;
 
-  const query = {}
+  const query = {};
   if (sousCategorieId) {
     const sousCategorie = await SousCategorie.findById(sousCategorieId);
     if (sousCategorie) query.sousCategorie = sousCategorieId;
@@ -47,13 +47,13 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   }
 
   const options = await Option.find({
-    ...query
+    ...query,
   })
     .populate({
       path: "sousCategorie",
       populate: {
         path: "categorie",
-      }
+      },
     })
     .limit(limit * 1)
     .skip((page - 1) * limit)
@@ -73,7 +73,6 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   });
 
   res.json(options);
-
 });
 
 // @desc    Recuperer une option par ID
@@ -84,17 +83,16 @@ export const getOptionByID = asyncHandler(async (req, res) => {
   if (option) {
     option = JSON.parse(JSON.stringify(option));
     const optionService = await Service.findById(option.service);
-    const optionDirection = await Direction.findById(optionService.direction)
-    option.dirLibelle = optionDirection.libelle;
-
+    if (optionService) {
+      const optionDirection = await Direction.findById(optionService.direction);
+      option.dirLibelle = optionDirection.libelle;
+    }
     res.json(option);
   } else {
     res.status(404);
     throw new Error("option introuvable !");
   }
 });
-
-
 
 // @desc    Creer une option
 // @route   POST /api/options
@@ -241,10 +239,6 @@ export const deleteOption = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
 // @desc    Creer une option
 // @route   POST /api/options/crtop
 // @access  private
@@ -372,8 +366,7 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
         service: updatedOption.service,
         signataires: updatedOption.signataires,
       });
-    }
-    else {
+    } else {
       res.status(404);
       throw new Error("vous n'avez pas le droit de  modifier cette option");
     }
@@ -399,13 +392,11 @@ export const deleteOptionCrtOp = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("option introuvable !");
       }
-    }
-    else {
+    } else {
       res.status(404);
       throw new Error("vous n'avez pas le droit de supprimer cette option");
     }
-  }
-  else {
+  } else {
     res.status(404);
     throw new Error("option introuvable !");
   }

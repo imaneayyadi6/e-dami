@@ -12,6 +12,10 @@ const sousCategorieSchema = Schema(
       ref: "categorie",
       required: [true, "veuillez entrer une categorie"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

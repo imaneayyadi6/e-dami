@@ -22,18 +22,11 @@ const router = express.Router();
 router.route("/login").post(authUser);
 router.route("/validatetoken").post(validateTokenUser);
 
-
-
-
-
 router.route("/register").post(registerUser);
 router.route("/setpassword").post(setPasswordUser);
 
-
 router.route("/changepassword").post(changePasswordUser);
 router.route("/new/setpassword").post(setNewPasswordUser);
-
-
 
 router.route("/directeurs").get(protect, createur, getDirecteurs);
 router.route("/chefdeservices").get(protect, createur, getChefServices);
@@ -49,6 +42,6 @@ router
   .delete(protect, createur, deleteUser);
 
 router.route("/infos/:id").put(protect, createur, updateUserInfo);
-router.route("/password/:id").put(protect, createur, updateUserPassword);
+router.route("/password/:id").put(protect, updateUserPassword);
 
 export default router;

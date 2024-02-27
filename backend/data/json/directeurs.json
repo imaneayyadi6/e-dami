@@ -1,814 +1,585 @@
 [
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c34b"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "DAOUDI",
-        "prenom": "MOURAD",
-        "matricule": 1160607,
-        "civilite": "M",
-        "fonction": "DIRECTEUR ADJOINT CHARGE DES BATIMENTS ET DES INFRASTRUCTURES",
-        "isDirecteur": true,
-        "email": "M.DAOUDI@snrt.ma",
-        "password": "$2a$10$mD5O5OFcbcmU4/ZuoDiYMO2guA.KyEkICUbuf5xhyIZv9liL2FH2S",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c34c"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f9"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c34d"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "TOUIH",
-        "prenom": "KAMAL",
-        "matricule": 1286892,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DES ACHATS",
-        "isDirecteur": true,
-        "email": "K.TOUIH@snrt.ma",
-        "password": "$2a$10$AbJvHPUd17k03wmdTpV5eOmZiKDIsnPbHtasBmNBq4s5f0y8oqsoG",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c34e"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c34f"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "SBAI",
-        "prenom": "KARIM",
-        "matricule": 1290931,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DE LA COMMUNICATION ET DES RELATIONS INSTITUTIONNELLES",
-        "isDirecteur": true,
-        "email": "k.sbai@snrt.ma",
-        "password": "$2a$10$imUzgjJuCty7Px./dJPHCOCpVYG6ny0viPdBYZElKPOXD1fE3lUcG",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c350"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ef"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c351"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "DRISSI",
-        "prenom": "SIDI YASSINE",
-        "matricule": 1425468,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DE L'INFORMATION TV",
-        "isDirecteur": true,
-        "email": "Y.DRISSI@snrt.ma",
-        "password": "$2a$10$jDsIpQYpEE57P.Wa0Ycym.JeSy5dJzlE5Z34ayOCgBmg4crfWotC.",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c352"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c353"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BENBRAHIM",
-        "prenom": "SALIMA",
-        "matricule": 1425502,
-        "civilite": "F",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DU CONTROLE ET DE LA PLANIFICATION DES MOYENS",
-        "isDirecteur": true,
-        "email": "S.BENBRAHIM@snrt.ma",
-        "password": "$2a$10$0.HCY6BSWFeUWLJQPekZPuviWgMn1tapwIhqPQgA1izJZU3jTK5jy",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c354"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c355"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "ACHEBOUR",
-        "prenom": "SAAD",
-        "matricule": 1425707,
-        "civilite": "M",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DE LA RÉMUNÉRATION ET DE LA GESTION ADMINISTRATIVE DU PERSONNEL ",
-        "isDirecteur": true,
-        "email": "S.ACHEBOUR@snrt.ma",
-        "password": "$2a$10$NmTAw.WQtOn7BQUBwnxQ/ONSqkf1zonWMbm.bnBuB.rD2fjU6ipkW",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c356"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c357"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "EDDAH",
-        "prenom": "MOHAMED LARHDAF",
-        "matricule": 1425861,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CENTRAL DE LA CHAINE TV LAAYOUNE",
-        "isDirecteur": true,
-        "email": "M.EDDAH@snrt.ma",
-        "password": "$2a$10$BWFzWfOhHReT1ohoGtPvWOqlI75EFS/oJzvZxDfiEE20YsxAc4g.G",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c358"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ec"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c359"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "HRAOUI",
-        "prenom": "ILHAM",
-        "matricule": 1425890,
-        "civilite": "F",
-        "fonction": "DIRECTEUR DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
-        "isDirecteur": true,
-        "email": "I.HRAOUI@snrt.ma",
-        "password": "$2a$10$UwJQp7r3NNDJvT4zW8KZxeJmN5a1eyGZRLz7FG9VrpIL754cjMVT6",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ea4ba3913a5ef4c35a"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2eb"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ea4ba3913a5ef4c35b"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "MAMAD",
-        "prenom": "MOHAMED",
-        "matricule": 1426168,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CENTRAL CHARGE DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
-        "isDirecteur": true,
-        "email": "M.MAMAD@snrt.ma",
-        "password": "$2a$10$eRW3ax0KXNvup64ACweJDuhYfBcVk89nWNv1EZs5AeGAOuePmXDPy",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c35c"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ed"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c35d"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "MOUADDA",
-        "prenom": "ASMAA",
-        "matricule": 1426172,
-        "civilite": "F",
-        "fonction": "DIRECTEUR DES OFFRES ET OPTIMISATION DES REVENUS",
-        "isDirecteur": true,
-        "email": "A.MOUADDA@snrt.ma",
-        "password": "$2a$10$fP2TuM7DYyCmVSV53v3eouB.ZJRvlF7ooEdu9rd/hbTh10xjbD2ne",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c35e"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ff"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c35f"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BENMAIZA",
-        "prenom": "MOHAMMED EL MAHDI",
-        "matricule": 1426233,
-        "civilite": "M",
-        "fonction": "DIRECTEUR COMMERCIAL",
-        "isDirecteur": true,
-        "email": "M.BENMAIZA@snrt.ma",
-        "password": "$2a$10$mWYYEQi5H3PGQnmeRZLIXuSnZBtqgWF0QCD2CMijQLIODJyHokeUu",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c360"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fd"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c361"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "SEMMAR",
-        "prenom": "ASSIA",
-        "matricule": 1426246,
-        "civilite": "F",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
-        "isDirecteur": true,
-        "email": "A.SEMMAR@snrt.ma",
-        "password": "$2a$10$qZFhwPEF7nAjkyLNPag.mOu2X4gHJalodwpWqBQut0whKOf59mMjG",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c362"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c363"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "HACHLAF",
-        "prenom": "ZAKARIA",
-        "matricule": 1426313,
-        "civilite": "M",
-        "fonction": "DIRECTEUR JURIDIQUE",
-        "isDirecteur": true,
-        "email": "Z.HACHLAF@snrt.ma",
-        "password": "$2a$10$yae5mGvrkuq4xd2RkiGI.OBCyPwL1OolQH2Xemqe2h/6xDN.bc7LW",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c364"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ee"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c365"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "EL HARRAJ",
-        "prenom": "ABDESSELAM",
-        "matricule": 1426345,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
-        "isDirecteur": true,
-        "email": "a.elharraj@snrt.ma",
-        "password": "$2a$10$9vLTeRY9pqTHBveICJENRODXQpa12Zfn8oAWCRjWzC0bx1fIHtcvC",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c366"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c367"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "MOUSSADIK",
-        "prenom": "BADR",
-        "matricule": 2065558,
-        "civilite": "M",
-        "fonction": "DIRECTEUR FINANCIER",
-        "isDirecteur": true,
-        "email": "b.moussadik@snrt.ma",
-        "password": "$2a$10$9FwPm8Ve9tYIoYe.QQ2iI.0c5UTIPl2e8HJ4AJj9ODNgUnvJQqTAi",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c368"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2fe"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c369"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BEDARI",
-        "prenom": "MOHAMED",
-        "matricule": 251113,
-        "civilite": "M",
-        "fonction": "DIRECTEUR ADJOINT CHARGE DE  CHARGE DE LA REALISATION ET DE L'HABILLAGE DES PROGRAMMES D'INFORMATION D'AL AOULA (JT,DEBAT,SPECIAUX)",
-        "isDirecteur": true,
-        "email": "M.BEDARI@snrt.ma",
-        "password": "$2a$10$3uB69cbrg/LFkmJvLPwi0OSrRyLVxvJgrD9le2tLZlngLgsEqXrHi",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c36a"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c36b"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "KHALLOUQI",
-        "prenom": "EL ALAMI",
-        "matricule": 253181,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CENTRAL DE LA PRODUCTION ET DE L’ANTENNE",
-        "isDirecteur": true,
-        "email": "E.KHALLOUQI@snrt.ma",
-        "password": "$2a$10$PXlbJG060/buRdC2YEgl6uqrBfWBwcRdZG5ZtOzAcoLZ7VvPKCGf.",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c36c"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e7"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c36d"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "LICHIOUI",
-        "prenom": "AHMED",
-        "matricule": 271151,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DE LA TELEDIFFUSION",
-        "isDirecteur": true,
-        "email": "A.LICHIOUI@snrt.ma",
-        "password": "$2a$10$4HWedUbvaehWnYO3PHpNq.pSWXfVUrJklKl/tCq0e7XF.sKp11vGO",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c36e"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c36f"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "LAMBARAA",
-        "prenom": "ABDELLATIF",
-        "matricule": 314649,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DE L'INFORMATION RADIO",
-        "isDirecteur": true,
-        "email": "A.LAMBARAA@snrt.ma",
-        "password": "$2a$10$f0X55Mzpqju/q2FfMjUmyOWDs3hKu38dDh81T2uWTEwM1LdW6/DRG",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c370"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e5"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c371"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "KHELLA",
-        "prenom": "ALI",
-        "matricule": 314796,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO ",
-        "isDirecteur": true,
-        "email": "A.KHELLA@snrt.ma",
-        "password": "$2a$10$rgWXqGc4b9O5SIWC9QtXY.iQrVekjZ3hka8wY0cYCAFJ69KUNosay",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352eb4ba3913a5ef4c372"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352eb4ba3913a5ef4c373"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BENDAOUD",
-        "prenom": "SABAH",
-        "matricule": 321666,
-        "civilite": "F",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DES RADIOS REGIONALES",
-        "isDirecteur": true,
-        "email": "S.BENDAOUD@snrt.ma",
-        "password": "$2a$10$RnJc/QDAayRnDI0xP.INzekW28eIwSFZMcNY2W279x8JxnKQKPWbm",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c374"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f0"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c375"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BOUTABSSIL",
-        "prenom": "HASSAN",
-        "matricule": 327142,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CENTRAL CHARGÉ DE LA CHAÎNE ARRYADIA",
-        "isDirecteur": true,
-        "email": "H.BOUTABSSIL@snrt.ma",
-        "password": "$2a$10$k4ydjaYySz2SUrl6NzmvT.JwQluR33u2LDIPYi0jQZjFo9/JuocoG",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c376"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2ea"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c377"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "MESDOURI",
-        "prenom": "HAFIDA",
-        "matricule": 330297,
-        "civilite": "F",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
-        "isDirecteur": true,
-        "email": "H.MESDOURI@snrt.ma",
-        "password": "$2a$10$xAguZn2w5jub8c0U/PqhW.uT2emgxGe35GZIZKcnpDMoZo7A4zrKa",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c378"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f4"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c379"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "BELLAZ",
-        "prenom": "ABDELGHANI",
-        "matricule": 330694,
-        "civilite": "M",
-        "fonction": "DIRECTEUR ADJOINT EN CHARGE DE L'EXPLOITATION",
-        "isDirecteur": true,
-        "email": "A.BELLAZ@snrt.ma",
-        "password": "$2a$10$VJdzKj7Ng/o9b72xKR00be.XcNg/o.b0.gDxUJnEDNfwOFXeOxwqO",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c37a"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e2"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c37b"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "IDRISSI",
-        "prenom": "DRISS",
-        "matricule": 350965,
-        "civilite": "M",
-        "fonction": "DIRECTEUR PRODUCTION AL AOULA",
-        "isDirecteur": true,
-        "email": "D.IDRISSI@snrt.ma",
-        "password": "$2a$10$JM8Opp0bgLDMisStv.k8muspa6f3BA9dq1/wJ4SBWnEXgcjL26On.",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c37c"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c303"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c37d"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "SABIR",
-        "prenom": "RAHAL",
-        "matricule": 351619,
-        "civilite": "M",
-        "fonction": "DIRECTEUR ADJOINT DES SITES",
-        "isDirecteur": true,
-        "email": "R.SABIR@snrt.ma",
-        "password": "$2a$10$SyKJdH088p7V6RBdLHs5oOCCiirM5ENQXLTNMzXKzW6T0UhcOjMFm",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c37e"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e8"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c37f"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "OUBAHA",
-        "prenom": "MOHAMMED",
-        "matricule": 351712,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CHARGE DE LA PRODUCTION DES MAGAZINES D'INFORMATION",
-        "isDirecteur": true,
-        "email": "M.OUBAHA@snrt.ma",
-        "password": "$2a$10$Q/T.Q8fKqYOpS5mIBfDUreXfbV5L/aApCy0RPg06YN12Np2L/7t6K",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c380"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c381"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "ABDENNOUR",
-        "prenom": "MOHAMED",
-        "matricule": 879572,
-        "civilite": "M",
-        "fonction": "DIRECTEUR DES RELATIONS AVEC LES ORGANISMES INTERNATIONAUX",
-        "isDirecteur": true,
-        "email": "M.ABDENNOUR@snrt.ma",
-        "password": "$2a$10$XzyivnEcGIEcQu3IKUcjWeM4hAVw0gHzpP1lsVa.UgG.UMy.TNuOu",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c382"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2f1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "65c352ec4ba3913a5ef4c383"
-        },
-        "isActive": true,
-        "firstTimeLogin": true,
-        "nom": "ERRAMI",
-        "prenom": "OMAR",
-        "matricule": 888910,
-        "civilite": "M",
-        "fonction": "DIRECTEUR CENTRAL DE LA PRODUCTION ET DE L’ANTENNE",
-        "isDirecteur": true,
-        "email": "O.ERRAMI@snrt.ma",
-        "password": "$2a$10$gb6hU8GCq8rDHJP.shDJR.YpFcd2usVi2EPc7WG8aCKZ/sCJNbG7C",
-        "roles": [
-            {
-                "role": {
-                    "$oid": "65c34e0c4d1e2f50c262a139"
-                },
-                "_id": {
-                    "$oid": "65c352ec4ba3913a5ef4c384"
-                }
-            }
-        ],
-        "direction": {
-            "$oid": "65c352ea4ba3913a5ef4c2e7"
-        }
-    }
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d185f" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "DAOUDI",
+    "prenom": "MOURAD",
+    "matricule": 1160607,
+    "civilite": "M",
+    "fonction": "DIRECTEUR ADJOINT CHARGE DES BATIMENTS ET DES INFRASTRUCTURES",
+    "isDirecteur": true,
+    "email": "M.DAOUDI@snrt.ma",
+    "password": "$2a$10$PLr1sSfFtIhJ04jreQTQ.O18NmjQEFwqs1m2G0.f2VujRWEl/J82y",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb159a1f6205e971d1860" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb159a1f6205e971d1861" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d180d" }
+  },
+  null,
+  {
+    "_id": { "$oid": "65ddb159a1f6205e971d1862" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "SABIR",
+    "prenom": "RAHAL",
+    "matricule": 351619,
+    "civilite": "M",
+    "fonction": "DIRECTEUR ADJOINT DES SITES",
+    "isDirecteur": true,
+    "email": "R.SABIR@snrt.ma",
+    "password": "$2a$10$3ng9Q0x5iRvKN27mF4lH6eGJlBIijnpxPRUF.14gvPAM2z/C5i8le",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1863" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1864" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17fc" }
+  },
+  null,
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1865" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "ACHEBOUR",
+    "prenom": "SAAD",
+    "matricule": 1425707,
+    "civilite": "M",
+    "fonction": "DIRECTEUR ADJOINT EN CHARGE DE LA RÉMUNÉRATION ET DE LA GESTION ADMINISTRATIVE DU PERSONNEL ",
+    "isDirecteur": true,
+    "email": "S.ACHEBOUR@snrt.ma",
+    "password": "$2a$10$zWfFQ.nBO.bOt4q7eWxvNuddhfocXT5OQY27PjWJ.sHWqDCDYDPiq",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1866" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1867" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d180c" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1868" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "BELLAZ",
+    "prenom": "ABDELGHANI",
+    "matricule": 330694,
+    "civilite": "M",
+    "fonction": "DIRECTEUR ADJOINT EN CHARGE DE L'EXPLOITATION",
+    "isDirecteur": true,
+    "email": "A.BELLAZ@snrt.ma",
+    "password": "$2a$10$ubaRbssN08M.i.y0CxdXO.8bZ/ZJodpMD4GPM1GgEw.SpCC2BR9kS",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1869" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d186a" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17f6" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d186b" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "MESDOURI",
+    "prenom": "HAFIDA",
+    "matricule": 330297,
+    "civilite": "F",
+    "fonction": "DIRECTEUR ADJOINT EN CHARGE DES PLATEFORMES ET EXPLOITATION DES ARCHIVES AUDIOVISUELLES",
+    "isDirecteur": true,
+    "email": "H.MESDOURI@snrt.ma",
+    "password": "$2a$10$TSw4zmBLw.hc5IvvTScSIex1Vz/rfgfIOQ2XhY3uiQdxZAFNlPaf6",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d186c" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d186d" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1808" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d186e" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "BENDAOUD",
+    "prenom": "SABAH",
+    "matricule": 321666,
+    "civilite": "F",
+    "fonction": "DIRECTEUR ADJOINT EN CHARGE DES RADIOS REGIONALES",
+    "isDirecteur": true,
+    "email": "S.BENDAOUD@snrt.ma",
+    "password": "$2a$10$bbQOA0sZ6OrWt5Vi5OISdOTj43zCVwSKms4GBj30cU1WR4XWNvt0q",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d186f" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1870" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1871" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "BENBRAHIM",
+    "prenom": "SALIMA",
+    "matricule": 1425502,
+    "civilite": "F",
+    "fonction": "DIRECTEUR ADJOINT EN CHARGE DU CONTROLE ET DE LA PLANIFICATION DES MOYENS",
+    "isDirecteur": true,
+    "email": "S.BENBRAHIM@snrt.ma",
+    "password": "$2a$10$faAW95A9uRxQIALldwx92etTQH.WEmTY0/1BqR189HEeSi4Snak92",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1872" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1873" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17fb" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1874" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "BOUTABSSIL",
+    "prenom": "HASSAN",
+    "matricule": 327142,
+    "civilite": "M",
+    "fonction": "DIRECTEUR CENTRAL CHARGÉ DE LA CHAÎNE ARRYADIA",
+    "isDirecteur": true,
+    "email": "H.BOUTABSSIL@snrt.ma",
+    "password": "$2a$10$n/t1zhEzyafIVNCFcneTGepI8l37GtwyEk.me293dW5/4EUVmv40m",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1875" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1876" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17fe" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1877" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "ERRAMI",
+    "prenom": "OMAR",
+    "matricule": 888910,
+    "civilite": "M",
+    "fonction": "DIRECTEUR CENTRAL DE LA PRODUCTION ET DE L’ANTENNE",
+    "isDirecteur": true,
+    "email": "O.ERRAMI@snrt.ma",
+    "password": "$2a$10$tfof1GVyA0VUNquALjj0zOt9PxAwh5nKH9YkIWdhA0vs2KjQCpb0u",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1878" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1879" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17fb" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d187a" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "OUBAHA",
+    "prenom": "MOHAMMED",
+    "matricule": 351712,
+    "civilite": "M",
+    "fonction": "DIRECTEUR CHARGE DE LA PRODUCTION DES MAGAZINES D'INFORMATION",
+    "isDirecteur": true,
+    "email": "M.OUBAHA@snrt.ma",
+    "password": "$2a$10$Vd9XxGnDacUiq/lBFfOfW.KV32jUa.zSDSxbaQPjcjYTdA7Y4kpXe",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d187b" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d187c" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17f5" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d187d" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "TALEB ALI",
+    "prenom": "ABDELLAH",
+    "matricule": 351421,
+    "civilite": "M",
+    "fonction": "DIRECTEUR CHARGÉ DES PROGRAMMES DES CHAINES AMAZIGH : RADIO ET TELEVISION",
+    "isDirecteur": true,
+    "email": "a.talebali@snrt.ma",
+    "password": "$2a$10$yWz54rT8eyRL34e3hwWh9uShHP/P6Q7crAwXIWE1G7UsV4BS.N5qW",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d187e" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d187f" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1801" }
+  },
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1880" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "BENMAIZA",
+    "prenom": "MOHAMMED EL MAHDI",
+    "matricule": 1426233,
+    "civilite": "M",
+    "fonction": "DIRECTEUR COMMERCIAL",
+    "isDirecteur": true,
+    "email": "M.BENMAIZA@snrt.ma",
+    "password": "$2a$10$3wbivgyI5nilQ87DnFl0ausMn00hmY5MGDycrmP4hJHA0pUFDCnNu",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1881" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15aa1f6205e971d1882" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1811" }
+  },
+  null,
+  {
+    "_id": { "$oid": "65ddb15aa1f6205e971d1883" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "SBAI",
+    "prenom": "KARIM",
+    "matricule": 1290931,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DE LA COMMUNICATION ET DES RELATIONS INSTITUTIONNELLES",
+    "isDirecteur": true,
+    "email": "k.sbai@snrt.ma",
+    "password": "$2a$10$4X56//mMFo52jbvChRDDZud2j9bH0GC3YGtnegZxCD.9XN6XjpufO",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1884" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1885" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1803" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d1886" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "KHELLA",
+    "prenom": "ALI",
+    "matricule": 314796,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DE LA PRODUCTION ET DE LA PROGRAMMATION RADIO ",
+    "isDirecteur": true,
+    "email": "A.KHELLA@snrt.ma",
+    "password": "$2a$10$2Pq3lgwwpnhgzxUijVVu7O78nbUcOXXKIsTuTZgULLdNyCdUZE4jK",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1887" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1888" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1804" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d1889" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "HRAOUI",
+    "prenom": "ILHAM",
+    "matricule": 1425890,
+    "civilite": "F",
+    "fonction": "DIRECTEUR DE LA REGIE PUBLICITAIRE ET DES SOLUTIONS DIGITALES",
+    "isDirecteur": true,
+    "email": "I.HRAOUI@snrt.ma",
+    "password": "$2a$10$bF10V6TQPILOOVKAw377BO62uFD4O5Ik2fMcJGXBKbULLR2EykkAS",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d188a" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d188b" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17ff" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d188c" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "LAMBARAA",
+    "prenom": "ABDELLATIF",
+    "matricule": 314649,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DE L'INFORMATION RADIO",
+    "isDirecteur": true,
+    "email": "A.LAMBARAA@snrt.ma",
+    "password": "$2a$10$T2Oix/Px0y2iXSjfcYGCzejqypGbWSb1O21250KoXIqpxNLUt1SZW",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d188d" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d188e" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17f9" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d188f" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "DRISSI",
+    "prenom": "SIDI YASSINE",
+    "matricule": 1425468,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DE L'INFORMATION TV",
+    "isDirecteur": true,
+    "email": "Y.DRISSI@snrt.ma",
+    "password": "$2a$10$y9o3g5tlVdtqLiCqDig3AOPXZnX93uis0EZ.Ne2FGH.WYU3J3hf3a",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1890" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1891" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17f5" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d1892" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "TOUIH",
+    "prenom": "KAMAL",
+    "matricule": 1286892,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DES ACHATS",
+    "isDirecteur": true,
+    "email": "K.TOUIH@snrt.ma",
+    "password": "$2a$10$Ccog1feEcx3FtS/yRCRMqOu9D03g6qHAMp8.jTJ6aJRLSp2jDVvNW",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1893" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1894" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d180b" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d1895" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "EL HARRAJ",
+    "prenom": "ABDESSELAM",
+    "matricule": 1426345,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DES INFRASTRUCTURES ET DES SYSTEMES D'INFORMATION",
+    "isDirecteur": true,
+    "email": "a.elharraj@snrt.ma",
+    "password": "$2a$10$knZhIUqKlD8FZB.dza.qWOR6rKfW3Qvj/XPhqHZb3y6riaeLCVXTq",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1896" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1897" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d17f8" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d1898" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "MOUADDA",
+    "prenom": "ASMAA",
+    "matricule": 1426172,
+    "civilite": "F",
+    "fonction": "DIRECTEUR DES OFFRES ET OPTIMISATION DES REVENUS",
+    "isDirecteur": true,
+    "email": "A.MOUADDA@snrt.ma",
+    "password": "$2a$10$5/h9hyJbkQHsy2ANw2IjFeaIQVpWFrqiyLFKPUeZZL0FEEp8wAaxG",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d1899" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d189a" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1813" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d189b" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "ABDENNOUR",
+    "prenom": "MOHAMED",
+    "matricule": 879572,
+    "civilite": "M",
+    "fonction": "DIRECTEUR DES RELATIONS AVEC LES ORGANISMES INTERNATIONAUX",
+    "isDirecteur": true,
+    "email": "M.ABDENNOUR@snrt.ma",
+    "password": "$2a$10$fhmcn6XoXcQSzG/lBzFCIOYZX8pY.q57gjg6xp1O.xc1aurLPu.1S",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d189c" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d189d" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1805" }
+  },
+  null,
+  null,
+  null,
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d189e" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "MOUSSADIK",
+    "prenom": "BADR",
+    "matricule": 2065558,
+    "civilite": "M",
+    "fonction": "DIRECTEUR FINANCIER",
+    "isDirecteur": true,
+    "email": "b.moussadik@snrt.ma",
+    "password": "$2a$10$PEmRIuzNgJe0f/BSRyDuluGWvMa5p6d7rMqrpt6Knz3X/VstCY3QK",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d189f" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ba1f6205e971d18a0" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1812" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ba1f6205e971d18a1" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "EL MAAROUFI",
+    "prenom": "LABIB",
+    "matricule": 758460,
+    "civilite": "M",
+    "fonction": "DIRECTEUR JURIDIQUE, DIRECTUR DES RESSOURCES HUMAINES PAR INTERIM",
+    "isDirecteur": true,
+    "email": "L.elmaaroufi@snrt.ma",
+    "password": "$2a$10$JmAOw6w6up9IstieQproR.dcGN5IG8dCx0h7Hb5132gJzCI/mRTdi",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ca1f6205e971d18a2" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ca1f6205e971d18a3" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1802" }
+  },
+  {
+    "_id": { "$oid": "65ddb15ca1f6205e971d18a4" },
+    "isActive": true,
+    "firstTimeLogin": true,
+    "nom": "IDRISSI",
+    "prenom": "DRISS",
+    "matricule": 350965,
+    "civilite": "M",
+    "fonction": "DIRECTEUR PRODUCTION AL AOULA",
+    "isDirecteur": true,
+    "email": "D.IDRISSI@snrt.ma",
+    "password": "$2a$10$3IU6iwtIVuEMj2tuaIs9W.ifOemUJAv7kYkNFGxqfFeYPe1MStusy",
+    "roles": [
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a139" },
+        "_id": { "$oid": "65ddb15ca1f6205e971d18a5" }
+      },
+      {
+        "role": { "$oid": "65c34e0c4d1e2f50c262a138" },
+        "_id": { "$oid": "65ddb15ca1f6205e971d18a6" }
+      }
+    ],
+    "direction": { "$oid": "65ddb159a1f6205e971d1817" }
+  },
+  null
 ]
