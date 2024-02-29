@@ -13,7 +13,7 @@ const DemandesLinesByDirectionChart = () => {
                     data: [65, 10, 80, 55, 76],
                     fill: false,
                     backgroundColor: "rgba(255, 165, 0, 0.2)",
-                    borderColor: "rgba(255, 165, 0, 1)",
+                    borderColor: "rgba(255, 165, 0, 0.5)",
                     tension: 0.1,
                 },
                 {
@@ -21,7 +21,7 @@ const DemandesLinesByDirectionChart = () => {
                     data: [100, 30, 88, 14, 18],
                     fill: false,
                     backgroundColor: "rgba(255, 0, 0, 0.2)", // Red
-                    borderColor: "rgba(255, 0, 0, 1)",
+                    borderColor: "rgba(255, 0, 0, 0.5)",
                     tension: 0.1,
                 },
                 {
@@ -29,7 +29,7 @@ const DemandesLinesByDirectionChart = () => {
                     data: [40, 59, 23, 81, 10],
                     fill: false,
                     backgroundColor: "rgba(0, 128, 0, 0.2)", // Green
-                    borderColor: "rgba(0, 128, 0, 1)",
+                    borderColor: "rgba(0, 128, 0, 0.5)",
                     tension: 0.1,
                 },
             ],

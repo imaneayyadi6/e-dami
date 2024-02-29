@@ -36,6 +36,10 @@ connectDB();
 
 // Serve static files from the "uploads" folder
 app.use('/uploads', express.static('uploads'));
+
+// Serve static files from the "logs" folder
+app.use('/logs', express.static('logs'));
+
 // Init Middlewares :
 app.use(express.json({ extended: false }));
 // Define Routes :

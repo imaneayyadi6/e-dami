@@ -11,6 +11,9 @@ const directionSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "utilisateur",
     },
+    uo: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

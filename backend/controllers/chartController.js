@@ -45,7 +45,6 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       },
     ]);
   } else {
-
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
     result = await Utilisateur.aggregate([
@@ -224,7 +223,6 @@ export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-
 // @desc    Recuperer les demandes 'lines'
 // @route   GET /api/charts/lines/demandes
 // @access  private
@@ -267,7 +265,6 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       },
     ]);
   } else {
-
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
     result = await Demande.aggregate([
@@ -304,7 +301,6 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-
 // @desc    Recuperer les demandes 'bars'
 // @route   GET /api/charts/bars/demandes
 // @access  private
@@ -319,67 +315,64 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
       },
     })
       .populate({
-        path: 'option',
+        path: "option",
         populate: {
-          path: 'service',
+          path: "service",
           populate: {
-            path: 'direction'
-          }
-        }
+            path: "direction",
+          },
+        },
       })
       .populate({
-        path: 'demandeur',
+        path: "demandeur",
         populate: {
-          path: 'direction'
-        }
+          path: "direction",
+        },
       });
     const stats = {
       labels: getUniqueDirectionLabels(demandes),
-      demandeEnCours: getDirectionStats(demandes, 'en cours'),
-      demandeRefuse: getDirectionStats(demandes, 'refuse'),
-      demandeApprouver: getDirectionStats(demandes, 'approuve')
+      demandeEnCours: getDirectionStats(demandes, "en cours"),
+      demandeRefuse: getDirectionStats(demandes, "refuse"),
+      demandeApprouver: getDirectionStats(demandes, "approuve"),
     };
 
     res.json(stats);
-  }
-  else {
+  } else {
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
     const demandes = await Demande.find({
       dateDemande: { $gte: fiveMonthsAgo },
     })
       .populate({
-        path: 'option',
+        path: "option",
         populate: {
-          path: 'service',
+          path: "service",
           populate: {
-            path: 'direction'
-          }
-        }
+            path: "direction",
+          },
+        },
       })
       .populate({
-        path: 'demandeur',
+        path: "demandeur",
         populate: {
-          path: 'direction'
-        }
+          path: "direction",
+        },
       });
     const stats = {
       labels: getUniqueDirectionLabels(demandes),
-      demandeEnCours: getDirectionStats(demandes, 'en cours'),
-      demandeRefuse: getDirectionStats(demandes, 'refuse'),
-      demandeApprouver: getDirectionStats(demandes, 'approuve')
+      demandeEnCours: getDirectionStats(demandes, "en cours"),
+      demandeRefuse: getDirectionStats(demandes, "refuse"),
+      demandeApprouver: getDirectionStats(demandes, "approuve"),
     };
 
     res.json(stats);
   }
 
-
-
-
   function getUniqueDirectionLabels(demandes) {
     const uniqueLabels = new Set();
     demandes.forEach((demande) => {
-      uniqueLabels.add(demande.demandeur.direction.libelle);
+      if (demande && demande.demandeur && demande.demandeur.direction)
+        uniqueLabels.add(demande.demandeur.direction.libelle);
     });
     return Array.from(uniqueLabels);
   }
@@ -397,25 +390,33 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
     );
 
     filteredDemandes.forEach((demande) => {
-      const directionLibelle = demande.demandeur.direction.libelle;
-      directionStats[directionLibelle]++;
+      if (demande && demande.demandeur && demande.demandeur.direction) {
+        const directionLibelle = demande.demandeur.direction.libelle;
+        directionStats[directionLibelle]++;
+      }
     });
 
     return uniqueLabels.map((label) => directionStats[label]);
   }
-
 });
-
-
-
-
-
 
 // @desc    Recuperer les demandes par direction pour un signataire
-// @route   GET /api/charts/bars/demandes
+// @route   GET /api/charts/lines/demandes/bydirections
 // @access  private
 export const chartLinesByDirectionDemandes = asyncHandler(async (req, res) => {
-    
+  let traitements = [];
 
+  let demandes = await Demande.find({
+    "traitement.utilisateur": req.user.id,
+  }).populate({
+    path: "demandeur",
+    populate: {
+      path: "direction",
+    },
+  });
+
+  res.json({
+    direction: req.body.direction,
+    demandes: demandes,
+  });
 });
-

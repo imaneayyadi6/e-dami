@@ -1,7 +1,5 @@
 import express from "express";
-import {
-  protect,
-} from "../middlewares/authMidlleware.js";
+import { protect, signataire } from "../middlewares/authMidlleware.js";
 import {
   chartBarGetDemandes,
   chartGetCountOptionsOfServices,
@@ -9,6 +7,7 @@ import {
   chartGetOptions,
   chartGetUsers,
   chartLineGetDemandes,
+  chartLinesByDirectionDemandes,
 } from "../controllers/chartController.js";
 const router = express.Router();
 
@@ -21,5 +20,8 @@ router
 
 router.route("/lines/demandes").get(protect, chartLineGetDemandes);
 router.route("/bars/demandes").get(protect, chartBarGetDemandes);
+router
+  .route("/lines/demandes/bydirections")
+  .get(protect, signataire, chartLinesByDirectionDemandes);
 
 export default router;

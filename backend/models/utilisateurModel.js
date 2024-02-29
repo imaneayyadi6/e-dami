@@ -19,10 +19,10 @@ const utilisateurSchema = Schema(
       type: String,
       unique: [true, "email existe déjà"],
       required: [true, "veuillez saisir une adresse e-mail"],
-      match: [
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "Format d'email invalide. veuillez fournir une adresse email valide.",
-      ],
+      // match: [
+      //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      //   "Format d'email invalide. veuillez fournir une adresse email valide.",
+      // ],
     },
     emailSent: {
       type: Boolean,
