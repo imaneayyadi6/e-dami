@@ -22,6 +22,10 @@ import {
   DIRECTION_BY_SERVICE_ID_SUCCESS,
   DIRECTION_BY_SERVICE_ID_FAIL,
   DIRECTION_BY_SERVICE_ID_RESET,
+  DIRECTION_LIST_SIGNATAIRES_REQUEST,
+  DIRECTION_LIST_SIGNATAIRES_SUCCESS,
+  DIRECTION_LIST_SIGNATAIRES_FAIL,
+  DIRECTION_LIST_SIGNATAIRES_RESET,
 } from "./directionTypes";
 
 export const directionListReducer = (state = { directions: [] }, action) => {
@@ -43,13 +47,13 @@ export const directionListReducer = (state = { directions: [] }, action) => {
       return {
         success: true,
         directions: state.directions.filter(
-          cat => String(cat._id) !== String(payload)
+          (cat) => String(cat._id) !== String(payload)
         ),
       };
     case DIRECTION_LIST_UPDATE:
       return {
         success: true,
-        directions: state.directions.map(direction => {
+        directions: state.directions.map((direction) => {
           if (String(direction._id) === String(payload._id)) {
             direction.libelle = payload.libelle;
             direction.directeur = payload.directeur;
@@ -125,6 +129,25 @@ export const directionUpdateReducer = (state = {}, action) => {
       return { loading: false, error: payload };
     case DIRECTION_UPDATE_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const directionSignatairesListReducer = (
+  state = { directions: [] },
+  action
+) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DIRECTION_LIST_SIGNATAIRES_REQUEST:
+      return { loading: true, directions: [] };
+    case DIRECTION_LIST_SIGNATAIRES_SUCCESS:
+      return { loading: false, success: true, directions: payload };
+    case DIRECTION_LIST_SIGNATAIRES_FAIL:
+      return { loading: false, error: payload, directions: [] };
+    case DIRECTION_LIST_SIGNATAIRES_RESET:
+      return { directions: [] };
     default:
       return state;
   }

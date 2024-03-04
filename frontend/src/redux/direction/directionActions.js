@@ -22,6 +22,10 @@ import {
   DIRECTION_BY_SERVICE_ID_SUCCESS,
   DIRECTION_BY_SERVICE_ID_FAIL,
   DIRECTION_BY_SERVICE_ID_RESET,
+  DIRECTION_LIST_SIGNATAIRES_REQUEST,
+  DIRECTION_LIST_SIGNATAIRES_SUCCESS,
+  DIRECTION_LIST_SIGNATAIRES_FAIL,
+  DIRECTION_LIST_SIGNATAIRES_RESET,
 } from "./directionTypes";
 
 import axios from "axios";
@@ -56,7 +60,38 @@ export const resetFetchDirections = () => {
   return { type: DIRECTION_LIST_RESET };
 };
 
-export const getByServiceID = serviceID => {
+export const fetchDirectionsSignataires = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DIRECTION_LIST_SIGNATAIRES_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get("/api/directions/signataires", config);
+      dispatch({ type: DIRECTION_LIST_SIGNATAIRES_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DIRECTION_LIST_SIGNATAIRES_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchDirectionsSignataires = () => {
+  return { type: DIRECTION_LIST_SIGNATAIRES_RESET };
+};
+
+export const getByServiceID = (serviceID) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DIRECTION_BY_SERVICE_ID_REQUEST });
@@ -89,7 +124,7 @@ export const resetGetByServiceID = () => {
   return { type: DIRECTION_BY_SERVICE_ID_RESET };
 };
 
-export const createDirection = direction => {
+export const createDirection = (direction) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DIRECTION_CREATE_REQUEST });
@@ -121,7 +156,7 @@ export const resetCreateDirection = () => {
   return { type: DIRECTION_CREATE_RESET };
 };
 
-export const removeDirection = id => {
+export const removeDirection = (id) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DIRECTION_REMOVE_REQUEST });

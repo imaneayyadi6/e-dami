@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Utilisateur from "../models/utilisateurModel.js";
 import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
-
+import mongoose from "mongoose";
 // @desc    recuperer utilisateur par moi
 // @route   GET /api/charts/users
 // @access  private
@@ -400,23 +400,126 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les demandes par direction pour un signataire
-// @route   GET /api/charts/lines/demandes/bydirections
+// @desc    Recuperer les demandes de signataire
+// @route   GET /api/charts/lines/demandes/signataire
 // @access  private
-export const chartLinesByDirectionDemandes = asyncHandler(async (req, res) => {
-  let traitements = [];
+export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
+  if (req.query.startDate && req.query.endDate) {
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
 
-  let demandes = await Demande.find({
-    "traitement.utilisateur": req.user.id,
-  }).populate({
-    path: "demandeur",
-    populate: {
-      path: "direction",
-    },
-  });
+    const aggregatePipeline = [
+      {
+        $match: {
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+          dateDemande: {
+            $gte: startDate,
+            $lte:endDate
+          },
+        },
+      },
+      {
+        $project: {
+          month: { $month: "$dateDemande" },
+          traitement: "$traitement.status",
+        },
+      },
+      {
+        $unwind: "$traitement",
+      },
+      {
+        $group: {
+          _id: { month: "$month", status: "$traitement" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.month",
+          statusCounts: {
+            $push: {
+              status: "$_id.status",
+              count: "$count",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id",
+          statusCounts: 1,
+        },
+      },
+    ];
 
-  res.json({
-    direction: req.body.direction,
-    demandes: demandes,
-  });
+    // Use the aggregate method to apply the pipeline to your model
+    const result = await Demande.aggregate(aggregatePipeline);
+
+    const formattedResult = {};
+    result.forEach((item) => {
+      const statusCounts = {};
+      item.statusCounts.forEach((statusItem) => {
+        statusCounts[statusItem.status] = Number(statusItem.count);
+      });
+      formattedResult[item.month] = statusCounts;
+    });
+    res.json(formattedResult);
+  } else {
+    const aggregatePipeline = [
+      {
+        $match: {
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+          dateDemande: {
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)),
+          },
+        },
+      },
+      {
+        $project: {
+          month: { $month: "$dateDemande" },
+          traitement: "$traitement.status",
+        },
+      },
+      {
+        $unwind: "$traitement",
+      },
+      {
+        $group: {
+          _id: { month: "$month", status: "$traitement" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.month",
+          statusCounts: {
+            $push: {
+              status: "$_id.status",
+              count: "$count",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id",
+          statusCounts: 1,
+        },
+      },
+    ];
+    // Use the aggregate method to apply the pipeline to your model
+    const result = await Demande.aggregate(aggregatePipeline);
+
+    const formattedResult = {};
+    result.forEach((item) => {
+      const statusCounts = {};
+      item.statusCounts.forEach((statusItem) => {
+        statusCounts[statusItem.status] = Number(statusItem.count);
+      });
+      formattedResult[item.month] = statusCounts;
+    });
+    res.json(formattedResult);
+  }
 });

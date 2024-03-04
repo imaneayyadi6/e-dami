@@ -2,7 +2,8 @@ import asyncHandler from "express-async-handler";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
-
+import mongoose from "mongoose";
+import Demande from "../models/demandeModel.js";
 // @desc    Afficher tous les directions
 // @route   GET /api/directions/:id
 // @access  private
@@ -121,4 +122,38 @@ export const getDirectionByServiceID = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("direction introuvable !");
   }
+});
+
+// @desc    Recuperer les directions
+// @route   GET /api/directions/signataires
+// @access  private/signataire
+export const getDirectionSignataires = asyncHandler(async (req, res) => {
+  let directions = [];
+
+  const query = {
+    "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+  };
+
+  let demandes = JSON.parse(
+    JSON.stringify(
+      await Demande.find(query).populate({
+        path: "demandeur",
+        populate: {
+          path: "direction",
+        },
+      })
+    )
+  );
+
+  for (let demande of demandes) {
+    const findDirection = directions.findIndex(
+      (dir) => String(dir._id) === String(demande.demandeur.direction._id)
+    );
+
+    if (findDirection === -1) {
+      directions.push(demande.demandeur.direction);
+    }
+  }
+
+  res.json(directions);
 });

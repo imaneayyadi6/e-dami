@@ -4,16 +4,23 @@ import {
   deleteDirection,
   getDirectionByID,
   getDirectionByServiceID,
+  getDirectionSignataires,
   getDirections,
   updateDirection,
 } from "../controllers/directionController.js";
-import { createur, protect } from "../middlewares/authMidlleware.js";
+import {
+  createur,
+  protect,
+  signataire,
+} from "../middlewares/authMidlleware.js";
 
 const router = express.Router();
 router
   .route("/")
   .get(protect, getDirections)
   .post(protect, createur, createDirection);
+
+router.route("/signataires").get(protect, signataire, getDirectionSignataires);
 
 router
   .route("/:id")

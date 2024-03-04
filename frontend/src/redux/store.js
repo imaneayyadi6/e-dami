@@ -26,6 +26,7 @@ import {
   directionRemoveReducer,
   directionUpdateReducer,
   directionByServiceIDReducer,
+  directionSignatairesListReducer,
 } from "./direction/directionReducers";
 import {
   serviceListReducer,
@@ -63,6 +64,7 @@ import {
 
 import {
   chartGetBarDemandeReducer,
+  chartGetLineDemandesSignataireReducer,
   chartGetLineDemandeReducer,
   chartGetOptionsCountOfServicesReducer,
   chartGetOptionsCountOfSousCategorieReducer,
@@ -114,6 +116,7 @@ const reducer = combineReducers({
   directionRemove: directionRemoveReducer,
   directionUpdate: directionUpdateReducer,
   directionByServiceID: directionByServiceIDReducer,
+  directionSignatairesList: directionSignatairesListReducer,
   //services :
   serviceList: serviceListReducer,
   serviceListByDirectionID: serviceListByDirectionIDReducer,
@@ -168,6 +171,8 @@ const reducer = combineReducers({
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
   chartGetLineDemande: chartGetLineDemandeReducer,
   chartGetBarDemande: chartGetBarDemandeReducer,
+
+  chartGetLineDemandesSignataire: chartGetLineDemandesSignataireReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandeToHandleReducer,
