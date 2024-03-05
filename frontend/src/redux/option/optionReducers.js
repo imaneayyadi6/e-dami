@@ -7,7 +7,6 @@ import {
   OPTION_BY_ID_REQUEST,
   OPTION_BY_ID_RESET,
   OPTION_BY_ID_SUCCESS,
-
   OPTION_LIST_ADD,
   OPTION_LIST_FAIL,
   OPTION_LIST_REMOVE,
@@ -19,7 +18,6 @@ import {
   OPTION_CREATE_REQUEST,
   OPTION_CREATE_RESET,
   OPTION_CREATE_SUCCESS,
-
   OPTION_DELETE_FAIL,
   OPTION_DELETE_REQUEST,
   OPTION_DELETE_RESET,
@@ -28,7 +26,6 @@ import {
   OPTION_UPDATE_REQUEST,
   OPTION_UPDATE_RESET,
   OPTION_UPDATE_SUCCESS,
-
   OPTION_CRTOP_LIST_ADD,
   OPTION_CRTOP_LIST_FAIL,
   OPTION_CRTOP_LIST_REMOVE,
@@ -40,7 +37,6 @@ import {
   OPTION_CRTOP_CREATE_REQUEST,
   OPTION_CRTOP_CREATE_RESET,
   OPTION_CRTOP_CREATE_SUCCESS,
-
   OPTION_CRTOP_DELETE_FAIL,
   OPTION_CRTOP_DELETE_REQUEST,
   OPTION_CRTOP_DELETE_RESET,
@@ -49,20 +45,13 @@ import {
   OPTION_CRTOP_UPDATE_REQUEST,
   OPTION_CRTOP_UPDATE_RESET,
   OPTION_CRTOP_UPDATE_SUCCESS,
-
-
 } from "./optionTypes";
 
-
-
-export const optionListBySousCategorieIDReducer = (
-  state = {},
-  action
-) => {
+export const optionListBySousCategorieIDReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_REQUEST:
-      return { loading: true, };
+      return { loading: true };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_SUCCESS:
       return {
         success: true,
@@ -70,14 +59,13 @@ export const optionListBySousCategorieIDReducer = (
         data: payload,
       };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_FAIL:
-      return { loading: false, error: payload, };
+      return { loading: false, error: payload };
     case OPTION_LIST_BY_SOUSCATEGORIE_ID_RESET:
       return {};
     default:
       return state;
   }
 };
-
 
 export const optionByIDReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -154,13 +142,22 @@ export const optionListReducer = (state = { options: [] }, action) => {
     case OPTION_LIST_REMOVE:
       return {
         success: true,
-        options: state.options.filter(op => String(op._id) !== String(payload)),
+        options: state.options.map((op) => {
+          if (String(op._id) === String(payload)) {
+            if (op.isDeleted) {
+              op.isDeleted = false;
+            } else {
+              op.isDeleted = true;
+            }
+          }
+          return op;
+        }),
       };
 
     case OPTION_LIST_UPDATE:
       return {
         success: true,
-        options: state.categories.map(op => {
+        options: state.options.map((op) => {
           if (String(op._id) === String(payload._id)) {
             op.libelle = payload.libelle;
             op.typeProcessus = payload.typeProcessus;
@@ -181,7 +178,6 @@ export const optionListReducer = (state = { options: [] }, action) => {
       return state;
   }
 };
-
 
 export const optionDeleteReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -222,7 +218,6 @@ export const optionUpdateReducer = (state = {}, action) => {
       return state;
   }
 };
-
 
 export const optionCrtOpCreateReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -279,13 +274,15 @@ export const optionCrtOpListReducer = (state = { options: [] }, action) => {
     case OPTION_CRTOP_LIST_REMOVE:
       return {
         success: true,
-        options: state.options.filter(op => String(op._id) !== String(payload)),
+        options: state.options.filter(
+          (op) => String(op._id) !== String(payload)
+        ),
       };
 
     case OPTION_CRTOP_LIST_UPDATE:
       return {
         success: true,
-        options: state.categories.map(op => {
+        options: state.options.map((op) => {
           if (String(op._id) === String(payload._id)) {
             op.libelle = payload.libelle;
             op.typeProcessus = payload.typeProcessus;
@@ -306,7 +303,6 @@ export const optionCrtOpListReducer = (state = { options: [] }, action) => {
       return state;
   }
 };
-
 
 export const optionCrtOpDeleteReducer = (state = {}, action) => {
   const { type, payload } = action;
@@ -347,8 +343,3 @@ export const optionCrtOpUpdateReducer = (state = {}, action) => {
       return state;
   }
 };
-
-
-
-
-

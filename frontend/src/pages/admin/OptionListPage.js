@@ -13,6 +13,8 @@ import { OPTION_LIST_REMOVE } from "../../redux/option/optionTypes";
 
 const OptionsListPage = () => {
   const [callOnce, setCallOnce] = useState(false);
+  const [active, setActive] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const optionList = useSelector((state) => state.optionList);
@@ -43,9 +45,18 @@ const OptionsListPage = () => {
         dispatch({ type: OPTION_LIST_REMOVE, payload: id });
       }
     } else {
+      let message = "";
+      if (!option.isDeleted) {
+        message = "Etes vous sûre de vouloir activer cette option ?";
+        setActive(true);
+      } else {
+        message = "Etes vous sûre de vouloir desactiver cette option ?";
+        setActive(false);
+      }
+
       Dialog.open({
         title: "Confirmation",
-        message: "Etes vous sûre de vouloir supprimer cette option ?",
+        message: message,
         onYes: () => {
           dispatch(deleteOption(id));
         },
@@ -65,18 +76,27 @@ const OptionsListPage = () => {
 
   useEffect(() => {
     if (successOptionDelete) {
+      if (active) {
+        Toast.open({
+          type: "success",
+          title: "Activation avec succès",
+          message: `l' option a été activer avec succès`,
+        });
+      } else {
+        Toast.open({
+          type: "success",
+          title: "Desactivation avec succès",
+          message: `l' option a été deactiver avec succès`,
+        });
+      }
+
       dispatch(resetDeleteOption());
-      Toast.open({
-        type: "success",
-        title: "Suppression avec succès",
-        message: `l' option a été supprimée avec succès`,
-      });
     }
     if (!callOnce) {
       dispatch(fetchOptions());
       setCallOnce(true);
     }
-  }, [callOnce, dispatch, successOptionDelete]);
+  }, [callOnce, dispatch, successOptionDelete, active]);
 
   return (
     <>

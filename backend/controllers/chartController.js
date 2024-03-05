@@ -414,7 +414,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
           "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
           dateDemande: {
             $gte: startDate,
-            $lte:endDate
+            $lte: endDate,
           },
         },
       },
@@ -521,5 +521,106 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       formattedResult[item.month] = statusCounts;
     });
     res.json(formattedResult);
+  }
+});
+
+// @desc    Recuperer les demandes 'bars'
+// @route   GET /api/charts/bars/demandes/signataire
+// @access  private
+export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
+  if (req.query.startDate && req.query.endDate) {
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
+    const demandes = await Demande.find({
+      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+      dateDemande: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    })
+      .populate({
+        path: "option",
+        populate: {
+          path: "service",
+          populate: {
+            path: "direction",
+          },
+        },
+      })
+      .populate({
+        path: "demandeur",
+        populate: {
+          path: "direction",
+        },
+      });
+    const stats = {
+      labels: getUniqueDirectionLabels(demandes),
+      demandeEnCours: getDirectionStats(demandes, "en cours"),
+      demandeRefuse: getDirectionStats(demandes, "refuse"),
+      demandeApprouver: getDirectionStats(demandes, "approuve"),
+    };
+
+    res.json(stats);
+  } else {
+    const fiveMonthsAgo = new Date();
+    fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
+    const demandes = await Demande.find({
+      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+      dateDemande: { $gte: fiveMonthsAgo },
+    })
+      .populate({
+        path: "option",
+        populate: {
+          path: "service",
+          populate: {
+            path: "direction",
+          },
+        },
+      })
+      .populate({
+        path: "demandeur",
+        populate: {
+          path: "direction",
+        },
+      });
+    const stats = {
+      labels: getUniqueDirectionLabels(demandes),
+      demandeEnCours: getDirectionStats(demandes, "en cours"),
+      demandeRefuse: getDirectionStats(demandes, "refuse"),
+      demandeApprouver: getDirectionStats(demandes, "approuve"),
+    };
+
+    res.json(stats);
+  }
+
+  function getUniqueDirectionLabels(demandes) {
+    const uniqueLabels = new Set();
+    demandes.forEach((demande) => {
+      if (demande && demande.demandeur && demande.demandeur.direction)
+        uniqueLabels.add(demande.demandeur.direction.libelle);
+    });
+    return Array.from(uniqueLabels);
+  }
+
+  function getDirectionStats(demandes, status) {
+    const directionStats = {};
+    const uniqueLabels = getUniqueDirectionLabels(demandes);
+
+    uniqueLabels.forEach((label) => {
+      directionStats[label] = 0;
+    });
+
+    const filteredDemandes = demandes.filter(
+      (demande) => demande.status === status
+    );
+
+    filteredDemandes.forEach((demande) => {
+      if (demande && demande.demandeur && demande.demandeur.direction) {
+        const directionLibelle = demande.demandeur.direction.libelle;
+        directionStats[directionLibelle]++;
+      }
+    });
+
+    return uniqueLabels.map((label) => directionStats[label]);
   }
 });

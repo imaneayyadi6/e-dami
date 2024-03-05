@@ -8,6 +8,7 @@ import {
   chartGetUsers,
   chartLineGetDemandes,
   chartLinesSignataireDemandes,
+  chartBarGetSignatairesDemandes,
 } from "../controllers/chartController.js";
 const router = express.Router();
 
@@ -23,5 +24,9 @@ router.route("/bars/demandes").get(protect, chartBarGetDemandes);
 router
   .route("/lines/demandes/signataire")
   .get(protect, signataire, chartLinesSignataireDemandes);
+
+router
+  .route("/bars/demandes/signataire")
+  .get(protect, signataire, chartBarGetSignatairesDemandes);
 
 export default router;

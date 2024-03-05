@@ -28,6 +28,10 @@ import {
   CHART_DEMANDE_LINE_SIGNATAIRE_SUCCESS,
   CHART_DEMANDE_LINE_SIGNATAIRE_FAIL,
   CHART_DEMANDE_LINE_SIGNATAIRE_RESET,
+  CHART_DEMANDE_BAR_SIGNATAIRE_REQUEST,
+  CHART_DEMANDE_BAR_SIGNATAIRE_SUCCESS,
+  CHART_DEMANDE_BAR_SIGNATAIRE_FAIL,
+  CHART_DEMANDE_BAR_SIGNATAIRE_RESET,
 } from "./chartTypes";
 
 export const fetchChartUsers = (startDate, endDate) => {
@@ -253,11 +257,7 @@ export const resetFetchChartBarDemande = () => {
   return { type: CHART_DEMANDE_BAR_RESET };
 };
 
-export const fetchChartLineDemandeSignataire = (
-  startDate,
-  endDate,
-
-) => {
+export const fetchChartLineDemandeSignataire = (startDate, endDate) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: CHART_DEMANDE_LINE_SIGNATAIRE_REQUEST });
@@ -303,4 +303,45 @@ export const fetchChartLineDemandeSignataire = (
 
 export const resetFetchChartLineDemandeSignataire = () => {
   return { type: CHART_DEMANDE_LINE_SIGNATAIRE_RESET };
+};
+
+export const fetchChartBarDemandeSignataire = (startDate, endDate) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: CHART_DEMANDE_BAR_SIGNATAIRE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      if (startDate && endDate) {
+        const { data } = await axios.get(
+          `/api/charts/bars/demandes/signataire?startDate=${startDate}&endDate=${endDate}`,
+          config
+        );
+        dispatch({ type: CHART_DEMANDE_BAR_SIGNATAIRE_SUCCESS, payload: data });
+      } else {
+        const { data } = await axios.get(
+          "/api/charts/bars/demandes/signataire",
+          config
+        );
+        dispatch({ type: CHART_DEMANDE_BAR_SIGNATAIRE_SUCCESS, payload: data });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: CHART_DEMANDE_BAR_SIGNATAIRE_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchChartBarDemandeSignataire = () => {
+  return { type: CHART_DEMANDE_BAR_SIGNATAIRE_RESET };
 };

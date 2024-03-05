@@ -70,6 +70,7 @@ import {
   chartGetOptionsCountOfSousCategorieReducer,
   chartGetOptionsReducer,
   chartGetUsersReducer,
+  chartGetBarDemandesSignataireReducer,
 } from "./chart/chartReducers";
 import { toastReducer } from "./toast/toastReducers";
 import {
@@ -147,7 +148,7 @@ const reducer = combineReducers({
   optionCrtOpList: optionCrtOpListReducer,
   optionCrtOpDelete: optionCrtOpDeleteReducer,
   optionCrtOpUpdate: optionCrtOpUpdateReducer,
-
+  
   // user :
   userLogin: userLoginReducer,
   userDirecteursList: userDirecteursListReducer,
@@ -171,8 +172,8 @@ const reducer = combineReducers({
   chartGetOptionsCountOfServices: chartGetOptionsCountOfServicesReducer,
   chartGetLineDemande: chartGetLineDemandeReducer,
   chartGetBarDemande: chartGetBarDemandeReducer,
-
   chartGetLineDemandesSignataire: chartGetLineDemandesSignataireReducer,
+  chartGetBarDemandesSignataire: chartGetBarDemandesSignataireReducer,
   // demande :
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandeToHandleReducer,

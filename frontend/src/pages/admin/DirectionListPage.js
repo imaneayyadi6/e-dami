@@ -602,7 +602,7 @@ const DirectionListPage = () => {
               ]}
               data={directions}
               loadingRemove={loadingDirectionRemove}
-              removeRow={removeDirectionHandler}
+              // removeRow={removeDirectionHandler}
               updateRow={updateDirectionHandler}
               rowClick={getServicesHandler}
               dropdownFilters={[`directeur`]}
@@ -669,7 +669,7 @@ const DirectionListPage = () => {
                 ]}
                 data={services}
                 loadingRemove={loadingServiceRemove}
-                removeRow={removeServiceHandler}
+                // removeRow={removeServiceHandler}
                 updateRow={updateServiceHandler}
               />
             ) : (

@@ -6,13 +6,13 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
 const TextFilter = ({ column }) => {
-  const handleFilterChange = e => {
+  const handleFilterChange = (e) => {
     column.setFilter(e.target.value);
   };
 
   return (
     <Form.Control
-      size='sm'
+      size="sm"
       style={{ minWidth: "250px" }}
       value={column.filterValue || ""}
       type={column.type ? column.type : "text"}
@@ -27,7 +27,7 @@ const DropdownFilter = ({ column }) => {
 
   const uniqueDirections = React.useMemo(() => {
     const options = new Set();
-    column.preFilteredRows.forEach(row => {
+    column.preFilteredRows.forEach((row) => {
       if (row.values[column.id]) options.add(row.values[column.id]);
     });
     return Array.from(options);
@@ -36,10 +36,11 @@ const DropdownFilter = ({ column }) => {
   return (
     <Form.Select
       style={{ minWidth: "250px" }}
-      size='sm'
+      size="sm"
       value={filterValue || ""}
-      onChange={e => setFilter(e.target.value)}>
-      <option value=''>
+      onChange={(e) => setFilter(e.target.value)}
+    >
+      <option value="">
         -------- veuillez selectionner ({column.Header}) --------
       </option>
       {uniqueDirections.map((option, index) => (
@@ -60,12 +61,14 @@ const Table = ({
   rowClick,
   loadingRemove,
   dropdownFilters,
-  showDetailsRowSpecificData
+  showDetailsRowSpecificData,
 }) => {
-
   const [callOnce, setCallOnce] = useState(false);
 
-  const filteredColumns = useMemo(() => columns.filter(column => column.accessor !== "_id"), [columns]);
+  const filteredColumns = useMemo(
+    () => columns.filter((column) => column.accessor !== "_id"),
+    [columns]
+  );
   const filteredData = useMemo(() => data, []);
 
   const {
@@ -86,30 +89,26 @@ const Table = ({
   } = useTable(
     {
       columns: filteredColumns,
-      data: filteredData
+      data: filteredData,
     },
     useFilters,
     usePagination
-  )
-
+  );
 
   const { pageIndex } = state;
 
   useEffect(() => {
     if (!callOnce) {
-
       setPageSize(7);
-      setCallOnce(true)
+      setCallOnce(true);
     }
   }, [callOnce]);
 
-  const renderTooltip = props => (
-    <Tooltip id='button-tooltip' {...props} className='bg-warning'>
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props} className="bg-warning">
       Cette ligne n'est pas encore enregistrée dans la base de données
     </Tooltip>
   );
-
-
 
   const renderPaginationButtons = () => {
     const pageButtons = [];
@@ -117,8 +116,8 @@ const Table = ({
     // Previous Button
     pageButtons.push(
       <Button
-        variant='light'
-        size='sm'
+        variant="light"
+        size="sm"
         onClick={() => gotoPage(0)}
         disabled={!canPreviousPage}
         key="first"
@@ -129,8 +128,8 @@ const Table = ({
 
     pageButtons.push(
       <Button
-        variant='light'
-        size='sm'
+        variant="light"
+        size="sm"
         disabled={!canPreviousPage}
         onClick={() => previousPage()}
         key="previous"
@@ -147,11 +146,11 @@ const Table = ({
     for (let i = start; i <= end - 1; i++) {
       pageButtons.push(
         <Button
-          size='sm'
-          variant='light'
+          size="sm"
+          variant="light"
           key={i}
           onClick={() => gotoPage(i)}
-          className={i === pageIndex ? 'active' : ''}
+          className={i === pageIndex ? "active" : ""}
         >
           {i + 1}
         </Button>
@@ -161,8 +160,8 @@ const Table = ({
     // Next Button
     pageButtons.push(
       <Button
-        variant='light'
-        size='sm'
+        variant="light"
+        size="sm"
         disabled={!canNextPage}
         onClick={() => nextPage()}
         key="next"
@@ -173,8 +172,8 @@ const Table = ({
 
     pageButtons.push(
       <Button
-        variant='light'
-        size='sm'
+        variant="light"
+        size="sm"
         disabled={!canNextPage}
         onClick={() => gotoPage(pageCount - 1)}
         key="last"
@@ -186,25 +185,26 @@ const Table = ({
     return pageButtons;
   };
 
-
   return (
     <>
-      <div className='table-responsive'>
+      <div className="table-responsive">
         <table
           {...getTableProps()}
-          className={`table table-sm table-hover  ${loadingRemove && "table-active"
-            }`}>
-          <thead className=''>
-            {headerGroups.map(headerGroup => (
+          className={`table table-sm table-hover  ${
+            loadingRemove && "table-active"
+          }`}
+        >
+          <thead className="">
+            {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
+                {headerGroup.headers.map((column) => (
                   <th {...column.getHeaderProps()}>
-                    <div className='d-flex flex-column justify-content-center inline-text'>
+                    <div className="d-flex flex-column justify-content-center inline-text">
                       <small>{column.render("Header")}</small>
                       {column.filter ? (
                         <div>
                           {dropdownFilters &&
-                            dropdownFilters.includes(column.filter) ? (
+                          dropdownFilters.includes(column.filter) ? (
                             <DropdownFilter
                               column={column}
                               options={column.filterOptions || []}
@@ -224,13 +224,13 @@ const Table = ({
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map(row => {
+            {page.map((row) => {
               prepareRow(row);
               const rowId = row.original._id;
-
+              const isDeleted = row.original.isDeleted;
               if (row.original.notSavedYet) {
                 return (
-                  <OverlayTrigger placement='left' overlay={renderTooltip}>
+                  <OverlayTrigger placement="left" overlay={renderTooltip}>
                     <tr
                       {...row.getRowProps()}
                       className={`cursor-pointer position-relative`}
@@ -238,8 +238,9 @@ const Table = ({
                         if (rowClick) {
                           rowClick(rowId);
                         }
-                      }}>
-                      {row.cells.map(cell => {
+                      }}
+                    >
+                      {row.cells.map((cell) => {
                         // Check if the cell is empty (you can customize this condition)
                         const columnName = cell.column.Header;
                         if (
@@ -250,8 +251,8 @@ const Table = ({
                           // Get the column name from the cell object and include it in the message
 
                           return (
-                            <td className='empty-cell column-text'>
-                              <small className='column-text text-danger'>
+                            <td className="empty-cell column-text">
+                              <small className="column-text text-danger">
                                 ({columnName}) introuvable
                               </small>
                             </td>
@@ -260,52 +261,62 @@ const Table = ({
                         return (
                           <td
                             {...cell.getCellProps()}
-                            className={`column-text ${row.original.notSavedYet && "text-warning"
-                              }`}>
+                            className={`column-text ${
+                              row.original.notSavedYet && "text-warning"
+                            }`}
+                          >
                             <small>{cell.render("Cell")}</small>
                           </td>
                         );
                       })}
 
                       <td>
-                        <div className='d-flex justify-content-end'>
-                          {(showDetailsRow || showDetailsRowSpecificData) && !row.original.notSavedYet && (
-                            <span
-                              className='cursor-pointer'
-                              onClick={e => {
-                                e.stopPropagation();
-                                if (showDetailsRowSpecificData) {
-                                  showDetailsRowSpecificData.function(...showDetailsRowSpecificData.columns.map(col => {
-                                    if (col.split(".").length > 1) {
-                                      return row.original[col.split('.')[0]][0][col.split('.')[1]];
-                                    }
-                                    else
-                                      return row.original[col];
-                                  }))
-                                }
-                                if (showDetailsRow) showDetailsRow(rowId);
-                              }}>
-                              <i className='fa-solid fa-eye mr-1'></i>
-                            </span>
-                          )}
+                        <div className="d-flex justify-content-end">
+                          {(showDetailsRow || showDetailsRowSpecificData) &&
+                            !row.original.notSavedYet && (
+                              <span
+                                className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (showDetailsRowSpecificData) {
+                                    showDetailsRowSpecificData.function(
+                                      ...showDetailsRowSpecificData.columns.map(
+                                        (col) => {
+                                          if (col.split(".").length > 1) {
+                                            return row.original[
+                                              col.split(".")[0]
+                                            ][0][col.split(".")[1]];
+                                          } else return row.original[col];
+                                        }
+                                      )
+                                    );
+                                  }
+                                  if (showDetailsRow) showDetailsRow(rowId);
+                                }}
+                              >
+                                <i className="fa-solid fa-eye mr-1"></i>
+                              </span>
+                            )}
                           {updateRow && (
                             <span
-                              className='cursor-pointer'
-                              onClick={e => {
+                              className="cursor-pointer"
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 if (updateRow) updateRow(rowId);
-                              }}>
-                              <i className='fa-solid fa-pen-to-square mr-1'></i>
+                              }}
+                            >
+                              <i className="fa-solid fa-pen-to-square mr-1"></i>
                             </span>
                           )}
                           {removeRow && (
                             <span
-                              className='cursor-pointer'
-                              onClick={e => {
+                              className="cursor-pointer"
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 if (removeRow) removeRow(rowId);
-                              }}>
-                              <i className='fas fa-trash text-danger'></i>
+                              }}
+                            >
+                              <i className="fas fa-trash text-danger"></i>
                             </span>
                           )}
                         </div>
@@ -317,13 +328,16 @@ const Table = ({
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`cursor-pointer position-relative`}
+                    className={`cursor-pointer position-relative ${
+                      isDeleted ? "table-danger" : ""
+                    }`}
                     onClick={() => {
                       if (rowClick) {
                         rowClick(rowId);
                       }
-                    }}>
-                    {row.cells.map(cell => {
+                    }}
+                  >
+                    {row.cells.map((cell) => {
                       // Check if the cell is empty (you can customize this condition)
                       const columnName = cell.column.Header;
                       if (
@@ -334,8 +348,8 @@ const Table = ({
                         // Get the column name from the cell object and include it in the message
 
                         return (
-                          <td className='empty-cell column-text'>
-                            <small className='text-danger'>
+                          <td className="empty-cell column-text">
+                            <small className="text-danger">
                               ({columnName}) introuvable
                             </small>
                           </td>
@@ -344,15 +358,19 @@ const Table = ({
                       return (
                         <td
                           {...cell.getCellProps()}
-                          className={`column-text ${row.original.notSavedYet && "text-warning"
-                            }`}>
+                          className={`column-text ${
+                            row.original.notSavedYet && "text-warning"
+                          }`}
+                        >
                           <small
-                            className={`${columnName === "status"
-                              ? `table-text-status-${String(
-                                cell.value
-                              ).replace(/\s/g, "")}`
-                              : ""
-                              }`}>
+                            className={`${
+                              columnName === "status"
+                                ? `table-text-status-${String(
+                                    cell.value
+                                  ).replace(/\s/g, "")}`
+                                : ""
+                            }`}
+                          >
                             {cell.render("Cell")}
                           </small>
                         </td>
@@ -360,44 +378,56 @@ const Table = ({
                     })}
 
                     <td>
-                      <div className='d-flex justify-content-end'>
-                        {(showDetailsRow || showDetailsRowSpecificData) && !row.original.notSavedYet && (
-                          <span
-                            className='cursor-pointer'
-                            onClick={e => {
-                              e.stopPropagation();
-                              if (showDetailsRowSpecificData) {
-                                showDetailsRowSpecificData.function(...showDetailsRowSpecificData.columns.map(col => {
-                                  if (col.split(".").length > 1) {
-                                    return row.original[col.split('.')[0]][0][col.split('.')[1]];
-                                  }
-                                  else
-                                    return row.original[col];
-                                }))
-                              }
-                              if (showDetailsRow) showDetailsRow(rowId);
-                            }}>
-                            <i className='fa-solid fa-eye mr-1'></i>
-                          </span>
-                        )}
+                      <div className="d-flex justify-content-end">
+                        {(showDetailsRow || showDetailsRowSpecificData) &&
+                          !row.original.notSavedYet && (
+                            <span
+                              className="cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (showDetailsRowSpecificData) {
+                                  showDetailsRowSpecificData.function(
+                                    ...showDetailsRowSpecificData.columns.map(
+                                      (col) => {
+                                        if (col.split(".").length > 1) {
+                                          return row.original[
+                                            col.split(".")[0]
+                                          ][0][col.split(".")[1]];
+                                        } else return row.original[col];
+                                      }
+                                    )
+                                  );
+                                }
+                                if (showDetailsRow) showDetailsRow(rowId);
+                              }}
+                            >
+                              <i className="fa-solid fa-eye mr-1"></i>
+                            </span>
+                          )}
                         {updateRow && (
                           <span
-                            className='cursor-pointer'
-                            onClick={e => {
+                            className="cursor-pointer"
+                            onClick={(e) => {
                               e.stopPropagation();
                               if (updateRow) updateRow(rowId);
-                            }}>
-                            <i className='fa-solid fa-pen-to-square mr-1'></i>
+                            }}
+                          >
+                            <i className="fa-solid fa-pen-to-square mr-1"></i>
                           </span>
                         )}
                         {removeRow && (
                           <span
-                            className='cursor-pointer'
-                            onClick={e => {
+                            className="cursor-pointer"
+                            onClick={(e) => {
                               e.stopPropagation();
                               if (removeRow) removeRow(rowId);
-                            }}>
-                            <i className='fas fa-trash text-danger'></i>
+                            }}
+                          >
+                            {!isDeleted ? (
+                              <i className="fas fa-trash text-danger"></i>
+                            ) : (
+                              <i className="fa-solid fa-trash-can-arrow-up text-primary"></i>
+                            )}
                           </span>
                         )}
                       </div>
@@ -408,17 +438,17 @@ const Table = ({
             })}
           </tbody>
         </table>
-      </div >
+      </div>
       <hr />
-      <div className='d-flex justify-content-center mt-2'>
-        <div className='d-flex align-items-center'>
+      <div className="d-flex justify-content-center mt-2">
+        <div className="d-flex align-items-center">
           <small>
             Page{" "}
             <span style={{ fontWeight: "bold" }}>
               {pageIndex + 1} de {pageOptions.length}
             </span>
           </small>
-          <div>{renderPaginationButtons()}  </div>
+          <div>{renderPaginationButtons()} </div>
         </div>
       </div>
     </>

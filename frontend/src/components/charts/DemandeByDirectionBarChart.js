@@ -46,8 +46,17 @@ const DemandeByDirectionBarChart = () => {
           if (directionChartRef.current.chart) {
             directionChartRef.current.chart.destroy();
           }
+
+          let labels = data.labels.map((label) => {
+            if (label.length > 25) {
+              return label.substring(0, 25) + "...";
+            } else {
+              return label;
+            }
+          });
+
           const directionData = {
-            labels: data.labels,
+            labels: labels,
             datasets: [
               {
                 label: "en cours",

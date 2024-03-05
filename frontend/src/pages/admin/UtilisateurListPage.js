@@ -14,7 +14,7 @@ const UtilisateurListPage = () => {
   const [callOnce, setCallOnce] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userList = useSelector(state => state.userList);
+  const userList = useSelector((state) => state.userList);
   const {
     loading: loadingUserList,
     error: errorUserList,
@@ -22,28 +22,28 @@ const UtilisateurListPage = () => {
     users,
   } = userList;
 
-  const userRemove = useSelector(state => state.userRemove);
+  const userRemove = useSelector((state) => state.userRemove);
   const {
     loading: loadingUserRemove,
     error: errorUserRemove,
     success: successUserRemove,
   } = userRemove;
 
-  const showDetailsUserHandler = id => {
+  const showDetailsUserHandler = (id) => {
     navigate(`/details-utilisateur/${id}`);
   };
 
-  const removeUserHandler = id => {
-    Dialog.open({
-      title: "Confirmation",
-      message: "Etes vous sûre de vouloir supprimer ce utilisateur ?",
-      onYes: () => {
-        dispatch(removeUser(id));
-      },
-    });
-  };
+  // const removeUserHandler = id => {
+  //   Dialog.open({
+  //     title: "Confirmation",
+  //     message: "Etes vous sûre de vouloir supprimer ce utilisateur ?",
+  //     onYes: () => {
+  //       dispatch(removeUser(id));
+  //     },
+  //   });
+  // };
 
-  const updateUserHandler = id => {
+  const updateUserHandler = (id) => {
     navigate(`/modifier-utilisateur/${id}`);
   };
 
@@ -65,21 +65,21 @@ const UtilisateurListPage = () => {
   return (
     <>
       {errorUserList && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorUserList}
         </Message>
       )}
 
       {errorUserRemove && (
-        <Message itWillBeHidden={true} type='danger'>
+        <Message itWillBeHidden={true} type="danger">
           {errorUserRemove}
         </Message>
       )}
-      <Card className='w-100' style={{ overflow: "auto" }}>
+      <Card className="w-100" style={{ overflow: "auto" }}>
         <Card.Body>
-          <div className='d-flex justify-content-end'>
-            <Link className='btn btn-sm btn-dark mb-2' to='/creer-utilisateur'>
-              <i className='fas fa-plus'></i> Ajouter un utilisateur
+          <div className="d-flex justify-content-end">
+            <Link className="btn btn-sm btn-dark mb-2" to="/creer-utilisateur">
+              <i className="fas fa-plus"></i> Ajouter un utilisateur
             </Link>
           </div>
           {loadingUserList && <TableLoading />}
@@ -99,7 +99,7 @@ const UtilisateurListPage = () => {
                 },
                 {
                   Header: "Nom & prenom",
-                  accessor: row => `${row.nom} ${row.prenom}`,
+                  accessor: (row) => `${row.nom} ${row.prenom}`,
                   filter: "nom",
                 },
                 {
@@ -128,7 +128,6 @@ const UtilisateurListPage = () => {
               loadingRemove={loadingUserRemove}
               showDetailsRow={showDetailsUserHandler}
               updateRow={updateUserHandler}
-              removeRow={removeUserHandler}
               dropdownFilters={["service.libelle", "direction.libelle"]}
             />
           ) : (

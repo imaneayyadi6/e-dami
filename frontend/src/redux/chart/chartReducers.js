@@ -27,6 +27,10 @@ import {
   CHART_DEMANDE_LINE_SIGNATAIRE_SUCCESS,
   CHART_DEMANDE_LINE_SIGNATAIRE_FAIL,
   CHART_DEMANDE_LINE_SIGNATAIRE_RESET,
+  CHART_DEMANDE_BAR_SIGNATAIRE_REQUEST,
+  CHART_DEMANDE_BAR_SIGNATAIRE_SUCCESS,
+  CHART_DEMANDE_BAR_SIGNATAIRE_FAIL,
+  CHART_DEMANDE_BAR_SIGNATAIRE_RESET,
 } from "./chartTypes";
 
 export const chartGetUsersReducer = (state = {}, action) => {
@@ -138,6 +142,22 @@ export const chartGetLineDemandesSignataireReducer = (state = {}, action) => {
     case CHART_DEMANDE_LINE_SIGNATAIRE_FAIL:
       return { loading: false, error: payload };
     case CHART_DEMANDE_LINE_SIGNATAIRE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const chartGetBarDemandesSignataireReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case CHART_DEMANDE_BAR_SIGNATAIRE_REQUEST:
+      return { loading: true };
+    case CHART_DEMANDE_BAR_SIGNATAIRE_SUCCESS:
+      return { loading: false, success: true, data: payload };
+    case CHART_DEMANDE_BAR_SIGNATAIRE_FAIL:
+      return { loading: false, error: payload };
+    case CHART_DEMANDE_BAR_SIGNATAIRE_RESET:
       return {};
     default:
       return state;

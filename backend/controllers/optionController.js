@@ -48,6 +48,7 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
 
   const options = await Option.find({
     ...query,
+    isDeleted: false,
   })
     .populate({
       path: "sousCategorie",
@@ -228,13 +229,22 @@ export const updateOption = asyncHandler(async (req, res) => {
 // @route   DELETE /api/options/:id
 // @access  private
 export const deleteOption = asyncHandler(async (req, res) => {
-  const { deletedCount } = await Option.deleteOne({ _id: req.params.id });
-  if (deletedCount === 1) {
-    res.json({
-      message: "option supprimé !",
-    });
+  const option = await Option.findById(req.params.id);
+  if (option) {
+    if (!option.isDeleted) {
+      option.isDeleted = true;
+      await option.save();
+      res.json({
+        message: "option supprimé !",
+      });
+    } else {
+      option.isDeleted = false;
+      await option.save();
+      res.json({
+        message: "option supprimé !",
+      });
+    }
   } else {
-    res.status(404);
     throw new Error("option introuvable !");
   }
 });
