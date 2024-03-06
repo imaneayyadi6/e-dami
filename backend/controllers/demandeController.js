@@ -4,7 +4,7 @@ import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
-import { sendNotification } from "../services/notificationService.js"
+import { sendNotification } from "../services/notificationService.js";
 import mongoose from "mongoose";
 
 // @desc    Recuperer les demandes de demandeur
@@ -12,13 +12,12 @@ import mongoose from "mongoose";
 // @access  private
 export const getMesDemandes = asyncHandler(async (req, res) => {
   let demandes = await Demande.find({
-    "demandeur": req.user.id,
+    demandeur: req.user.id,
   })
     .populate("option")
-    .sort({ "dateDemande": -1 });
+    .sort({ dateDemande: -1 });
 
   res.json(demandes);
-
 });
 
 // @desc    Recuperer les demandes envoyer a un utilisateur pour le  traitee
@@ -29,7 +28,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, ...filters } = req.query;
 
   // Define base filter for user-specific requests
-  const userFilter = { "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id) };
+  const userFilter = {
+    "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+  };
 
   // Update filter based on query parameters
   if (filters.status) userFilter["traitement.status"] = String(filters.status);
@@ -48,21 +49,22 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
 
   if (filters.option) userFilter["option"] = filters.option;
 
+  let demandes = JSON.parse(
+    JSON.stringify(
+      await Demande.find(userFilter)
+        .populate("option demandeur")
+        .sort({ "traitement.dateEnvoi": -1 })
+        .limit(parseInt(limit))
+        .skip((parseInt(page) - 1) * parseInt(limit))
+        .exec()
+    )
+  );
 
-  let demandes = JSON.parse(JSON.stringify(
-    await Demande.find(userFilter)
-      .populate("option demandeur")
-      .sort({ "traitement.dateEnvoi": -1 })
-      .limit(parseInt(limit))
-      .skip((parseInt(page) - 1) * parseInt(limit))
-      .exec()
-  ));
-
-  let traitements = demandes.flatMap(demande =>
+  let traitements = demandes.flatMap((demande) =>
     demande.traitement
-      .filter(tr => String(tr.utilisateur) === String(req.user.id))
+      .filter((tr) => String(tr.utilisateur) === String(req.user.id))
       .reduce((acc, tr) => {
-        if (!acc.some(dtr => String(dtr.idTraitement) === String(tr._id))) {
+        if (!acc.some((dtr) => String(dtr.idTraitement) === String(tr._id))) {
           acc.push({
             idDemande: demande._id,
             idTraitement: tr._id,
@@ -83,7 +85,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   });
 
   if (filters.status)
-    traitements = traitements.filter(tr => String(tr.status) === String(filters.status))
+    traitements = traitements.filter(
+      (tr) => String(tr.status) === String(filters.status)
+    );
 
   // Count total documents based on filters
   const count = await Demande.countDocuments(userFilter);
@@ -97,11 +101,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     totalPages,
     currentPage: parseInt(page), // Ensure that page is parsed as an integer
   });
-
-
 });
-
-
 
 // @desc    Recuperer les elements de filter
 // @route   GET /api/demandes/handle/filter
@@ -113,7 +113,7 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
   const aggregationPipeline = [
     {
       $match: {
-        'traitement.utilisateur': userObjectId,
+        "traitement.utilisateur": userObjectId,
       },
     },
     {
@@ -121,36 +121,36 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
         uniqueOptions: [
           {
             $match: {
-              'traitement.utilisateur': userObjectId,
+              "traitement.utilisateur": userObjectId,
             },
           },
           {
             $group: {
-              _id: '$option',
+              _id: "$option",
             },
           },
         ],
         uniqueDemandeurs: [
           {
             $match: {
-              'traitement.utilisateur': userObjectId,
+              "traitement.utilisateur": userObjectId,
             },
           },
           {
             $group: {
-              _id: '$demandeur',
+              _id: "$demandeur",
             },
           },
         ],
         uniqueTypeApps: [
           {
             $match: {
-              'traitement.utilisateur': userObjectId,
+              "traitement.utilisateur": userObjectId,
             },
           },
           {
             $group: {
-              _id: '$traitement.code',
+              _id: "$traitement.code",
             },
           },
         ],
@@ -162,18 +162,20 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
   console.log(aggregationResult);
 
   const optionIds = aggregationResult.uniqueOptions.map((result) => result._id);
-  const demandeurIds = aggregationResult.uniqueDemandeurs.map((result) => result._id);
-  let typeApp = Array.from(new Set(aggregationResult.uniqueTypeApps.flatMap((result) => result._id)));
-
+  const demandeurIds = aggregationResult.uniqueDemandeurs.map(
+    (result) => result._id
+  );
+  let typeApp = Array.from(
+    new Set(aggregationResult.uniqueTypeApps.flatMap((result) => result._id))
+  );
 
   const [options, demandeurs] = await Promise.all([
-    Option.find({ '_id': { $in: optionIds } }),
-    Utilisateur.find({ '_id': { $in: demandeurIds } }),
+    Option.find({ _id: { $in: optionIds } }),
+    Utilisateur.find({ _id: { $in: demandeurIds } }),
   ]);
 
   res.json({ options, demandeurs, typeApp });
 });
-
 
 // @desc    Faire une demande
 // @route   POST /api/demandes
@@ -185,17 +187,15 @@ export const createDemande = asyncHandler(async (req, res) => {
   const user = await Utilisateur.findById(req.user.id);
   if (option) {
     if (user) {
-
       const checkDemande = await Demande.findOne({
         demandeur: user._id,
         option: option._id,
-        status: "en cours"
+        status: "en cours",
       });
       if (checkDemande) {
         res.status(400);
         throw new Error("vous avez deja demander cette demande !");
-      }
-      else {
+      } else {
         let code = "";
         let userID = "";
         let typeApp = "";
@@ -216,56 +216,75 @@ export const createDemande = asyncHandler(async (req, res) => {
             if (direction.directeur) {
               userID = direction.directeur;
 
-              if (option.signataires[1] === "pdd" && option.signataires[2] === "dir") {
-                const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
-                const dirDirection = await Direction.findById(option.service.direction);
+              if (
+                option.signataires[1] === "pdd" &&
+                option.signataires[2] === "dir"
+              ) {
+                const pddDirection = await Direction.findById(
+                  String(option.proprietaireDeDonnees)
+                );
+                const dirDirection = await Direction.findById(
+                  option.service.direction
+                );
                 if (dirDirection && pddDirection) {
-                  if (String(pddDirection.directeur) === String(direction.directeur) &&
-                    String(dirDirection.directeur) === String(direction.directeur)) {
+                  if (
+                    String(pddDirection.directeur) ===
+                      String(direction.directeur) &&
+                    String(dirDirection.directeur) ===
+                      String(direction.directeur)
+                  ) {
                     code = "hiq.pdd.dir";
-                    typeApp = "directeur hiérarchique, propriétaire de données et directeur de l'entité";
-                  }
-                  else {
+                    typeApp =
+                      "directeur hiérarchique, propriétaire de données et directeur de l'entité";
+                  } else {
                     if (option.signataires[1] === "dir") {
-                      const dirDirection = await Direction.findById(option.service.direction);
+                      const dirDirection = await Direction.findById(
+                        option.service.direction
+                      );
                       if (dirDirection) {
-                        if (String(dirDirection.directeur) === String(direction.directeur)) {
+                        if (
+                          String(dirDirection.directeur) ===
+                          String(direction.directeur)
+                        ) {
                           code = "hiq.dir";
-                          typeApp = "directeur hiérarchique et directeur de l'entité";
-                        }
-                        else {
-                          code = "hiq";
-                          typeApp = "directeur hiérarchique";
-                        }
-                      }
-                      else {
-                        res.status(400);
-                        throw new Error("directeur de  l'entité introuvable !");
-                      }
-                    }
-                    else if (option.signataires[1] === "pdd") {
-                      const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
-                      if (pddDirection) {
-                        if (String(pddDirection.directeur) === String(direction.directeur)) {
-                          code = "hiq.pdd";
-                          typeApp = "directeur hiérarchique et propriétaire de données";
+                          typeApp =
+                            "directeur hiérarchique et directeur de l'entité";
                         } else {
                           code = "hiq";
                           typeApp = "directeur hiérarchique";
                         }
-                      }
-                      else {
+                      } else {
                         res.status(400);
-                        throw new Error("proprietaire de donnees introuvable !");
+                        throw new Error("directeur de  l'entité introuvable !");
                       }
-                    }
-                    else {
+                    } else if (option.signataires[1] === "pdd") {
+                      const pddDirection = await Direction.findById(
+                        String(option.proprietaireDeDonnees)
+                      );
+                      if (pddDirection) {
+                        if (
+                          String(pddDirection.directeur) ===
+                          String(direction.directeur)
+                        ) {
+                          code = "hiq.pdd";
+                          typeApp =
+                            "directeur hiérarchique et propriétaire de données";
+                        } else {
+                          code = "hiq";
+                          typeApp = "directeur hiérarchique";
+                        }
+                      } else {
+                        res.status(400);
+                        throw new Error(
+                          "proprietaire de donnees introuvable !"
+                        );
+                      }
+                    } else {
                       code = "hiq";
                       typeApp = "directeur hiérarchique";
                     }
-                  };
-                }
-                else {
+                  }
+                } else {
                   if (!pddDirection) {
                     res.status(400);
                     throw new Error("proprietaire de donnees introuvable !");
@@ -275,58 +294,60 @@ export const createDemande = asyncHandler(async (req, res) => {
                     throw new Error("directeur de  l'entité introuvable !");
                   }
                 }
-              }
-              else {
+              } else {
                 if (option.signataires[1] === "dir") {
-                  const dirDirection = await Direction.findById(option.service.direction);
+                  const dirDirection = await Direction.findById(
+                    option.service.direction
+                  );
                   if (dirDirection) {
-                    if (String(dirDirection.directeur) === String(direction.directeur)) {
+                    if (
+                      String(dirDirection.directeur) ===
+                      String(direction.directeur)
+                    ) {
                       code = "hiq.dir";
-                      typeApp = "directeur hiérarchique et directeur de l'entité";
-                    }
-                    else {
-                      code = "hiq";
-                      typeApp = "directeur hiérarchique";
-                    }
-                  }
-                  else {
-                    res.status(400);
-                    throw new Error("directeur de l'entité introuvable !");
-                  }
-                }
-                else if (option.signataires[1] === "pdd") {
-                  const pddDirection = await Direction.findById(String(option.proprietaireDeDonnees));
-                  if (pddDirection) {
-                    if (String(pddDirection.directeur) === String(direction.directeur)) {
-                      code = "hiq.pdd";
-                      typeApp = "directeur hiérarchique et propriétaire de données";
+                      typeApp =
+                        "directeur hiérarchique et directeur de l'entité";
                     } else {
                       code = "hiq";
                       typeApp = "directeur hiérarchique";
                     }
+                  } else {
+                    res.status(400);
+                    throw new Error("directeur de l'entité introuvable !");
                   }
-                  else {
+                } else if (option.signataires[1] === "pdd") {
+                  const pddDirection = await Direction.findById(
+                    String(option.proprietaireDeDonnees)
+                  );
+                  if (pddDirection) {
+                    if (
+                      String(pddDirection.directeur) ===
+                      String(direction.directeur)
+                    ) {
+                      code = "hiq.pdd";
+                      typeApp =
+                        "directeur hiérarchique et propriétaire de données";
+                    } else {
+                      code = "hiq";
+                      typeApp = "directeur hiérarchique";
+                    }
+                  } else {
                     res.status(400);
                     throw new Error("proprietaire de donnees introuvable !");
                   }
-
-                }
-                else {
+                } else {
                   code = "hiq";
                   typeApp = "directeur hiérarchique";
                 }
               }
-
             } else {
               res.status(400);
               throw new Error("la direction n'a pas de directeur !");
             }
           }
-        }
-        else {
+        } else {
           res.status(404);
           throw new Error("direction introuvable !");
-
         }
 
         const demande = new Demande({
@@ -344,12 +365,21 @@ export const createDemande = asyncHandler(async (req, res) => {
         });
 
         await demande.save();
-        await demande.populate("demandeur")
-        const messageContent = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`
-        sendNotification(userID, messageContent, `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`)
-        res.status(201).json({ message: "demande a été effectuée avec succès" });
+        await demande.populate("demandeur");
+        const messageContent = `<p>Une <a style='font-weight:bold' href="${
+          process.env.CLIENT_ADDRESS
+        }/details-demande/${demande._id}/traitement/${
+          demande.traitement[0]._id
+        }">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`;
+        sendNotification(
+          userID,
+          messageContent,
+          `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`
+        );
+        res
+          .status(201)
+          .json({ message: "demande a été effectuée avec succès" });
       }
-
     } else {
       res.status(404);
       throw new Error("utilisateur introuvable !");
@@ -358,44 +388,51 @@ export const createDemande = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("option introuvable !");
   }
-
 });
-
 
 // @desc    Recuperer le details d'une demande par ID
 // @route   GET /api/demandes/:id/traitement/:idTraitement
 // @access  private
 export const getDemandesByID = asyncHandler(async (req, res) => {
-
   let demande = await Demande.findOne({
     _id: req.params.id,
-    "traitement._id": req.params.idTraitement
+    "traitement._id": req.params.idTraitement,
   })
     .populate("demandeur")
     .populate("option");
 
   if (demande) {
     demande = JSON.parse(JSON.stringify(demande));
-    const index = demande.traitement.findIndex(tr => String(tr._id) === String(req.params.idTraitement));
+    const index = demande.traitement.findIndex(
+      (tr) => String(tr._id) === String(req.params.idTraitement)
+    );
     if (String(demande.traitement[index].utilisateur) === String(req.user.id)) {
-      const service = await Service.findById(demande.demandeur.service).populate("chefService");
-      const direction = await Direction.findById(demande.demandeur.direction).populate("directeur");
-      const optionService = await Service.findById(demande.option.service).populate("chefService");
+      const service = await Service.findById(
+        demande.demandeur.service
+      ).populate("chefService");
+      const direction = await Direction.findById(
+        demande.demandeur.direction
+      ).populate("directeur");
+      const optionService = await Service.findById(
+        demande.option.service
+      ).populate("chefService");
       let optionPDD = null;
       if (demande.option.proprietaireDeDonnees)
-        optionPDD = await Direction.findById(demande.option.proprietaireDeDonnees).populate("directeur");
+        optionPDD = await Direction.findById(
+          demande.option.proprietaireDeDonnees
+        ).populate("directeur");
 
-      const optionDirection = await Direction.findById(optionService.direction).populate("directeur");
+      const optionDirection = await Direction.findById(
+        optionService.direction
+      ).populate("directeur");
 
       demande.dirLibelle = optionDirection.libelle;
 
       let sig = [];
       for (const s of demande.option.signataires) {
-
-        let traitement = demande.traitement.find(tr => tr.code === s);
+        let traitement = demande.traitement.find((tr) => tr.code === s);
 
         if (traitement) {
-
           let obj = null;
           let status = traitement.status;
 
@@ -411,7 +448,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
-              }
+              };
             }
 
             if (s === "hiq") {
@@ -423,7 +460,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
-              }
+              };
             }
 
             if (s === "pdd") {
@@ -435,7 +472,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
-              }
+              };
             }
 
             if (s === "dir") {
@@ -447,13 +484,11 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
-              }
+              };
             }
             sig.push(obj);
           }
-
-        }
-        else {
+        } else {
           for (const tr of demande.traitement) {
             const arrCode = tr.code.split(".");
             if (arrCode.length > 1) {
@@ -475,7 +510,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
-                      }
+                      };
                     }
 
                     if (item === "hiq") {
@@ -487,7 +522,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
-                      }
+                      };
                     }
 
                     if (item === "pdd") {
@@ -499,7 +534,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
-                      }
+                      };
                     }
 
                     if (item === "dir") {
@@ -511,11 +546,10 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
-                      }
+                      };
                     }
                     sig.push(obj);
                   }
-
                 }
               }
             }
@@ -527,24 +561,21 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
       demande.demandeur.direction = direction;
       demande.demandeur.service = service;
 
-
-
       res.json(demande);
+    } else {
+      res.json({
+        message:
+          "vous n'avez pas le droit de traiter ou de  consulter ce traitement de cette demande",
+        not: true,
+      });
     }
-    else {
-      res.json({ message: "vous n'avez pas le droit de traiter ou de  consulter ce traitement de cette demande", not: true, })
-    }
-
   } else {
     res.status(404);
     throw new Error("demande introuvable");
   }
 
   res.json(demande);
-
-
 });
-
 
 // @desc    Recuperer le status de traitement
 // @route   PUT /api/demandes/:id/status/:idTraitement
@@ -552,13 +583,15 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
 export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
   const demande = await Demande.findOne({
     _id: req.params.id,
-    "traitement._id": req.params.idTraitement
+    "traitement._id": req.params.idTraitement,
   });
 
   if (demande) {
-    const index = demande.traitement.findIndex(tr => String(tr._id) === String(req.params.idTraitement));
+    const index = demande.traitement.findIndex(
+      (tr) => String(tr._id) === String(req.params.idTraitement)
+    );
     if (String(demande.traitement[index].utilisateur) === String(req.user.id)) {
-      return res.json({ status: demande.traitement[index].status })
+      return res.json({ status: demande.traitement[index].status });
     }
   } else {
     res.status(404);
@@ -572,16 +605,19 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
 // @route   PUT /api/demandes/:id/approuve/:idTraitement
 // @access  private
 export const approuverDemande = asyncHandler(async (req, res) => {
-  let demande = await Demande.findById(req.params.id).populate("option").populate("demandeur");
+  let demande = await Demande.findById(req.params.id)
+    .populate("option")
+    .populate("demandeur");
   if (demande) {
     if (demande.status === "en cours") {
       // recuperer le traitement :
-      const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
+      const traitement = demande.traitement.find(
+        (tr) => String(tr._id) === String(req.params.idTraitement)
+      );
 
       if (traitement) {
         if (String(traitement.utilisateur) === String(req.user.id)) {
           if (traitement.status === "en cours") {
-
             let crtfCode = "";
             // changer le status de traitement :
             for (let tr of demande.traitement) {
@@ -600,79 +636,88 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             if (arrCrtCode.length > 1) {
               const direction = await Direction.findOne({
                 directeur: req.user.id,
-              }).populate("directeur")
+              }).populate("directeur");
 
-              console.log(req.user.id)
+              console.log(req.user.id);
 
-              console.log("direction")
+              console.log("direction");
               console.log(direction);
 
               if (direction) {
                 if (crtfCode === "hiq.pdd") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de donnes `;
                 }
 
                 if (crtfCode === "pdd.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l entite`;
                 }
 
                 if (crtfCode === "hiq.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l entite`;
                 }
 
                 if (crtfCode === "hiq.pdd.dir") {
                   contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                  Votre <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}">demande</a> 
                   a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de donnes et directeur de l entite`;
-
                 }
-              }
-              else {
+              } else {
                 res.status(404);
-                throw Error("direction introuvable !")
+                throw Error("direction introuvable !");
               }
-
-            }
-            else {
+            } else {
               if (crtfCode === "cds") {
                 let service = await Service.findOne({
-                  chefService: req.user.id
+                  chefService: req.user.id,
                 }).populate("chefService");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service`;
-              }
-              else if (crtfCode === "hiq") {
+              } else if (crtfCode === "hiq") {
                 let direction = await Direction.findOne({
-                  directeur: req.user.id
+                  directeur: req.user.id,
                 }).populate("directeur");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique`;
-              }
-              else if (crtfCode === "pdd") {
+              } else if (crtfCode === "pdd") {
                 let direction = await Direction.findOne({
-                  directeur: req.user.id
+                  directeur: req.user.id,
                 }).populate("directeur");
 
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données`;
-              }
-              else if (crtfCode === "dir") {
+              } else if (crtfCode === "dir") {
                 let direction = await Direction.findOne({
-                  directeur: req.user.id
+                  directeur: req.user.id,
                 }).populate("directeur");
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité`;
               }
             }
@@ -682,38 +727,49 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             const codeArr = traitement.code.split(".");
             if (codeArr.length > 1) {
               let code = codeArr[codeArr.length - 1];
-              const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(code));
+              const codeIndex = demande.option.signataires.findIndex(
+                (sg) => String(sg) === String(code)
+              );
               if (codeIndex !== -1) {
                 // finalise le traitement global de la demande :
                 if (codeIndex + 1 === demande.option.signataires.length) {
                   demande.status = "approuve";
                   await demande.save();
-                  contenu += " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée et finalisée`);
+                  contenu +=
+                    " et pour cela, elle a été finalisée et approuvée avec succès </p>";
+                  sendNotification(
+                    demande.demandeur._id,
+                    contenu,
+                    `Votre demande a été approuvée et finalisée`
+                  );
                   res.json({ message: "demande approuve" });
-                }
-                else {
-                  // verfication de qu'est le directeur qui va traiter cette demande selon le code: 
-                  let dirUserID = '';
-                  let nextCode = demande.option.signataires[codeIndex + 1]
+                } else {
+                  // verfication de qu'est le directeur qui va traiter cette demande selon le code:
+                  let dirUserID = "";
+                  let nextCode = demande.option.signataires[codeIndex + 1];
                   if (nextCode === "hiq") {
-                    const directionID = await Utilisateur.findById(req.user.id).direction;
+                    const directionID = await Utilisateur.findById(req.user.id)
+                      .direction;
                     const direction = await Direction.findById(directionID);
                     if (direction) {
                       dirUserID = direction.directeur;
-                      typeApp = `directeur hiérarchique`
+                      typeApp = `directeur hiérarchique`;
                     }
-                  }
-                  else if (nextCode === "pdd") {
-                    const direction = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                  } else if (nextCode === "pdd") {
+                    const direction = await Direction.findById(
+                      String(demande.option.proprietaireDeDonnees)
+                    );
                     if (direction) {
                       dirUserID = direction.directeur;
                       typeApp = "propriétaire de données";
                     }
-                  }
-                  else if (nextCode === "dir") {
-                    const service = await Service.findById(demande.option.service)
-                    const direction = await Direction.findById(String(service.direction));
+                  } else if (nextCode === "dir") {
+                    const service = await Service.findById(
+                      demande.option.service
+                    );
+                    const direction = await Direction.findById(
+                      String(service.direction)
+                    );
                     if (direction) {
                       dirUserID = direction.directeur;
                       typeApp = "directeur de l'entité";
@@ -724,223 +780,272 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.traitement.push({
                     utilisateur: dirUserID,
                     dateEnvoi: new Date(),
-                    status: 'en cours',
+                    status: "en cours",
                     code: nextCode,
                   });
 
-
                   await demande.save();
-                  await demande.populate("demandeur")
+                  await demande.populate("demandeur");
                   // envoyer les notifications :
-                  contenu += "</p>"
-                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu, `Demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}`);
+                  contenu += "</p>";
+                  sendNotification(
+                    demande.demandeur._id,
+                    contenu,
+                    `Votre demande a été approuvée`
+                  );
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}/traitement/${
+                    demande.traitement[codeIndex]._id
+                  }">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`;
+                  sendNotification(
+                    dirUserID,
+                    dirContenu,
+                    `Demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}`
+                  );
 
                   res.json(demande);
                 }
-              }
-              else {
+              } else {
                 res.status(500);
                 throw new Error("pas de code !");
               }
-            }
-            else {
-              const codeIndex = demande.option.signataires.findIndex(sg => String(sg) === String(traitement.code));
+            } else {
+              const codeIndex = demande.option.signataires.findIndex(
+                (sg) => String(sg) === String(traitement.code)
+              );
               if (codeIndex !== -1) {
                 // finalise le traitement global de la demande :
                 if (codeIndex + 1 === demande.option.signataires.length) {
                   demande.status = "approuve";
                   await demande.save();
-                  contenu += " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
+                  contenu +=
+                    " et pour cela, elle a été finalisée et approuvée avec succès </p>";
+                  sendNotification(
+                    demande.demandeur._id,
+                    contenu,
+                    `Votre demande a été approuvée`
+                  );
                   res.json({ message: "demande approuve " });
-                }
-                else {
-                  // verfication de qu'est le directeur qui va traiter cette demande selon le code : 
-                  let dirUserID = '';
+                } else {
+                  // verfication de qu'est le directeur qui va traiter cette demande selon le code :
+                  let dirUserID = "";
                   let nextCode1 = demande.option.signataires[codeIndex + 1];
                   let envCode = "";
                   if (nextCode1) {
                     if (nextCode1 === "hiq") {
-                      const directionID = JSON.parse(JSON.stringify(await Utilisateur.findById(demande.demandeur._id))).direction;
+                      const directionID = JSON.parse(
+                        JSON.stringify(
+                          await Utilisateur.findById(demande.demandeur._id)
+                        )
+                      ).direction;
 
-                      const hiqDirection = await Direction.findById(directionID);
+                      const hiqDirection = await Direction.findById(
+                        directionID
+                      );
 
                       if (hiqDirection) {
-                        let nextCode2 = demande.option.signataires[codeIndex + 2];
+                        let nextCode2 =
+                          demande.option.signataires[codeIndex + 2];
                         if (nextCode2) {
                           if (nextCode2 === "pdd") {
-                            const pddDirection = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                            const pddDirection = await Direction.findById(
+                              String(demande.option.proprietaireDeDonnees)
+                            );
                             if (pddDirection) {
-                              if (String(hiqDirection._id) === String(pddDirection._id)) {
-                                let nextCode3 = demande.option.signataires[codeIndex + 3];
+                              if (
+                                String(hiqDirection._id) ===
+                                String(pddDirection._id)
+                              ) {
+                                let nextCode3 =
+                                  demande.option.signataires[codeIndex + 3];
                                 if (nextCode3) {
                                   if (nextCode3 === "dir") {
-                                    const service = await Service.findById(demande.option.service)
-                                    const dirDirection = await Direction.findById(String(service.direction));
+                                    const service = await Service.findById(
+                                      demande.option.service
+                                    );
+                                    const dirDirection =
+                                      await Direction.findById(
+                                        String(service.direction)
+                                      );
                                     if (dirDirection) {
-                                      if (String(hiqDirection._id) === String(dirDirection._id)) {
+                                      if (
+                                        String(hiqDirection._id) ===
+                                        String(dirDirection._id)
+                                      ) {
                                         dirUserID = hiqDirection.directeur;
-                                        typeApp = "directeur hiérarchique, propriétaire de données et directeur de l'entité ";
+                                        typeApp =
+                                          "directeur hiérarchique, propriétaire de données et directeur de l'entité ";
                                         envCode = "hiq.pdd.dir";
-                                      }
-                                      else {
+                                      } else {
                                         dirUserID = hiqDirection.directeur;
-                                        typeApp = "directeur hiérarchique et propriétaire de données";
+                                        typeApp =
+                                          "directeur hiérarchique et propriétaire de données";
                                         envCode = "hiq.pdd";
                                       }
-                                    }
-                                    else {
+                                    } else {
                                       res.status(404);
-                                      throw Error("direction introuvable !")
+                                      throw Error("direction introuvable !");
                                     }
-                                  }
-                                  else {
+                                  } else {
                                     dirUserID = hiqDirection.directeur;
-                                    typeApp = "directeur hiérarchique et propriétaire de données";
+                                    typeApp =
+                                      "directeur hiérarchique et propriétaire de données";
                                     envCode = "hiq.pdd";
                                   }
-                                }
-                                else {
+                                } else {
                                   dirUserID = hiqDirection.directeur;
-                                  typeApp = "directeur hiérarchique et propriétaire de données";
+                                  typeApp =
+                                    "directeur hiérarchique et propriétaire de données";
                                   envCode = "hiq.pdd";
                                 }
-
-                              }
-                              else {
+                              } else {
                                 dirUserID = hiqDirection.directeur;
                                 typeApp = "directeur hiérarchique";
                                 envCode = "hiq";
                               }
-                            }
-                            else {
+                            } else {
                               res.status(404);
-                              throw Error("direction introuvable !")
+                              throw Error("direction introuvable !");
                             }
-                          }
-                          else if (nextCode2 === "dir") {
-                            const service = await Service.findById(demande.option.service)
-                            const dirDirection = await Direction.findById(String(service.direction));
+                          } else if (nextCode2 === "dir") {
+                            const service = await Service.findById(
+                              demande.option.service
+                            );
+                            const dirDirection = await Direction.findById(
+                              String(service.direction)
+                            );
                             if (dirDirection) {
                               dirUserID = hiqDirection.directeur;
-                              typeApp = "directeur hiérarchique et directeur de l'entité";
+                              typeApp =
+                                "directeur hiérarchique et directeur de l'entité";
                               envCode = "hiq.dir";
                             } else {
                               res.status(404);
-                              throw Error("direction introuvable !")
+                              throw Error("direction introuvable !");
                             }
-                          }
-                          else {
+                          } else {
                             dirUserID = hiqDirection.directeur;
                             typeApp = "directeur hiérarchique";
                             envCode = "hiq";
                           }
-                        }
-                        else {
+                        } else {
                           dirUserID = hiqDirection.directeur;
                           typeApp = "directeur hiérarchique";
                           envCode = "hiq";
                         }
-                      }
-                      else {
+                      } else {
                         res.status(404);
-                        throw Error("direction introuvable !")
+                        throw Error("direction introuvable !");
                       }
-                    }
-                    else if (nextCode1 === "pdd") {
-                      const pddDirection = await Direction.findById(String(demande.option.proprietaireDeDonnees));
+                    } else if (nextCode1 === "pdd") {
+                      const pddDirection = await Direction.findById(
+                        String(demande.option.proprietaireDeDonnees)
+                      );
                       if (pddDirection) {
-                        let nextCode2 = demande.option.signataires[codeIndex + 2];
+                        let nextCode2 =
+                          demande.option.signataires[codeIndex + 2];
                         if (nextCode2) {
                           if (nextCode2 === "dir") {
-                            const service = await Service.findById(demande.option.service)
-                            const dirDirection = await Direction.findById(service.direction);
+                            const service = await Service.findById(
+                              demande.option.service
+                            );
+                            const dirDirection = await Direction.findById(
+                              service.direction
+                            );
                             if (dirDirection) {
-                              if (String(pddDirection._id) === String(dirDirection._id)) {
+                              if (
+                                String(pddDirection._id) ===
+                                String(dirDirection._id)
+                              ) {
                                 dirUserID = pddDirection.directeur;
-                                typeApp = "propriétaire de données et directeur de l'entité ";
+                                typeApp =
+                                  "propriétaire de données et directeur de l'entité ";
                                 envCode = "pdd.dir";
-                              }
-                              else {
+                              } else {
                                 dirUserID = pddDirection.directeur;
                                 typeApp = "propriétaire de données";
                                 envCode = "pdd";
                               }
-                            }
-                            else {
+                            } else {
                               res.status(404);
-                              throw Error("direction introuvable !")
+                              throw Error("direction introuvable !");
                             }
-                          }
-                          else {
+                          } else {
                             dirUserID = pddDirection.directeur;
                             typeApp = "propriétaire de données";
                             envCode = "pdd";
                           }
-                        }
-                        else {
+                        } else {
                           dirUserID = pddDirection.directeur;
                           typeApp = "propriétaire de données";
                           envCode = "pdd";
                         }
-                      }
-                      else {
+                      } else {
                         res.status(404);
-                        throw Error("direction introuvable !")
+                        throw Error("direction introuvable !");
                       }
-                    }
-                    else if (nextCode1 === "dir") {
-                      const service = await Service.findById(demande.option.service)
-                      const direction = await Direction.findById(String(service.direction));
+                    } else if (nextCode1 === "dir") {
+                      const service = await Service.findById(
+                        demande.option.service
+                      );
+                      const direction = await Direction.findById(
+                        String(service.direction)
+                      );
                       if (direction) {
                         dirUserID = direction.directeur;
                         typeApp = "directeur de l'entité";
                         envCode = "dir";
                       }
-
                     }
                     // envoyer le traitement :
                     demande.traitement.push({
                       utilisateur: dirUserID,
                       dateEnvoi: new Date(),
-                      status: 'en cours',
+                      status: "en cours",
                       code: envCode,
                     });
                   }
                   await demande.save();
                   contenu += "</p>";
                   // envoyer les notifications :
-                  sendNotification(demande.demandeur._id, contenu, `Votre demande a été approuvée`);
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[codeIndex + 1]._id}">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`
-                  sendNotification(dirUserID, dirContenu, `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`);
+                  sendNotification(
+                    demande.demandeur._id,
+                    contenu,
+                    `Votre demande a été approuvée`
+                  );
+                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${
+                    process.env.CLIENT_ADDRESS
+                  }/details-demande/${demande._id}/traitement/${
+                    demande.traitement[codeIndex + 1]._id
+                  }">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`;
+                  sendNotification(
+                    dirUserID,
+                    dirContenu,
+                    `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                  );
                   res.json({ message: "demande approvee avec success !" });
                 }
-              }
-              else {
+              } else {
                 res.status(500);
                 throw new Error("pas de code !");
               }
             }
-
-          }
-          else {
+          } else {
             res.status(400);
             throw new Error("demande deja traitée");
           }
-        }
-        else {
+        } else {
           res.status(400);
-          throw new Error("vous n'avez pas le droit d'approuver cette demande !");
+          throw new Error(
+            "vous n'avez pas le droit d'approuver cette demande !"
+          );
         }
-      }
-      else {
+      } else {
         res.status(404);
         throw new Error("traitement introuvable");
       }
-    }
-    else {
+    } else {
       res.status(400);
       throw new Error("demande deja traitée");
     }
@@ -957,7 +1062,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
   let demande = await Demande.findById(req.params.id).populate("option");
   if (demande) {
     if (demande.status === "en cours") {
-      const traitement = demande.traitement.find(tr => String(tr._id) === String(req.params.idTraitement))
+      const traitement = demande.traitement.find(
+        (tr) => String(tr._id) === String(req.params.idTraitement)
+      );
       if (traitement.status === "en cours") {
         if (traitement) {
           if (String(traitement.utilisateur) === String(req.user.id)) {
@@ -981,100 +1088,128 @@ export const refuserDemande = asyncHandler(async (req, res) => {
               if (arrCrtCode.length > 1) {
                 const direction = await Direction.findOne({
                   directeur: req.user.id,
-                }).populate("directeur")
+                }).populate("directeur");
 
                 if (direction) {
                   if (crtfCode === "hiq.pdd") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de données. motif de refus: ${req.body.motif} </p>`;
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de données. motif de refus: ${
+                      req.body.motif
+                    } </p>`;
                   }
 
                   if (crtfCode === "pdd.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l'entité. motif de refus: ${req.body.motif} </p>`;
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l'entité. motif de refus: ${
+                      req.body.motif
+                    } </p>`;
                   }
 
                   if (crtfCode === "hiq.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l'entite. motif de refus: ${
+                      req.body.motif
+                    } </p>`;
                   }
 
                   if (crtfCode === "hiq.pdd.dir") {
                     contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l'entite. motif de refus: ${req.body.motif} </p>`;
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
+                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l'entite. motif de refus: ${
+                      req.body.motif
+                    } </p>`;
                   }
-                }
-                else {
+                } else {
                   res.status(404);
-                  throw Error("direction introuvable !")
+                  throw Error("direction introuvable !");
                 }
-              }
-              else {
+              } else {
                 if (crtfCode === "cds") {
                   let service = await Service.findOne({
-                    chefService: req.user.id
+                    chefService: req.user.id,
                   }).populate("chefService");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service. motif de refus: ${req.body.motif} </p>`;
-                }
-                else if (crtfCode === "hiq") {
+                      Votre <a style='font-weight:bold' href="${
+                        process.env.CLIENT_ADDRESS
+                      }/details-demande/${demande._id}">demande</a> 
+                      a été refusée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service. motif de refus: ${
+                    req.body.motif
+                  } </p>`;
+                } else if (crtfCode === "hiq") {
                   let direction = await Direction.findOne({
-                    directeur: req.user.id
+                    directeur: req.user.id,
                   }).populate("directeur");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique. motif de refus: ${req.body.motif} </p>`;
-                }
-                else if (crtfCode === "pdd") {
+                      Votre <a style='font-weight:bold' href="${
+                        process.env.CLIENT_ADDRESS
+                      }/details-demande/${demande._id}">demande</a> 
+                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique. motif de refus: ${
+                    req.body.motif
+                  } </p>`;
+                } else if (crtfCode === "pdd") {
                   let direction = await Direction.findOne({
-                    directeur: req.user.id
+                    directeur: req.user.id,
                   }).populate("directeur");
 
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: ${req.body.motif} </p>`;
-                }
-                else if (crtfCode === "dir") {
+                      Votre <a style='font-weight:bold' href="${
+                        process.env.CLIENT_ADDRESS
+                      }/details-demande/${demande._id}">demande</a> 
+                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: ${
+                    req.body.motif
+                  } </p>`;
+                } else if (crtfCode === "dir") {
                   let direction = await Direction.findOne({
-                    directeur: req.user.id
+                    directeur: req.user.id,
                   }).populate("directeur");
                   contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: ${req.body.motif} </p>`;
+                      Votre <a style='font-weight:bold' href="${
+                        process.env.CLIENT_ADDRESS
+                      }/details-demande/${demande._id}">demande</a> 
+                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: ${
+                    req.body.motif
+                  } </p>`;
                 }
               }
 
-              sendNotification(demande.demandeur, contenu, `Votre demande a été refusée`);
-              res.json({ message: "demande refuse!" })
-            }
-            else {
+              sendNotification(
+                demande.demandeur,
+                contenu,
+                `Votre demande a été refusée`
+              );
+              res.json({ message: "demande refuse!" });
+            } else {
               res.status(400);
               throw new Error("demande deja traitée");
             }
-          }
-          else {
+          } else {
             res.status(400);
-            throw new Error("vous n'avez pas le droit de refuser cette demande !");
+            throw new Error(
+              "vous n'avez pas le droit de refuser cette demande !"
+            );
           }
-        }
-        else {
+        } else {
           res.status(404);
           throw new Error("traitement introuvable");
         }
-      }
-      else {
+      } else {
         res.status(400);
         throw new Error("demande deja traitée");
       }
-    }
-    else {
+    } else {
       res.status(400);
       throw new Error("demande deja traitée");
     }
@@ -1086,8 +1221,6 @@ export const refuserDemande = asyncHandler(async (req, res) => {
   res.json(demande);
 });
 
-
-
 // @desc    Recuperer le details d'une demande par ID
 // @route   GET /api/demandes/:id
 // @access  private
@@ -1097,161 +1230,172 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
   })
     .populate("demandeur")
     .populate("option")
-    .populate("traitement.utilisateur")
+    .populate("traitement.utilisateur");
 
   if (demande) {
-    demande = JSON.parse(JSON.stringify(demande));
+    if (String(demande.demandeur) === String(req.user.id)) {
+      demande = JSON.parse(JSON.stringify(demande));
 
-    const service = await Service.findById(demande.demandeur.service).populate("chefService");
-    const direction = await Direction.findById(demande.demandeur.direction).populate("directeur");
-    const optionService = await Service.findById(demande.option.service).populate("chefService");
+      const service = await Service.findById(
+        demande.demandeur.service
+      ).populate("chefService");
+      const direction = await Direction.findById(
+        demande.demandeur.direction
+      ).populate("directeur");
+      const optionService = await Service.findById(
+        demande.option.service
+      ).populate("chefService");
 
-    let optionPDD = null;
-    if (demande.option.proprietaireDeDonnees)
-      optionPDD = await Direction.findById(demande.option.proprietaireDeDonnees).populate("directeur");
+      let optionPDD = null;
+      if (demande.option.proprietaireDeDonnees)
+        optionPDD = await Direction.findById(
+          demande.option.proprietaireDeDonnees
+        ).populate("directeur");
 
-    const optionDirection = await Direction.findById(optionService.direction).populate("directeur");
-    demande.dirLibelle = optionDirection.libelle;
+      const optionDirection = await Direction.findById(
+        optionService.direction
+      ).populate("directeur");
+      demande.dirLibelle = optionDirection.libelle;
 
-    let sig = [];
-    for (const s of demande.option.signataires) {
-      let traitement = demande.traitement.find(tr => tr.code === s);
-      if (traitement) {
-        let obj = null;
-        let status = traitement.status;
-        if (status && status !== "en cours") {
-          let dateTraitement = traitement.dateTraitement;
-          if (s === "cds") {
-            obj = {
-              code: "cds",
-              nom: service.nom,
-              prenom: service.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+      let sig = [];
+      for (const s of demande.option.signataires) {
+        let traitement = demande.traitement.find((tr) => tr.code === s);
+        if (traitement) {
+          let obj = null;
+          let status = traitement.status;
+          if (status && status !== "en cours") {
+            let dateTraitement = traitement.dateTraitement;
+            if (s === "cds") {
+              obj = {
+                code: "cds",
+                nom: service.nom,
+                prenom: service.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
             }
-          }
 
-          if (s === "hiq") {
-            obj = {
-              code: "hiq",
-              nom: direction.directeur.nom,
-              prenom: direction.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+            if (s === "hiq") {
+              obj = {
+                code: "hiq",
+                nom: direction.directeur.nom,
+                prenom: direction.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
             }
-          }
 
-          if (s === "pdd") {
-            obj = {
-              code: "pdd",
-              nom: optionPDD.directeur.nom,
-              prenom: optionPDD.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+            if (s === "pdd") {
+              obj = {
+                code: "pdd",
+                nom: optionPDD.directeur.nom,
+                prenom: optionPDD.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
             }
-          }
 
-          if (s === "dir") {
-            obj = {
-              code: "dir",
-              nom: optionDirection.directeur.nom,
-              prenom: optionDirection.directeur.prenom,
-              approuve: status === "approuve" ? true : false,
-              refuse: status === "refuse" ? true : false,
-              dateTraitement: dateTraitement,
-              // date:trai
+            if (s === "dir") {
+              obj = {
+                code: "dir",
+                nom: optionDirection.directeur.nom,
+                prenom: optionDirection.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
             }
+            sig.push(obj);
           }
-          sig.push(obj);
-        }
+        } else {
+          for (const tr of demande.traitement) {
+            const arrCode = tr.code.split(".");
+            if (arrCode.length > 1) {
+              for (const item of arrCode) {
+                let traitement = tr;
+                if (traitement) {
+                  let obj = null;
+                  let status = traitement.status;
 
-      }
-      else {
-        for (const tr of demande.traitement) {
-          const arrCode = tr.code.split(".");
-          if (arrCode.length > 1) {
-            for (const item of arrCode) {
-              let traitement = tr;
-              if (traitement) {
-                let obj = null;
-                let status = traitement.status;
+                  if (status && status !== "en cours") {
+                    let dateTraitement = traitement.dateTraitement;
 
-                if (status && status !== "en cours") {
-                  let dateTraitement = traitement.dateTraitement;
-
-                  if (item === "cds") {
-                    obj = {
-                      code: "cds",
-                      nom: service.nom,
-                      prenom: service.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
+                    if (item === "cds") {
+                      obj = {
+                        code: "cds",
+                        nom: service.nom,
+                        prenom: service.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
                     }
-                  }
 
-                  if (item === "hiq") {
-                    obj = {
-                      code: "hiq",
-                      nom: direction.directeur.nom,
-                      prenom: direction.directeur.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
+                    if (item === "hiq") {
+                      obj = {
+                        code: "hiq",
+                        nom: direction.directeur.nom,
+                        prenom: direction.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
                     }
-                  }
 
-                  if (item === "pdd") {
-                    obj = {
-                      code: "pdd",
-                      nom: optionPDD.directeur.nom,
-                      prenom: optionPDD.directeur.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
+                    if (item === "pdd") {
+                      obj = {
+                        code: "pdd",
+                        nom: optionPDD.directeur.nom,
+                        prenom: optionPDD.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
                     }
-                  }
 
-                  if (item === "dir") {
-                    obj = {
-                      code: "dir",
-                      nom: optionDirection.directeur.nom,
-                      prenom: optionDirection.directeur.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
+                    if (item === "dir") {
+                      obj = {
+                        code: "dir",
+                        nom: optionDirection.directeur.nom,
+                        prenom: optionDirection.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
                     }
+                    sig.push(obj);
                   }
-                  sig.push(obj);
                 }
-
               }
             }
           }
         }
       }
+
+      demande.sig = sig;
+      demande.demandeur.direction = direction;
+      demande.demandeur.service = service;
+
+      demande.traitement.sort((a, b) => {
+        return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
+      });
+
+      res.json(demande);
+    } else {
+      res.status(400);
+      throw new Error("Vous n'êtes pas le demandeur de cette requête, vous ne pouvez pas consulter cette demande !");
     }
-
-    demande.sig = sig;
-    demande.demandeur.direction = direction;
-    demande.demandeur.service = service;
-
-    demande.traitement.sort((a, b) => {
-      return new Date(b.dateEnvoi) - new Date(a.dateEnvoi)
-    })
-
-    res.json(demande);
-
   } else {
     res.status(404);
     throw new Error("demande introuvable");
@@ -1259,4 +1403,3 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
 
   res.json(demande);
 });
-

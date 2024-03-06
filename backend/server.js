@@ -42,6 +42,7 @@ app.use('/logs', express.static('logs'));
 
 // Init Middlewares :
 app.use(express.json({ extended: false }));
+
 // Define Routes :
 app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/directions", directionRoutes);

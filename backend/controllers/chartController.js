@@ -421,7 +421,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       {
         $project: {
           month: { $month: "$dateDemande" },
-          traitement: "$traitement.status",
+          traitement: "$traitement",
         },
       },
       {
@@ -429,7 +429,10 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: { month: "$month", status: "$traitement" },
+          _id: {
+            month: "$month",
+            status: "$traitement",
+          },
           count: { $sum: 1 },
         },
       },
@@ -460,7 +463,8 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
-        statusCounts[statusItem.status] = Number(statusItem.count);
+        if (String(statusItem.status.utilisateur) === String(req.user.id))
+          statusCounts[statusItem.status.status] = Number(statusItem.count);
       });
       formattedResult[item.month] = statusCounts;
     });
@@ -478,7 +482,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       {
         $project: {
           month: { $month: "$dateDemande" },
-          traitement: "$traitement.status",
+          traitement: "$traitement",
         },
       },
       {
@@ -486,7 +490,10 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: { month: "$month", status: "$traitement" },
+          _id: {
+            month: "$month",
+            status: "$traitement",
+          },
           count: { $sum: 1 },
         },
       },
@@ -509,14 +516,15 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         },
       },
     ];
+
     // Use the aggregate method to apply the pipeline to your model
     const result = await Demande.aggregate(aggregatePipeline);
-
     const formattedResult = {};
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
-        statusCounts[statusItem.status] = Number(statusItem.count);
+        if (String(statusItem.status.utilisateur) === String(req.user.id))
+          statusCounts[statusItem.status.status] = Number(statusItem.count);
       });
       formattedResult[item.month] = statusCounts;
     });
@@ -531,63 +539,148 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
-    const demandes = await Demande.find({
-      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
-      dateDemande: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-    })
-      .populate({
-        path: "option",
-        populate: {
-          path: "service",
-          populate: {
-            path: "direction",
+
+    const demandes = await Demande.aggregate([
+      {
+        $match: {
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+          dateDemande: {
+            $gte: startDate,
+            $lte: endDate,
           },
         },
-      })
-      .populate({
-        path: "demandeur",
-        populate: {
-          path: "direction",
+      },
+      {
+        $lookup: {
+          from: "options",
+          localField: "option",
+          foreignField: "_id",
+          as: "option",
         },
-      });
+      },
+      {
+        $unwind: "$option",
+      },
+      {
+        $lookup: {
+          from: "services",
+          localField: "option.service",
+          foreignField: "_id",
+          as: "option.service",
+        },
+      },
+      {
+        $unwind: "$option.service",
+      },
+      {
+        $lookup: {
+          from: "directions",
+          localField: "option.service.direction",
+          foreignField: "_id",
+          as: "option.service.direction",
+        },
+      },
+      {
+        $unwind: "$option.service.direction",
+      },
+      {
+        $lookup: {
+          from: "demandeurs",
+          localField: "demandeur",
+          foreignField: "_id",
+          as: "demandeur",
+        },
+      },
+      {
+        $unwind: "$demandeur",
+      },
+      {
+        $lookup: {
+          from: "directions",
+          localField: "demandeur.direction",
+          foreignField: "_id",
+          as: "demandeur.direction",
+        },
+      },
+      {
+        $unwind: "$demandeur.direction",
+      },
+      {
+        $project: {
+          dateDemande: 1,
+          traitement: {
+            $filter: {
+              input: "$traitement",
+              as: "tr",
+              cond: {
+                $eq: [
+                  "$$tr.utilisateur",
+                  new mongoose.Types.ObjectId(req.user.id),
+                ],
+              },
+            },
+          },
+          option: 1,
+          demandeur: 1,
+        },
+      },
+    ]);
+
+    const ndemandes = demandes.map((demande) => {
+      demande.traitement = demande.traitement || [];
+      return demande;
+    });
+
     const stats = {
-      labels: getUniqueDirectionLabels(demandes),
-      demandeEnCours: getDirectionStats(demandes, "en cours"),
-      demandeRefuse: getDirectionStats(demandes, "refuse"),
-      demandeApprouver: getDirectionStats(demandes, "approuve"),
+      labels: getUniqueDirectionLabels(ndemandes),
+      demandeEnCours: getDirectionStats(ndemandes, "en cours"),
+      demandeRefuse: getDirectionStats(ndemandes, "refuse"),
+      demandeApprouver: getDirectionStats(ndemandes, "approuve"),
     };
 
     res.json(stats);
   } else {
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
-    const demandes = await Demande.find({
-      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
-      dateDemande: { $gte: fiveMonthsAgo },
-    })
-      .populate({
-        path: "option",
-        populate: {
-          path: "service",
-          populate: {
-            path: "direction",
-          },
-        },
-      })
-      .populate({
-        path: "demandeur",
-        populate: {
-          path: "direction",
-        },
-      });
+    let demandes = JSON.parse(
+      JSON.stringify(
+        await Demande.find({
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+          dateDemande: { $gte: fiveMonthsAgo },
+        })
+          .populate({
+            path: "option",
+            populate: {
+              path: "service",
+              populate: {
+                path: "direction",
+              },
+            },
+          })
+          .populate({
+            path: "demandeur",
+            populate: {
+              path: "direction",
+            },
+          })
+      )
+    );
+
+    let ndemandes = [];
+
+    for (let demande of demandes) {
+      let ntraitement = demande.traitement.filter(
+        (tr) => String(tr.utilisateur) === String(req.user.id)
+      );
+      demande.traitement = ntraitement;
+      ndemandes.push(demande);
+    }
+
     const stats = {
-      labels: getUniqueDirectionLabels(demandes),
-      demandeEnCours: getDirectionStats(demandes, "en cours"),
-      demandeRefuse: getDirectionStats(demandes, "refuse"),
-      demandeApprouver: getDirectionStats(demandes, "approuve"),
+      labels: getUniqueDirectionLabels(ndemandes),
+      demandeEnCours: getDirectionStats(ndemandes, "en cours"),
+      demandeRefuse: getDirectionStats(ndemandes, "refuse"),
+      demandeApprouver: getDirectionStats(ndemandes, "approuve"),
     };
 
     res.json(stats);

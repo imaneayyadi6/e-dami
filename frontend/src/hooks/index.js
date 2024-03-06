@@ -1,4 +1,4 @@
 import useTimeAgo from "./useTimeAgo";
-export {
-    useTimeAgo
-}
+import useFrenchMonth from "./useFrenchMonth";
+
+export { useTimeAgo, useFrenchMonth };
