@@ -34,6 +34,7 @@ import {
   USER_BY_ID_REQUEST,
   USER_BY_ID_RESET,
   USER_BY_ID_SUCCESS,
+  USER_BY_ID_DELETE,
   USER_GET_ACCOUNT_REQUEST,
   USER_GET_ACCOUNT_SUCCESS,
   USER_GET_ACCOUNT_FAIL,
@@ -202,9 +203,13 @@ export const userListReducer = (state = { users: [] }, action) => {
     case USER_LIST_REMOVE:
       return {
         success: true,
-        users: state.users.filter(
-          (user) => String(user._id) !== String(payload)
-        ),
+        users: state.users.map((user) => {
+          if (String(user._id) === String(payload)) {
+            if (user.isActive) user.isActive = false;
+            else user.isActive = true;
+          }
+          return user;
+        }),
       };
     case USER_LIST_UPDATE:
       return {
@@ -301,6 +306,13 @@ export const userByIDReducer = (state = {}, action) => {
         success: true,
         user: payload,
       };
+    case USER_BY_ID_DELETE:
+      return {
+        loading: false,
+        success: true,
+        user: { ...state.user, isActive: state.user.isActive ? false : true },
+      };
+
     case USER_BY_ID_FAIL:
       return { loading: false, error: payload };
     case USER_BY_ID_RESET:

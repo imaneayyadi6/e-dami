@@ -10,13 +10,13 @@ import { Card } from "react-bootstrap";
 import { Message, Table, TableLoading, WarningMessage } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { Toast, Dialog } from "../../services";
-import { OPTION_CRTOP_LIST_REMOVE, } from "../../redux/option/optionTypes";
+import { OPTION_CRTOP_LIST_REMOVE } from "../../redux/option/optionTypes";
 
 const OptionListPageCrtOp = () => {
   const [callOnce, setCallOnce] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [active, setActive] = useState(false);
   const optionCrtOpList = useSelector((state) => state.optionCrtOpList);
   const {
     loading: loadingOptionCrtOpList,
@@ -45,9 +45,17 @@ const OptionListPageCrtOp = () => {
         dispatch({ type: OPTION_CRTOP_LIST_REMOVE, payload: id });
       }
     } else {
+      let message = "";
+      if (!option.isDeleted) {
+        message = "Etes vous sûre de vouloir activer cette option ?";
+        setActive(true);
+      } else {
+        message = "Etes vous sûre de vouloir desactiver cette option ?";
+        setActive(false);
+      }
       Dialog.open({
         title: "Confirmation",
-        message: "Etes vous sûre de vouloir supprimer cette option ?",
+        message: message,
         onYes: () => {
           dispatch(deleteOptionCrtOp(id));
         },
@@ -68,17 +76,25 @@ const OptionListPageCrtOp = () => {
   useEffect(() => {
     if (successOptionCrtOpDelete) {
       dispatch(resetDeleteOptionCrtOp());
-      Toast.open({
-        type: "success",
-        title: "Suppression avec succès",
-        message: `l' option a été supprimée avec succès`,
-      });
+      if (active) {
+        Toast.open({
+          type: "success",
+          title: "Activation avec succès",
+          message: `l' option a été activer avec succès`,
+        });
+      } else {
+        Toast.open({
+          type: "success",
+          title: "Desactivation avec succès",
+          message: `l' option a été deactiver avec succès`,
+        });
+      }
     }
     if (!callOnce) {
       dispatch(fetchOptionsCrtOp());
       setCallOnce(true);
     }
-  }, [callOnce, dispatch, successOptionCrtOpDelete]);
+  }, [callOnce, dispatch, successOptionCrtOpDelete, active]);
 
   return (
     <>
@@ -96,7 +112,10 @@ const OptionListPageCrtOp = () => {
       <Card className="h-100">
         <Card.Body>
           <div className="d-flex justify-content-end">
-            <Link className="btn btn-sm btn-dark mb-2" to="/creer-option/crt-op">
+            <Link
+              className="btn btn-sm btn-dark mb-2"
+              to="/creer-option/crt-op"
+            >
               <i className="fas fa-plus"></i> Ajouter une option
             </Link>
           </div>

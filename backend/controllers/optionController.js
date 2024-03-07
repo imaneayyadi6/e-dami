@@ -393,21 +393,24 @@ export const deleteOptionCrtOp = asyncHandler(async (req, res) => {
   const option = await Option.findById(req.params.id);
   if (option) {
     if (String(option.createur) === String(req.user.id)) {
-      const { deletedCount } = await Option.deleteOne({ _id: req.params.id });
-      if (deletedCount === 1) {
+      if (!option.isDeleted) {
+        option.isDeleted = true;
+        await option.save();
         res.json({
           message: "option supprimé !",
         });
       } else {
-        res.status(404);
-        throw new Error("option introuvable !");
+        option.isDeleted = false;
+        await option.save();
+        res.json({
+          message: "option supprimé !",
+        });
       }
     } else {
       res.status(404);
       throw new Error("vous n'avez pas le droit de supprimer cette option");
     }
   } else {
-    res.status(404);
     throw new Error("option introuvable !");
   }
 });

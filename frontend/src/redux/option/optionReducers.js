@@ -274,9 +274,16 @@ export const optionCrtOpListReducer = (state = { options: [] }, action) => {
     case OPTION_CRTOP_LIST_REMOVE:
       return {
         success: true,
-        options: state.options.filter(
-          (op) => String(op._id) !== String(payload)
-        ),
+        options: state.options.map((op) => {
+          if (String(op._id) === String(payload)) {
+            if (op.isDeleted) {
+              op.isDeleted = false;
+            } else {
+              op.isDeleted = true;
+            }
+          }
+          return op;
+        }),
       };
 
     case OPTION_CRTOP_LIST_UPDATE:

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Placeholder } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchUserByID, removeUser } from "../../redux/user/userActions";
 import { Loader, Message } from "../../components/";
 import { Toast, Dialog } from "../../services";
@@ -11,14 +11,11 @@ const UtilisateurDetailsPage = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const userByID = useSelector((state) => state.userByID);
   const {
     loading: loadingUserByID,
     error: errorUserByID,
     user: recoveredUser,
-    // success: successUserByID,
   } = userByID;
 
   const userRemove = useSelector((state) => state.userRemove);
@@ -29,9 +26,18 @@ const UtilisateurDetailsPage = () => {
   } = userRemove;
 
   const deleteUserHandler = () => {
+    let message = "";
+    if (recoveredUser.isActive) {
+      message =
+        "Êtes-vous sûr(e) de vouloir activer le compte de cet utilisateur ?";
+    } else {
+      message =
+        "Êtes-vous sûr(e) de vouloir désactiver le compte de cet utilisateur ?";
+    }
+
     Dialog.open({
       title: "Confirmation",
-      message: "Etes vous sûre de vouloir supprimer ce utilisateur ?",
+      message,
       onYes: () => {
         dispatch(removeUser(recoveredUser._id));
       },
@@ -44,14 +50,14 @@ const UtilisateurDetailsPage = () => {
       setCallOnce(true);
     }
     if (successUserRemove) {
-      navigate(`/utilisateurs`);
       Toast.open({
         type: "success",
-        title: "Suppression avec succès",
-        message: `l'utilisateur a été supprimée avec succès`,
+        message: `le compte de cet utilisateur a été ${
+          recoveredUser.isActive ? "désactiver" : "activer"
+        } avec succès`,
       });
     }
-  }, [successUserRemove]);
+  }, [successUserRemove, recoveredUser]);
 
   return (
     <>
@@ -73,32 +79,44 @@ const UtilisateurDetailsPage = () => {
 
       <Card>
         <Card.Body>
-          <div className="d-flex justify-content-end">
-            <Link
-              className="mr-1 btn btn-sm btn-dark"
-              variant="dark"
-              size="sm"
-              to={`/demandes-utilisateur/${recoveredUser && recoveredUser._id}`}
-            >
-              <i class="fa-solid fa-table-list"></i> Ces demandes
-            </Link>
-            <Link
-              className="mr-1 btn btn-sm btn-dark"
-              variant="dark"
-              size="sm"
-              to={`/modifier-utilisateur/${recoveredUser && recoveredUser._id}`}
-            >
-              <i className="fa-solid fa-user-pen"></i> Modifier cet utilisateur
-            </Link>
-            <Button
-              variant="danger"
-              size="sm"
-              disabled={loadingUserByID || !recoveredUser}
-              onClick={deleteUserHandler}
-            >
-              <i className="fa-solid fa-user-xmark"></i> supprimer cet
-              utilisateur
-            </Button>
+          <div className="d-flex justify-content-between align-items-center">
+            {recoveredUser && !recoveredUser.isActive ? (
+              <span className="text-success">compte utilisateur activer</span>
+            ) : (
+              <span className="text-danger">compte utilisateur desactiver</span>
+            )}
+            <div>
+              <Link
+                className="mr-1 btn btn-sm btn-dark"
+                variant="dark"
+                size="sm"
+                to={`/modifier-utilisateur/${
+                  recoveredUser && recoveredUser._id
+                }`}
+              >
+                <i className="fa-solid fa-user-pen"></i> Modifier cet
+                utilisateur
+              </Link>
+              <Button
+                variant="light"
+                size="sm"
+                disabled={loadingUserByID || !recoveredUser}
+                onClick={deleteUserHandler}
+                className={
+                  recoveredUser && recoveredUser.isActive
+                    ? "text-success"
+                    : "text-danger"
+                }
+              >
+                <i className="fa-solid fa-user-xmark"></i>{" "}
+                {recoveredUser && recoveredUser.isActive ? (
+                  <span>activer </span>
+                ) : (
+                  <span>desactiver </span>
+                )}{" "}
+                le compte de cet utilisateur
+              </Button>
+            </div>
           </div>
           <hr />
 
@@ -156,7 +174,6 @@ const UtilisateurDetailsPage = () => {
             </div>
 
             <div>
-
               <div>
                 <label
                   className="d-block text-bold"
@@ -170,9 +187,9 @@ const UtilisateurDetailsPage = () => {
                   </Placeholder>
                 )}
                 {recoveredUser && recoveredUser.fonction && (
-                  <small className="d-block">{recoveredUser.fonction}</small>)}
+                  <small className="d-block">{recoveredUser.fonction}</small>
+                )}
               </div>
-
 
               <div>
                 <label
@@ -187,10 +204,9 @@ const UtilisateurDetailsPage = () => {
                   </Placeholder>
                 )}
                 {recoveredUser && recoveredUser.gsm && (
-                  <small className="d-block">{recoveredUser.gsm}</small>)
-                }
+                  <small className="d-block">{recoveredUser.gsm}</small>
+                )}
               </div>
-
             </div>
           </div>
 
@@ -206,7 +222,6 @@ const UtilisateurDetailsPage = () => {
               </Placeholder>
             )}
             {recoveredUser && recoveredUser.direction ? (
-
               <small className="d-block">
                 Direction {recoveredUser.direction.libelle}
               </small>
@@ -238,10 +253,7 @@ const UtilisateurDetailsPage = () => {
           <hr />
 
           <div>
-            <label
-              className="d-block text-bold"
-              style={{ fontWeight: "bold" }}
-            >
+            <label className="d-block text-bold" style={{ fontWeight: "bold" }}>
               Responsabilité :
             </label>
             {loadingUserByID && (
@@ -264,10 +276,7 @@ const UtilisateurDetailsPage = () => {
           <hr />
 
           <div>
-            <label
-              className="d-block text-bold"
-              style={{ fontWeight: "bold" }}
-            >
+            <label className="d-block text-bold" style={{ fontWeight: "bold" }}>
               Roles :
             </label>
             {loadingUserByID && (
@@ -285,7 +294,8 @@ const UtilisateurDetailsPage = () => {
                 <Placeholder xs={12} />
               </Placeholder>
             )}
-            {recoveredUser && recoveredUser.roles &&
+            {recoveredUser &&
+              recoveredUser.roles &&
               recoveredUser.roles.length > 0 &&
               recoveredUser.roles.map((role) => (
                 <small key={role._id} className="d-block">
@@ -293,7 +303,6 @@ const UtilisateurDetailsPage = () => {
                 </small>
               ))}
           </div>
-
         </Card.Body>
       </Card>
     </>

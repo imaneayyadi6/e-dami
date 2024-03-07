@@ -56,6 +56,7 @@ import {
   USER_SET_NEW_PASSWORD_SUCCESS,
   USER_SET_NEW_PASSWORD_FAIL,
   USER_SET_NEW_PASSWORD_RESET,
+  USER_BY_ID_DELETE,
 } from "./userTypes";
 
 import axios from "axios";
@@ -387,6 +388,7 @@ export const removeUser = (id) => {
 
       dispatch({ type: USER_REMOVE_SUCCESS, payload: data });
       dispatch({ type: USER_LIST_REMOVE, payload: id });
+      dispatch({ type: USER_BY_ID_DELETE, payload: id });
     } catch (error) {
       const err =
         error.response && error.response.data.message

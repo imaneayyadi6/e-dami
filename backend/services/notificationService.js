@@ -10,7 +10,6 @@ export const sendNotification = async (
   seen = false
 ) => {
   const utilisateur = await Utilisateur.findById(utilisateurID);
-  console.log("seen :", seen);
   if (utilisateur) {
     const notification = new Notification({
       utilisateur: utilisateurID,
@@ -26,8 +25,8 @@ export const sendNotification = async (
 
     let mailOptions = {
       from: '"e-dami" <e-dami@snrt.com>',
-      // to: utilisateur.email,
-      to: utilisateur.email.replace(new RegExp("ma", "g"), "com"),
+      to: utilisateur.email,
+      // to: utilisateur.email.replace(new RegExp("ma", "g"), "com"),
       subject: subject || "Message from e-dami",
       html: content,
     };

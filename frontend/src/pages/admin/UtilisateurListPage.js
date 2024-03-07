@@ -77,11 +77,11 @@ const UtilisateurListPage = () => {
       )}
       <Card className="w-100" style={{ overflow: "auto" }}>
         <Card.Body>
-          <div className="d-flex justify-content-end">
+          {/* <div className="d-flex justify-content-end">
             <Link className="btn btn-sm btn-dark mb-2" to="/creer-utilisateur">
               <i className="fas fa-plus"></i> Ajouter un utilisateur
             </Link>
-          </div>
+          </div> */}
           {loadingUserList && <TableLoading />}
 
           {users.length > 0 ? (

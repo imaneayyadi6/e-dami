@@ -1233,7 +1233,7 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
     .populate("traitement.utilisateur");
 
   if (demande) {
-    if (String(demande.demandeur) === String(req.user.id)) {
+    if (String(demande.demandeur._id) === String(req.user.id)) {
       demande = JSON.parse(JSON.stringify(demande));
 
       const service = await Service.findById(

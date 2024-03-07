@@ -797,3 +797,71 @@
 [DATA INSERT] : Wed Mar 06 2024 15:05:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Wed Mar 06 2024 15:05:46 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Wed Mar 06 2024 15:05:57 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Wed Mar 06 2024 20:00:01 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eb02" version 764 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:01 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 773 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 775 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 775 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 777 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eb02" version 768 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1874fc882c17ca27ec46" version 758 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:00:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186efc882c17ca27eb0c" version 765 modifiedPaths "updatedAt, roles" 
+[ERROR] : Wed Mar 06 2024 20:06:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1967fc882c17ca280d23" version 754 modifiedPaths "updatedAt, roles" 
+[DATA INSERT] : Wed Mar 06 2024 20:07:17 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed Mar 06 2024 20:07:24 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed Mar 06 2024 20:07:35 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 782 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 783 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 783 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 783 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 784 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 784 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eb02" version 773 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186efc882c17ca27eb16" version 770 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:00:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1870fc882c17ca27eb8e" version 765 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 00:02:16 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df18dcfc882c17ca27fa1a" version 760 modifiedPaths "updatedAt, roles" 
+[DATA INSERT] : Thu Mar 07 2024 00:04:38 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 00:04:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Thu Mar 07 2024 05:00:02 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 787 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186ffc882c17ca27eb66" version 769 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 790 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 790 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eb02" version 779 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 791 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 05:00:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 791 modifiedPaths "updatedAt, roles" 
+[DATA INSERT] : Thu Mar 07 2024 05:09:22 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 05:09:24 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 05:09:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 05:09:33 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 05:09:36 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Thu Mar 07 2024 10:00:02 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186efc882c17ca27eb34" version 775 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 797 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 797 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 797 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eb02" version 788 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:23 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1873fc882c17ca27ec06" version 773 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:00:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1873fc882c17ca27ec06" version 775 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:04:15 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df18c9fc882c17ca27f76e" version 769 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 10:05:38 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df18ecfc882c17ca27fc38" version 767 modifiedPaths "updatedAt, roles" 
+[DATA INSERT] : Thu Mar 07 2024 10:11:13 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 10:11:17 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 10:11:20 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 10:11:23 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 10:11:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Thu Mar 07 2024 15:00:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 805 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 807 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186efc882c17ca27eb20" version 788 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:07 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186efc882c17ca27eb34" version 786 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:14 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df1874fc882c17ca27ec3e" version 779 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:19 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 808 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:19 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 808 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:19 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 808 modifiedPaths "updatedAt, roles" 
+[ERROR] : Thu Mar 07 2024 15:00:19 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> VersionError: No matching document found for id "65df186dfc882c17ca27eaf8" version 808 modifiedPaths "updatedAt, roles" 
+[DATA INSERT] : Thu Mar 07 2024 15:06:15 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 15:06:16 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 07 2024 15:06:30 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 

@@ -554,19 +554,12 @@ export const updateUserPassword = asyncHandler(async (req, res) => {
 export const deleteUser = asyncHandler(async (req, res) => {
   const utilisateur = await Utilisateur.findById(req.params.id);
   if (utilisateur) {
-    const service = await Service.findOne({ chefService: utilisateur._id });
-    const direction = await Direction.findOne({ directeur: utilisateur._id });
-
-    if (service) {
-      service.chefService = null;
-      await service.save();
+    if (utilisateur.isActive) {
+      utilisateur.isActive = false;
+    } else {
+      utilisateur.isActive = true;
     }
-    if (direction) {
-      direction.directeur = null;
-      await direction.save();
-    }
-
-    await Utilisateur.deleteOne({ _id: req.params.id });
+    await utilisateur.save();
     res.json({
       message: "utilisateur supprimé !",
     });
