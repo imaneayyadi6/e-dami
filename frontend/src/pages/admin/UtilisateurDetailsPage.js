@@ -27,7 +27,7 @@ const UtilisateurDetailsPage = () => {
 
   const deleteUserHandler = () => {
     let message = "";
-    if (recoveredUser.isActive) {
+    if (!recoveredUser.isActive) {
       message =
         "Êtes-vous sûr(e) de vouloir activer le compte de cet utilisateur ?";
     } else {
@@ -53,7 +53,7 @@ const UtilisateurDetailsPage = () => {
       Toast.open({
         type: "success",
         message: `le compte de cet utilisateur a été ${
-          recoveredUser.isActive ? "désactiver" : "activer"
+          !recoveredUser.isActive ? "désactiver" : "activer"
         } avec succès`,
       });
     }
@@ -80,7 +80,7 @@ const UtilisateurDetailsPage = () => {
       <Card>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center">
-            {recoveredUser && !recoveredUser.isActive ? (
+            {recoveredUser && recoveredUser.isActive ? (
               <span className="text-success">compte utilisateur activer</span>
             ) : (
               <span className="text-danger">compte utilisateur desactiver</span>
@@ -103,13 +103,13 @@ const UtilisateurDetailsPage = () => {
                 disabled={loadingUserByID || !recoveredUser}
                 onClick={deleteUserHandler}
                 className={
-                  recoveredUser && recoveredUser.isActive
+                  recoveredUser && !recoveredUser.isActive
                     ? "text-success"
                     : "text-danger"
                 }
               >
                 <i className="fa-solid fa-user-xmark"></i>{" "}
-                {recoveredUser && recoveredUser.isActive ? (
+                {recoveredUser && !recoveredUser.isActive ? (
                   <span>activer </span>
                 ) : (
                   <span>desactiver </span>

@@ -205,22 +205,7 @@ const main = async () => {
           findChefService.service = service ? service._id : null;
           findChefService.direction = service ? service.direction : null;
           findChefService.updatedAt = new Date();
-          findChefService.roles = [
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
-              _id: new mongoose.Types.ObjectId(),
-            },
 
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
-              _id: new mongoose.Types.ObjectId(),
-            },
-
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
-              _id: new mongoose.Types.ObjectId(),
-            },
-          ];
           await findChefService.save();
 
           const updatedService = await Service.findOne({
@@ -318,17 +303,6 @@ const main = async () => {
           findDirecteur.isChefDeService = false;
           findDirecteur.direction = direction._id;
           findDirecteur.updatedAt = new Date();
-          findDirecteur.roles = [
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
-              _id: new mongoose.Types.ObjectId(),
-            },
-
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
-              _id: new mongoose.Types.ObjectId(),
-            },
-          ];
 
           const updatedDirection = await Direction.findOne({
             uo: item.LIEU,
@@ -416,13 +390,7 @@ const main = async () => {
           findUtilisateur.service = service ? service._id : null;
           findUtilisateur.direction = service ? service.direction : null;
           findUtilisateur.updatedAt = new Date();
-          findUtilisateur.roles = [
-            {
-              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
-              _id: new mongoose.Types.ObjectId(),
-            },
-          ];
-
+          
           await findUtilisateur.save();
           utilisateurs.push(JSON.parse(JSON.stringify(findUtilisateur)));
         } else {

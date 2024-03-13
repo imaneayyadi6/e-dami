@@ -250,7 +250,7 @@
 .doc {
   min-height: 600px;
   /* width: 768px; */
-  padding: 7px 35px;
+  padding: 7px 50px 5px 30px;
   background-color: #fff !important;
   border: 1px solid lightgray;
   overflow: hidden;

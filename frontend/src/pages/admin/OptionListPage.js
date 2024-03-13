@@ -30,7 +30,6 @@ const OptionsListPage = () => {
     loading: loadingOptionDelete,
     error: errorOptionDelete,
     success: successOptionDelete,
-    // option: deletedOption,
   } = optionDelete;
 
   const removeOptionHandler = (id) => {
@@ -42,7 +41,10 @@ const OptionsListPage = () => {
       if (stoptions) {
         stoptions = stoptions.filter((op) => String(op._id) !== String(id));
         localStorage.setItem("options", JSON.stringify(stoptions));
-        dispatch({ type: OPTION_LIST_REMOVE, payload: id });
+        dispatch({
+          type: OPTION_LIST_REMOVE,
+          payload: id,
+        });
       }
     } else {
       let message = "";

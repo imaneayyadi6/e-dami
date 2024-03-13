@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
   fonction: Yup.string(),
   gsm: Yup.string().matches(/^\+\d{1,4}-\d{1,14}$/, "gsm invalid !!"),
   direction: Yup.string(),
-  service: Yup.string(),
+  //service: Yup.string(),
   isChefDeService: Yup.boolean(),
   isDirecteur: Yup.boolean(),
   demandeur: Yup.boolean(),
