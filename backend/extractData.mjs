@@ -17,6 +17,7 @@ connectDB();
 // Define the uploads as static folder :
 const __dirname = path.resolve();
 const logFilePath = path.join(__dirname, "logs", "e-dami-aghir-data-log.txt");
+
 function generatePassword(length) {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
@@ -204,6 +205,7 @@ const main = async () => {
           findChefService.isDirecteur = false;
           findChefService.service = service ? service._id : null;
           findChefService.direction = service ? service.direction : null;
+          findChefService.roles = findChefService.roles;
           findChefService.updatedAt = new Date();
 
           await findChefService.save();
@@ -302,6 +304,7 @@ const main = async () => {
           findDirecteur.isDirecteur = true;
           findDirecteur.isChefDeService = false;
           findDirecteur.direction = direction._id;
+          findDirecteur.roles = findDirecteur.roles;
           findDirecteur.updatedAt = new Date();
 
           const updatedDirection = await Direction.findOne({
@@ -389,9 +392,11 @@ const main = async () => {
           findUtilisateur.isChefDeService = false;
           findUtilisateur.service = service ? service._id : null;
           findUtilisateur.direction = service ? service.direction : null;
+          findUtilisateur.roles = findUtilisateur.roles;
           findUtilisateur.updatedAt = new Date();
-          
+
           await findUtilisateur.save();
+
           utilisateurs.push(JSON.parse(JSON.stringify(findUtilisateur)));
         } else {
           let find = await Utilisateur.findOne({
@@ -445,7 +450,7 @@ const main = async () => {
   }
 };
 
-cron.schedule("0 */5 * * *", async () => {
+cron.schedule("0 */1 * * *", async () => {
   try {
     main();
     console.log(

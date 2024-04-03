@@ -1710,21 +1710,24 @@ const DamiEditPage = () => {
       const dateCreationString = new Date(
         recoveredOption.header.creation
       ).toLocaleDateString();
+
       const dateCreationArray = dateCreationString.split("/");
+
       const cryear = dateCreationArray[2];
       const crmonth = dateCreationArray[0];
       const crday = dateCreationArray[1];
-      const formattedCreationDate = cryear + "-" + crmonth + "-" + crday;
+      const formattedCreationDate = cryear + "-" + crday + "-" + crmonth;
 
       const dateUpdateString = new Date(
         recoveredOption.header.maj
       ).toLocaleDateString();
 
       const dateMajArray = dateUpdateString.split("/");
+
       const mjyear = dateMajArray[2];
       const mjmonth = dateMajArray[0];
       const mjday = dateMajArray[1];
-      const formattedMajDate = mjyear + "-" + mjmonth + "-" + mjday;
+      const formattedMajDate = mjyear + "-" + mjday + "-" + mjmonth;
 
       let cds = false;
       let hiq = false;

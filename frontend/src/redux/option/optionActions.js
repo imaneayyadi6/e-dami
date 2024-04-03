@@ -24,20 +24,15 @@ import {
   OPTION_UPDATE_REQUEST,
   OPTION_UPDATE_RESET,
   OPTION_UPDATE_SUCCESS,
-
-
-
   OPTION_CRTOP_LIST_FAIL,
   OPTION_CRTOP_LIST_REMOVE,
   OPTION_CRTOP_LIST_REQUEST,
   OPTION_CRTOP_LIST_RESET,
   OPTION_CRTOP_LIST_SUCCESS,
-
   OPTION_CRTOP_CREATE_FAIL,
   OPTION_CRTOP_CREATE_REQUEST,
   OPTION_CRTOP_CREATE_RESET,
   OPTION_CRTOP_CREATE_SUCCESS,
-
   OPTION_CRTOP_DELETE_FAIL,
   OPTION_CRTOP_DELETE_REQUEST,
   OPTION_CRTOP_DELETE_RESET,
@@ -46,8 +41,6 @@ import {
   OPTION_CRTOP_UPDATE_REQUEST,
   OPTION_CRTOP_UPDATE_RESET,
   OPTION_CRTOP_UPDATE_SUCCESS,
-
-
 } from "./optionTypes";
 
 import axios from "axios";
@@ -69,14 +62,13 @@ export const fetchOptionsBySousCategorieID = (query) => {
 
       let objFilter = Object.entries(query)
         .map(([key, value]) => `${key}=${value}`)
-        .join('&');
+        .join("&");
 
+     
       const { data } = await axios.get(
         `/api/options/souscategorie?${objFilter}`,
         config
       );
-
-      console.log(data);
 
       dispatch({
         type: OPTION_LIST_BY_SOUSCATEGORIE_ID_SUCCESS,
@@ -128,8 +120,6 @@ export const fetchOptionByID = (optionID) => {
 export const resetFetchOptionByID = () => {
   return { type: OPTION_BY_ID_RESET };
 };
-
-
 
 export const fetchOptions = () => {
   return async (dispatch, getState) => {
@@ -196,8 +186,6 @@ export const createOption = (option) => {
 export const resetCreateOption = () => {
   return { type: OPTION_CREATE_RESET };
 };
-
-
 
 export const deleteOption = (optionID) => {
   return async (dispatch, getState) => {
@@ -271,8 +259,6 @@ export const resetUpdateOption = () => {
   return { type: OPTION_UPDATE_RESET };
 };
 
-
-
 export const fetchOptionsCrtOp = () => {
   return async (dispatch, getState) => {
     try {
@@ -339,8 +325,6 @@ export const resetCreateOptionCrtOp = () => {
   return { type: OPTION_CRTOP_CREATE_RESET };
 };
 
-
-
 export const deleteOptionCrtOp = (optionID) => {
   return async (dispatch, getState) => {
     try {
@@ -355,7 +339,10 @@ export const deleteOptionCrtOp = (optionID) => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const { data } = await axios.delete(`/api/options/crtop/${optionID}`, config);
+      const { data } = await axios.delete(
+        `/api/options/crtop/${optionID}`,
+        config
+      );
       dispatch({
         type: OPTION_CRTOP_DELETE_SUCCESS,
         payload: data,
@@ -412,4 +399,3 @@ export const updateOptionCrtOp = (optionID, option) => {
 export const resetUpdateOptionCrtOp = () => {
   return { type: OPTION_CRTOP_UPDATE_RESET };
 };
-

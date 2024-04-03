@@ -3,7 +3,7 @@ let _nav = [
     to: "/dashboard",
     name: "Tableau de bord",
     icon: <i className='side-bar-icon fa-solid fa-gauge'></i>,
-    roles: ["crt", "sig", "crt-op"],
+    roles: ["crt", "sig"],
   },
   {
     to: "/categories",

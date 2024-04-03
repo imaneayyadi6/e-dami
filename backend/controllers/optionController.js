@@ -34,7 +34,7 @@ export const getOptionsCrtOp = asyncHandler(async (req, res) => {
 // @route   GET /api/options/souscategorie
 // @access  private
 export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 20, sousCategorie: sousCategorieId } = req.query;
+  const { page = 1, limit = 12, sousCategorie: sousCategorieId } = req.query;
 
   const query = {};
   if (sousCategorieId) {
@@ -58,10 +58,14 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
     })
     .limit(limit * 1)
     .skip((page - 1) * limit)
+    .sort({ createdAt: -1 })
     .exec();
 
   // Count total documents based on filters
-  const count = await SousCategorie.countDocuments(query);
+  const count = await Option.countDocuments({
+    ...query,
+    isDeleted: false,
+  });
 
   // Calculate total pages
   const totalPages = Math.ceil(count / limit);
@@ -72,8 +76,6 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
     totalPages,
     currentPage: page,
   });
-
-  res.json(options);
 });
 
 // @desc    Recuperer une option par ID

@@ -8,13 +8,10 @@ import {
 import { fetchOptionsBySousCategorieID } from "../../redux/option/optionActions";
 
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { DamiLoading, Message, Option } from "../../components";
-
-import { Toast } from "../../services";
+import { DamiLoading, Message, Option, WarningMessage } from "../../components";
 
 const FaireUneDemande = () => {
   const [callOnce, setCallOnce] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [sousCategorie, setSousCategorie] = useState(null);
@@ -79,6 +76,7 @@ const FaireUneDemande = () => {
   };
 
   const renderPageLinks = () => {
+
     const links = [];
 
     if (totalPages > 1) {
@@ -87,12 +85,7 @@ const FaireUneDemande = () => {
       const end = Math.min(totalPages, start + range);
 
       links.push(
-        <button
-          key="first"
-          className="btn btn-sm btn-light"
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
-        >
+        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
           &laquo;&laquo;
         </button>,
         <button
@@ -105,19 +98,19 @@ const FaireUneDemande = () => {
         </button>
       );
 
+
       for (let i = start; i <= end; i++) {
         links.push(
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`${
-              i === currentPage ? "active" : ""
-            } btn btn-sm btn-light`}
+            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
           >
             {i}
           </button>
         );
       }
+
 
       links.push(
         <button
@@ -139,18 +132,25 @@ const FaireUneDemande = () => {
       );
 
       return links;
-    } else {
+    }
+    else {
       links.push(
-        <button className={`btn btn-sm btn-light active ml-1`}>1</button>
+        <button
+          className={`btn btn-sm btn-light active ml-1`}
+        >
+          1
+        </button>
       );
       return links;
     }
+
+
   };
 
   useEffect(() => {
     if (!callOnce) {
       disptach(fetchCategories());
-      getOptionsFilterHandler();
+      getOptionsFilterHandler(1);
       setCallOnce(true);
     }
     if (successOptionListBySousCategorieID) setTotalPages(data.totalPages);
@@ -252,14 +252,23 @@ const FaireUneDemande = () => {
           </>
         )}
         {data &&
-          data.options.length > 0 &&
+        data.options.length > 0 &&
+        !loadingOptionListBySousCategorieID ? (
           data.options.map((option) => (
             <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
               <Option option={option} key={option._id} />
             </Col>
-          ))}
+          ))
+        ) : (
+          <div className="mb-5">
+            <Card>
+              <Card.Body className="pt-4">
+                <WarningMessage message={"Aucune option n'est trouvée."} />
+              </Card.Body>
+            </Card>
+          </div>
+        )}
         <hr />
-
         <div className="d-flex justify-content-center">{renderPageLinks()}</div>
       </Row>
     </>

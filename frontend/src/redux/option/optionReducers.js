@@ -109,21 +109,15 @@ export const optionCreateReducer = (state = {}, action) => {
 
 const filterDeleteOption = (options, payload) => {
   const noptions = [];
-  
-  // for (let op of options) {
-  //   if (String(payload) === String(op._id)) {
-  //     if (!op.notSavedYet) {
-  //       if (op.isDeleted) op.isDeleted = false;
-  //       else op.isDeleted = true;
-  //       noptions.push(op);
-  //     }
-  //   } else noptions.push(op);
-  // }
 
   for (let op of options) {
-    if (op.notSavedYet) {
-      noptions.push(op);
-    }
+    if (String(payload) === String(op._id)) {
+      if (!op.notSavedYet) {
+        if (op.isDeleted) op.isDeleted = false;
+        else op.isDeleted = true;
+        noptions.push(op);
+      }
+    } else noptions.push(op);
   }
 
   return noptions;
@@ -164,7 +158,16 @@ export const optionListReducer = (state = { options: [] }, action) => {
     case OPTION_LIST_REMOVE:
       return {
         success: true,
-        options: filterDeleteOption(state.options, payload),
+        options: state.options.map((option) => {
+          if (String(payload) === String(option._id)) {
+            if (!option.notSavedYet) {
+              if (option.isDeleted) option.isDeleted = false;
+              else option.isDeleted = true;
+              return option;
+            }
+          }
+          return option;
+        }),
       };
 
     case OPTION_LIST_UPDATE:

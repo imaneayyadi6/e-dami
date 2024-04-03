@@ -23,7 +23,7 @@ const CheckBox = ({ mainLabelProps, checkboxItems = [] }) => {
   const [items, setItems] = useState([{ id: uuidv4() }]);
 
   const onAddCheckboxHandler = () => {
-    if (items.length < 3) {
+    if (items.length < 4) {
       setItems([...items, { id: uuidv4() }]);
     }
   };
