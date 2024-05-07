@@ -78,7 +78,7 @@ const validationHeaderSchema = Yup.object({
   document: Yup.string()
     .required("il faut saisire le document")
     .matches(
-      /^([A-Z]{3})\.([A-Z]{3}|[0-9]{3})\.([0-9]{3})\.([A-Z])$/,
+      /^([A-Z]{3})\.([A-Z&]{0,2}[A-Z]|[0-9]{3})\.([0-9]{3})\.([A-Z])$/,
       "Le document doit être saisi sous cette forme, par exemple : 'ERT.LSI.001.A'"
     ),
   classification: Yup.string().required(
@@ -89,7 +89,7 @@ const validationHeaderSchema = Yup.object({
 });
 
 const validationSousCategorieSchema = Yup.object({
-  sousCategorie: Yup.string().required("il faut enntrer une sous-categorie"),
+  sousCategorie: Yup.string().required("il faut entrer une sous-categorie"),
   service: Yup.string().required("il faut enntrer un service"),
   proprietaireDeDonnees: Yup.string(),
 });
@@ -622,41 +622,41 @@ const DamiEditPage = () => {
     }
   };
 
-  const handleConvertToPDF = async () => {
-    try {
-      const content = document.getElementById("dami");
-      content.querySelector(".dami-body").style.minHeight = "1000px";
-      // Use html2canvas to capture the content as an image
-      const canvas = await html2canvas(content, { scale: 2 });
+  // const handleConvertToPDF = async () => {
+  //   try {
+  //     const content = document.getElementById("dami");
+  //     content.querySelector(".dami-body").style.minHeight = "1000px";
+  //     // Use html2canvas to capture the content as an image
+  //     const canvas = await html2canvas(content, { scale: 2 });
 
-      // Initialize jsPDF with the desired page size and orientation
-      const pdf = new jsPDF("p", "mm", "a4");
+  //     // Initialize jsPDF with the desired page size and orientation
+  //     const pdf = new jsPDF("p", "mm", "a4");
 
-      // Calculate the dimensions of the image to fit on the PDF page
-      const imgWidth = 210; // A4 page width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //     // Calculate the dimensions of the image to fit on the PDF page
+  //     const imgWidth = 210; // A4 page width in mm
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      // Add the captured image to the PDF
-      pdf.addImage(
-        canvas.toDataURL("file/pdf"),
-        "PDF",
-        0,
-        0,
-        imgWidth,
-        imgHeight
-      );
+  //     // Add the captured image to the PDF
+  //     pdf.addImage(
+  //       canvas.toDataURL("file/pdf"),
+  //       "PDF",
+  //       0,
+  //       0,
+  //       imgWidth,
+  //       imgHeight
+  //     );
 
-      // Save the PDF with the specified filename
-      pdf.save(`${option ? option.libelle : "e-dami"}.pdf`);
-      content.querySelector(".dami-body").style.minHeight = "500px";
-    } catch (error) {
-      Toast.open({
-        type: "danger",
-        title: "Erreur d'installation de PDF",
-        message: String(error),
-      });
-    }
-  };
+  //     // Save the PDF with the specified filename
+  //     pdf.save(`${option ? option.libelle : "e-dami"}.pdf`);
+  //     content.querySelector(".dami-body").style.minHeight = "500px";
+  //   } catch (error) {
+  //     Toast.open({
+  //       type: "danger",
+  //       title: "Erreur d'installation de PDF",
+  //       message: String(error),
+  //     });
+  //   }
+  // };
 
   const getUpdatedComponent = (recoveredOption) => {
     try {
@@ -1953,12 +1953,6 @@ const DamiEditPage = () => {
             >
               <i className="fas fa-arrow-left"></i> retour
             </Button>
-            {activeStep === 3 && (
-              <Button variant="dark" onClick={handleConvertToPDF}>
-                <i className="fa-solid fa-file-import"></i> Voir comment le PDF
-                va être généré
-              </Button>
-            )}
           </div>
 
           {activeStep === 0 ? (

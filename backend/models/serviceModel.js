@@ -12,6 +12,10 @@ const servicechema = Schema(
       ref: "direction",
       required: [true, "veuillez entrer une direction"],
     },
+    departement: {
+      type: Schema.Types.ObjectId,
+      ref: "departement",
+    },
     chefService: {
       type: Schema.Types.ObjectId,
       ref: "utilisateur",

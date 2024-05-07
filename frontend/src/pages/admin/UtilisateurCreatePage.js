@@ -11,10 +11,10 @@ import { Toast } from "../../services";
 import { fetchDirections } from "../../redux/direction/directionActions";
 
 const validationSchema = Yup.object({
-  matricule: Yup.string("le matricule doit etre un nombre de 7 chiffres")
+  matricule: Yup.string("le matricule doit etre un nombre de 6 chiffres")
     .matches(
-      /^([1-9]{1})([0-9]{6})$/,
-      "le matricule doit être un nombre qui comporte 7 chiffres"
+      /^([1-9]{1})([0-9]{5})$/,
+      "le matricule doit être un nombre qui comporte 6 chiffres"
     )
     .required("il faut saisire le matricule"),
   email: Yup.string()

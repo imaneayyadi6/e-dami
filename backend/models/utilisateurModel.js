@@ -47,6 +47,11 @@ const utilisateurSchema = Schema(
       required: true,
       default: false,
     },
+    isChefDeDepartement: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     isDirecteur: {
       type: Boolean,
       required: true,
@@ -74,6 +79,10 @@ const utilisateurSchema = Schema(
     service: {
       type: Schema.Types.ObjectId,
       ref: "service",
+    },
+    departement: {
+      type: Schema.Types.ObjectId,
+      ref: "departement",
     },
     direction: {
       type: Schema.Types.ObjectId,

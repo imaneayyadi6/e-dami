@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import Direction from "./models/directionModel.js";
 import Service from "./models/serviceModel.js";
 import Utilisateur from "./models/utilisateurModel.js";
-
+import Departement from "./models/demandeModel.js";
 import connectDB from "./config/database.js";
 import cron from "node-cron";
 
@@ -83,31 +83,75 @@ const main = async () => {
         directions.push(newDirection);
       }
     }
+    /******************************   DEPARTEMENTS   ******************************/
+    const query6 = `SELECT DISTINCT dir.UO 'UO_direction', dir.SIGLE 'direction', dep.UO 'UO_departement',  dep.SIGLE 'departement'
+    FROM dbo.UNITE_ORG  as dep inner join dbo.UNITE_ORG as dir
+    on dep.UO_RATTACHEMENT = dir.UO
+    WHERE dep.SIGLE like 'departement%'
+    group by dir.UO, dir.SIGLE , dep.UO,  dep.SIGLE`;
+
+    let resSql6 = await sequelize.query(query6, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    let departements = [];
+
+    for (let item of resSql6) {
+      let direction = directions.find(
+        (dir) => String(dir.uo) === String(item.UO_direction)
+      );
+
+      let newDepartement = {
+        _id: new mongoose.Types.ObjectId(),
+        libelle: item.service,
+        uo: item.UO_service,
+        direction: direction ? direction._id : null,
+      };
+
+      let findDepartement = await Departement.findOne({
+        uo: item.UO_service,
+      });
+
+      if (findDepartement) {
+        findDepartement.libelle = item.departement;
+        findDepartement.uo = item.UO_departement;
+        findDepartement.direction = direction ? direction._id : null;
+        await findDepartement.save();
+        departements.push(JSON.parse(JSON.stringify(findDepartement)));
+      } else {
+        await new Departement(newDepartement).save();
+        departements.push(newDepartement);
+      }
+    }
 
     /******************************   SERVICES   ******************************/
-    const query2 = `SELECT DISTINCT dir.UO 'UO_direction', dir.SIGLE 'direction', srv.UO 'UO_service',  srv.SIGLE 'service'
-          FROM dbo.UNITE_ORG  as srv inner join dbo.UNITE_ORG  as dep
-          on srv.UO_RATTACHEMENT = dep.UO
-          inner join dbo.UNITE_ORG as dir
-          on dep.UO_RATTACHEMENT = dir.UO
-          WHERE srv.SIGLE like 'service%'
-          group by dir.UO, dir.SIGLE , srv.SIGLE ,srv.UO`;
+    const query2 = `SELECT DISTINCT dir.UO 'UO_direction', dir.SIGLE 'direction', dep.UO 'UO_departement',  dep.SIGLE 'departement', srv.UO 'UO_service',  srv.SIGLE 'service'
+    FROM dbo.UNITE_ORG  as srv inner join dbo.UNITE_ORG  as dep
+    on srv.UO_RATTACHEMENT = dep.UO
+    inner join dbo.UNITE_ORG as dir
+    on dep.UO_RATTACHEMENT = dir.UO
+    WHERE srv.SIGLE like 'service%' 
+    group by dir.UO, dir.SIGLE ,dep.UO,  dep.SIGLE, srv.SIGLE ,srv.UO`;
 
     let resSql2 = await sequelize.query(query2, {
       type: Sequelize.QueryTypes.SELECT,
     });
 
     let services = [];
-
     for (let item of resSql2) {
       let direction = directions.find(
         (dir) => String(dir.uo) === String(item.UO_direction)
+      );
+
+      let departement = departements.find(
+        (dir) => String(dir.uo) === String(item.UO_departement)
       );
 
       let newService = {
         _id: new mongoose.Types.ObjectId(),
         libelle: item.service,
         uo: item.UO_service,
+        departement: departement ? departement._id : null,
         direction: direction ? direction._id : null,
       };
 
@@ -118,6 +162,7 @@ const main = async () => {
       if (findService) {
         findService.libelle = item.service;
         findService.uo = item.UO_service;
+        findService.departement = departement ? departement._id : null;
         findService.direction = direction ? direction._id : null;
         await findService.save();
         services.push(JSON.parse(JSON.stringify(findService)));
@@ -184,6 +229,9 @@ const main = async () => {
           ],
           service: services.find((srv) => String(srv.uo) === String(item.LIEU))
             ._id,
+          departement: services.find(
+            (srv) => String(srv.uo) === String(item.LIEU)
+          ).departement,
           direction: services.find(
             (srv) => String(srv.uo) === String(item.LIEU)
           ).direction,
@@ -205,6 +253,8 @@ const main = async () => {
           findChefService.isDirecteur = false;
           findChefService.service = service ? service._id : null;
           findChefService.direction = service ? service.direction : null;
+          findChefService.departement = service ? service.departement : null;
+
           findChefService.roles = findChefService.roles;
           findChefService.updatedAt = new Date();
 
@@ -229,6 +279,114 @@ const main = async () => {
             await updatedService.save();
           }
           chefdeservices.push(newChefDeService);
+        }
+      }
+    }
+
+    /******************************  CHEFS DE DEPARTEMENTS   ******************************/
+    let query7 = `SELECT distinct ag.MATRICULE,ag.NOM,ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL,cl.QUALIFICATION ,tr.INTITULE, af.LIEU
+    from dbo.AGENT ag inner join dbo.ADRESSE adr
+    on adr.MATRICULE = ag.MATRICULE
+    inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
+    inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
+    inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
+    inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO
+    INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+    WHERE  YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE()) and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31  
+    and cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE
+    WHERE Table_name = 'responsabilite') and tr.INTITULE like 'CHEF DE DEPARTEMENT%'`;
+
+    const resSql7 = await sequelize.query(query7, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    let chefDeDepartements = [];
+
+    for (let item of resSql7) {
+      const departement = departements.find(
+        (dep) => String(dep.uo) === String(item.LIEU)
+      );
+      if (departement && item.EMAIL) {
+        const id = new mongoose.Types.ObjectId();
+
+        let newChefDeDepartement = {
+          _id: id,
+          isActive: true,
+          firstTimeLogin: true,
+          createdAt: new Date(),
+          nom: item.NOM,
+          prenom: item.PRENOM,
+          matricule: Number(item.MATRICULE),
+          civilite: item.CIVILITE,
+          fonction: item.INTITULE,
+          isChefDeDepartement: true,
+          email: item.EMAIL,
+          password: bcrypt.hashSync(generatePassword(6), 10),
+          roles: [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ],
+          departement: departement ? departement._id : null,
+          direction: departement ? departement.direction : null,
+        };
+
+        let findChefDepartement = await Utilisateur.findOne({
+          matricule: Number(item.MATRICULE),
+        });
+
+        if (findChefDepartement) {
+          departements = departements.map((dep) => {
+            if (String(dep.uo) === String(item.LIEU))
+              srv.chefDeDepartement = findChefDepartement._id;
+            return dep;
+          });
+
+          findChefDepartement.fonction = item.INTITULE;
+          findChefDepartement.isChefDeService = true;
+          findChefDepartement.isDirecteur = false;
+          findChefDepartement.departement = departement
+            ? departement._id
+            : null;
+          findChefDepartement.direction = departement
+            ? departement.direction
+            : null;
+          findChefDepartement.roles = findChefDepartement.roles;
+          findChefDepartement.updatedAt = new Date();
+
+          await findChefDepartement.save();
+
+          const updatedDepatement = await Service.findOne({
+            uo: item.LIEU,
+          });
+          if (updatedDepatement) {
+            updatedDepatement.chefDeDepartement = findChefDepartement._id;
+            await updatedDepatement.save();
+          }
+          chefDeDepartements.push(
+            JSON.parse(JSON.stringify(findChefDepartement))
+          );
+        } else {
+          await new Utilisateur(newChefDeDepartement).save();
+          const updatedDepatement = await Departement.findOne({
+            uo: item.LIEU,
+          });
+          if (updatedDepatement) {
+            updatedDepatement.chefDeDepartement = newChefDeDepartement._id;
+            await updatedDepatement.save();
+          }
+          chefDeDepartements.push(newChefDeDepartement);
         }
       }
     }
@@ -353,11 +511,19 @@ const main = async () => {
       const findIsDirecteur = directeurs.findIndex(
         (dir) => dir && String(dir.email) === String(item.EMAIL)
       );
+      const findIsChefDeDepartement = chefDeDepartements.findIndex(
+        (cdp) => dir && String(cdp.email) === String(item.EMAIL)
+      );
       const service = services.find(
         (srv) => String(srv.uo) === String(item.LIEU)
       );
 
-      if (findIsChefDeService === -1 && findIsDirecteur === -1 && item.EMAIL) {
+      if (
+        findIsChefDeDepartement === -1 &&
+        findIsChefDeService === -1 &&
+        findIsDirecteur === -1 &&
+        item.EMAIL
+      ) {
         let newUtilisateur = {
           _id: new mongoose.Types.ObjectId(),
           createdAt: new Date(),
@@ -369,6 +535,7 @@ const main = async () => {
           civilite: item.CIVILITE,
           fonction: item.QUALIFICATION,
           isChefDeService: false,
+          isChefDeDepartement: false,
           isDirecteur: false,
           email: item.EMAIL,
           password: bcrypt.hashSync(generatePassword(6), 10),
@@ -380,6 +547,7 @@ const main = async () => {
           ],
           service: service ? service._id : null,
           direction: service ? service.direction : null,
+          departement: service ? service.departement : null,
         };
 
         let findUtilisateur = await Utilisateur.findOne({
@@ -392,6 +560,7 @@ const main = async () => {
           findUtilisateur.isChefDeService = false;
           findUtilisateur.service = service ? service._id : null;
           findUtilisateur.direction = service ? service.direction : null;
+          findUtilisateur.departement = service ? service.departement : null;
           findUtilisateur.roles = findUtilisateur.roles;
           findUtilisateur.updatedAt = new Date();
 
@@ -450,7 +619,7 @@ const main = async () => {
   }
 };
 
-cron.schedule("0 */1 * * *", async () => {
+cron.schedule("0 */12 * * *", async () => {
   try {
     main();
     console.log(

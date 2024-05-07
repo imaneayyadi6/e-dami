@@ -1394,7 +1394,9 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
       res.json(demande);
     } else {
       res.status(400);
-      throw new Error("Vous n'êtes pas le demandeur de cette requête, vous ne pouvez pas consulter cette demande !");
+      throw new Error(
+        "Vous n'êtes pas le demandeur de cette requête, vous ne pouvez pas consulter cette demande !"
+      );
     }
   } else {
     res.status(404);

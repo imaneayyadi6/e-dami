@@ -4,12 +4,6 @@ import dotenv from "dotenv";
 // Init dotenv :
 dotenv.config();
 
-console.log("ZIMBRA_ADDRESS :", process.env.ZIMBRA_ADDRESS);
-
-console.log("ZIMBRA_USERNAME :", process.env.ZIMBRA_USERNAME);
-
-console.log("ZIMBRA_MOTDEPASSE :", process.env.ZIMBRA_MOTDEPASSE);
-
 
 // Create a transporter using SMTP transport
 const transporter = nodemailer.createTransport({
