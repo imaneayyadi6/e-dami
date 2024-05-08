@@ -255,6 +255,22 @@ const DamiDemande = ({ demande }) => {
               />
             </td>
           </tr>
+          <tr>
+            <td>
+              <label>Departement</label>
+            </td>
+            <td>
+              <input
+                className="dami-input w-100"
+                value={
+                  demande &&
+                  demande.demandeur &&
+                  demande.demandeur.deparatement &&
+                  capitalizeFirstLetter(demande.demandeur.deparatement.libelle)
+                }
+              />
+            </td>
+          </tr>
         </table>
       </div>
       <div className="dami-body p-2">

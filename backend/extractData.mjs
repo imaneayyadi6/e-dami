@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import Direction from "./models/directionModel.js";
 import Service from "./models/serviceModel.js";
 import Utilisateur from "./models/utilisateurModel.js";
-import Departement from "./models/demandeModel.js";
+import Departement from "./models/departementModel.js";
 import connectDB from "./config/database.js";
 import cron from "node-cron";
 
@@ -100,27 +100,28 @@ const main = async () => {
       let direction = directions.find(
         (dir) => String(dir.uo) === String(item.UO_direction)
       );
+      if (direction) {
+        let newDepartement = {
+          _id: new mongoose.Types.ObjectId(),
+          libelle: item.departement,
+          uo: item.UO_departement,
+          direction: direction ? direction._id : null,
+        };
 
-      let newDepartement = {
-        _id: new mongoose.Types.ObjectId(),
-        libelle: item.service,
-        uo: item.UO_service,
-        direction: direction ? direction._id : null,
-      };
+        let findDepartement = await Departement.findOne({
+          uo: item.UO_departement,
+        });
 
-      let findDepartement = await Departement.findOne({
-        uo: item.UO_service,
-      });
-
-      if (findDepartement) {
-        findDepartement.libelle = item.departement;
-        findDepartement.uo = item.UO_departement;
-        findDepartement.direction = direction ? direction._id : null;
-        await findDepartement.save();
-        departements.push(JSON.parse(JSON.stringify(findDepartement)));
-      } else {
-        await new Departement(newDepartement).save();
-        departements.push(newDepartement);
+        if (findDepartement) {
+          findDepartement.libelle = item.departement;
+          findDepartement.uo = item.UO_departement;
+          findDepartement.direction = direction ? direction._id : null;
+          await findDepartement.save();
+          departements.push(JSON.parse(JSON.stringify(findDepartement)));
+        } else {
+          await new Departement(newDepartement).save();
+          departements.push(newDepartement);
+        }
       }
     }
 
@@ -349,13 +350,14 @@ const main = async () => {
         if (findChefDepartement) {
           departements = departements.map((dep) => {
             if (String(dep.uo) === String(item.LIEU))
-              srv.chefDeDepartement = findChefDepartement._id;
+              dep.chefDeDepartement = findChefDepartement._id;
             return dep;
           });
 
           findChefDepartement.fonction = item.INTITULE;
-          findChefDepartement.isChefDeService = true;
+          findChefDepartement.isChefDeService = false;
           findChefDepartement.isDirecteur = false;
+          findChefDepartement.isChefDeDepartement = true;
           findChefDepartement.departement = departement
             ? departement._id
             : null;
@@ -367,7 +369,7 @@ const main = async () => {
 
           await findChefDepartement.save();
 
-          const updatedDepatement = await Service.findOne({
+          const updatedDepatement = await Departement.findOne({
             uo: item.LIEU,
           });
           if (updatedDepatement) {
@@ -512,7 +514,7 @@ const main = async () => {
         (dir) => dir && String(dir.email) === String(item.EMAIL)
       );
       const findIsChefDeDepartement = chefDeDepartements.findIndex(
-        (cdp) => dir && String(cdp.email) === String(item.EMAIL)
+        (cdp) => cdp && String(cdp.email) === String(item.EMAIL)
       );
       const service = services.find(
         (srv) => String(srv.uo) === String(item.LIEU)
@@ -602,6 +604,218 @@ const main = async () => {
       }).save();
     }
 
+    // direction et departement et service pour tester :
+    let helloWorldService = null;
+    let helloWorldDepratement = null;
+    let helloWorldDirection = null;
+
+    helloWorldDirection = await Direction.findOne({
+      libelle: "direction de hello world",
+    });
+    helloWorldDepratement = await Departement.findOne({
+      libelle: "departement de hello world",
+    });
+    helloWorldService = await Service.findOne({
+      libelle: "service de hello world",
+    });
+
+    if (!helloWorldDirection) {
+      helloWorldDirection = await new Direction({
+        libelle: "direction de hello world",
+      }).save();
+    }
+
+    if (!helloWorldDepratement) {
+      helloWorldDepratement = await new Departement({
+        libelle: "departement de hello world",
+        direction: helloWorldDirection._id,
+      }).save();
+    }
+
+    if (!helloWorldService) {
+      helloWorldService = await new Service({
+        libelle: "service de hello world",
+        departement: helloWorldDepratement._id,
+        direction: helloWorldDirection._id,
+      }).save();
+    }
+
+    // utilisateurs pour tester :
+    let jhonDoe = await Utilisateur.findOne({
+      email: "j.doe@snrt.ma",
+    });
+
+    let steveSmith = await Utilisateur.findOne({
+      email: "s.smith@snrt.ma",
+    });
+
+    let janeDoeSmith = await Utilisateur.findOne({
+      email: "jane.doe@snrt.ma",
+    });
+
+    let richardRoe = await Utilisateur.findOne({
+      email: "r.roe@snrt.ma",
+    });
+
+    let joeBloe = await Utilisateur.findOne({
+      email: "joe.bloe@snrt.ma",
+    });
+    console.log("helloWorldDepratement:", helloWorldDepratement);
+    console.log("helloWorldService:", helloWorldService);
+
+    if (!joeBloe) {
+      await new Utilisateur({
+        _id: new mongoose.Types.ObjectId(),
+        createdAt: new Date(),
+        nom: "Bloe",
+        prenom: "Joe",
+        email: "joe.bloe@snrt.ma",
+        password: bcrypt.hashSync("123456", 10),
+        matricule: 191292393,
+        fonction: "technicien en hello world",
+        roles: [
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+        ],
+        firstTimeLogin: false,
+        direction: helloWorldDirection._id,
+        departement: helloWorldDepratement._id,
+        service: helloWorldService._id,
+      }).save();
+    }
+
+    if (!jhonDoe) {
+      await new Utilisateur({
+        _id: new mongoose.Types.ObjectId(),
+        createdAt: new Date(),
+        nom: "Doe",
+        prenom: "Jhon",
+        email: "j.doe@snrt.ma",
+        password: bcrypt.hashSync("123456", 10),
+        matricule: 101202303,
+        fonction: "ingenieur en hello world",
+        roles: [
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+        ],
+        firstTimeLogin: false,
+        direction: helloWorldDirection._id,
+        departement: helloWorldDepratement._id,
+        service: helloWorldService._id,
+      }).save();
+    }
+
+    if (!steveSmith) {
+      let createdSteveSmith = await new Utilisateur({
+        _id: new mongoose.Types.ObjectId(),
+        createdAt: new Date(),
+        nom: "Smith",
+        prenom: "Steve",
+        email: "s.smith@snrt.ma",
+        password: bcrypt.hashSync("123456", 10),
+        matricule: 111222333,
+        isChefDeService: true,
+        fonction: "chef de service de service hello world",
+        roles: [
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+        ],
+        firstTimeLogin: false,
+        direction: helloWorldDirection._id,
+        departement: helloWorldDepratement._id,
+        service: helloWorldService._id,
+      }).save();
+
+      const updatedHelloWorldService = await Service.findOne({
+        libelle: "service de hello world",
+      });
+      updatedHelloWorldService.chefService = createdSteveSmith._id;
+      await updatedHelloWorldService.save();
+    }
+
+    if (!janeDoeSmith) {
+      let createdJaneDoeSmith = await new Utilisateur({
+        _id: new mongoose.Types.ObjectId(),
+        createdAt: new Date(),
+        nom: "Doe",
+        prenom: "Jane",
+        email: "jane.doe@snrt.ma",
+        password: bcrypt.hashSync("123456", 10),
+        matricule: 119229339,
+        fonction: "chef de departement de departement hello world",
+        isChefDeDepartement: true,
+        roles: [
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+        ],
+        firstTimeLogin: false,
+        direction: helloWorldDirection._id,
+        departement: helloWorldDepratement._id,
+      }).save();
+
+      const updatedHelloWorldDepartement = await Departement.findOne({
+        libelle: "departement de hello world",
+      });
+      updatedHelloWorldDepartement.chefDeDepartement = createdJaneDoeSmith._id;
+      await updatedHelloWorldDepartement.save();
+    }
+
+    if (!richardRoe) {
+      let createdRihcardRoe = await new Utilisateur({
+        _id: new mongoose.Types.ObjectId(),
+        createdAt: new Date(),
+        nom: "Roe",
+        prenom: "Richard",
+        email: "r.roe@snrt.ma",
+        password: bcrypt.hashSync("123456", 10),
+        matricule: 118228338,
+        fonction: "directeur de la direction hello world",
+        isDirecteur: true,
+        roles: [
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+          {
+            role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+            _id: new mongoose.Types.ObjectId(),
+          },
+        ],
+        firstTimeLogin: false,
+        direction: helloWorldDirection._id,
+      }).save();
+
+      const updatedHelloWorldDirection = await Direction.findOne({
+        libelle: "direction de hello world",
+      });
+      updatedHelloWorldDirection.directeur = createdRihcardRoe._id;
+      await updatedHelloWorldDirection.save();
+    }
+
     const dataToWrite = `[DATA INSERT] : ${new Date()} ============> Data Inserted succcessfully \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
@@ -618,7 +832,7 @@ const main = async () => {
     console.log(`Error : ${error}`.red.inverse);
   }
 };
-
+// main();
 cron.schedule("0 */12 * * *", async () => {
   try {
     main();

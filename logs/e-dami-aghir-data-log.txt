@@ -1,1 +1,20 @@
-﻿
+﻿[DATA INSERT] : Wed May 08 2024 10:34:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 10:36:10 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 10:39:44 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 10:40:30 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 11:23:01 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 11:25:23 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 11:27:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 12:08:52 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 12:08:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 12:08:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 12:08:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 12:17:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 08 2024 14:23:37 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Wed May 08 2024 14:55:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[ERROR] : Wed May 08 2024 15:07:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[ERROR] : Wed May 08 2024 15:13:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[ERROR] : Wed May 08 2024 15:42:13 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[ERROR] : Wed May 08 2024 15:49:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[ERROR] : Wed May 08 2024 15:54:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of null (reading '_id') 
+[DATA INSERT] : Wed May 08 2024 15:59:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 

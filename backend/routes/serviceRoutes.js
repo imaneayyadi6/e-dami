@@ -6,6 +6,7 @@ import {
   getServices,
   updateService,
   getServicesByDirectionID,
+  getServicesByDepartementID,
 } from "../controllers/serviceController.js";
 import { createur, protect } from "../middlewares/authMidlleware.js";
 
@@ -21,6 +22,10 @@ router
   .get(protect, getServiceByID)
   .put(protect, createur, updateService)
   .delete(protect, createur, deleteService);
+
 router.route("/direction/:id").get(protect, createur, getServicesByDirectionID);
+router
+  .route("/departement/:id")
+  .get(protect, createur, getServicesByDepartementID);
 
 export default router;

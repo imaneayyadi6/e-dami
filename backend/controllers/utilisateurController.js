@@ -4,6 +4,7 @@ import generateToken from "../utils/generateToken.js";
 import Utilisateur from "../models/utilisateurModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
+import Departement from "../models/departementModel.js";
 import Role from "../models/roleModel.js";
 import jwt from "jsonwebtoken";
 import { sendNotification } from "../services/notificationService.js";
@@ -29,8 +30,9 @@ export const authUser = asyncHandler(async (req, res) => {
 
   const utilisateur = await Utilisateur.findOne(query)
     .populate("roles.role")
+    .populate("direction")
     .populate("service")
-    .populate("direction");
+    .populate("departement");
 
   if (utilisateur) {
     if (await bcrypt.compare(password, utilisateur.password)) {
@@ -56,6 +58,7 @@ export const authUser = asyncHandler(async (req, res) => {
             matricule: utilisateur.matricule,
             service: utilisateur.service,
             direction: utilisateur.direction,
+            departement: utilisateur.departement,
             roles: utilisateur.roles,
             token: generateToken(utilisateur._id),
           });
@@ -77,6 +80,7 @@ export const authUser = asyncHandler(async (req, res) => {
               matricule: utilisateur.matricule,
               service: utilisateur.service,
               direction: utilisateur.direction,
+              departement: utilisateur.departement,
               roles: utilisateur.roles,
               token: generateToken(utilisateur._id),
             });

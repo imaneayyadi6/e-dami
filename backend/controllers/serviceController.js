@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import Service from "../models/serviceModel.js";
 import Direction from "../models/directionModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
+import Departement from "../models/departementModel.js";
 
 // @desc    Afficher tous les services
 // @route   GET /api/services/:id
@@ -11,7 +12,7 @@ export const getServices = asyncHandler(async (req, res) => {
   res.json(services);
 });
 
-// @desc    Recuperer les services une direction par ID
+// @desc    Recuperer les services d'une direction par ID
 // @route   GET /api/services/direction/:id
 // @access  private
 export const getServicesByDirectionID = asyncHandler(async (req, res) => {
@@ -23,6 +24,24 @@ export const getServicesByDirectionID = asyncHandler(async (req, res) => {
       .populate("chefService")
       .sort({ createdAt: -1 });
     res.json(services);
+  } else {
+    res.status(404);
+    throw new Error("direction introuvable !");
+  }
+});
+
+// @desc    Recuperer les services d'un departement par ID
+// @route   GET /api/services/departement/:id
+// @access  private
+export const getServicesByDepartementID = asyncHandler(async (req, res) => {
+  const departement = await Departement.findById(req.params.id);
+  if (departement) {
+    const departements = await Service.find({
+      departement: req.params.id,
+    })
+      .populate("chefDeDepartement")
+      .sort({ createdAt: -1 });
+    res.json(departements);
   } else {
     res.status(404);
     throw new Error("direction introuvable !");
@@ -72,12 +91,10 @@ export const createService = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("utilisateur introuvable !");
       }
-    }
-    else {
+    } else {
       const service = new Service({
         libelle: libelle,
         direction: direction._id,
-
       });
       const createdService = await service.save();
       await createdService.populate("chefService");
