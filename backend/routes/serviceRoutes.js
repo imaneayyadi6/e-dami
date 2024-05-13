@@ -23,9 +23,7 @@ router
   .put(protect, createur, updateService)
   .delete(protect, createur, deleteService);
 
-router.route("/direction/:id").get(protect, createur, getServicesByDirectionID);
-router
-  .route("/departement/:id")
-  .get(protect, createur, getServicesByDepartementID);
+router.route("/direction/:id").get(protect, getServicesByDirectionID);
+router.route("/departement/:id").get(protect, getServicesByDepartementID);
 
 export default router;

@@ -26,6 +26,10 @@ import {
   SERVICE_BY_ID_REQUEST,
   SERVICE_BY_ID_RESET,
   SERVICE_BY_ID_SUCCESS,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_FAIL,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_REQUEST,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_RESET,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_SUCCESS,
 } from "./serviceTypes";
 
 import axios from "axios";
@@ -94,6 +98,75 @@ export const fetchServicesByDirectionID = (directionID) => {
 
 export const resetFetchServicesByDirectionID = () => {
   return { type: SERVICE_LIST_BY_DIRECTION_ID_RESET };
+};
+
+export const fetchServicesByDepartementID = (departementID) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: SERVICE_LIST_BY_DEPARTEMENT_ID_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/services/departement/${departementID}`,
+        config
+      );
+      dispatch({
+        type: SERVICE_LIST_BY_DEPARTEMENT_ID_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: SERVICE_LIST_BY_DEPARTEMENT_ID_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchServicesByDepartementID = () => {
+  return { type: SERVICE_LIST_BY_DEPARTEMENT_ID_RESET };
+};
+
+export const fetchServiceByID = (serviceID) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: SERVICE_BY_ID_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(`/api/services/${serviceID}`, config);
+      dispatch({
+        type: SERVICE_BY_ID_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: SERVICE_BY_ID_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchServiceByID = () => {
+  return { type: SERVICE_BY_ID_RESET };
 };
 
 export const createService = (service) => {
@@ -196,37 +269,4 @@ export const updateService = (id, service) => {
 
 export const resetUpdateService = () => {
   return { type: SERVICE_UPDATE_RESET };
-};
-
-export const fetchServiceByID = (serviceID) => {
-  return async (dispatch, getState) => {
-    try {
-      dispatch({ type: SERVICE_BY_ID_REQUEST });
-      const {
-        userLogin: { userInfo },
-      } = getState();
-
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-      const { data } = await axios.get(`/api/services/${serviceID}`, config);
-      dispatch({
-        type: SERVICE_BY_ID_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      const err =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
-      dispatch({ type: SERVICE_BY_ID_FAIL, payload: err });
-    }
-  };
-};
-
-export const resetFetchServiceByID = () => {
-  return { type: SERVICE_BY_ID_RESET };
 };

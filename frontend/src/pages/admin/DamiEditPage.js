@@ -42,6 +42,7 @@ import {
 import {
   fetchServiceByID,
   fetchServices,
+  fetchServicesByDepartementID,
 } from "../../redux/service/serviceActions";
 import { fetchSousCategories } from "../../redux/sousCategorie/sousCategorieActions";
 import { Toast, cssStringToObject } from "../../services";
@@ -57,6 +58,10 @@ import {
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { OPTION_LIST_REMOVE } from "../../redux/option/optionTypes";
+import {
+  fetchDepartementByID,
+  fetchDepartements,
+} from "../../redux/departement/departementActions";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -90,6 +95,7 @@ const validationHeaderSchema = Yup.object({
 
 const validationSousCategorieSchema = Yup.object({
   sousCategorie: Yup.string().required("il faut entrer une sous-categorie"),
+  departement: Yup.string().required("il faut enntrer un departement"),
   service: Yup.string().required("il faut enntrer un service"),
   proprietaireDeDonnees: Yup.string(),
 });
@@ -108,6 +114,7 @@ const DamiEditPage = () => {
   ]);
   const [checkValues, setCheckValues] = useState({
     cds: false,
+    cdd: false,
     hiq: true,
     pdd: false,
     dir: true,
@@ -129,6 +136,7 @@ const DamiEditPage = () => {
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
+    departement: "",
     service: "",
     proprietaireDeDonnees: "",
   });
@@ -146,6 +154,22 @@ const DamiEditPage = () => {
     error: errorDirectionList,
     directions,
   } = directionList;
+
+  const departementList = useSelector((state) => state.departementList);
+  const {
+    loading: loadingDepartementList,
+    error: errordDepartementList,
+    departements,
+  } = departementList;
+
+  const serviceListByDepartementID = useSelector(
+    (state) => state.serviceListByDepartementID
+  );
+  const {
+    loading: loadingserviceListByDepartementID,
+    error: errorserviceListByDepartementID,
+    services: servicesByDep,
+  } = serviceListByDepartementID;
 
   const serviceList = useSelector((state) => state.serviceList);
   const {
@@ -176,6 +200,13 @@ const DamiEditPage = () => {
     error: errorServiceByID,
     service,
   } = serviceByID;
+
+  const departementByID = useSelector((state) => state.departementByID);
+  const {
+    loading: loadingDepartementByID,
+    error: errorDepartementByID,
+    departement,
+  } = departementByID;
 
   const optionCreate = useSelector((state) => state.optionCreate);
   const {
@@ -550,6 +581,7 @@ const DamiEditPage = () => {
     onSubmit: (values) => {
       dispatch(resetGetByServiceID());
       setOption({ ...option, ...values });
+      dispatch(fetchDepartementByID(values.departement));
       dispatch(fetchServiceByID(values.service));
 
       setActiveStep(2);
@@ -602,6 +634,7 @@ const DamiEditPage = () => {
       sousCategorieForm.resetForm();
       setCheckValues({
         cds: false,
+        cdd: false,
         hiq: true,
         pdd: false,
         dir: true,
@@ -1672,13 +1705,15 @@ const DamiEditPage = () => {
     if (!callOnce) {
       dispatch(fetchDirections());
       dispatch(fetchSousCategories());
-      dispatch(fetchServices());
+      dispatch(fetchDepartements());
       dispatch(resetFetchOptionByID());
       setCallOnce(true);
     }
 
-    if (option && option.service) {
+    if (option && option.service && option.departement) {
       dispatch(getByServiceID(option.service));
+      dispatch(fetchDepartementByID(option.departement));
+
     }
     if (successOptionCreate) {
       setDraggedItems([]);
@@ -1730,6 +1765,8 @@ const DamiEditPage = () => {
       const formattedMajDate = mjyear + "-" + mjday + "-" + mjmonth;
 
       let cds = false;
+      let cdd = false;
+
       let hiq = false;
       let pdd = false;
       let dir = false;
@@ -1737,6 +1774,8 @@ const DamiEditPage = () => {
 
       for (const item of recoveredOption.signataires) {
         if (String(item) === "cds") cds = true;
+        if (String(item) === "cdd") cdd = true;
+
         if (String(item) === "hiq") hiq = true;
         if (String(item) === "pdd") pdd = true;
         if (String(item) === "dir") dir = true;
@@ -1745,6 +1784,7 @@ const DamiEditPage = () => {
 
       setCheckValues({
         cds,
+        cdd,
         hiq,
         pdd,
         dir,
@@ -1761,6 +1801,7 @@ const DamiEditPage = () => {
       });
       sousCategorieForm.setValues({
         sousCategorie: recoveredOption.sousCategorie,
+        departement: recoveredOption.departement,
         service: recoveredOption.service,
         proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees,
       });
@@ -1855,6 +1896,14 @@ const DamiEditPage = () => {
     };
   }, [currentPath, option]);
 
+  useEffect(() => {
+    if (sousCategorieForm.values.departement) {
+      dispatch(
+        fetchServicesByDepartementID(sousCategorieForm.values.departement)
+      );
+    }
+  }, [sousCategorieForm.values.departement]);
+
   return (
     <>
       {/* Begin Modal View Result */}
@@ -1910,6 +1959,21 @@ const DamiEditPage = () => {
           {errorDirectionList && (
             <Message itWillBeHidden={true} type="danger">
               {errorDirectionList}
+            </Message>
+          )}
+          {errorserviceListByDepartementID && (
+            <Message itWillBeHidden={true} type="danger">
+              {errorserviceListByDepartementID}
+            </Message>
+          )}
+          {errorDepartementByID && (
+            <Message itWillBeHidden={true} type="danger">
+              {errorserviceListByDepartementID}
+            </Message>
+          )}
+          {errordDepartementList && (
+            <Message itWillBeHidden={true} type="danger">
+              {errordDepartementList}
             </Message>
           )}
           {errorServiceList && (
@@ -2096,21 +2160,52 @@ const DamiEditPage = () => {
                 )}
               <label>
                 <small className="text-danger mt-3">*</small>
+                departement :
+              </label>
+              <Form.Select
+                className="mb-3"
+                name="departement"
+                disabled={loadingDepartementList}
+                onChange={sousCategorieForm.handleChange}
+                onBlur={sousCategorieForm.handleBlur}
+                value={sousCategorieForm.values.departement}
+              >
+                <option value="">
+                  ---- veuillez choisire un departement ----
+                </option>
+                {departements.length > 0 &&
+                  departements.map((departement) => (
+                    <option key={departement._id} value={departement._id}>
+                      {departement.libelle}
+                    </option>
+                  ))}
+              </Form.Select>{" "}
+              {sousCategorieForm.touched.departement &&
+                sousCategorieForm.errors.departement && (
+                  <small className="text-danger d-block">
+                    {sousCategorieForm.errors.departement}
+                  </small>
+                )}
+              <label>
+                <small className="text-danger mt-3">*</small>
                 service :
               </label>
               <Form.Select
                 className="mb-3"
                 name="service"
-                disabled={loadingServiceList}
+                disabled={
+                  loadingserviceListByDepartementID ||
+                  servicesByDep.length === 0
+                }
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
                 value={sousCategorieForm.values.service}
               >
                 <option value="">---- veuillez choisire un service ----</option>
-                {services.length > 0 &&
-                  services.map((service) => (
-                    <option key={service._id} value={service._id}>
-                      {service.libelle}
+                {servicesByDep.length > 0 &&
+                  servicesByDep.map((serviceByID) => (
+                    <option key={serviceByID._id} value={serviceByID._id}>
+                      {serviceByID.libelle}
                     </option>
                   ))}
               </Form.Select>{" "}
@@ -2161,11 +2256,11 @@ const DamiEditPage = () => {
               <Message type="warning">
                 Le nombre maximum de signataires autorisés est de 4.
               </Message>
-              <div className="px-1 py-4">
+              <div className="px-1 py-4 ">
                 <div style={{ height: "250px" }}>
-                  {(loadingDirectionByServiceID || loadingServiceByID) && (
-                    <Loader />
-                  )}
+                  {(loadingDirectionByServiceID ||
+                    loadingServiceByID ||
+                    loadingDepartementByID) && <Loader />}
                   {direction && service && (
                     <>
                       <div className="w-100 py-2">
@@ -2176,6 +2271,16 @@ const DamiEditPage = () => {
                           className="check-signataire"
                           onChange={sigChangeHandler}
                           checked={checkValues["cds"]}
+                        />
+                      </div>
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          id="cdd"
+                          value={checkValues["cdd"]}
+                          label={`Chef de departement de ${departement.libelle}`}
+                          className="check-signataire"
+                          onChange={sigChangeHandler}
+                          checked={checkValues["cdd"]}
                         />
                       </div>
                       <div className="w-100 py-2 ">
@@ -2205,7 +2310,7 @@ const DamiEditPage = () => {
                               : false
                           }
                           disabled={!option.proprietaireDeDonnees}
-                          label="proprietaire de donnees"
+                          label="Proprietaire de donnees"
                           className="d-block mr-2 check-signataire"
                         />
                       </div>
@@ -2215,7 +2320,7 @@ const DamiEditPage = () => {
                           id="dir"
                           value={checkValues["dir"]}
                           checked={checkValues["dir"]}
-                          label={`directeur de ${direction.libelle}`}
+                          label={`Directeur de ${direction.libelle}`}
                           className="d-block mr-2 check-signataire"
                           readOnly
                           disabled

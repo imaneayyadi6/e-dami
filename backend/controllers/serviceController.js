@@ -39,12 +39,13 @@ export const getServicesByDepartementID = asyncHandler(async (req, res) => {
     const departements = await Service.find({
       departement: req.params.id,
     })
-      .populate("chefDeDepartement")
+      .populate("chefService")
       .sort({ createdAt: -1 });
+   
     res.json(departements);
   } else {
     res.status(404);
-    throw new Error("direction introuvable !");
+    throw new Error("departement introuvable !");
   }
 });
 

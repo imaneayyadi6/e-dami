@@ -26,6 +26,10 @@ import {
   SERVICE_BY_ID_REQUEST,
   SERVICE_BY_ID_RESET,
   SERVICE_BY_ID_SUCCESS,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_FAIL,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_REQUEST,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_RESET,
+  SERVICE_LIST_BY_DEPARTEMENT_ID_SUCCESS,
 } from "./serviceTypes";
 
 export const serviceListReducer = (state = { services: [] }, action) => {
@@ -97,6 +101,33 @@ export const serviceListByDirectionIDReducer = (
         success: true,
       };
     case SERVICE_LIST_BY_DIRECTION_ID_RESET:
+      return { services: [] };
+    default:
+      return state;
+  }
+};
+
+export const serviceListByDepartementIDReducer = (
+  state = { services: [] },
+  action
+) => {
+  const { type, payload } = action;
+  switch (type) {
+    case SERVICE_LIST_BY_DEPARTEMENT_ID_REQUEST:
+      return { loading: true, services: [] };
+    case SERVICE_LIST_BY_DEPARTEMENT_ID_SUCCESS:
+      return {
+        success: true,
+        services: payload,
+      };
+    case SERVICE_LIST_BY_DEPARTEMENT_ID_FAIL:
+      return {
+        loading: false,
+        error: payload,
+        services: [],
+        success: true,
+      };
+    case SERVICE_LIST_BY_DEPARTEMENT_ID_RESET:
       return { services: [] };
     default:
       return state;

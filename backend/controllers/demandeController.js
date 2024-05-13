@@ -6,6 +6,7 @@ import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 import { sendNotification } from "../services/notificationService.js";
 import mongoose from "mongoose";
+import Departement from "../models/departementModel.js";
 
 // @desc    Recuperer les demandes de demandeur
 // @route   GET /api/demandes/mesdemandes
@@ -202,20 +203,39 @@ export const createDemande = asyncHandler(async (req, res) => {
         // verification de code de signataires :
         if (option.signataires[0] === "cds") {
           const service = await Service.findById(user.service);
-          if (service.chefService) {
-            userID = service.chefService;
-            code = "cds";
-            typeApp = "chef de service";
+          if (service) {
+            if (service.chefService) {
+              userID = service.chefService;
+              code = "cds";
+              typeApp = "chef de service";
+            } else {
+              res.status(400);
+              throw new Error("le service n'a pas de chef de service !");
+            }
           } else {
-            res.status(400);
-            throw new Error("le service n'a pas de chef de service !");
+            throw new Error("Vous n'appartenez à aucun service !");
+          }
+        } else if (option.signataires[0] === "cdd") {
+          const departement = await Departement.findById(user.departement);
+          if (departement) {
+            if (departement.chefDeDepartement) {
+              userID = departement.chefDeDepartement;
+              code = "cdd";
+              typeApp = "chef de departement";
+            } else {
+              res.status(400);
+              throw new Error(
+                "le departement n'a pas de chef de departement !"
+              );
+            }
+          } else {
+            throw new Error("vous n'avez pas de departement !");
           }
         } else if (option.signataires[0] === "hiq") {
           const direction = await Direction.findById(user.direction);
           if (direction) {
             if (direction.directeur) {
               userID = direction.directeur;
-
               if (
                 option.signataires[1] === "pdd" &&
                 option.signataires[2] === "dir"
@@ -413,9 +433,13 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
       const direction = await Direction.findById(
         demande.demandeur.direction
       ).populate("directeur");
+
       const optionService = await Service.findById(
         demande.option.service
-      ).populate("chefService");
+      ).populate({
+        path: "chefService",
+      });
+
       let optionPDD = null;
       if (demande.option.proprietaireDeDonnees)
         optionPDD = await Direction.findById(
@@ -438,6 +462,42 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
 
           if (status && status !== "en cours") {
             let dateTraitement = traitement.dateTraitement;
+
+            if (s === "cdd") {
+              let departement = null;
+              if (service && service.departement) {
+                departement = await Departement.findById(
+                  service.departement
+                ).populate("chefDeDepartement");
+              } else {
+                let demandeur = await Utilisateur.findById(
+                  demande.demandeur._id
+                );
+
+                if (demandeur) {
+                  if (demandeur.isChefDeDepartement) {
+                    departement = await Departement.findById(
+                      demandeur.departement
+                    ).populate("chefDeDepartement");
+                    obj = {
+                      code: "cdd",
+                      nom: departement.chefDeDepartement.nom,
+                      prenom: departement.chefDeDepartement.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    };
+                  } else {
+                    res.status(400);
+                    throw new Error("departement introuvable !");
+                  }
+                } else {
+                  res.status(400);
+                  throw new Error("demadneur introuvable !");
+                }
+              }
+            }
 
             if (s === "cds") {
               obj = {
@@ -606,8 +666,14 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
 // @access  private
 export const approuverDemande = asyncHandler(async (req, res) => {
   let demande = await Demande.findById(req.params.id)
-    .populate("option")
+    .populate({
+      path: "option",
+      populate: {
+        path: "service",
+      },
+    })
     .populate("demandeur");
+
   if (demande) {
     if (demande.status === "en cours") {
       // recuperer le traitement :
@@ -641,7 +707,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               console.log(req.user.id);
 
               console.log("direction");
-              console.log(direction);
 
               if (direction) {
                 if (crtfCode === "hiq.pdd") {
@@ -690,6 +755,16 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       process.env.CLIENT_ADDRESS
                     }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service`;
+              } else if (crtfCode === "cdd") {
+                let departement = await Departement.findOne({
+                  chefDeDepartement: req.user.id,
+                }).populate("chefDeDepartement");
+
+                contenu = `<p>
+                    Votre <a style='font-weight:bold' href="${
+                      process.env.CLIENT_ADDRESS
+                    }/details-demande/${demande._id}">demande</a> 
+                    a été approuvée par le chef de departement ${departement.libelle.toLowerCase()} en tant que votre chef de departement`;
               } else if (crtfCode === "hiq") {
                 let direction = await Direction.findOne({
                   directeur: req.user.id,
@@ -742,12 +817,49 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     contenu,
                     `Votre demande a été approuvée et finalisée`
                   );
+                  let supService = await Service.findById(
+                    demande.option.service._id
+                  );
+                  let supDepratement = await Departement.findById(
+                    demande.option.service.deparatement
+                  );
+
+                  let supContent = `une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom} a été approuvée par ses supérieurs. Veuillez traiter cette demande. <b><a href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">details demande</a></b> `;
+                  if (supService) {
+                    sendNotification(
+                      supService.chefService,
+                      supContent,
+                      "traitement de la demande"
+                    );
+                  }
+
+                  if (supDepratement) {
+                    sendNotification(
+                      supDepratement.chefDeDepartement,
+                      supContent,
+                      "traitement de la demande"
+                    );
+                  }
+
                   res.json({ message: "demande approuve" });
                 } else {
                   // verfication de qu'est le directeur qui va traiter cette demande selon le code:
                   let dirUserID = "";
                   let nextCode = demande.option.signataires[codeIndex + 1];
-                  if (nextCode === "hiq") {
+
+                  if (nextCode === "cdd") {
+                    const departementID = await Utilisateur.findById(
+                      req.user.id
+                    ).departement;
+
+                    const departement = await Departement.findById(
+                      departementID
+                    );
+                    if (departement) {
+                      dirUserID = departement.chefDeDepartement;
+                      typeApp = `chef de departement`;
+                    }
+                  } else if (nextCode === "hiq") {
                     const directionID = await Utilisateur.findById(req.user.id)
                       .direction;
                     const direction = await Direction.findById(directionID);
@@ -826,6 +938,31 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     contenu,
                     `Votre demande a été approuvée`
                   );
+
+                  let supService = await Service.findById(
+                    demande.option.service._id
+                  );
+                  let supDepratement = await Departement.findById(
+                    demande.option.service.departement
+                  );
+
+                  let supContent = `une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom} a été approuvée par ses supérieurs. Veuillez traiter cette demande. <b><a href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">details demande</a></b> `;
+                  if (supService) {
+                    sendNotification(
+                      supService.chefService,
+                      supContent,
+                      "traitement de la demande"
+                    );
+                  }
+
+                  if (supDepratement) {
+                    sendNotification(
+                      supDepratement.chefDeDepartement,
+                      supContent,
+                      "traitement de la demande"
+                    );
+                  }
+
                   res.json({ message: "demande approuve " });
                 } else {
                   // verfication de qu'est le directeur qui va traiter cette demande selon le code :
@@ -833,7 +970,36 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   let nextCode1 = demande.option.signataires[codeIndex + 1];
                   let envCode = "";
                   if (nextCode1) {
-                    if (nextCode1 === "hiq") {
+                    if (nextCode1 === "cdd") {
+                      console.log(
+                        JSON.parse(
+                          JSON.stringify(
+                            await Utilisateur.findById(demande.demandeur._id)
+                          )
+                        )
+                      );
+
+                      const departementID = JSON.parse(
+                        JSON.stringify(
+                          await Utilisateur.findById(demande.demandeur._id)
+                        )
+                      ).departement;
+
+                      const deparatement = await Departement.findById(
+                        departementID
+                      );
+
+                      console.log("dep :", JSON.stringify(deparatement));
+
+                      if (deparatement) {
+                        dirUserID = deparatement.chefDeDepartement;
+                        typeApp = "chef de departement";
+                        envCode = "cdd";
+                      } else {
+                        res.status(404);
+                        throw Error("deparatement introuvable !");
+                      }
+                    } else if (nextCode1 === "hiq") {
                       const directionID = JSON.parse(
                         JSON.stringify(
                           await Utilisateur.findById(demande.demandeur._id)
@@ -1147,6 +1313,18 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                       a été refusée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service. motif de refus: ${
                     req.body.motif
                   } </p>`;
+                } else if (crtfCode === "cdd") {
+                  let departement = await Departement.findOne({
+                    chefDeDepartement: req.user.id,
+                  }).populate("chefDeDepartement");
+
+                  contenu = `<p>
+                      Votre <a style='font-weight:bold' href="${
+                        process.env.CLIENT_ADDRESS
+                      }/details-demande/${demande._id}">demande</a> 
+                      a été refusée par le chef de service ${departement.libelle.toLowerCase()} en tant que votre chef de departement. motif de refus: ${
+                    req.body.motif
+                  } </p>`;
                 } else if (crtfCode === "hiq") {
                   let direction = await Direction.findOne({
                     directeur: req.user.id,
@@ -1397,6 +1575,414 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
       throw new Error(
         "Vous n'êtes pas le demandeur de cette requête, vous ne pouvez pas consulter cette demande !"
       );
+    }
+  } else {
+    res.status(404);
+    throw new Error("demande introuvable");
+  }
+
+  res.json(demande);
+});
+
+// @desc    Recuperer les demandes pour appercu de superieur
+// @route   GET /api/demandes/for/preview/team
+// @access  private
+export const getDemandesForPreview = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 20, ...filters } = req.query;
+  let utilisateur = await Utilisateur.findById(req.user.id);
+  if (utilisateur) {
+    if (utilisateur.isDirecteur) {
+      let demandes = await Demande.aggregate([
+        {
+          $lookup: {
+            from: "utilisateurs",
+            localField: "demandeur",
+            foreignField: "_id",
+            as: "demandeur",
+          },
+        },
+        {
+          $unwind: "$demandeur",
+        },
+
+        {
+          $lookup: {
+            from: "options",
+            localField: "option",
+            foreignField: "_id",
+            as: "option",
+          },
+        },
+        {
+          $unwind: "$option",
+        },
+        {
+          $sort: {
+            dateDemande: -1,
+          },
+        },
+
+        {
+          $match: {
+            "demandeur.direction": new mongoose.Types.ObjectId(
+              utilisateur.direction
+            ),
+            "demandeur._id": {
+              $ne: new mongoose.Types.ObjectId(utilisateur._id),
+            },
+          },
+        },
+      ]);
+      res.json(demandes);
+    } else if (utilisateur.isChefDeDepartement) {
+      let demandes = await Demande.aggregate([
+        {
+          $lookup: {
+            from: "utilisateurs",
+            localField: "demandeur",
+            foreignField: "_id",
+            as: "demandeur",
+          },
+        },
+        {
+          $unwind: "$demandeur",
+        },
+
+        {
+          $lookup: {
+            from: "options",
+            localField: "option",
+            foreignField: "_id",
+            as: "option",
+          },
+        },
+        {
+          $unwind: "$option",
+        },
+        {
+          $sort: {
+            dateDemande: -1,
+          },
+        },
+        {
+          $match: {
+            "demandeur.departement": new mongoose.Types.ObjectId(
+              utilisateur.departement
+            ),
+            "demandeur._id": {
+              $ne: new mongoose.Types.ObjectId(utilisateur._id),
+            },
+          },
+        },
+      ]);
+      res.json(demandes);
+    } else if (utilisateur.isChefDeService) {
+      let demandes = await Demande.aggregate([
+        {
+          $lookup: {
+            from: "utilisateurs",
+            localField: "demandeur",
+            foreignField: "_id",
+            as: "demandeur",
+          },
+        },
+        {
+          $unwind: "$demandeur",
+        },
+
+        {
+          $lookup: {
+            from: "options",
+            localField: "option",
+            foreignField: "_id",
+            as: "option",
+          },
+        },
+        {
+          $unwind: "$option",
+        },
+        {
+          $sort: {
+            dateDemande: -1,
+          },
+        },
+        {
+          $match: {
+            "demandeur.service": new mongoose.Types.ObjectId(
+              utilisateur.service
+            ),
+            "demandeur._id": {
+              $ne: new mongoose.Types.ObjectId(utilisateur._id),
+            },
+          },
+        },
+      ]);
+      res.json(demandes);
+    } else {
+      res.status(400);
+      throw new Error("vous n'a avez pas le droit de voire les demandes !");
+    }
+  } else {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+});
+
+// @desc    Recuperer details demande pour appercu de superieur
+// @route   GET /api/demandes/for/preview/team/details/:id
+// @access  private
+export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
+  let demande = await Demande.findOne({
+    _id: req.params.id,
+  })
+
+    .populate({
+      path: "option",
+      populate: {
+        path: "service",
+      },
+    })
+    .populate("demandeur");
+
+  if (demande) {
+    let isChefDeService = false;
+    let isChefDeDepartement = false;
+    let isDirecteur = false;
+
+    if (req.user.isChefDeService) {
+      let service = await Service.findOne(req.user.service);
+      if (service && String(demande.demandeur.service) === String(service._id))
+        isChefDeService = true;
+    }
+    if (req.user.isChefDeDepartement) {
+      let departement = await Departement.findOne(req.user.departement);
+      if (
+        departement &&
+        String(demande.demandeur.departement) === String(departement._id)
+      )
+        isChefDeDepartement = true;
+    }
+
+    if (req.user.isDirecteur) {
+      let direction = await Direction.findOne(req.user.direction);
+      if (
+        direction &&
+        String(demande.demandeur.direction) === String(direction._id)
+      )
+        isDirecteur = true;
+    }
+
+    let supService = await Service.findById(demande.option.service._id);
+    let supDepratement = await Service.findById(
+      demande.option.service.deparatement
+    );
+
+    if (
+      isChefDeService ||
+      isChefDeDepartement ||
+      isDirecteur ||
+      supService ||
+      supDepratement
+    ) {
+      demande = JSON.parse(JSON.stringify(demande));
+      const service = await Service.findById(
+        demande.demandeur.service
+      ).populate("chefService");
+      const direction = await Direction.findById(
+        demande.demandeur.direction
+      ).populate("directeur");
+
+      const optionService = await Service.findById(
+        demande.option.service
+      ).populate({
+        path: "chefService",
+      });
+
+      let optionPDD = null;
+      if (demande.option.proprietaireDeDonnees)
+        optionPDD = await Direction.findById(
+          demande.option.proprietaireDeDonnees
+        ).populate("directeur");
+
+      const optionDirection = await Direction.findById(
+        optionService.direction
+      ).populate("directeur");
+
+      demande.dirLibelle = optionDirection.libelle;
+
+      let sig = [];
+      for (const s of demande.option.signataires) {
+        let traitement = demande.traitement.find((tr) => tr.code === s);
+
+        if (traitement) {
+          let obj = null;
+          let status = traitement.status;
+
+          if (status && status !== "en cours") {
+            let dateTraitement = traitement.dateTraitement;
+
+            if (s === "cdd") {
+              let departement = null;
+              if (service && service.departement) {
+                departement = await Departement.findById(
+                  service.departement
+                ).populate("chefDeDepartement");
+              } else {
+                let demandeur = await Utilisateur.findById(
+                  demande.demandeur._id
+                );
+
+                if (demandeur) {
+                  if (demandeur.isChefDeDepartement) {
+                    departement = await Departement.findById(
+                      demandeur.departement
+                    ).populate("chefDeDepartement");
+                    obj = {
+                      code: "cdd",
+                      nom: departement.chefDeDepartement.nom,
+                      prenom: departement.chefDeDepartement.prenom,
+                      approuve: status === "approuve" ? true : false,
+                      refuse: status === "refuse" ? true : false,
+                      dateTraitement: dateTraitement,
+                      // date:trai
+                    };
+                  } else {
+                    res.status(400);
+                    throw new Error("departement introuvable !");
+                  }
+                } else {
+                  res.status(400);
+                  throw new Error("demadneur introuvable !");
+                }
+              }
+            }
+
+            if (s === "cds") {
+              obj = {
+                code: "cds",
+                nom: service.chefService.nom,
+                prenom: service.chefService.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+
+            if (s === "hiq") {
+              obj = {
+                code: "hiq",
+                nom: direction.directeur.nom,
+                prenom: direction.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+
+            if (s === "pdd") {
+              obj = {
+                code: "pdd",
+                nom: optionPDD.directeur.nom,
+                prenom: optionPDD.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+
+            if (s === "dir") {
+              obj = {
+                code: "dir",
+                nom: optionDirection.directeur.nom,
+                prenom: optionDirection.directeur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+            sig.push(obj);
+          }
+        } else {
+          for (const tr of demande.traitement) {
+            const arrCode = tr.code.split(".");
+            if (arrCode.length > 1) {
+              for (const item of arrCode) {
+                let traitement = tr;
+                if (traitement) {
+                  let obj = null;
+                  let status = traitement.status;
+
+                  if (status && status !== "en cours") {
+                    let dateTraitement = traitement.dateTraitement;
+
+                    if (item === "cds") {
+                      obj = {
+                        code: "cds",
+                        nom: service.chefService.nom,
+                        prenom: service.chefService.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+
+                    if (item === "hiq") {
+                      obj = {
+                        code: "hiq",
+                        nom: direction.directeur.nom,
+                        prenom: direction.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+
+                    if (item === "pdd") {
+                      obj = {
+                        code: "pdd",
+                        nom: optionPDD.directeur.nom,
+                        prenom: optionPDD.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+
+                    if (item === "dir") {
+                      obj = {
+                        code: "dir",
+                        nom: optionDirection.directeur.nom,
+                        prenom: optionDirection.directeur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+                    sig.push(obj);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      demande.sig = sig;
+      demande.demandeur.direction = direction;
+      demande.demandeur.service = service;
+
+      res.json(demande);
+    } else {
+      res.status(400);
+      throw new Error("vous n'avez pas le droit de consulter cette demande !");
     }
   } else {
     res.status(404);

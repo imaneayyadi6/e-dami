@@ -35,7 +35,15 @@ import {
   serviceRemoveReducer,
   serviceUpdateReducer,
   serviceByIDReducer,
+  serviceListByDepartementIDReducer,
 } from "./service/serviceReducers";
+
+import {
+  departementListReducer,
+  departementListByDirectionIDReducer,
+  departementByIDReducer,
+} from "./departement/departementReducers";
+
 import {
   categorieListReducer,
   categorieCreateReducer,
@@ -83,6 +91,8 @@ import {
   mesDemandesReducer,
   demandeDemandeurByIdReducer,
   demandeToHandleFilterReducer,
+  demandePreviewTeamReducer,
+  demandePreviewTeamDetailsReducer,
 } from "./demande/demandeReducres";
 import {
   notificationListReducer,
@@ -125,6 +135,11 @@ const reducer = combineReducers({
   serviceRemove: serviceRemoveReducer,
   serviceUpdate: serviceUpdateReducer,
   serviceByID: serviceByIDReducer,
+  serviceListByDepartementID: serviceListByDepartementIDReducer,
+  // departement :
+  departementList: departementListReducer,
+  departementListByDirectionID: departementListByDirectionIDReducer,
+  departementByID: departementByIDReducer,
   // categorie :
   categorieCreate: categorieCreateReducer,
   categorieList: categorieListReducer,
@@ -148,7 +163,7 @@ const reducer = combineReducers({
   optionCrtOpList: optionCrtOpListReducer,
   optionCrtOpDelete: optionCrtOpDeleteReducer,
   optionCrtOpUpdate: optionCrtOpUpdateReducer,
-  
+
   // user :
   userLogin: userLoginReducer,
   userDirecteursList: userDirecteursListReducer,
@@ -184,6 +199,8 @@ const reducer = combineReducers({
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
   demandeToHandleFilter: demandeToHandleFilterReducer,
+  demandePreviewTeam: demandePreviewTeamReducer,
+  demandePreviewTeamDetails: demandePreviewTeamDetailsReducer,
   // notifications :
   notificationToatsList: notificationToatsListReducer,
   notificationToastMakeItSeen: notificationToastMakeItSeenReducer,

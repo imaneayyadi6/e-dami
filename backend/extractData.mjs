@@ -832,14 +832,14 @@ const main = async () => {
     console.log(`Error : ${error}`.red.inverse);
   }
 };
-// main();
-cron.schedule("0 */12 * * *", async () => {
-  try {
-    main();
-    console.log(
-      "Hello, this is a sample JavaScript file executed by cron every 10 minute."
-    );
-  } catch (error) {
-    console.error("CRON ERROR:", error);
-  }
-});
+main();
+// cron.schedule("0 */12 * * *", async () => {
+//   try {
+//     main();
+//     console.log(
+//       "Hello, this is a sample JavaScript file executed by cron every 10 minute."
+//     );
+//   } catch (error) {
+//     console.error("CRON ERROR:", error);
+//   }
+// });

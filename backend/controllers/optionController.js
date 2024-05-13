@@ -3,6 +3,7 @@ import Option from "../models/optionModel.js";
 import Direction from "../models/directionModel.js";
 import SousCategorie from "../models/sousCategorieModel.js";
 import Service from "../models/serviceModel.js";
+import Departement from "../models/departementModel.js";
 
 // @desc    Afficher tous les options
 // @route   GET /api/options/
@@ -123,6 +124,7 @@ export const createOption = asyncHandler(async (req, res) => {
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
             service: service._id,
+            departement: service.departement,
             contenu,
             signataires: req.body.signataires,
           });
@@ -139,6 +141,7 @@ export const createOption = asyncHandler(async (req, res) => {
           header: { document, classification, creation, maj },
           sousCategorie: sousCategorie._id,
           service: service._id,
+          departement: service.departement,
           contenu,
           signataires: req.body.signataires,
         });
@@ -204,6 +207,16 @@ export const updateOption = asyncHandler(async (req, res) => {
       } else {
         res.status(404);
         throw new Error("sous-categorie introuvable !");
+      }
+    }
+
+    if (req.body.departement) {
+      const departement = await Departement.findById(req.body.departement);
+      if (departement) {
+        option.departement = departement._id;
+      } else {
+        res.status(404);
+        throw new Error("departement introuvable !");
       }
     }
 
@@ -278,6 +291,7 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
             service: service._id,
+            departement: service.departement,
             contenu,
             signataires: req.body.signataires,
           });
@@ -295,6 +309,7 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
           header: { document, classification, creation, maj },
           sousCategorie: sousCategorie._id,
           service: service._id,
+          departement: service.departement,
           contenu,
           signataires: req.body.signataires,
         });
@@ -363,7 +378,15 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
           throw new Error("sous-categorie introuvable !");
         }
       }
-
+      if (req.body.departement) {
+        const departement = await Departement.findById(req.body.departement);
+        if (departement) {
+          option.departement = departement._id;
+        } else {
+          res.status(404);
+          throw new Error("departement introuvable !");
+        }
+      }
       option.signataires = req.body.signataires || option.signataires;
 
       const updatedOption = await option.save();

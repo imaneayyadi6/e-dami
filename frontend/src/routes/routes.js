@@ -30,6 +30,8 @@ import {
   DemandesPage,
   SignataireDashboardPage,
 } from "../pages/signataire";
+import DemandesPreviewDetailsPage from "../pages/signataire/DemandesPreviewDetailsPage";
+import DemandesPreviewPage from "../pages/signataire/DemandesPreviewPage";
 
 const routes = [
   {
@@ -84,6 +86,22 @@ const routes = [
     exact: true,
     roles: ["sig"],
   },
+
+  {
+    path: "/demandes/apercu",
+    name: "Aperçu des demandes",
+    element: <DemandesPreviewPage />,
+    exact: true,
+    roles: ["sig"],
+  },
+  {
+    path: "/demandes/apercu/details/:id",
+    name: "Aperçu demande details",
+    element: <DemandesPreviewDetailsPage />,
+    exact: true,
+    roles: ["sig"],
+  },
+
   {
     path: "/Categories",
     name: "Categories",

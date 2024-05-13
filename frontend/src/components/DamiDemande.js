@@ -10,6 +10,7 @@ const DamiDemande = ({ demande }) => {
 
   const [sigTypes] = useState({
     cds: "Approbation Chef de Service",
+    cdd: "Approbation Chef de Departement",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
     dir: `Approbation Directeur de la  `,
@@ -301,9 +302,9 @@ const DamiDemande = ({ demande }) => {
                   <input
                     className="dami-input"
                     value={
-                      demande.sig.find((sg) => sg.code === sig)
+                      demande.sig.find((sg) => sg && sg.code === sig)
                         ? capitalizeFirstLetter(
-                            demande.sig.find((sg) => sg.code === sig).nom
+                            demande.sig.find((sg) => sg && sg.code === sig).nom
                           )
                         : demande.traitement.find(
                             (tr) =>
@@ -335,9 +336,10 @@ const DamiDemande = ({ demande }) => {
                   <input
                     className="dami-input"
                     value={
-                      demande.sig.find((sg) => sg.code === sig)
+                      demande.sig.find((sg) => sg && sg.code === sig)
                         ? capitalizeFirstLetter(
-                            demande.sig.find((sg) => sg.code === sig).prenom
+                            demande.sig.find((sg) => sg && sg.code === sig)
+                              .prenom
                           )
                         : demande.traitement.find(
                             (tr) =>
@@ -386,6 +388,7 @@ const DamiDemande = ({ demande }) => {
                         ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
+                              tr &&
                               tr.code
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
@@ -393,13 +396,14 @@ const DamiDemande = ({ demande }) => {
                         : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
+                              tr &&
                               tr.code === String(sig)
                           ) && `chk-app-${userInfo.id}`
                     }
 
                     ${
-                      demande.sig.find((sg) => sg.code === sig) &&
-                      demande.sig.find((sg) => sg.code === sig).approuve
+                      demande.sig.find((sg) => sg && sg.code === sig) &&
+                      demande.sig.find((sg) => sg && sg.code === sig).approuve
                         ? "checked"
                         : ""
                     } `}
@@ -423,6 +427,7 @@ const DamiDemande = ({ demande }) => {
                               (tr) =>
                                 String(tr.utilisateur) ===
                                   String(userInfo.id) &&
+                                tr &&
                                 tr.code
                                   .split(".")
                                   .find((cd) => String(cd) === String(sig))
@@ -430,11 +435,13 @@ const DamiDemande = ({ demande }) => {
                           : demande.traitement.find(
                               (tr) =>
                                 String(tr.utilisateur) ===
-                                  String(userInfo.id) && tr.code === String(sig)
+                                  String(userInfo.id) &&
+                                tr &&
+                                tr.code === String(sig)
                             ) && `chk-rfs-${userInfo.id}`
                       } ${
-                        demande.sig.find((sg) => sg.code === sig) &&
-                        demande.sig.find((sg) => sg.code === sig).refuse
+                        demande.sig.find((sg) => sg && sg.code === sig) &&
+                        demande.sig.find((sg) => sg && sg.code === sig).refuse
                           ? "checked"
                           : ""
                       } `}
@@ -447,11 +454,12 @@ const DamiDemande = ({ demande }) => {
                   <input
                     className="dami-input"
                     value={
-                      demande.sig.find((sg) => sg.code === sig) &&
-                      demande.sig.find((sg) => sg.code === sig).dateTraitement
+                      demande.sig.find((sg) => sg && sg.code === sig) &&
+                      demande.sig.find((sg) => sg && sg.code === sig)
+                        .dateTraitement
                         ? new Date(
                             demande.sig.find(
-                              (sg) => sg.code === sig
+                              (sg) => sg && sg.code === sig
                             ).dateTraitement
                           ).toLocaleDateString()
                         : demande.traitement.find(
@@ -467,6 +475,7 @@ const DamiDemande = ({ demande }) => {
                         ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
+                              tr &&
                               tr.code
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
@@ -474,14 +483,15 @@ const DamiDemande = ({ demande }) => {
                         : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
+                              tr &&
                               tr.code === String(sig)
                           ) && new Date().toLocaleDateString()
                     }
                   />
                 </div>
-                <div className="mt-1">
+                {/* <div className="mt-1">
                   <label>Signature & cachet:</label>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>

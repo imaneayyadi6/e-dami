@@ -50,6 +50,10 @@ const optionSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "service",
     },
+    departement: {
+      type: Schema.Types.ObjectId,
+      ref: "departement",
+    },
     isDeleted: {
       type: Boolean,
       default: false,

@@ -6,7 +6,7 @@ import Utilisateur from "../models/utilisateurModel.js";
 // @desc    Afficher tous les departements
 // @route   GET /api/departements/:id
 // @access  private
-export const getServices = asyncHandler(async (req, res) => {
+export const getDepartements = asyncHandler(async (req, res) => {
   const departements = await Departement.find().sort({ createdAt: -1 });
   res.json(departements);
 });
@@ -46,7 +46,7 @@ export const getDepartementByID = asyncHandler(async (req, res) => {
 // @desc    Creer un Departement
 // @route   POST /api/departements
 // @access  private
-export const createService = asyncHandler(async (req, res) => {
+export const createDepartement = asyncHandler(async (req, res) => {
   const { libelle, direction: directionId, chefDeDepartement } = req.body;
   const direction = await Direction.findById(directionId);
   if (direction) {

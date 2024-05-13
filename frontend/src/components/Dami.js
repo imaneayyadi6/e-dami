@@ -6,6 +6,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
   const cleanDocRef = useRef(null);
   const [sigTypes] = useState({
     cds: "Approbation Chef de Service",
+    cdd: "Approbation Chef de Departement",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
     dir: `Approbation Directeur de la `,
@@ -328,9 +329,9 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                   <label>Date:</label>
                   <input className="dami-input" />
                 </div>
-                <div className="mt-1">
+                {/* <div className="mt-1">
                   <label>Signature & cachet:</label>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
