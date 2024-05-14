@@ -41,3 +41,13 @@
 [DATA INSERT] : Mon May 13 2024 14:16:23 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Mon May 13 2024 14:18:21 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Mon May 13 2024 15:01:07 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 09:38:54 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 10:22:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 11:42:37 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 12:24:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 13:54:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Tue May 14 2024 14:33:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> MongooseError: Operation `directions.findOne()` buffering timed out after 10000ms 
+[ERROR] : Tue May 14 2024 14:40:29 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> MongooseError: Operation `directions.findOne()` buffering timed out after 10000ms 
+[DATA INSERT] : Tue May 14 2024 14:46:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 15:05:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 14 2024 15:33:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 

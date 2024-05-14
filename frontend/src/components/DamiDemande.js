@@ -176,7 +176,7 @@ const DamiDemande = ({ demande }) => {
               />
             </td>
             <td>
-              <label>Direction</label>
+              <label>Departement</label>
             </td>
             <td>
               <input
@@ -184,8 +184,8 @@ const DamiDemande = ({ demande }) => {
                 value={
                   demande &&
                   demande.demandeur &&
-                  demande.demandeur.direction &&
-                  capitalizeFirstLetter(demande.demandeur.direction.libelle)
+                  demande.demandeur.deparatement &&
+                  capitalizeFirstLetter(demande.demandeur.deparatement.libelle)
                 }
               />
             </td>
@@ -258,7 +258,7 @@ const DamiDemande = ({ demande }) => {
           </tr>
           <tr>
             <td>
-              <label>Departement</label>
+              <label>Direction</label>
             </td>
             <td>
               <input
@@ -266,8 +266,8 @@ const DamiDemande = ({ demande }) => {
                 value={
                   demande &&
                   demande.demandeur &&
-                  demande.demandeur.deparatement &&
-                  capitalizeFirstLetter(demande.demandeur.deparatement.libelle)
+                  demande.demandeur.direction &&
+                  capitalizeFirstLetter(demande.demandeur.direction.libelle)
                 }
               />
             </td>

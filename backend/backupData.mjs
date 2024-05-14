@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { MongoClient } from "mongodb";
-import connectDB from "./config/database";
+import connectDB from "./config/database.js";
 
 dotenv.config();
 

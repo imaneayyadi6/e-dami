@@ -35,7 +35,12 @@ export const getOptionsCrtOp = asyncHandler(async (req, res) => {
 // @route   GET /api/options/souscategorie
 // @access  private
 export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 12, sousCategorie: sousCategorieId } = req.query;
+  const {
+    page = 1,
+    limit = 12,
+    sousCategorie: sousCategorieId,
+    libelle,
+  } = req.query;
 
   const query = {};
   if (sousCategorieId) {
@@ -47,6 +52,13 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
     }
   }
 
+  if (libelle) {
+    query.libelle = {
+      $regex: libelle,
+      $options: "i",
+    };
+  }
+  console.log(query);
   const options = await Option.find({
     ...query,
     isDeleted: false,

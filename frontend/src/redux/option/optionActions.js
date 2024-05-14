@@ -64,7 +64,8 @@ export const fetchOptionsBySousCategorieID = (query) => {
         .map(([key, value]) => `${key}=${value}`)
         .join("&");
 
-     
+      console.log(objFilter);
+
       const { data } = await axios.get(
         `/api/options/souscategorie?${objFilter}`,
         config

@@ -7,7 +7,15 @@ import {
 } from "../../redux/sousCategorie/sousCategorieActions";
 import { fetchOptionsBySousCategorieID } from "../../redux/option/optionActions";
 
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Form,
+  Placeholder,
+  Row,
+} from "react-bootstrap";
 import { DamiLoading, Message, Option, WarningMessage } from "../../components";
 
 const FaireUneDemande = () => {
@@ -16,6 +24,11 @@ const FaireUneDemande = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sousCategorie, setSousCategorie] = useState(null);
   const [categorie, setCategorie] = useState(null);
+  const [libelle, setLibelle] = useState("");
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const disptach = useDispatch();
 
@@ -47,36 +60,35 @@ const FaireUneDemande = () => {
   } = optionListBySousCategorieID;
 
   const getSousCategoriesChangeHandler = (event) => {
-    if (event.target.value === "") {
+    if (event.target.dataset.id === "") {
       disptach(resetFetchSousCategoriesByCategorieID());
-      getOptionsFilterHandler();
     } else {
-      setCategorie(event.target.value);
-      disptach(fetchSousCategoriesByCategorieID(event.target.value));
+      setCategorie(event.target.dataset.id);
+      disptach(fetchSousCategoriesByCategorieID(event.target.dataset.id));
     }
   };
 
   const getSousCategorieHandler = (event) => {
-    setSousCategorie(event.target.value);
+    setSousCategorie(event.target.dataset.id);
+    getOptionsFilterHandler(1, event.target.dataset.id, libelle);
   };
 
-  const getOptionsFilterHandler = (page = 1) => {
-    let query = { page: page || 1 };
-    if (sousCategorie) query.sousCategorie = sousCategorie;
+  const getOptionsFilterHandler = (page = 1, sc = null, libelle = null) => {
+    let query = { page: page || 1, libelle };
+    if (sc) query.sousCategorie = sc;
     disptach(fetchOptionsBySousCategorieID(query));
   };
 
-  const getOptionsHandler = (event) => {
-    if (sousCategorie) getOptionsFilterHandler();
-  };
+  // const getOptionsHandler = (event) => {
+  //   if (sousCategorie) getOptionsFilterHandler();
+  // };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    getOptionsFilterHandler(newPage);
+    getOptionsFilterHandler(newPage, sousCategorie);
   };
 
   const renderPageLinks = () => {
-
     const links = [];
 
     if (totalPages > 1) {
@@ -85,7 +97,12 @@ const FaireUneDemande = () => {
       const end = Math.min(totalPages, start + range);
 
       links.push(
-        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+        <button
+          key="first"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+        >
           &laquo;&laquo;
         </button>,
         <button
@@ -98,19 +115,19 @@ const FaireUneDemande = () => {
         </button>
       );
 
-
       for (let i = start; i <= end; i++) {
         links.push(
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+            className={`${
+              i === currentPage ? "active" : ""
+            } btn btn-sm btn-light`}
           >
             {i}
           </button>
         );
       }
-
 
       links.push(
         <button
@@ -132,30 +149,37 @@ const FaireUneDemande = () => {
       );
 
       return links;
-    }
-    else {
+    } else {
       links.push(
-        <button
-          className={`btn btn-sm btn-light active ml-1`}
-        >
-          1
-        </button>
+        <button className={`btn btn-sm btn-light active ml-1`}>1</button>
       );
       return links;
     }
-
-
   };
 
   useEffect(() => {
     if (!callOnce) {
       disptach(fetchCategories());
-      getOptionsFilterHandler(1);
+      getOptionsFilterHandler(1, null, "");
       setCallOnce(true);
     }
     if (successOptionListBySousCategorieID) setTotalPages(data.totalPages);
   }, [callOnce, disptach, successOptionListBySousCategorieID]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <>
       {errorCategorieList && (
@@ -174,8 +198,13 @@ const FaireUneDemande = () => {
         </Message>
       )}
 
+      <Message type="info">
+        cliquer sur une categorie ou une sous-categorie pour filtrer les options
+        (dami's)
+      </Message>
+
       <Card>
-        <Card.Body>
+        {/* <Card.Body>
           <div className="d-flex align-items-center">
             <div className="w-100 m-1">
               <label>categorie</label>
@@ -222,6 +251,126 @@ const FaireUneDemande = () => {
               <i className="fas fa-search"></i>
             </Button>
           </div>
+        </Card.Body> */}
+        <Card.Body>
+          <h6>categories :</h6>
+          {loadingCategorieList && (
+            <Placeholder animation="glow">
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+              <div className="ml-1 d-inline">
+                <Placeholder xs={2}></Placeholder>
+              </div>
+            </Placeholder>
+          )}
+          {categories.length > 0 &&
+            categories.map((cat) => (
+              <Badge
+                className={`mr-1  cursor-pointer hovred bg-${
+                  cat._id === categorie ? "dark" : "light"
+                }`}
+                data-id={cat._id}
+                key={cat._id}
+                onClick={getSousCategoriesChangeHandler}
+              >
+                {String(cat.libelle).toLowerCase()}
+              </Badge>
+            ))}
+          {(loadingSouscategorieListByCategorieID ||
+            souscategories.length > 0) && (
+            <div className="d-block mt-1">
+              <hr />
+              <h6>sous-categories :</h6>
+              <div className="d-block">
+                <Badge
+                  className={`mr-1 bg-light cursor-pointer hovred mb-2`}
+                  onClick={() => {
+                    getOptionsFilterHandler(1, null, libelle);
+                    setSousCategorie(null);
+                  }}
+                >
+                  actualiser
+                </Badge>
+              </div>
+
+              {loadingSouscategorieListByCategorieID && (
+                <Placeholder animation="glow">
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                  <div className="ml-1 d-inline">
+                    <Placeholder xs={2}></Placeholder>
+                  </div>
+                </Placeholder>
+              )}
+
+              {souscategories.length > 0 &&
+                souscategories.map((souscat) => (
+                  <Badge
+                    className={`mr-1 bg-${
+                      sousCategorie === souscat._id ? "dark" : "light"
+                    } cursor-pointer hovred`}
+                    data-id={souscat._id}
+                    key={souscat._id}
+                    onClick={getSousCategorieHandler}
+                  >
+                    {String(souscat.libelle).toLowerCase()}
+                  </Badge>
+                ))}
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+
+      <Card className="mt-2">
+        <Card.Body>
+          <label>nom option (dami)</label>
+          <div className="d-flex align-items-center">
+            <Form.Control
+              placeholder="veuillez saisire le nom de l'option (dami) ..."
+              value={libelle}
+              onChange={(e) => setLibelle(e.target.value)}
+            />
+            <Button
+              onClick={() => {
+                getOptionsFilterHandler(1, sousCategorie, libelle);
+              }}
+              variant="dark"
+            >
+              <i className="fas fa-search"></i>
+            </Button>
+          </div>
         </Card.Body>
       </Card>
 
@@ -251,11 +400,18 @@ const FaireUneDemande = () => {
             </Col>
           </>
         )}
+
         {data &&
         data.options.length > 0 &&
         !loadingOptionListBySousCategorieID ? (
           data.options.map((option) => (
-            <Col xl={4} lg={6} md={6} sm={12} className="mb-3">
+            <Col
+              xl={windowSize.width >= 1500 ? 4 : 6}
+              lg={6}
+              md={6}
+              sm={12}
+              className="mb-3"
+            >
               <Option option={option} key={option._id} />
             </Col>
           ))
