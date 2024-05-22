@@ -85,7 +85,7 @@ const FaireUneDemande = () => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    getOptionsFilterHandler(newPage, sousCategorie);
+    getOptionsFilterHandler(newPage, sousCategorie, libelle);
   };
 
   const renderPageLinks = () => {

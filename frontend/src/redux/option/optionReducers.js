@@ -291,13 +291,7 @@ export const optionCrtOpListReducer = (state = { options: [] }, action) => {
       return {
         success: true,
         options: state.options.map((op) => {
-          if (String(op._id) === String(payload)) {
-            if (op.isDeleted) {
-              op.isDeleted = false;
-            } else {
-              op.isDeleted = true;
-            }
-          }
+          if (String(op._id) === String(payload)) op.isDeleted = !op.isDeleted;
           if (!op.notSavedYet) return op;
         }),
       };

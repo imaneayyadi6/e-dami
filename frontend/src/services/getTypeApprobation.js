@@ -1,7 +1,9 @@
-const getTypeApprobation = code => {
+const getTypeApprobation = (code) => {
   switch (code) {
     case "cds":
       return "chef de service";
+    case "cdd":
+      return "chef de departement";
     case "hiq":
       return "directeur hiearchique";
     case "pdd":
@@ -11,13 +13,13 @@ const getTypeApprobation = code => {
     case "pdg":
       return "president-directeur generale";
     case "hiq.dir":
-      return "directeur hiearchique - directeur de l'entité"
+      return "directeur hiearchique - directeur de l'entité";
     case "pdd.dir":
-      return "propriétaire de données - directeur de l'entité"
+      return "propriétaire de données - directeur de l'entité";
     case "hiq.pdd":
-      return "directeur hiearchique - propriétaire de données"
+      return "directeur hiearchique - propriétaire de données";
     case "hiq.pdd.dir":
-      return "directeur hiearchique - propriétaire de données - directeur de l'entité"
+      return "directeur hiearchique - propriétaire de données - directeur de l'entité";
     default:
       return "(pas de donnees)";
   }

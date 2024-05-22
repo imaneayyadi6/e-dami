@@ -121,7 +121,7 @@ const OptionListPageCrtOp = () => {
           </div>
           {loadingOptionCrtOpList && <TableLoading />}
 
-          {options.length > 0 ? (
+          {options && options.length > 0 ? (
             <Table
               columns={[
                 {
@@ -151,11 +151,11 @@ const OptionListPageCrtOp = () => {
                   filter: "service.libelle",
                 },
 
-                {
-                  Header: "proprietaire de donnees",
-                  accessor: "proprietaireDeDonnees.libelle",
-                  filter: "proprietaireDeDonnees.libelle",
-                },
+                // {
+                //   Header: "proprietaire de donnees",
+                //   accessor: "proprietaireDeDonnees.libelle",
+                //   filter: "proprietaireDeDonnees.libelle",
+                // },
               ]}
               data={options}
               loadingRemove={loadingOptionCrtOpDelete}

@@ -16,6 +16,7 @@ import {
   userSetPasswordTokenReducer,
   userChangePasswordReducer,
   userSetNewPasswordReducer,
+  userByDivisionReducer,
 } from "./user/userReducers.js";
 import { dialogReducer } from "./dialog/dialogReducers.js";
 import { alertReducer } from "./alert/alertReducers.js";
@@ -179,6 +180,7 @@ const reducer = combineReducers({
   userSetPassword: userSetPasswordTokenReducer,
   userChangePassword: userChangePasswordReducer,
   userSetNewPasswordToken: userSetNewPasswordReducer,
+  userByDivision: userByDivisionReducer,
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,

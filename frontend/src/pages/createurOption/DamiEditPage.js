@@ -62,6 +62,10 @@ import {
   fetchDepartementByID,
   fetchDepartements,
 } from "../../redux/departement/departementActions";
+import {
+  fetchUsersByDivision,
+  resetFetchUsersByDivision,
+} from "../../redux/user/userActions";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -97,6 +101,7 @@ const validationSousCategorieSchema = Yup.object({
   sousCategorie: Yup.string().required("il faut enntrer une sous-categorie"),
   departement: Yup.string().required("il faut enntrer un departement"),
   service: Yup.string().required("il faut enntrer un service"),
+  typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
 });
 
@@ -129,6 +134,8 @@ const DamiEditPageCrtOp = () => {
   const [isUpdateForm, setIsUpdateForm] = useState(false);
   const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] =
     useState(false);
+  const [typePdd, setTypePdd] = useState("srv");
+
   const [headerInitialValues] = useState({
     libelle: "",
     typeProcessus: "",
@@ -139,8 +146,9 @@ const DamiEditPageCrtOp = () => {
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
-    departement: userInfo && userInfo.departement._id,
-    service: userInfo && userInfo.service._id,
+    departement: userInfo && userInfo.departement && userInfo.departement._id,
+    service: userInfo && userInfo.service && userInfo.service._id,
+    typePdd: "",
     proprietaireDeDonnees: "",
   });
 
@@ -225,6 +233,14 @@ const DamiEditPageCrtOp = () => {
     // option: updatedOption,
     success: successoptionCrtOpUpdate,
   } = optionCrtOpUpdate;
+
+  const userByDivision = useSelector((state) => state.userByDivision);
+  const {
+    loading: loadingUserByDivision,
+    error: errorUserByDivision,
+    success: successUserByDivision,
+    users,
+  } = userByDivision;
 
   const handleDragStart = (event, item) => {
     event.dataTransfer.setData("text/plain", item);
@@ -574,7 +590,10 @@ const DamiEditPageCrtOp = () => {
     validationSchema: validationSousCategorieSchema,
     onSubmit: (values) => {
       dispatch(resetGetByServiceID());
-      setOption({ ...option, ...values });
+      setOption({
+        ...option,
+        ...values,
+      });
       dispatch(fetchServiceByID(values.service));
       dispatch(fetchDepartementByID(values.departement));
 
@@ -1789,12 +1808,22 @@ const DamiEditPageCrtOp = () => {
         creation: formattedCreationDate,
         maj: formattedMajDate,
       });
-      sousCategorieForm.setValues({
-        sousCategorie: recoveredOption.sousCategorie,
-        departement: recoveredOption.departement,
-        service: recoveredOption.service,
-        proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees,
-      });
+      setTypePdd("dir");
+      dispatch(
+        fetchUsersByDivision(
+          "dir",
+          recoveredOption.proprietaireDeDonnees.direction
+        )
+      );
+      setTimeout(() => {
+        sousCategorieForm.setValues({
+          sousCategorie: recoveredOption.sousCategorie,
+          departement: recoveredOption.departement,
+          service: recoveredOption.service,
+          typePdd: recoveredOption.proprietaireDeDonnees.direction,
+          proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees._id,
+        });
+      }, 1000);
     }
 
     if (successoptionCrtOpUpdate) {
@@ -1885,6 +1914,12 @@ const DamiEditPageCrtOp = () => {
       // setIsAlreadySaved(false);
     };
   }, [currentPath, option]);
+
+  useEffect(() => {
+    if (sousCategorieForm.values.typePdd) {
+      dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
+    }
+  }, [sousCategorieForm.values.typePdd]);
 
   return (
     <>
@@ -1987,6 +2022,11 @@ const DamiEditPageCrtOp = () => {
             </Message>
           )}
 
+          {errorUserByDivision && (
+            <Message itWillBeHidden type="danger">
+              {errorUserByDivision}
+            </Message>
+          )}
           <div className="d-flex justify-content-between align-items-center">
             <Button
               variant="light"
@@ -2196,25 +2236,125 @@ const DamiEditPageCrtOp = () => {
                     {sousCategorieForm.errors.deparatement}
                   </small>
                 )}
-              <label>proprietaire de donnees(direction) : </label>
+              <label>proprietaire de donnees : </label>
+              <div className="d-flex align-items-center">
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "srv"}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("srv");
+                  }}
+                  label="filtrer par service"
+                />
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "dep"}
+                  value={typePdd}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("dep");
+                  }}
+                  label="filtrer par departement"
+                />
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "dir"}
+                  value={typePdd}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("dir");
+                  }}
+                  label="filtrer par direction"
+                />
+              </div>
+              {typePdd === "srv" ? (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingServiceList}
+                >
+                  <option value="">
+                    ---- veuillez choisire un service ----
+                  </option>
+                  {services.length > 0 &&
+                    services.map((srv) => (
+                      <option key={srv._id} value={srv._id}>
+                        {srv.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              ) : typePdd === "dep" ? (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingDepartementList}
+                >
+                  <option value="">
+                    ---- veuillez choisire un departement ----
+                  </option>
+                  {departements.length > 0 &&
+                    departements.map((dep) => (
+                      <option key={dep._id} value={dep._id}>
+                        {dep.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              ) : (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingDirectionList}
+                >
+                  <option value="">
+                    ---- veuillez choisire une direction ----
+                  </option>
+                  {directions.length > 0 &&
+                    directions.map((direction) => (
+                      <option key={direction._id} value={direction._id}>
+                        {direction.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              )}
+              {sousCategorieForm.touched.typePdd &&
+                sousCategorieForm.errors.typePdd && (
+                  <small className="text-danger d-block">
+                    {sousCategorieForm.errors.typePdd}
+                  </small>
+                )}
               <Form.Select
-                className="mb-3"
                 name="proprietaireDeDonnees"
+                disabled={loadingUserByDivision}
+                value={sousCategorieForm.values.proprietaireDeDonnees}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
-                value={sousCategorieForm.values.proprietaireDeDonnees}
-                disabled={loadingDirectionList}
               >
                 <option value="">
-                  ---- veuillez choisire une direction ----
+                  ----- choisire un proprietaire de donnees -----
                 </option>
-                {directions.length > 0 &&
-                  directions.map((direction) => (
-                    <option key={direction._id} value={direction._id}>
-                      {direction.libelle}
+                {users.length > 0 &&
+                  users.map((user) => (
+                    <option value={user._id}>
+                      {user.prenom} {user.nom}
                     </option>
                   ))}
-              </Form.Select>{" "}
+              </Form.Select>
               {sousCategorieForm.touched.proprietaireDeDonnees &&
                 sousCategorieForm.errors.proprietaireDeDonnees && (
                   <small className="text-danger d-block">
@@ -2258,7 +2398,7 @@ const DamiEditPageCrtOp = () => {
                         <Form.Check
                           id="cdd"
                           value={checkValues["cdd"]}
-                          label={`Chef de service de ${departement.libelle}`}
+                          label={`Chef de departement de ${departement.libelle}`}
                           className="check-signataire"
                           onChange={sigChangeHandler}
                           checked={checkValues["cdd"]}

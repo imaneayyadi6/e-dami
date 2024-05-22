@@ -57,6 +57,10 @@ import {
   USER_SET_NEW_PASSWORD_FAIL,
   USER_SET_NEW_PASSWORD_RESET,
   USER_BY_ID_DELETE,
+  USER_BY_DIVISION_FAIL,
+  USER_BY_DIVISION_REQUEST,
+  USER_BY_DIVISION_RESET,
+  USER_BY_DIVISION_SUCCESS,
 } from "./userTypes";
 
 import axios from "axios";
@@ -505,4 +509,43 @@ export const fetchUserByID = (userID) => {
 
 export const resetFetchUserByID = () => {
   return { type: USER_BY_ID_RESET };
+};
+
+export const fetchUsersByDivision = (type, id) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_BY_DIVISION_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/utilisateurs/${type}/division/${id}`,
+        config
+      );
+
+      console.log(data);
+
+      dispatch({
+        type: USER_BY_DIVISION_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_BY_DIVISION_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetFetchUsersByDivision = () => {
+  return { type: USER_BY_DIVISION_RESET };
 };

@@ -4,6 +4,7 @@ import Direction from "../models/directionModel.js";
 import SousCategorie from "../models/sousCategorieModel.js";
 import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
+import Utilisateur from "../models/utilisateurModel.js";
 
 // @desc    Afficher tous les options
 // @route   GET /api/options/
@@ -95,7 +96,7 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
 // @route   GET /api/options/:id
 // @access  private
 export const getOptionByID = asyncHandler(async (req, res) => {
-  let option = await Option.findById(req.params.id);
+  let option = await Option.findById(req.params.id).populate("proprietaireDeDonnees");
   if (option) {
     option = JSON.parse(JSON.stringify(option));
     const optionService = await Service.findById(option.service);
@@ -103,6 +104,9 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       const optionDirection = await Direction.findById(optionService.direction);
       option.dirLibelle = optionDirection.libelle;
     }
+    
+
+
     res.json(option);
   } else {
     res.status(404);
@@ -118,21 +122,22 @@ export const createOption = asyncHandler(async (req, res) => {
     libelle,
     typeProcessus,
     header: { document, classification, creation, maj },
-    proprietaireDeDonnees,
+    // proprietaireDeDonnees,
     contenu,
   } = req.body;
-
   const sousCategorie = await SousCategorie.findById(req.body.sousCategorie);
   if (sousCategorie) {
     const service = await Service.findById(req.body.service);
     if (service) {
-      if (proprietaireDeDonnees) {
-        const direction = await Direction.findById(proprietaireDeDonnees);
-        if (direction) {
+      if (req.body.proprietaireDeDonnees) {
+        const utilisateur = await Utilisateur.findById(
+          req.body.proprietaireDeDonnees
+        );
+        if (utilisateur) {
           const option = new Option({
             libelle: libelle,
             typeProcessus,
-            proprietaireDeDonnees: direction._id,
+            proprietaireDeDonnees: utilisateur._id,
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
             service: service._id,
@@ -144,7 +149,7 @@ export const createOption = asyncHandler(async (req, res) => {
           res.status(201).json(createdOption);
         } else {
           res.status(404);
-          throw new Error("direction introuvable !");
+          throw new Error("utilisateur introuvable !");
         }
       } else {
         const option = new Option({
@@ -284,7 +289,7 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
     libelle,
     typeProcessus,
     header: { document, classification, creation, maj },
-    proprietaireDeDonnees,
+    // proprietaireDeDonnees,
     contenu,
   } = req.body;
 
@@ -292,14 +297,16 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
   if (sousCategorie) {
     const service = await Service.findById(req.body.service);
     if (service) {
-      if (proprietaireDeDonnees) {
-        const direction = await Direction.findById(proprietaireDeDonnees);
-        if (direction) {
+      if (req.body.proprietaireDeDonnees) {
+        const utilisateur = await Utilisateur.findById(
+          req.body.proprietaireDeDonnees
+        );
+        if (utilisateur) {
           const option = new Option({
             libelle: libelle,
             createur: req.user.id,
             typeProcessus,
-            proprietaireDeDonnees: direction._id,
+            proprietaireDeDonnees: utilisateur._id,
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
             service: service._id,
@@ -311,7 +318,7 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
           res.status(201).json(createdOption);
         } else {
           res.status(404);
-          throw new Error("direction introuvable !");
+          throw new Error("utilisateur introuvable !");
         }
       } else {
         const option = new Option({
@@ -361,12 +368,12 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
 
       option.contenu = contenu || option.contenu;
       if (proprietaireDeDonnees) {
-        const direction = await Direction.findById(proprietaireDeDonnees);
-        if (direction) {
-          option.proprietaireDeDonnees = direction._id;
+        const utilisateur = await Utilisateur.findById(proprietaireDeDonnees);
+        if (utilisateur) {
+          option.proprietaireDeDonnees = utilisateur._id;
         } else {
           res.status(404);
-          throw new Error("direction introuvable !");
+          throw new Error("utilisateur introuvable !");
         }
       }
 

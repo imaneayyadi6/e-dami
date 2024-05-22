@@ -57,6 +57,10 @@ import {
   USER_SET_NEW_PASSWORD_SUCCESS,
   USER_SET_NEW_PASSWORD_FAIL,
   USER_SET_NEW_PASSWORD_RESET,
+  USER_BY_DIVISION_FAIL,
+  USER_BY_DIVISION_REQUEST,
+  USER_BY_DIVISION_RESET,
+  USER_BY_DIVISION_SUCCESS,
 } from "./userTypes";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -317,6 +321,26 @@ export const userByIDReducer = (state = {}, action) => {
       return { loading: false, error: payload };
     case USER_BY_ID_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const userByDivisionReducer = (state = { users: [] }, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_BY_DIVISION_REQUEST:
+      return { loading: true, users: [] };
+    case USER_BY_DIVISION_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        users: payload,
+      };
+    case USER_BY_DIVISION_FAIL:
+      return { loading: false, error: payload, users: [] };
+    case USER_BY_DIVISION_RESET:
+      return { users: [] };
     default:
       return state;
   }

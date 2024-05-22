@@ -51,3 +51,27 @@
 [DATA INSERT] : Tue May 14 2024 14:46:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Tue May 14 2024 15:05:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Tue May 14 2024 15:33:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 15 2024 09:47:22 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 15 2024 10:09:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 15 2024 12:13:43 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu May 16 2024 10:29:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu May 16 2024 10:31:40 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu May 16 2024 14:07:44 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu May 16 2024 14:08:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Fri May 17 2024 10:03:48 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Fri May 17 2024 11:50:56 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Fri May 17 2024 12:14:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 20 2024 09:49:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 20 2024 11:31:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 20 2024 12:22:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 20 2024 14:08:30 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 20 2024 15:29:37 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 21 2024 10:08:17 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 21 2024 11:27:33 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 21 2024 11:28:33 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Tue May 21 2024 11:28:57 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 22 2024 09:49:21 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[ERROR] : Wed May 22 2024 10:34:55 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> MongooseError: Operation `directions.findOne()` buffering timed out after 10000ms 
+[ERROR] : Wed May 22 2024 12:47:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> MongooseError: Operation `directions.findOne()` buffering timed out after 10000ms 
+[DATA INSERT] : Wed May 22 2024 15:36:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed May 22 2024 15:52:16 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 

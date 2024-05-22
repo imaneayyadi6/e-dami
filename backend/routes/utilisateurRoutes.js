@@ -14,6 +14,7 @@ import {
   setPasswordUser,
   changePasswordUser,
   setNewPasswordUser,
+  getUsersByDivison,
 } from "../controllers/utilisateurController.js";
 import { createur, protect } from "../middlewares/authMidlleware.js";
 
@@ -30,6 +31,8 @@ router.route("/new/setpassword").post(setNewPasswordUser);
 
 router.route("/directeurs").get(protect, createur, getDirecteurs);
 router.route("/chefdeservices").get(protect, createur, getChefServices);
+
+router.route("/:type/division/:id").get(protect, getUsersByDivison);
 
 router
   .route("/")

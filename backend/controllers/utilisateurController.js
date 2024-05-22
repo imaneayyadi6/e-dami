@@ -572,3 +572,18 @@ export const deleteUser = asyncHandler(async (req, res) => {
     throw new Error("utilisateur introuvable !");
   }
 });
+
+// @desc    Recuperer des utilisateurs par division
+// @route   GET /api/utilisateurs/:type/division/:id
+// @access  private
+export const getUsersByDivison = asyncHandler(async (req, res) => {
+  let utilisateurs = [];
+  if (req.params.type === "srv") {
+    utilisateurs = await Utilisateur.find({ service: req.params.id });
+  } else if (req.params.type === "dep") {
+    utilisateurs = await Utilisateur.find({ departement: req.params.id });
+  } else {
+    utilisateurs = await Utilisateur.find({ direction: req.params.id });
+  }
+  res.json(utilisateurs);
+});

@@ -53,7 +53,8 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   let demandes = JSON.parse(
     JSON.stringify(
       await Demande.find(userFilter)
-        .populate("option demandeur")
+        .populate("option")
+        .populate("demandeur")
         .sort({ "traitement.dateEnvoi": -1 })
         .limit(parseInt(limit))
         .skip((parseInt(page) - 1) * parseInt(limit))
@@ -66,16 +67,21 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
       .filter((tr) => String(tr.utilisateur) === String(req.user.id))
       .reduce((acc, tr) => {
         if (!acc.some((dtr) => String(dtr.idTraitement) === String(tr._id))) {
-          acc.push({
-            idDemande: demande._id,
-            idTraitement: tr._id,
-            code: tr.code,
-            status: tr.status,
-            dateEnvoi: tr.dateEnvoi,
-            dateDemande: demande.dateDemande,
-            demandeur: `${demande.demandeur.prenom} ${demande.demandeur.nom}`,
-            option: demande.option.libelle,
-          });
+          if (demande.demandeur) {
+            acc.push({
+              idDemande: demande._id,
+              idTraitement: tr._id,
+              code: tr.code,
+              status: tr.status,
+              dateEnvoi: tr.dateEnvoi,
+              dateDemande: demande.dateDemande,
+              demandeur:
+                demande &&
+                demande.demandeur &&
+                `${demande.demandeur.prenom} ${demande.demandeur.nom}`,
+              option: demande.option.libelle,
+            });
+          }
         }
         return acc;
       }, [])
@@ -430,6 +436,11 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
       const service = await Service.findById(
         demande.demandeur.service
       ).populate("chefService");
+
+      const departement = await Departement.findById(
+        demande.demandeur.departement
+      ).populate("chefDeDepartement");
+
       const direction = await Direction.findById(
         demande.demandeur.direction
       ).populate("directeur");
@@ -442,9 +453,9 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
 
       let optionPDD = null;
       if (demande.option.proprietaireDeDonnees)
-        optionPDD = await Direction.findById(
+        optionPDD = await Utilisateur.findById(
           demande.option.proprietaireDeDonnees
-        ).populate("directeur");
+        );
 
       const optionDirection = await Direction.findById(
         optionService.direction
@@ -463,47 +474,23 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
           if (status && status !== "en cours") {
             let dateTraitement = traitement.dateTraitement;
 
-            if (s === "cdd") {
-              let departement = null;
-              if (service && service.departement) {
-                departement = await Departement.findById(
-                  service.departement
-                ).populate("chefDeDepartement");
-              } else {
-                let demandeur = await Utilisateur.findById(
-                  demande.demandeur._id
-                );
-
-                if (demandeur) {
-                  if (demandeur.isChefDeDepartement) {
-                    departement = await Departement.findById(
-                      demandeur.departement
-                    ).populate("chefDeDepartement");
-                    obj = {
-                      code: "cdd",
-                      nom: departement.chefDeDepartement.nom,
-                      prenom: departement.chefDeDepartement.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
-                    };
-                  } else {
-                    res.status(400);
-                    throw new Error("departement introuvable !");
-                  }
-                } else {
-                  res.status(400);
-                  throw new Error("demadneur introuvable !");
-                }
-              }
-            }
-
             if (s === "cds") {
               obj = {
                 code: "cds",
                 nom: service.chefService.nom,
                 prenom: service.chefService.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+
+            if (s === "cdd") {
+              obj = {
+                code: "cdd",
+                nom: departement.chefDeDepartement.nom,
+                prenom: departement.chefDeDepartement.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -526,8 +513,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.directeur.nom,
-                prenom: optionPDD.directeur.prenom,
+                nom: optionPDD.nom,
+                prenom: optionPDD.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -572,7 +559,17 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         // date:trai
                       };
                     }
-
+                    if (s === "cdd") {
+                      obj = {
+                        code: "cdd",
+                        nom: departement.chefDeDepartement.nom,
+                        prenom: departement.chefDeDepartement.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
                     if (item === "hiq") {
                       obj = {
                         code: "hiq",
@@ -588,8 +585,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.directeur.nom,
-                        prenom: optionPDD.directeur.prenom,
+                        nom: optionPDD.nom,
+                        prenom: optionPDD.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -704,10 +701,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 directeur: req.user.id,
               }).populate("directeur");
 
-              console.log(req.user.id);
-
-              console.log("direction");
-
               if (direction) {
                 if (crtfCode === "hiq.pdd") {
                   contenu = `<p>
@@ -776,15 +769,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     }/details-demande/${demande._id}">demande</a> 
                     a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique`;
               } else if (crtfCode === "pdd") {
-                let direction = await Direction.findOne({
-                  directeur: req.user.id,
-                }).populate("directeur");
-
+                let pdd = await Utilisateur.findById(req.user.id);
                 contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données`;
+                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
+                    a été approuvée par le propriétaire de données`;
               } else if (crtfCode === "dir") {
                 let direction = await Direction.findOne({
                   directeur: req.user.id,
@@ -868,11 +856,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       typeApp = `directeur hiérarchique`;
                     }
                   } else if (nextCode === "pdd") {
-                    const direction = await Direction.findById(
+                    const pdd = await Utilisateur.findById(
                       String(demande.option.proprietaireDeDonnees)
                     );
-                    if (direction) {
-                      dirUserID = direction.directeur;
+                    if (pdd) {
+                      dirUserID = pdd._id;
                       typeApp = "propriétaire de données";
                     }
                   } else if (nextCode === "dir") {
@@ -942,6 +930,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   let supService = await Service.findById(
                     demande.option.service._id
                   );
+
                   let supDepratement = await Departement.findById(
                     demande.option.service.departement
                   );
@@ -962,7 +951,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       "traitement de la demande"
                     );
                   }
-
                   res.json({ message: "demande approuve " });
                 } else {
                   // verfication de qu'est le directeur qui va traiter cette demande selon le code :
@@ -989,8 +977,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                         departementID
                       );
 
-                      console.log("dep :", JSON.stringify(deparatement));
-
                       if (deparatement) {
                         dirUserID = deparatement.chefDeDepartement;
                         typeApp = "chef de departement";
@@ -1015,13 +1001,13 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                           demande.option.signataires[codeIndex + 2];
                         if (nextCode2) {
                           if (nextCode2 === "pdd") {
-                            const pddDirection = await Direction.findById(
+                            const utilisateur = await Utilisateur.findById(
                               String(demande.option.proprietaireDeDonnees)
                             );
-                            if (pddDirection) {
+                            if (utilisateur) {
                               if (
-                                String(hiqDirection._id) ===
-                                String(pddDirection._id)
+                                String(hiqDirection.directeur) ===
+                                String(utilisateur._id)
                               ) {
                                 let nextCode3 =
                                   demande.option.signataires[codeIndex + 3];
@@ -1036,8 +1022,8 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                                       );
                                     if (dirDirection) {
                                       if (
-                                        String(hiqDirection._id) ===
-                                        String(dirDirection._id)
+                                        String(hiqDirection.directeur) ===
+                                        String(dirDirection.directeur)
                                       ) {
                                         dirUserID = hiqDirection.directeur;
                                         typeApp =
@@ -1051,7 +1037,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                                       }
                                     } else {
                                       res.status(404);
-                                      throw Error("direction introuvable !");
+                                      throw Error("utilisateur introuvable !");
                                     }
                                   } else {
                                     dirUserID = hiqDirection.directeur;
@@ -1105,10 +1091,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                         throw Error("direction introuvable !");
                       }
                     } else if (nextCode1 === "pdd") {
-                      const pddDirection = await Direction.findById(
+                      const pddUtilisateur = await Utilisateur.findById(
                         String(demande.option.proprietaireDeDonnees)
                       );
-                      if (pddDirection) {
+                      if (pddUtilisateur) {
                         let nextCode2 =
                           demande.option.signataires[codeIndex + 2];
                         if (nextCode2) {
@@ -1121,15 +1107,15 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                             );
                             if (dirDirection) {
                               if (
-                                String(pddDirection._id) ===
-                                String(dirDirection._id)
+                                String(pddUtilisateur._id) ===
+                                String(dirDirection.directeur)
                               ) {
-                                dirUserID = pddDirection.directeur;
+                                dirUserID = pddUtilisateur._id;
                                 typeApp =
                                   "propriétaire de données et directeur de l'entité ";
                                 envCode = "pdd.dir";
                               } else {
-                                dirUserID = pddDirection.directeur;
+                                dirUserID = pddUtilisateur._id;
                                 typeApp = "propriétaire de données";
                                 envCode = "pdd";
                               }
@@ -1138,18 +1124,18 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                               throw Error("direction introuvable !");
                             }
                           } else {
-                            dirUserID = pddDirection.directeur;
+                            dirUserID = pddUtilisateur._id;
                             typeApp = "propriétaire de données";
                             envCode = "pdd";
                           }
                         } else {
-                          dirUserID = pddDirection.directeur;
+                          dirUserID = pddUtilisateur._id;
                           typeApp = "propriétaire de données";
                           envCode = "pdd";
                         }
                       } else {
                         res.status(404);
-                        throw Error("direction introuvable !");
+                        throw Error("utilisateur introuvable !");
                       }
                     } else if (nextCode1 === "dir") {
                       const service = await Service.findById(
@@ -1346,9 +1332,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                       Votre <a style='font-weight:bold' href="${
                         process.env.CLIENT_ADDRESS
                       }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: ${
+                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: <b>${
                     req.body.motif
-                  } </p>`;
+                  } </b></p>`;
                 } else if (crtfCode === "dir") {
                   let direction = await Direction.findOne({
                     directeur: req.user.id,
@@ -1357,9 +1343,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                       Votre <a style='font-weight:bold' href="${
                         process.env.CLIENT_ADDRESS
                       }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: ${
+                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: <b>${
                     req.body.motif
-                  } </p>`;
+                  } </b></p>`;
                 }
               }
 
@@ -1417,6 +1403,11 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
       const service = await Service.findById(
         demande.demandeur.service
       ).populate("chefService");
+
+      const departement = await Departement.findById(
+        demande.demandeur.departement
+      ).populate("chefDeDepartement");
+
       const direction = await Direction.findById(
         demande.demandeur.direction
       ).populate("directeur");
@@ -1426,9 +1417,9 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
 
       let optionPDD = null;
       if (demande.option.proprietaireDeDonnees)
-        optionPDD = await Direction.findById(
+        optionPDD = await Utilisateur.findById(
           demande.option.proprietaireDeDonnees
-        ).populate("directeur");
+        );
 
       const optionDirection = await Direction.findById(
         optionService.direction
@@ -1446,8 +1437,20 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "cds") {
               obj = {
                 code: "cds",
-                nom: service.nom,
-                prenom: service.prenom,
+                nom: service.chefService.nom,
+                prenom: service.chefService.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+
+            if (s === "cdd") {
+              obj = {
+                code: "cdd",
+                nom: departement.chefDeDepartement.nom,
+                prenom: departement.chefDeDepartement.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1470,8 +1473,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.directeur.nom,
-                prenom: optionPDD.directeur.prenom,
+                nom: optionPDD.nom,
+                prenom: optionPDD.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1532,8 +1535,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.directeur.nom,
-                        prenom: optionPDD.directeur.prenom,
+                        nom: optionPDD.nom,
+                        prenom: optionPDD.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1732,7 +1735,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/for/preview/team/details/:id
 // @access  private
 export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
-  let demande = await Demande.findOne({
+  let demandes = await Demande.findOne({
     _id: req.params.id,
   })
 
@@ -1742,23 +1745,24 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
         path: "service",
       },
     })
+    .populate("traitement.utilisateur")
     .populate("demandeur");
 
-  if (demande) {
+  if (demandes) {
     let isChefDeService = false;
     let isChefDeDepartement = false;
     let isDirecteur = false;
 
     if (req.user.isChefDeService) {
       let service = await Service.findOne(req.user.service);
-      if (service && String(demande.demandeur.service) === String(service._id))
+      if (service && String(demandes.demandeur.service) === String(service._id))
         isChefDeService = true;
     }
     if (req.user.isChefDeDepartement) {
       let departement = await Departement.findOne(req.user.departement);
       if (
         departement &&
-        String(demande.demandeur.departement) === String(departement._id)
+        String(demandes.demandeur.departement) === String(departement._id)
       )
         isChefDeDepartement = true;
     }
@@ -1767,14 +1771,14 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
       let direction = await Direction.findOne(req.user.direction);
       if (
         direction &&
-        String(demande.demandeur.direction) === String(direction._id)
+        String(demandes.demandeur.direction) === String(direction._id)
       )
         isDirecteur = true;
     }
 
-    let supService = await Service.findById(demande.option.service._id);
+    let supService = await Service.findById(demandes.option.service._id);
     let supDepratement = await Service.findById(
-      demande.option.service.deparatement
+      demandes.option.service.deparatement
     );
 
     if (
@@ -1784,35 +1788,35 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
       supService ||
       supDepratement
     ) {
-      demande = JSON.parse(JSON.stringify(demande));
+      demandes = JSON.parse(JSON.stringify(demandes));
       const service = await Service.findById(
-        demande.demandeur.service
+        demandes.demandeur.service
       ).populate("chefService");
       const direction = await Direction.findById(
-        demande.demandeur.direction
+        demandes.demandeur.direction
       ).populate("directeur");
 
       const optionService = await Service.findById(
-        demande.option.service
+        demandes.option.service
       ).populate({
         path: "chefService",
       });
 
       let optionPDD = null;
-      if (demande.option.proprietaireDeDonnees)
-        optionPDD = await Direction.findById(
-          demande.option.proprietaireDeDonnees
-        ).populate("directeur");
+      if (demandes.option.proprietaireDeDonnees)
+        optionPDD = await Utilisateur.findById(
+          demandes.option.proprietaireDeDonnees
+        );
 
       const optionDirection = await Direction.findById(
         optionService.direction
       ).populate("directeur");
 
-      demande.dirLibelle = optionDirection.libelle;
+      demandes.dirLibelle = optionDirection.libelle;
 
       let sig = [];
-      for (const s of demande.option.signataires) {
-        let traitement = demande.traitement.find((tr) => tr.code === s);
+      for (const s of demandes.option.signataires) {
+        let traitement = demandes.traitement.find((tr) => tr.code === s);
 
         if (traitement) {
           let obj = null;
@@ -1823,37 +1827,20 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
 
             if (s === "cdd") {
               let departement = null;
-              if (service && service.departement) {
+              let demandeur = await Utilisateur.findById(demandes.demandeur._id);
+              if (demandeur) {
                 departement = await Departement.findById(
-                  service.departement
+                  demandeur.departement
                 ).populate("chefDeDepartement");
-              } else {
-                let demandeur = await Utilisateur.findById(
-                  demande.demandeur._id
-                );
-
-                if (demandeur) {
-                  if (demandeur.isChefDeDepartement) {
-                    departement = await Departement.findById(
-                      demandeur.departement
-                    ).populate("chefDeDepartement");
-                    obj = {
-                      code: "cdd",
-                      nom: departement.chefDeDepartement.nom,
-                      prenom: departement.chefDeDepartement.prenom,
-                      approuve: status === "approuve" ? true : false,
-                      refuse: status === "refuse" ? true : false,
-                      dateTraitement: dateTraitement,
-                      // date:trai
-                    };
-                  } else {
-                    res.status(400);
-                    throw new Error("departement introuvable !");
-                  }
-                } else {
-                  res.status(400);
-                  throw new Error("demadneur introuvable !");
-                }
+                obj = {
+                  code: "cdd",
+                  nom: departement.chefDeDepartement.nom,
+                  prenom: departement.chefDeDepartement.prenom,
+                  approuve: status === "approuve" ? true : false,
+                  refuse: status === "refuse" ? true : false,
+                  dateTraitement: dateTraitement,
+                  // date:trai
+                };
               }
             }
 
@@ -1884,8 +1871,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.directeur.nom,
-                prenom: optionPDD.directeur.prenom,
+                nom: optionPDD.nom,
+                prenom: optionPDD.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1907,7 +1894,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             sig.push(obj);
           }
         } else {
-          for (const tr of demande.traitement) {
+          for (const tr of demandes.traitement) {
             const arrCode = tr.code.split(".");
             if (arrCode.length > 1) {
               for (const item of arrCode) {
@@ -1931,6 +1918,18 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                       };
                     }
 
+                    if (item === "cdd") {
+                      obj = {
+                        code: "cdd",
+                        nom: departement.chefDeDepartement.nom,
+                        prenom: departement.chefDeDepartement.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+
                     if (item === "hiq") {
                       obj = {
                         code: "hiq",
@@ -1946,8 +1945,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.directeur.nom,
-                        prenom: optionPDD.directeur.prenom,
+                        nom: optionPDD.nom,
+                        prenom: optionPDD.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1975,11 +1974,14 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
         }
       }
 
-      demande.sig = sig;
-      demande.demandeur.direction = direction;
-      demande.demandeur.service = service;
-
-      res.json(demande);
+      demandes.sig = sig;
+      demandes.demandeur.direction = direction;
+      demandes.demandeur.service = service;
+      
+      demandes.traitement.sort((a, b) => {
+        return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
+      });
+      res.json(demandes);
     } else {
       res.status(400);
       throw new Error("vous n'avez pas le droit de consulter cette demande !");
@@ -1989,5 +1991,5 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
     throw new Error("demande introuvable");
   }
 
-  res.json(demande);
+  res.json(demandes);
 });

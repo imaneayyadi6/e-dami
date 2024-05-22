@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getDemandesFilterToHandle, getDemandesToHandle, resetGetDemandesToHandle } from "../../redux/demande/demandeActions";
+import {
+  getDemandesFilterToHandle,
+  getDemandesToHandle,
+  resetGetDemandesToHandle,
+} from "../../redux/demande/demandeActions";
 import { Message, TableLoading, WarningMessage } from "../../components";
 import { Button, Card, Form } from "react-bootstrap";
 import moment from "moment";
@@ -20,26 +24,21 @@ const DemandesPage = () => {
   const [dateEnvoi, setDateEnvoi] = useState(null);
   const [dateDemande, setDateDemande] = useState(null);
 
-
-
   const filterHnadler = (page) => {
     setIsNextPages(false);
     let query = { page: page || 1 };
-    if (option !== null) query.option = option
-    if (demandeur !== null) query.demandeur = demandeur
-    if (typeApp !== null) query.typeApp = typeApp
-    if (status !== null) query.status = status
-    if (dateEnvoi !== null) query.dateEnvoi = dateEnvoi
-    if (dateDemande !== null) query.dateDemande = dateDemande
+    if (option !== null) query.option = option;
+    if (demandeur !== null) query.demandeur = demandeur;
+    if (typeApp !== null) query.typeApp = typeApp;
+    if (status !== null) query.status = status;
+    if (dateEnvoi !== null) query.dateEnvoi = dateEnvoi;
+    if (dateDemande !== null) query.dateDemande = dateDemande;
 
     dispatch(getDemandesToHandle(query));
-  }
-
-
-
+  };
 
   const dispatch = useDispatch();
-  const demandesToHandle = useSelector(state => state.demandesToHandle);
+  const demandesToHandle = useSelector((state) => state.demandesToHandle);
   const {
     loading: loadingDemandesToHandle,
     error: errorDemandesToHandle,
@@ -47,7 +46,9 @@ const DemandesPage = () => {
     data,
   } = demandesToHandle;
 
-  const demandeToHandleFilter = useSelector(state => state.demandeToHandleFilter);
+  const demandeToHandleFilter = useSelector(
+    (state) => state.demandeToHandleFilter
+  );
   const {
     loading: loadingDemandesToHandleFilter,
     error: errorDemandesToHandleFilter,
@@ -59,22 +60,25 @@ const DemandesPage = () => {
     console.log(newPage);
 
     setCurrentPage(newPage);
-    filterHnadler(newPage)
+    filterHnadler(newPage);
     setIsNextPages(true);
   };
 
   const renderPageLinks = () => {
-
     const links = [];
 
     if (totalPages > 1) {
-
       const range = 20;
       const start = Math.max(1, currentPage - Math.floor(range / 2));
       const end = Math.min(totalPages, start + range);
 
       links.push(
-        <button key="first" className="btn btn-sm btn-light" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+        <button
+          key="first"
+          className="btn btn-sm btn-light"
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+        >
           &laquo;&laquo;
         </button>,
         <button
@@ -87,19 +91,19 @@ const DemandesPage = () => {
         </button>
       );
 
-
       for (let i = start; i <= end; i++) {
         links.push(
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`${i === currentPage ? 'active' : ''} btn btn-sm btn-light`}
+            className={`${
+              i === currentPage ? "active" : ""
+            } btn btn-sm btn-light`}
           >
             {i}
           </button>
         );
       }
-
 
       links.push(
         <button
@@ -121,19 +125,12 @@ const DemandesPage = () => {
       );
 
       return links;
-    }
-    else {
+    } else {
       links.push(
-        <button
-          className={`btn btn-sm btn-light active ml-1`}
-        >
-          1
-        </button>
+        <button className={`btn btn-sm btn-light active ml-1`}>1</button>
       );
       return links;
     }
-
-
   };
 
   const resetFilterHandler = () => {
@@ -143,15 +140,14 @@ const DemandesPage = () => {
     setStatus(null);
     setDateEnvoi(null);
     setDateDemande(null);
-    dispatch(getDemandesToHandle())
-  }
-
+    dispatch(getDemandesToHandle());
+  };
 
   useEffect(() => {
     if (!callOnce) {
-      dispatch(resetGetDemandesToHandle())
+      dispatch(resetGetDemandesToHandle());
       dispatch(getDemandesToHandle());
-      dispatch(getDemandesFilterToHandle())
+      dispatch(getDemandesFilterToHandle());
       setCallOnce(true);
     }
 
@@ -161,142 +157,144 @@ const DemandesPage = () => {
         window.scrollTo(1000000, 100000);
       }
     }
-
   }, [callOnce, successDemandesToHandle, isNextPages]);
 
   return (
     <>
       {errorDemandesToHandle && (
-        <Message itWillBeHidden type='danger'>
+        <Message itWillBeHidden type="danger">
           {errorDemandesToHandle}
         </Message>
       )}
       {errorDemandesToHandleFilter && (
-        <Message itWillBeHidden type='danger'>
+        <Message itWillBeHidden type="danger">
           {errorDemandesToHandleFilter}
         </Message>
       )}
-      <Card className='h-100'>
+      <Card className="h-100">
         <Card.Body>
           {loadingDemandesToHandle && <TableLoading />}
-
 
           <>
             {!loadingDemandesToHandle && successDemandesToHandleFilter && (
               <>
                 <Button variant="dark" onClick={filterHnadler}>
-                  <i className="fa-solid fa-filter"></i> {" "} filtrer
+                  <i className="fa-solid fa-filter"></i> filtrer
                 </Button>
                 <Button variant="light" onClick={resetFilterHandler}>
-                  <i className="fa-solid fa-filter-circle-xmark"></i> annuler le filter
+                  <i className="fa-solid fa-filter-circle-xmark"></i> annuler le
+                  filter
                 </Button>
               </>
-
             )}
 
             <hr />
             <div className="table-responsive">
-
               <table className="table table-sm">
                 {successDemandesToHandleFilter && (
                   <thead>
                     <tr>
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
+                        <div className="d-flex flex-column justify-content-center inline-text">
                           <small>demandeur</small>
                           <div className="d-flex">
                             <Form.Select
                               value={demandeur}
                               onChange={(e) => setDemandeur(e.target.value)}
-                              disabled={loadingDemandesToHandleFilter} size="sm">
-                              <option value={""} >----veuillez selectionner un demandeur ----</option>
-                              {dataFilter.demandeurs.map(demandeur => (
-                                <option key={demandeur._id} value={demandeur._id}>{demandeur.prenom.toLowerCase() + " " + demandeur.nom.toLowerCase()}</option>
-                              ))}
+                              disabled={loadingDemandesToHandleFilter}
+                              size="sm"
+                            >
+                              <option value={""}>
+                                ----veuillez selectionner un demandeur ----
+                              </option>
+                              {dataFilter &&
+                                dataFilter.demandeurs.length > 0 &&
+                                dataFilter.demandeurs.map((demandeur) => (
+                                  <option
+                                    key={demandeur._id}
+                                    value={demandeur._id}
+                                  >
+                                    {demandeur.prenom.toLowerCase() +
+                                      " " +
+                                      demandeur.nom.toLowerCase()}
+                                  </option>
+                                ))}
                             </Form.Select>
-
                           </div>
                         </div>
                       </th>
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
+                        <div className="d-flex flex-column justify-content-center inline-text">
                           <small>date demande</small>
                           <div className="d-flex">
                             <Form.Control
                               value={dateDemande}
                               onChange={(e) => setDateDemande(e.target.value)}
-                              size="sm" type="date" />
+                              size="sm"
+                              type="date"
+                            />
                           </div>
                         </div>
                       </th>
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
+                        <div className="d-flex flex-column justify-content-center inline-text">
                           <small>date envoi</small>
                           <div className="d-flex">
                             <Form.Control
                               value={dateEnvoi}
                               onChange={(e) => setDateEnvoi(e.target.value)}
-                              size="sm" type="date" />
-
+                              size="sm"
+                              type="date"
+                            />
                           </div>
                         </div>
                       </th>
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
+                        <div className="d-flex flex-column justify-content-center inline-text">
                           <small>option</small>
                           <div className="d-flex">
                             <Form.Select
                               value={option}
                               onChange={(e) => setOption(e.target.value)}
-                              disabled={loadingDemandesToHandleFilter} size="sm">
-                              <option value={""} >----veuillez selectionner une option ----</option>
+                              disabled={loadingDemandesToHandleFilter}
+                              size="sm"
+                            >
+                              <option value={""}>
+                                ----veuillez selectionner une option ----
+                              </option>
 
-                              {dataFilter.options.map(option => (
-                                <option key={option._id} value={option._id} >{option.libelle.toLowerCase()}</option>
+                              {dataFilter.options.map((option) => (
+                                <option key={option._id} value={option._id}>
+                                  {option.libelle.toLowerCase()}
+                                </option>
                               ))}
                             </Form.Select>
-
                           </div>
                         </div>
                       </th>
+
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
-                          <small>type d'approbation</small>
+                        <div className="d-flex flex-column justify-content-center inline-text">
+                          <small>status</small>
                           <div className="d-flex">
                             <Form.Select
-                              value={typeApp}
-                              onChange={(e) => setTypeApp(e.target.value)}
-                              disabled={loadingDemandesToHandleFilter} size="sm">
-                              <option value={""} >----veuillez selectionner un type d'approbation ----</option>
-
-                              {dataFilter.typeApp.map((typeA) => (
-                                <option key={typeA} value={typeA} >{getTypeApprobation(typeA)}</option>
-                              ))}
-                            </Form.Select>
-
-                          </div>
-                        </div>
-                      </th>
-                      <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
-                          <small>status</small>
-                          <div
-                            className="d-flex">
-                            <Form.Select size="sm"
+                              size="sm"
                               value={status}
-                              onChange={(e) => setStatus(e.target.value)}>
-                              <option value={""} >----veuillez selectionner un type un status ----</option>
+                              onChange={(e) => setStatus(e.target.value)}
+                            >
+                              <option value={""}>
+                                ----veuillez selectionner un type un status ----
+                              </option>
 
                               <option value={"en cours"}>en cours</option>
                               <option value={"approuve"}>approuve</option>
                               <option value={"refuse"}>refuse</option>
                             </Form.Select>
-
                           </div>
                         </div>
                       </th>
                       <th>
-                        <div className='d-flex flex-column justify-content-center inline-text'>
+                        <div className="d-flex flex-column justify-content-center inline-text">
                           <small>traiter</small>
                         </div>
                       </th>
@@ -305,39 +303,70 @@ const DemandesPage = () => {
                 )}
 
                 <tbody>
-                  {successDemandesToHandleFilter && data && data.traitements.length > 0 ? (
-
-                    data.traitements.map(traitement => (
-                      <tr>
-                        <td><small className="inline-text">{traitement.demandeur}</small></td>
-                        <td><small className="inline-text">{moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm')}</small></td>
-                        <td><small className="inline-text">{moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm')}</small></td>
-                        <td><small className="inline-text">{String(traitement.option).toLowerCase()}</small></td>
-                        <td><small className="inline-text">{getTypeApprobation(traitement.code)}</small></td>
-                        <td><small className={`table-text-status-${String(traitement.status).replace(/\s/g, "")}`}>{traitement.status}</small></td>
-                        <td>
-                          <Link className="btn btn-sm btn-light" to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}>
-                            traiter
-                          </Link>
-                        </td>
-                      </tr>
-                    ))
-
-
-
-
-
-                  ) : (
-                    successDemandesToHandle && (
-                      <tr>
-                        <td colSpan={1000}>
-                          <div className="d-flex justify-content-center py-5">
-                            <WarningMessage message={"Aucune demande trouvée"} />
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  )}
+                  {successDemandesToHandleFilter &&
+                  data &&
+                  data.traitements.length > 0
+                    ? data.traitements.map((traitement) => (
+                        <tr>
+                          <td>
+                            <small className="inline-text">
+                              {traitement.demandeur}
+                            </small>
+                          </td>
+                          <td>
+                            <small className="inline-text">
+                              {moment(traitement.dateDemande).format(
+                                "DD-MM-YYYY, h:mm"
+                              )}
+                            </small>
+                          </td>
+                          <td>
+                            <small className="inline-text">
+                              {moment(traitement.dateEnvoi).format(
+                                "DD-MM-YYYY, h:mm"
+                              )}
+                            </small>
+                          </td>
+                          <td>
+                            <small className="inline-text">
+                              {String(traitement.option).toLowerCase()}
+                            </small>
+                          </td>
+                          <td>
+                            <small className="inline-text">
+                              {getTypeApprobation(traitement.code)}
+                            </small>
+                          </td>
+                          <td>
+                            <small
+                              className={`table-text-status-${String(
+                                traitement.status
+                              ).replace(/\s/g, "")}`}
+                            >
+                              {traitement.status}
+                            </small>
+                          </td>
+                          <td>
+                            <Link
+                              className="btn btn-sm btn-light"
+                              to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}
+                            >
+                              traiter
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    : successDemandesToHandle && (
+                        <tr>
+                          <td colSpan={1000}>
+                            <div className="d-flex justify-content-center py-5">
+                              <WarningMessage
+                                message={"Aucune demande trouvée"}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                 </tbody>
               </table>
               {successDemandesToHandleFilter && data && (
@@ -351,16 +380,10 @@ const DemandesPage = () => {
                   {renderPageLinks()}
                 </div>
               )}
-
-
             </div>
           </>
-
-
-
-
         </Card.Body>
-      </Card >
+      </Card>
     </>
   );
 };

@@ -44,7 +44,7 @@ const optionSchema = Schema(
     },
     proprietaireDeDonnees: {
       type: Schema.Types.ObjectId,
-      ref: "direction",
+      ref: "utilisateur",
     },
     service: {
       type: Schema.Types.ObjectId,
