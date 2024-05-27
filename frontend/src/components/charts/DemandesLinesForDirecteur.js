@@ -86,24 +86,25 @@ const DemandesLinesForDirecteur = () => {
                 label: "en cours",
                 data: resultObject["en cours"],
                 fill: false,
+
                 backgroundColor: "rgba(255, 165, 0, 0.2)",
-                borderColor: "rgba(255, 165, 0, 0.5)",
+                borderColor: "rgba(255, 165, 0, 0.2)",
                 tension: 0.1,
               },
               {
                 label: "refuse",
                 data: resultObject["refuse"],
                 fill: false,
-                backgroundColor: "rgba(255, 0, 0, 0.2)",
-                borderColor: "rgba(255, 0, 0, 0.5)",
+                backgroundColor: "rgba(255, 0, 0, 0.2)", // Red
+                borderColor: "rgba(255, 0, 0, 0.2)",
                 tension: 0.1,
               },
               {
                 label: "approuve",
                 data: resultObject["approuve"],
                 fill: false,
-                backgroundColor: "rgba(0, 128, 0, 0.2)",
-                borderColor: "rgba(0, 128, 0, 0.5)",
+                backgroundColor: "rgba(0, 128, 0, 0.2)", // Green
+                borderColor: "rgba(0, 128, 0, 0.2)",
                 tension: 0.1,
               },
             ],

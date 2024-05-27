@@ -62,6 +62,10 @@ import {
   fetchDepartementByID,
   fetchDepartements,
 } from "../../redux/departement/departementActions";
+import {
+  fetchUsersByDivision,
+  resetFetchUsersByDivision,
+} from "../../redux/user/userActions";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -139,8 +143,9 @@ const DamiEditPage = () => {
     departement: "",
     service: "",
     proprietaireDeDonnees: "",
+    typePdd: "",
   });
-
+  const [typePdd, setTypePdd] = useState("srv");
   const docRef = useRef(null);
   const viewResultDocRef = useRef(null);
   const { id } = useParams();
@@ -231,6 +236,14 @@ const DamiEditPage = () => {
     // option: updatedOption,
     success: successOptionUpdate,
   } = optionUpdate;
+
+  const userByDivision = useSelector((state) => state.userByDivision);
+  const {
+    loading: loadingUserByDivision,
+    error: errorUserByDivision,
+    success: successUserByDivision,
+    users,
+  } = userByDivision;
 
   const handleDragStart = (event, item) => {
     event.dataTransfer.setData("text/plain", item);
@@ -1705,6 +1718,7 @@ const DamiEditPage = () => {
     if (!callOnce) {
       dispatch(fetchDirections());
       dispatch(fetchSousCategories());
+      dispatch(fetchServices());
       dispatch(fetchDepartements());
       dispatch(resetFetchOptionByID());
       setCallOnce(true);
@@ -1713,7 +1727,6 @@ const DamiEditPage = () => {
     if (option && option.service && option.departement) {
       dispatch(getByServiceID(option.service));
       dispatch(fetchDepartementByID(option.departement));
-
     }
     if (successOptionCreate) {
       setDraggedItems([]);
@@ -1799,12 +1812,22 @@ const DamiEditPage = () => {
         creation: formattedCreationDate,
         maj: formattedMajDate,
       });
-      sousCategorieForm.setValues({
-        sousCategorie: recoveredOption.sousCategorie,
-        departement: recoveredOption.departement,
-        service: recoveredOption.service,
-        proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees,
-      });
+      setTypePdd("dir");
+      dispatch(
+        fetchUsersByDivision(
+          "dir",
+          recoveredOption.proprietaireDeDonnees.direction
+        )
+      );
+      setTimeout(() => {
+        sousCategorieForm.setValues({
+          sousCategorie: recoveredOption.sousCategorie,
+          departement: recoveredOption.departement,
+          service: recoveredOption.service,
+          typePdd: recoveredOption.proprietaireDeDonnees.direction,
+          proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees._id,
+        });
+      }, 1000);
     }
 
     if (successOptionUpdate) {
@@ -1903,6 +1926,12 @@ const DamiEditPage = () => {
       );
     }
   }, [sousCategorieForm.values.departement]);
+
+  useEffect(() => {
+    if (sousCategorieForm.values.typePdd) {
+      dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
+    }
+  }, [sousCategorieForm.values.typePdd]);
 
   return (
     <>
@@ -2215,25 +2244,125 @@ const DamiEditPage = () => {
                     {sousCategorieForm.errors.service}
                   </small>
                 )}
-              <label>proprietaire de donnees(direction) : </label>
+              <label>proprietaire de donnees : </label>
+              <div className="d-flex align-items-center">
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "srv"}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("srv");
+                  }}
+                  label="filtrer par service"
+                />
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "dep"}
+                  value={typePdd}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("dep");
+                  }}
+                  label="filtrer par departement"
+                />
+                <Form.Check
+                  name="fltPdd"
+                  className="mr-1"
+                  type="radio"
+                  checked={typePdd === "dir"}
+                  value={typePdd}
+                  onChange={() => {
+                    dispatch(resetFetchUsersByDivision());
+                    setTypePdd("dir");
+                  }}
+                  label="filtrer par direction"
+                />
+              </div>
+              {typePdd === "srv" ? (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingServiceList}
+                >
+                  <option value="">
+                    ---- veuillez choisire un service ----
+                  </option>
+                  {services.length > 0 &&
+                    services.map((srv) => (
+                      <option key={srv._id} value={srv._id}>
+                        {srv.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              ) : typePdd === "dep" ? (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingDepartementList}
+                >
+                  <option value="">
+                    ---- veuillez choisire un departement ----
+                  </option>
+                  {departements.length > 0 &&
+                    departements.map((dep) => (
+                      <option key={dep._id} value={dep._id}>
+                        {dep.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              ) : (
+                <Form.Select
+                  className="mb-3"
+                  name="typePdd"
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                  value={sousCategorieForm.values.typePdd}
+                  disabled={loadingDirectionList}
+                >
+                  <option value="">
+                    ---- veuillez choisire une direction ----
+                  </option>
+                  {directions.length > 0 &&
+                    directions.map((direction) => (
+                      <option key={direction._id} value={direction._id}>
+                        {direction.libelle}
+                      </option>
+                    ))}
+                </Form.Select>
+              )}
+              {sousCategorieForm.touched.typePdd &&
+                sousCategorieForm.errors.typePdd && (
+                  <small className="text-danger d-block">
+                    {sousCategorieForm.errors.typePdd}
+                  </small>
+                )}
               <Form.Select
-                className="mb-3"
                 name="proprietaireDeDonnees"
+                disabled={loadingUserByDivision}
+                value={sousCategorieForm.values.proprietaireDeDonnees}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
-                value={sousCategorieForm.values.proprietaireDeDonnees}
-                disabled={loadingDirectionList}
               >
                 <option value="">
-                  ---- veuillez choisire une direction ----
+                  ----- choisire un proprietaire de donnees -----
                 </option>
-                {directions.length > 0 &&
-                  directions.map((direction) => (
-                    <option key={direction._id} value={direction._id}>
-                      {direction.libelle}
+                {users.length > 0 &&
+                  users.map((user) => (
+                    <option value={user._id}>
+                      {user.prenom} {user.nom}
                     </option>
                   ))}
-              </Form.Select>{" "}
+              </Form.Select>
               {sousCategorieForm.touched.proprietaireDeDonnees &&
                 sousCategorieForm.errors.proprietaireDeDonnees && (
                   <small className="text-danger d-block">

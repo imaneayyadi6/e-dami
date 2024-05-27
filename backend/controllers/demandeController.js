@@ -88,7 +88,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   );
 
   traitements.sort((a, b) => {
-    return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
+    return new Date(a.dateEnvoi) - new Date(b.dateEnvoi);
   });
 
   if (filters.status)
@@ -829,6 +829,25 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     );
                   }
 
+                  if (
+                    demande.option.signataires.includes("pdd") &&
+                    demande.option.proprietaireDeDonnees
+                  ) {
+                    let supPdd = await Utilisateur.findById(
+                      demande.option.proprietaireDeDonnees
+                    );
+                    if (supPdd) {
+                      sendNotification(
+                        supPdd._id,
+                        supContent,
+                        "traitement de la demande"
+                      );
+                    } else {
+                      res.json(404);
+                      throw new Error("proprietaire de données introuvable !");
+                    }
+                  }
+
                   res.json({ message: "demande approuve" });
                 } else {
                   // verfication de qu'est le directeur qui va traiter cette demande selon le code:
@@ -951,6 +970,26 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                       "traitement de la demande"
                     );
                   }
+
+                  if (
+                    demande.option.signataires.includes("pdd") &&
+                    demande.option.proprietaireDeDonnees
+                  ) {
+                    let supPdd = await Utilisateur.findById(
+                      demande.option.proprietaireDeDonnees
+                    );
+                    if (supPdd) {
+                      sendNotification(
+                        supPdd._id,
+                        supContent,
+                        "traitement de la demande"
+                      );
+                    } else {
+                      res.json(404);
+                      throw new Error("proprietaire de données introuvable !");
+                    }
+                  }
+
                   res.json({ message: "demande approuve " });
                 } else {
                   // verfication de qu'est le directeur qui va traiter cette demande selon le code :
@@ -959,14 +998,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   let envCode = "";
                   if (nextCode1) {
                     if (nextCode1 === "cdd") {
-                      console.log(
-                        JSON.parse(
-                          JSON.stringify(
-                            await Utilisateur.findById(demande.demandeur._id)
-                          )
-                        )
-                      );
-
                       const departementID = JSON.parse(
                         JSON.stringify(
                           await Utilisateur.findById(demande.demandeur._id)
@@ -1827,7 +1858,9 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
 
             if (s === "cdd") {
               let departement = null;
-              let demandeur = await Utilisateur.findById(demandes.demandeur._id);
+              let demandeur = await Utilisateur.findById(
+                demandes.demandeur._id
+              );
               if (demandeur) {
                 departement = await Departement.findById(
                   demandeur.departement
@@ -1977,7 +2010,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
       demandes.sig = sig;
       demandes.demandeur.direction = direction;
       demandes.demandeur.service = service;
-      
+
       demandes.traitement.sort((a, b) => {
         return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
       });

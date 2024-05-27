@@ -50,13 +50,10 @@ import {
   fetchOptionByID,
   resetCreateOption,
   resetFetchOptionByID,
-  resetUpdateOption,
   resetUpdateOptionCrtOp,
   updateOptionCrtOp,
 } from "../../redux/option/optionActions";
 
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { OPTION_LIST_REMOVE } from "../../redux/option/optionTypes";
 import {
   fetchDepartementByID,

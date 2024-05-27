@@ -448,10 +448,38 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         },
       },
       {
+        $addFields: {
+          monthString: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id", 2] }, then: "Février" },
+                { case: { $eq: ["$_id", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id", 8] }, then: "Août" },
+                { case: { $eq: ["$_id", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
+        },
+      },
+      {
         $project: {
           _id: 0,
-          month: "$_id",
+          month: "$monthString",
           statusCounts: 1,
+        },
+      },
+      {
+        $sort: {
+          month: 1,
         },
       },
     ];
@@ -509,10 +537,38 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         },
       },
       {
+        $addFields: {
+          monthString: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id", 2] }, then: "Février" },
+                { case: { $eq: ["$_id", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id", 8] }, then: "Août" },
+                { case: { $eq: ["$_id", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
+        },
+      },
+      {
         $project: {
           _id: 0,
-          month: "$_id",
+          month: "$monthString",
           statusCounts: 1,
+        },
+      },
+      {
+        $sort: {
+          month: 1,
         },
       },
     ];

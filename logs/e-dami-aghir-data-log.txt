@@ -75,3 +75,8 @@
 [ERROR] : Wed May 22 2024 12:47:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> MongooseError: Operation `directions.findOne()` buffering timed out after 10000ms 
 [DATA INSERT] : Wed May 22 2024 15:36:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Wed May 22 2024 15:52:16 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu May 23 2024 11:34:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Fri May 24 2024 10:01:41 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Fri May 24 2024 12:10:21 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 27 2024 10:59:44 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Mon May 27 2024 11:01:14 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
