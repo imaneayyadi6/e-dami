@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Utilisateur from "../models/utilisateurModel.js";
+import Role from "../models/roleModel.js";
 import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
@@ -1812,12 +1813,24 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
       demandes.option.service.deparatement
     );
 
+    let supPdd = await Utilisateur.findById(
+      demandes.option.proprietaireDeDonnees
+    );
+
+    let adminRole = await Role.findOne({
+      code: "crt",
+    });
+
     if (
+      req.user.roles.findIndex(
+        (r) => String(r.role) === String(adminRole._id)
+      ) !== -1 ||
       isChefDeService ||
       isChefDeDepartement ||
       isDirecteur ||
       supService ||
-      supDepratement
+      supDepratement ||
+      supPdd
     ) {
       demandes = JSON.parse(JSON.stringify(demandes));
       const service = await Service.findById(
@@ -2023,6 +2036,49 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("demande introuvable");
   }
+});
 
+// @desc    Recuperer les demandes pour appercu de superieur
+// @route   GET /api/demandes/for/preview/team/all
+// @access  private
+export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
+  let demandes = await Demande.aggregate([
+    {
+      $lookup: {
+        from: "utilisateurs",
+        localField: "demandeur",
+        foreignField: "_id",
+        as: "demandeur",
+      },
+    },
+    {
+      $unwind: "$demandeur",
+    },
+
+    {
+      $lookup: {
+        from: "options",
+        localField: "option",
+        foreignField: "_id",
+        as: "option",
+      },
+    },
+    {
+      $unwind: "$option",
+    },
+    {
+      $sort: {
+        dateDemande: -1,
+      },
+    },
+
+    {
+      $match: {
+        "demandeur._id": {
+          $ne: new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+    },
+  ]);
   res.json(demandes);
 });

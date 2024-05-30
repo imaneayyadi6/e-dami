@@ -39,6 +39,13 @@ import {
   DEMANDE_PREVIEW_TEAM_REQUEST,
   DEMANDE_PREVIEW_TEAM_RESET,
   DEMANDE_PREVIEW_TEAM_SUCCESS,
+
+
+  DEMANDE_PREVIEW_TEAM_ADMIN_FAIL,
+  DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST,
+  DEMANDE_PREVIEW_TEAM_ADMIN_RESET,
+  DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS,
+
   DEMANDE_PREVIEW_TEAM_DETAILS_FAIL,
   DEMANDE_PREVIEW_TEAM_DETAILS_REQUEST,
   DEMANDE_PREVIEW_TEAM_DETAILS_RESET,
@@ -150,6 +157,40 @@ export const getDemandesPreviewTeam = () => {
 
 export const resetGetDemandesPreviewTeam = () => {
   return { type: DEMANDE_PREVIEW_TEAM_RESET };
+};
+
+export const getDemandesPreviewTeamAll = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/demandes/for/preview/team/all`,
+        config
+      );
+      dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetGetDemandesPreviewTeamAll = () => {
+  return { type: DEMANDE_PREVIEW_TEAM_ADMIN_RESET };
 };
 
 export const getDemandesPreviewDetailsTeam = (id) => {

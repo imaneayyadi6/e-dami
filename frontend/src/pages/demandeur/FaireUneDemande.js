@@ -406,7 +406,7 @@ const FaireUneDemande = () => {
         !loadingOptionListBySousCategorieID ? (
           data.options.map((option) => (
             <Col
-              xl={windowSize.width >= 1500 ? 4 : 6}
+              xl={windowSize.width > 1640 ? 4 : 6}
               lg={6}
               md={6}
               sm={12}

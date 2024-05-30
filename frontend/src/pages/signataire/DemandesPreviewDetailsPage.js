@@ -22,15 +22,22 @@ const STATUS = {
 const DemandesPreviewDetailsPage = () => {
   const [callOnce, setCallOnce] = useState(false);
   const [showTimeLine, setShowTimeLine] = useState(false);
+
+  const userLogin = useSelector((state) => state.userLogin);
+
+  const { userInfo } = userLogin;
+
   const demandePreviewTeamDetails = useSelector(
     (state) => state.demandePreviewTeamDetails
   );
+
   const {
     loading: demandePreviewTeamDetailsLoading,
     success: demandePreviewTeamDetailsSuccess,
     error: demandePreviewTeamDetailsError,
     demande,
   } = demandePreviewTeamDetails;
+
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -46,7 +53,12 @@ const DemandesPreviewDetailsPage = () => {
     <>
       <div className="d-flex justify-content-between align-items-center">
         <Link
-          to="/demandes/apercu"
+          to={`${
+            userInfo &&
+            userInfo.roles.findIndex((r) => r.role.code === "crt") !== -1
+              ? "/demandes/all/apercu"
+              : "/demandes/apercu"
+          } `}
           className="btn btn-sm btn-light mb-3"
           onClick={() => {
             dispatch(resetGetDemandesPreviewDetailsTeam());

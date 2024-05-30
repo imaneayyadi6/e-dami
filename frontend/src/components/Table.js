@@ -41,11 +41,12 @@ const DropdownFilter = ({ column }) => {
       onChange={(e) => setFilter(e.target.value)}
     >
       <option value="">
-        -------- veuillez selectionner ({column.Header}) --------
+        -------- veuillez selectionner ({String(column.Header.toLowerCase())})
+        --------
       </option>
       {uniqueDirections.map((option, index) => (
         <option key={index} value={option}>
-          {option}
+          {String(option).toLowerCase()}
         </option>
       ))}
     </Form.Select>

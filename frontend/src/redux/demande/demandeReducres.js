@@ -39,6 +39,10 @@ import {
   DEMANDE_PREVIEW_TEAM_REQUEST,
   DEMANDE_PREVIEW_TEAM_RESET,
   DEMANDE_PREVIEW_TEAM_SUCCESS,
+  DEMANDE_PREVIEW_TEAM_ADMIN_FAIL,
+  DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST,
+  DEMANDE_PREVIEW_TEAM_ADMIN_RESET,
+  DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS,
   DEMANDE_PREVIEW_TEAM_DETAILS_FAIL,
   DEMANDE_PREVIEW_TEAM_DETAILS_REQUEST,
   DEMANDE_PREVIEW_TEAM_DETAILS_RESET,
@@ -92,6 +96,26 @@ export const demandePreviewTeamReducer = (state = { demandes: [] }, action) => {
       return state;
   }
 };
+
+export const demandePreviewTeamAdminReducer = (
+  state = { demandes: [] },
+  action
+) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST:
+      return { loading: true, demandes: [] };
+    case DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS:
+      return { loading: false, success: true, demandes: payload };
+    case DEMANDE_PREVIEW_TEAM_ADMIN_FAIL:
+      return { loading: false, error: payload, demandes: [] };
+    case DEMANDE_PREVIEW_TEAM_ADMIN_RESET:
+      return { demandes: [] };
+    default:
+      return state;
+  }
+};
+
 export const demandePreviewTeamDetailsReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {

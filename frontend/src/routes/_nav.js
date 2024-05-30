@@ -14,6 +14,14 @@ let _nav = [
     roles: ["sig"],
   },
   {
+    to: "/demandes/all/apercu",
+    name: "Aperçu les demandes",
+    icon: (
+      <i className="fa-solid fa-address-book" style={{ fontSize: "14px" }}></i>
+    ),
+    roles: ["crt"],
+  },
+  {
     to: "/demandes",
     name: "Demandes d'approbation",
     icon: (

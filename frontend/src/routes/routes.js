@@ -12,6 +12,7 @@ import {
   UtilisateurCreatePage,
   UtilisateurDetailsPage,
 } from "../pages/admin";
+import DemandesListPage from "../pages/admin/DemandesListPage";
 
 import {
   DamiEditPageCrtOp,
@@ -95,11 +96,18 @@ const routes = [
     roles: ["sig"],
   },
   {
+    path: "/demandes/all/apercu",
+    name: "Aperçu des demandes",
+    element: <DemandesListPage />,
+    exact: true,
+    roles: ["crt"],
+  },
+  {
     path: "/demandes/apercu/details/:id",
     name: "Aperçu demande details",
     element: <DemandesPreviewDetailsPage />,
     exact: true,
-    roles: ["sig"],
+    roles: ["sig", "crt"],
   },
 
   {

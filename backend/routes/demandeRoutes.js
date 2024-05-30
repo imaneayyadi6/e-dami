@@ -4,6 +4,7 @@ import {
   protect,
   signataire,
   demandeur,
+  createur,
 } from "../middlewares/authMidlleware.js";
 
 import {
@@ -18,6 +19,7 @@ import {
   getFilterOptionsDemandes,
   getDemandesForPreview,
   getDemandeForPreviewByID,
+  getDemandesForPreviewAll,
 } from "../controllers/demandeController.js";
 
 const router = express.Router();
@@ -30,7 +32,7 @@ router
 
 router
   .route("/for/preview/team/details/:id")
-  .get(protect, signataire, getDemandeForPreviewByID);
+  .get(protect, getDemandeForPreviewByID);
 
 router
   .route("/handle/filter")
@@ -50,5 +52,7 @@ router
   .put(protect, signataire, refuserDemande);
 router.route("/mesdemandes").get(protect, demandeur, getMesDemandes);
 router.route("/:id").get(protect, demandeur, getDemandeurDemandeByID);
+router.route("/for/preview/team/all").get(protect, createur, getDemandesForPreviewAll);
+
 
 export default router;

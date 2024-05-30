@@ -7,6 +7,8 @@ import {
   Form,
   ListGroup,
   Modal,
+  OverlayTrigger,
+  Popover,
   Row,
 } from "react-bootstrap";
 import {
@@ -110,6 +112,8 @@ const DamiEditPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCreateOpModal, setShowCreateOpModal] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [showPopover, setShowPopover] = useState(false);
+
   const [steps] = useState([
     "entête",
     "sous-categorie & service & proprietaire de donnees",
@@ -122,6 +126,7 @@ const DamiEditPage = () => {
     hiq: true,
     pdd: false,
     dir: true,
+    dg: false,
     pdg: false,
   });
   const [option, setOption] = useState(null);
@@ -147,6 +152,7 @@ const DamiEditPage = () => {
   });
   const [typePdd, setTypePdd] = useState("srv");
   const docRef = useRef(null);
+  const btnRef = useRef(null);
   const viewResultDocRef = useRef(null);
   const { id } = useParams();
   const location = useLocation();
@@ -612,10 +618,12 @@ const DamiEditPage = () => {
       }
     }
 
+    console.log(document.querySelectorAll(".pdd-id"));
     setOption({
       ...option,
       dirLibelle: direction.libelle,
       signataires: signataires,
+      
     });
 
     setHtmlContent(docRef.current.innerHTML);
@@ -668,42 +676,6 @@ const DamiEditPage = () => {
     }
   };
 
-  // const handleConvertToPDF = async () => {
-  //   try {
-  //     const content = document.getElementById("dami");
-  //     content.querySelector(".dami-body").style.minHeight = "1000px";
-  //     // Use html2canvas to capture the content as an image
-  //     const canvas = await html2canvas(content, { scale: 2 });
-
-  //     // Initialize jsPDF with the desired page size and orientation
-  //     const pdf = new jsPDF("p", "mm", "a4");
-
-  //     // Calculate the dimensions of the image to fit on the PDF page
-  //     const imgWidth = 210; // A4 page width in mm
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  //     // Add the captured image to the PDF
-  //     pdf.addImage(
-  //       canvas.toDataURL("file/pdf"),
-  //       "PDF",
-  //       0,
-  //       0,
-  //       imgWidth,
-  //       imgHeight
-  //     );
-
-  //     // Save the PDF with the specified filename
-  //     pdf.save(`${option ? option.libelle : "e-dami"}.pdf`);
-  //     content.querySelector(".dami-body").style.minHeight = "500px";
-  //   } catch (error) {
-  //     Toast.open({
-  //       type: "danger",
-  //       title: "Erreur d'installation de PDF",
-  //       message: String(error),
-  //     });
-  //   }
-  // };
-
   const getUpdatedComponent = (recoveredOption) => {
     try {
       setGetUpdatedComponentsLoading(true);
@@ -744,8 +716,11 @@ const DamiEditPage = () => {
               style: checkbox
                 .querySelector(".dami-label")
                 .getAttribute("style"),
+              dataConditionID:
+                checkbox.querySelector(".dami-check-box").dataset.conditionid,
             });
           }
+
           const mainLabelProps = {
             className: mainLabel.className,
             style: mainLabel.getAttribute("style"),
@@ -1728,6 +1703,7 @@ const DamiEditPage = () => {
       dispatch(getByServiceID(option.service));
       dispatch(fetchDepartementByID(option.departement));
     }
+
     if (successOptionCreate) {
       setDraggedItems([]);
       dispatch(resetCreateOption());
@@ -1779,10 +1755,10 @@ const DamiEditPage = () => {
 
       let cds = false;
       let cdd = false;
-
       let hiq = false;
       let pdd = false;
       let dir = false;
+      let dg = false;
       let pdg = false;
 
       for (const item of recoveredOption.signataires) {
@@ -1792,6 +1768,7 @@ const DamiEditPage = () => {
         if (String(item) === "hiq") hiq = true;
         if (String(item) === "pdd") pdd = true;
         if (String(item) === "dir") dir = true;
+        if (String(item) === "dg") dg = true;
         if (String(item) === "pdg") pdg = true;
       }
 
@@ -1801,6 +1778,7 @@ const DamiEditPage = () => {
         hiq,
         pdd,
         dir,
+        dg,
         pdg,
       });
 
@@ -1813,19 +1791,25 @@ const DamiEditPage = () => {
         maj: formattedMajDate,
       });
       setTypePdd("dir");
-      dispatch(
-        fetchUsersByDivision(
-          "dir",
-          recoveredOption.proprietaireDeDonnees.direction
-        )
-      );
+      if (recoveredOption && recoveredOption.proprietaireDeDonnees)
+        dispatch(
+          fetchUsersByDivision(
+            "dir",
+            recoveredOption.proprietaireDeDonnees.direction
+          )
+        );
       setTimeout(() => {
         sousCategorieForm.setValues({
           sousCategorie: recoveredOption.sousCategorie,
           departement: recoveredOption.departement,
           service: recoveredOption.service,
-          typePdd: recoveredOption.proprietaireDeDonnees.direction,
-          proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees._id,
+          typePdd:
+            recoveredOption &&
+            recoveredOption.proprietaireDeDonnees &&
+            recoveredOption.proprietaireDeDonnees.direction,
+          proprietaireDeDonnees:
+            recoveredOption.proprietaireDeDonnees &&
+            recoveredOption.proprietaireDeDonnees._id,
         });
       }, 1000);
     }
@@ -1932,6 +1916,37 @@ const DamiEditPage = () => {
       dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
     }
   }, [sousCategorieForm.values.typePdd]);
+
+  let getConditionId = () => {
+    let ids = [];
+
+    for (const item of document.querySelectorAll("[data-conditionid]")) {
+      if (item.dataset && item.dataset.conditionid)
+        ids.push(item.dataset.conditionid);
+    }
+
+    return ids;
+  };
+
+  useEffect(() => {
+    const handleBodyClick = (event) => {
+      const popover = document.querySelector(".popover");
+      if (
+        btnRef &&
+        btnRef.current &&
+        !btnRef.current.contains(event.target) &&
+        popover &&
+        !popover.contains(event.target)
+      ) {
+        setShowPopover(false);
+      }
+    };
+    document.body.addEventListener("click", handleBodyClick);
+
+    return () => {
+      document.body.removeEventListener("click", handleBodyClick);
+    };
+  }, []);
 
   return (
     <>
@@ -2375,103 +2390,164 @@ const DamiEditPage = () => {
             </Form>
           ) : activeStep === 2 ? (
             <>
-              <div className="d-flex justify-content-center mb-2">
-                <h3>les signataires de cette option</h3>
-              </div>
-              <Message type="info">
-                Pour choisir qui va signer dans cette option, il faut cocher la
-                case à cocher
-              </Message>
-              <Message type="warning">
-                Le nombre maximum de signataires autorisés est de 4.
-              </Message>
-              <div className="px-1 py-4 ">
-                <div style={{ height: "250px" }}>
-                  {(loadingDirectionByServiceID ||
-                    loadingServiceByID ||
-                    loadingDepartementByID) && <Loader />}
-                  {direction && service && (
-                    <>
-                      <div className="w-100 py-2">
-                        <Form.Check
-                          id="cds"
-                          value={checkValues["cds"]}
-                          label={`Chef de service de ${service.libelle}`}
-                          className="check-signataire"
-                          onChange={sigChangeHandler}
-                          checked={checkValues["cds"]}
-                        />
-                      </div>
-                      <div className="w-100 py-2">
-                        <Form.Check
-                          id="cdd"
-                          value={checkValues["cdd"]}
-                          label={`Chef de departement de ${departement.libelle}`}
-                          className="check-signataire"
-                          onChange={sigChangeHandler}
-                          checked={checkValues["cdd"]}
-                        />
-                      </div>
-                      <div className="w-100 py-2 ">
-                        <Form.Check
-                          onChange={sigChangeHandler}
-                          id="hiq"
-                          value={checkValues["hiq"]}
-                          checked={checkValues["hiq"]}
-                          label="Directeur hiarchique"
-                          className="d-block mr-2 check-signataire"
-                          disabled
-                          readOnly
-                        />
-                        <small className="d-block text-warning">
-                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                          Directeur hiérarchique doit signer toutes les demandes
-                        </small>
-                      </div>
-                      <div className="w-100 py-2 ">
-                        <Form.Check
-                          onChange={sigChangeHandler}
-                          id="pdd"
-                          value={checkValues["pdd"]}
-                          checked={
-                            option.proprietaireDeDonnees
-                              ? checkValues["pdd"]
-                              : false
-                          }
-                          disabled={!option.proprietaireDeDonnees}
-                          label="Proprietaire de donnees"
-                          className="d-block mr-2 check-signataire"
-                        />
-                      </div>
-                      <div className="w-100 py-2 ">
-                        <Form.Check
-                          onChange={sigChangeHandler}
-                          id="dir"
-                          value={checkValues["dir"]}
-                          checked={checkValues["dir"]}
-                          label={`Directeur de ${direction.libelle}`}
-                          className="d-block mr-2 check-signataire"
-                          readOnly
-                          disabled
-                        />
-                        <small className="d-block text-warning">
-                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                          Le directeur de la direction {direction.libelle} doit
-                          obligatoirement signer dans cette option.
-                        </small>
-                      </div>
-                      <div className="w-100 py-2 ">
-                        <Form.Check
-                          onChange={sigChangeHandler}
-                          id="pdg"
-                          value={checkValues["pdg"]}
-                          checked={checkValues["pdg"]}
-                          label="president directeur general"
-                          className="d-block mr-2 check-signataire"
-                        />
-                      </div>
-                    </>
-                  )}
+              <div className="d-block h-100">
+                <div className="d-flex justify-content-center mb-2">
+                  <h3>les signataires de cette option</h3>
+                </div>
+                <Message type="info">
+                  Pour choisir qui va signer dans cette option, il faut cocher
+                  la case à cocher
+                </Message>
+                <Message type="warning">
+                  Le nombre maximum de signataires autorisés est de 4.
+                </Message>
+
+                <div className="px-1 py-4 d-block ">
+                  <div>
+                    {(loadingDirectionByServiceID ||
+                      loadingServiceByID ||
+                      loadingDepartementByID) && <Loader />}
+                    {direction && service && (
+                      <>
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            id="cds"
+                            value={checkValues["cds"]}
+                            label={`Chef de service de ${service.libelle}`}
+                            className="check-signataire"
+                            onChange={sigChangeHandler}
+                            checked={checkValues["cds"]}
+                          />
+                        </div>
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            id="cdd"
+                            value={checkValues["cdd"]}
+                            label={`Chef de departement de ${departement.libelle}`}
+                            className="check-signataire"
+                            onChange={sigChangeHandler}
+                            checked={checkValues["cdd"]}
+                          />
+                        </div>
+                        <div className="w-100 py-2 ">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="hiq"
+                            value={checkValues["hiq"]}
+                            checked={checkValues["hiq"]}
+                            label="Directeur hiarchique"
+                            className="d-block mr-2 check-signataire"
+                            disabled
+                            readOnly
+                          />
+
+                          <small className="d-block text-warning">
+                            <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                            Directeur hiérarchique doit signer toutes les
+                            demandes
+                          </small>
+                        </div>
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="pdd"
+                            value={checkValues["pdd"]}
+                            checked={
+                              option.proprietaireDeDonnees
+                                ? checkValues["pdd"]
+                                : false
+                            }
+                            disabled={!option.proprietaireDeDonnees}
+                            label="Proprietaire de donnees"
+                            className="d-block mr-2 check-signataire"
+                          />
+
+                          <Alert className="w-50" variant="success">
+                            {getConditionId().length > 0 &&
+                              getConditionId().map((chk) => (
+                                <Form.Check
+                                  disabled={
+                                    !option.proprietaireDeDonnees ||
+                                    !checkValues["pdd"]
+                                  }
+                                  type="radio"
+                                  name="pdd-id"
+                                  className="pdd-id"
+                                  value={chk}
+                                  label={`id : ${chk}`}
+                                />
+                              ))}
+                          </Alert>
+                        </div>
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="dir"
+                            value={checkValues["dir"]}
+                            checked={checkValues["dir"]}
+                            label={`Directeur de ${direction.libelle}`}
+                            className="d-block mr-2 check-signataire"
+                            readOnly
+                            disabled
+                          />
+
+                          <small className="d-block text-warning">
+                            <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                            Le directeur de la direction {direction.libelle}{" "}
+                            doit obligatoirement signer dans cette option.
+                          </small>
+                        </div>
+                        <div className="w-100 py-2 d-block">
+                          <div className="d-flex align-items-center">
+                            <Form.Check
+                              onChange={sigChangeHandler}
+                              id="dg"
+                              value={checkValues["dg"]}
+                              checked={checkValues["dg"]}
+                              label="directeur général"
+                              className="d-block mr-2 check-signataire"
+                            />
+                          </div>
+                          <Alert className="w-50" variant="success">
+                            {getConditionId().length > 0 &&
+                              getConditionId().map((chk) => (
+                                <Form.Check
+                                  disabled={!checkValues["dg"]}
+                                  type="radio"
+                                  name="dg-id"
+                                  className="dg-id"
+                                  value={chk}
+                                  label={`id : ${chk}`}
+                                />
+                              ))}
+                          </Alert>
+                        </div>
+                        <div className="w-100 py-2 d-block">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="pdg"
+                            value={checkValues["pdg"]}
+                            checked={checkValues["pdg"]}
+                            label="président directeur général"
+                            className="d-block mr-2 check-signataire"
+                          />
+                          <Alert className="w-50" variant="success">
+                            {getConditionId().length > 0 &&
+                              getConditionId().map((chk) => (
+                                <Form.Check
+                                  disabled={!checkValues["pdg"]}
+                                  type="radio"
+                                  name="pdg-id"
+                                  className="pdg-id"
+                                  value={chk}
+                                  label={`id : ${chk}`}
+                                />
+                              ))}
+                          </Alert>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
               <Button

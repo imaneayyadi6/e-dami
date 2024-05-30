@@ -94,6 +94,7 @@ import {
   demandeToHandleFilterReducer,
   demandePreviewTeamReducer,
   demandePreviewTeamDetailsReducer,
+  demandePreviewTeamAdminReducer,
 } from "./demande/demandeReducres";
 import {
   notificationListReducer,
@@ -203,6 +204,7 @@ const reducer = combineReducers({
   demandeToHandleFilter: demandeToHandleFilterReducer,
   demandePreviewTeam: demandePreviewTeamReducer,
   demandePreviewTeamDetails: demandePreviewTeamDetailsReducer,
+  demandePreviewTeamAdmin: demandePreviewTeamAdminReducer,
   // notifications :
   notificationToatsList: notificationToatsListReducer,
   notificationToastMakeItSeen: notificationToastMakeItSeenReducer,
