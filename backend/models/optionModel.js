@@ -59,7 +59,16 @@ const optionSchema = Schema(
       default: false,
     },
     signataires: [{ type: String }],
-    conditions: [{ type: String, element: String }],
+    conditions: [
+      {
+        type: {
+          type: String,
+        },
+        element: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

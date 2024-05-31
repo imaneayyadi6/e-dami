@@ -10,8 +10,11 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
     dir: `Approbation Directeur de la `,
-    pdg: "Approbation President-directeur generale",
+    dg: "Approbation directeur général",
+    pdg: "Approbation président-directeur général",
   });
+
+  const [vOption, setVOption] = useState(option);
 
   const removeBtnsAndLayoutsFromCreateModal = () => {
     if (cleanDocRef && cleanDocRef.current) {
@@ -96,6 +99,26 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
       removeBtnsAndLayoutsFromCreateModal();
       makeRemoveReadOnly();
     }, 100);
+  }, []);
+
+  const applyEvents = () => {
+    console.log("event apply");
+    if (option.conditions) {
+      for (const cd of option.conditions) {
+        const el = document.querySelector(
+          `.dami-body  [data-conditionid='${cd.element}']`
+        );
+        el.addEventListener("click", () => {
+          console.log("hello world");
+          setVOption({ ...option, conditions: option.conditions });
+        });
+      }
+    }
+  };
+
+  console.log(option.conditions);
+  useEffect(() => {
+    applyEvents();
   }, []);
 
   return (
@@ -278,62 +301,153 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           }}
         ></div>
       </div>
-      {option.signataires && option.signataires.length > 0 && (
+      {vOption.signataires && vOption.signataires.length > 0 && (
         <div className="dami-footer">
           <div className="signataires">
-            {option.signataires.map((sig) => (
-              <div className="directeur-lib" key={sig}>
-                <span>{sigTypes[sig]}</span>
-                {sig === "dir" && (
-                  <span>
-                    {option &&
-                      option.dirLibelle &&
-                      option.dirLibelle.toLowerCase()}
-                  </span>
-                )}
-              </div>
-            ))}
+            {vOption.signataires.map((sig) =>
+              vOption &&
+              vOption.conditions &&
+              vOption.conditions.findIndex(
+                (c) => String(c.type) === String(sig)
+              ) !== -1 ? (
+                document.querySelector(
+                  `.dami-body [data-conditionid='${
+                    vOption.conditions.find(
+                      (c) => String(c.type) === String(sig)
+                    ).element
+                  }']`
+                ) &&
+                document.querySelector(
+                  `.dami-body [data-conditionid='${
+                    vOption.conditions.find(
+                      (c) => String(c.type) === String(sig)
+                    ).element
+                  }']`
+                ).checked && (
+                  <div className="directeur-lib" key={sig}>
+                    <span>{sigTypes[sig]}</span>
+                    {sig === "dir" && (
+                      <span>
+                        {option &&
+                          vOption.dirLibelle &&
+                          vOption.dirLibelle.toLowerCase()}
+                      </span>
+                    )}
+                  </div>
+                )
+              ) : (
+                <div className="directeur-lib" key={sig}>
+                  <span>{sigTypes[sig]}</span>
+                  {sig === "dir" && (
+                    <span>
+                      {option &&
+                        vOption.dirLibelle &&
+                        vOption.dirLibelle.toLowerCase()}
+                    </span>
+                  )}
+                </div>
+              )
+            )}
           </div>
           <div className="signataires-ch">
-            {option.signataires.map((sig) => (
-              <div className="sig-item" key={sig}>
-                <div className="">
-                  <label>Nom:</label>
-                  <input className="dami-input" />
-                </div>
-                <div className="">
-                  <label>Prenom:</label>
-                  <input className="dami-input" />
-                </div>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ marginTop: "5px" }}
-                >
-                  <label>Decision:</label>
-                  <div className="ml-1">
-                    <label>Oui</label>
-                    <input className="dami-check-box mr-1" />
-                  </div>
-                  <div>
-                    <label>Non</label>
-                    <input className="dami-check-box mr-1" />
-                  </div>
-                </div>
+            {vOption.signataires.map((sig) =>
+              vOption &&
+              vOption.conditions &&
+              vOption.conditions.findIndex(
+                (c) => String(c.type) === String(sig)
+              ) !== -1 ? (
+                document.querySelector(
+                  `.dami-body [data-conditionid='${
+                    vOption.conditions.find(
+                      (c) => String(c.type) === String(sig)
+                    ).element
+                  }']`
+                ) &&
+                document.querySelector(
+                  `.dami-body [data-conditionid='${
+                    vOption.conditions.find(
+                      (c) => String(c.type) === String(sig)
+                    ).element
+                  }']`
+                ).checked && (
+                  <div className="sig-item" key={sig}>
+                    <div className="">
+                      <label>Nom:</label>
+                      <input className="dami-input" />
+                    </div>
+                    <div className="">
+                      <label>Prenom:</label>
+                      <input className="dami-input" />
+                    </div>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ marginTop: "5px" }}
+                    >
+                      <label>Decision:</label>
+                      <div className="ml-1">
+                        <label>Oui</label>
+                        <input className="dami-check-box mr-1" />
+                      </div>
+                      <div>
+                        <label>Non</label>
+                        <input className="dami-check-box mr-1" />
+                      </div>
+                    </div>
 
-                {/* <div className=''>
+                    {/* <div className=''>
+                    <label>Observation:</label>
+                    <input className='dami-input w-75' />
+                  </div> */}
+
+                    <div className="">
+                      <label>Date:</label>
+                      <input className="dami-input" />
+                    </div>
+                    {/* <div className="mt-1">
+                    <label>Signature & cachet:</label>
+                  </div> */}
+                  </div>
+                )
+              ) : (
+                <div className="sig-item" key={sig}>
+                  <div className="">
+                    <label>Nom:</label>
+                    <input className="dami-input" />
+                  </div>
+                  <div className="">
+                    <label>Prenom:</label>
+                    <input className="dami-input" />
+                  </div>
+                  <div
+                    className="d-flex align-items-center"
+                    style={{ marginTop: "5px" }}
+                  >
+                    <label>Decision:</label>
+                    <div className="ml-1">
+                      <label>Oui</label>
+                      <input className="dami-check-box mr-1" />
+                    </div>
+                    <div>
+                      <label>Non</label>
+                      <input className="dami-check-box mr-1" />
+                    </div>
+                  </div>
+
+                  {/* <div className=''>
                   <label>Observation:</label>
                   <input className='dami-input w-75' />
                 </div> */}
 
-                <div className="">
-                  <label>Date:</label>
-                  <input className="dami-input" />
-                </div>
-                {/* <div className="mt-1">
+                  <div className="">
+                    <label>Date:</label>
+                    <input className="dami-input" />
+                  </div>
+                  {/* <div className="mt-1">
                   <label>Signature & cachet:</label>
                 </div> */}
-              </div>
-            ))}
+                </div>
+              )
+            )}
           </div>
         </div>
       )}

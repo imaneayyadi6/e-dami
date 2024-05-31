@@ -96,7 +96,9 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
 // @route   GET /api/options/:id
 // @access  private
 export const getOptionByID = asyncHandler(async (req, res) => {
-  let option = await Option.findById(req.params.id).populate("proprietaireDeDonnees");
+  let option = await Option.findById(req.params.id).populate(
+    "proprietaireDeDonnees"
+  );
   if (option) {
     option = JSON.parse(JSON.stringify(option));
     const optionService = await Service.findById(option.service);
@@ -104,9 +106,7 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       const optionDirection = await Direction.findById(optionService.direction);
       option.dirLibelle = optionDirection.libelle;
     }
-    
-
-
+    console.log(option);
     res.json(option);
   } else {
     res.status(404);
@@ -144,6 +144,7 @@ export const createOption = asyncHandler(async (req, res) => {
             departement: service.departement,
             contenu,
             signataires: req.body.signataires,
+            conditions: req.body.conditions,
           });
           const createdOption = await option.save();
           res.status(201).json(createdOption);
@@ -161,6 +162,7 @@ export const createOption = asyncHandler(async (req, res) => {
           departement: service.departement,
           contenu,
           signataires: req.body.signataires,
+          conditions: req.body.conditions,
         });
         const createdOption = await option.save();
         res.status(201).json(createdOption);

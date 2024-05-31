@@ -120,6 +120,7 @@ const DamiEditPage = () => {
     "signataires",
     "confirmation",
   ]);
+
   const [checkValues, setCheckValues] = useState({
     cds: false,
     cdd: false,
@@ -129,6 +130,7 @@ const DamiEditPage = () => {
     dg: false,
     pdg: false,
   });
+
   const [option, setOption] = useState(null);
   const [callOptionByIDOnce, setCallOptionByIDOnce] = useState(false);
   const [htmlContent, setHtmlContent] = useState("");
@@ -151,6 +153,8 @@ const DamiEditPage = () => {
     typePdd: "",
   });
   const [typePdd, setTypePdd] = useState("srv");
+  const [ids, setIds] = useState([]);
+
   const docRef = useRef(null);
   const btnRef = useRef(null);
   const viewResultDocRef = useRef(null);
@@ -158,6 +162,7 @@ const DamiEditPage = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const dispatch = useDispatch();
+
   // const navigate = useNavigate();
   const directionList = useSelector((state) => state.directionList);
   const {
@@ -618,12 +623,35 @@ const DamiEditPage = () => {
       }
     }
 
-    console.log(document.querySelectorAll(".pdd-id"));
+    let condition = [];
+    const pddIds = Array.from(document.querySelectorAll(".pdd-id input"));
+    if (pddIds.findIndex((i) => i.checked) !== -1) {
+      condition.push({
+        type: "pdd",
+        element: pddIds.find((i) => i.checked).getAttribute("id"),
+      });
+    }
+    const dgIds = Array.from(document.querySelectorAll(".dg-id input"));
+    if (dgIds.findIndex((i) => i.checked) !== -1) {
+      condition.push({
+        type: "dg",
+        element: dgIds.find((i) => i.checked).getAttribute("id"),
+      });
+    }
+
+    const pdgIds = Array.from(document.querySelectorAll(".pdg-id input"));
+    if (pdgIds.findIndex((i) => i.checked) !== -1) {
+      condition.push({
+        type: "pdg",
+        element: pdgIds.find((i) => i.checked).getAttribute("id"),
+      });
+    }
+
     setOption({
       ...option,
       dirLibelle: direction.libelle,
       signataires: signataires,
-      
+      conditions: condition,
     });
 
     setHtmlContent(docRef.current.innerHTML);
@@ -659,6 +687,7 @@ const DamiEditPage = () => {
         hiq: true,
         pdd: false,
         dir: true,
+        pdg: false,
         pdg: false,
       });
     }
@@ -1917,17 +1946,6 @@ const DamiEditPage = () => {
     }
   }, [sousCategorieForm.values.typePdd]);
 
-  let getConditionId = () => {
-    let ids = [];
-
-    for (const item of document.querySelectorAll("[data-conditionid]")) {
-      if (item.dataset && item.dataset.conditionid)
-        ids.push(item.dataset.conditionid);
-    }
-
-    return ids;
-  };
-
   useEffect(() => {
     const handleBodyClick = (event) => {
       const popover = document.querySelector(".popover");
@@ -1947,6 +1965,20 @@ const DamiEditPage = () => {
       document.body.removeEventListener("click", handleBodyClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (showCreateOpModal) {
+      setIds(
+        Array.from(document.querySelectorAll("[data-conditionid]"))
+          .filter((el) => el && el.dataset && el.dataset.conditionid !== "")
+          .map((el) => {
+            if (el && el.dataset) {
+              return el.dataset.conditionid;
+            }
+          })
+      );
+    }
+  }, [showCreateOpModal]);
 
   return (
     <>
@@ -2462,22 +2494,22 @@ const DamiEditPage = () => {
                             className="d-block mr-2 check-signataire"
                           />
 
-                          <Alert className="w-50" variant="success">
-                            {getConditionId().length > 0 &&
-                              getConditionId().map((chk) => (
-                                <Form.Check
-                                  disabled={
-                                    !option.proprietaireDeDonnees ||
-                                    !checkValues["pdd"]
-                                  }
-                                  type="radio"
-                                  name="pdd-id"
-                                  className="pdd-id"
-                                  value={chk}
-                                  label={`id : ${chk}`}
-                                />
-                              ))}
-                          </Alert>
+                          <small>si un radio est cochee</small>
+                          {ids.length > 0 &&
+                            ids.map((id) => (
+                              <Form.Check
+                                disabled={
+                                  !option.proprietaireDeDonnees ||
+                                  !checkValues["pdd"]
+                                }
+                                type="radio"
+                                name="pdd-id"
+                                className="pdd-id"
+                                value={id}
+                                label={`id : ${id}`}
+                                id={id}
+                              />
+                            ))}
                         </div>
                         <div className="w-100 py-2">
                           <Form.Check
@@ -2508,19 +2540,20 @@ const DamiEditPage = () => {
                               className="d-block mr-2 check-signataire"
                             />
                           </div>
-                          <Alert className="w-50" variant="success">
-                            {getConditionId().length > 0 &&
-                              getConditionId().map((chk) => (
-                                <Form.Check
-                                  disabled={!checkValues["dg"]}
-                                  type="radio"
-                                  name="dg-id"
-                                  className="dg-id"
-                                  value={chk}
-                                  label={`id : ${chk}`}
-                                />
-                              ))}
-                          </Alert>
+
+                          <small>si un radio est cochee</small>
+                          {ids.length > 0 &&
+                            ids.map((id) => (
+                              <Form.Check
+                                disabled={!checkValues["dg"]}
+                                type="radio"
+                                name="dg-id"
+                                className="dg-id"
+                                value={id}
+                                label={`id : ${id}`}
+                                id={id}
+                              />
+                            ))}
                         </div>
                         <div className="w-100 py-2 d-block">
                           <Form.Check
@@ -2531,19 +2564,20 @@ const DamiEditPage = () => {
                             label="président directeur général"
                             className="d-block mr-2 check-signataire"
                           />
-                          <Alert className="w-50" variant="success">
-                            {getConditionId().length > 0 &&
-                              getConditionId().map((chk) => (
-                                <Form.Check
-                                  disabled={!checkValues["pdg"]}
-                                  type="radio"
-                                  name="pdg-id"
-                                  className="pdg-id"
-                                  value={chk}
-                                  label={`id : ${chk}`}
-                                />
-                              ))}
-                          </Alert>
+
+                          <small>si un radio est cochee</small>
+                          {ids.length > 0 &&
+                            ids.map((id) => (
+                              <Form.Check
+                                disabled={!checkValues["pdg"]}
+                                type="radio"
+                                name="pdg-id"
+                                className="pdg-id"
+                                value={id}
+                                label={`id : ${id}`}
+                                id={id}
+                              />
+                            ))}
                         </div>
                       </>
                     )}
