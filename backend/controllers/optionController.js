@@ -106,7 +106,6 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       const optionDirection = await Direction.findById(optionService.direction);
       option.dirLibelle = optionDirection.libelle;
     }
-    console.log(option);
     res.json(option);
   } else {
     res.status(404);
@@ -199,9 +198,9 @@ export const updateOption = asyncHandler(async (req, res) => {
 
     option.contenu = contenu || option.contenu;
     if (proprietaireDeDonnees) {
-      const direction = await Direction.findById(proprietaireDeDonnees);
-      if (direction) {
-        option.proprietaireDeDonnees = direction._id;
+      const pddUser = await Utilisateur.findById(proprietaireDeDonnees);
+      if (pddUser) {
+        option.proprietaireDeDonnees = pddUser._id;
       } else {
         res.status(404);
         throw new Error("direction introuvable !");

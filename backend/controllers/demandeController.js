@@ -5,9 +5,10 @@ import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
+import Departement from "../models/departementModel.js";
 import { sendNotification } from "../services/notificationService.js";
 import mongoose from "mongoose";
-import Departement from "../models/departementModel.js";
+import { getTypeApp } from "../services/getTypeApp.js";
 
 // @desc    Recuperer les demandes de demandeur
 // @route   GET /api/demandes/mesdemandes
@@ -193,220 +194,138 @@ export const createDemande = asyncHandler(async (req, res) => {
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
+
   if (option) {
     if (user) {
+      // verfier est ce que le demandeur a deja fait une demande :
       const checkDemande = await Demande.findOne({
         demandeur: user._id,
         option: option._id,
         status: "en cours",
       });
+
       if (checkDemande) {
         res.status(400);
-        throw new Error("vous avez deja demander cette demande !");
-      } else {
-        let code = "";
-        let userID = "";
-        let typeApp = "";
-        // verification de code de signataires :
-        if (option.signataires[0] === "cds") {
-          const service = await Service.findById(user.service);
-          if (service) {
-            if (service.chefService) {
-              userID = service.chefService;
-              code = "cds";
-              typeApp = "chef de service";
-            } else {
-              res.status(400);
-              throw new Error("le service n'a pas de chef de service !");
-            }
-          } else {
-            throw new Error("Vous n'appartenez à aucun service !");
-          }
-        } else if (option.signataires[0] === "cdd") {
-          const departement = await Departement.findById(user.departement);
-          if (departement) {
-            if (departement.chefDeDepartement) {
-              userID = departement.chefDeDepartement;
-              code = "cdd";
-              typeApp = "chef de departement";
-            } else {
-              res.status(400);
-              throw new Error(
-                "le departement n'a pas de chef de departement !"
-              );
-            }
-          } else {
-            throw new Error("vous n'avez pas de departement !");
-          }
-        } else if (option.signataires[0] === "hiq") {
-          const direction = await Direction.findById(user.direction);
-          if (direction) {
-            if (direction.directeur) {
-              userID = direction.directeur;
-              if (
-                option.signataires[1] === "pdd" &&
-                option.signataires[2] === "dir"
-              ) {
-                const pddDirection = await Direction.findById(
-                  String(option.proprietaireDeDonnees)
-                );
-                const dirDirection = await Direction.findById(
-                  option.service.direction
-                );
-                if (dirDirection && pddDirection) {
-                  if (
-                    String(pddDirection.directeur) ===
-                      String(direction.directeur) &&
-                    String(dirDirection.directeur) ===
-                      String(direction.directeur)
-                  ) {
-                    code = "hiq.pdd.dir";
-                    typeApp =
-                      "directeur hiérarchique, propriétaire de données et directeur de l'entité";
-                  } else {
-                    if (option.signataires[1] === "dir") {
-                      const dirDirection = await Direction.findById(
-                        option.service.direction
-                      );
-                      if (dirDirection) {
-                        if (
-                          String(dirDirection.directeur) ===
-                          String(direction.directeur)
-                        ) {
-                          code = "hiq.dir";
-                          typeApp =
-                            "directeur hiérarchique et directeur de l'entité";
-                        } else {
-                          code = "hiq";
-                          typeApp = "directeur hiérarchique";
-                        }
-                      } else {
-                        res.status(400);
-                        throw new Error("directeur de  l'entité introuvable !");
-                      }
-                    } else if (option.signataires[1] === "pdd") {
-                      const pddDirection = await Direction.findById(
-                        String(option.proprietaireDeDonnees)
-                      );
-                      if (pddDirection) {
-                        if (
-                          String(pddDirection.directeur) ===
-                          String(direction.directeur)
-                        ) {
-                          code = "hiq.pdd";
-                          typeApp =
-                            "directeur hiérarchique et propriétaire de données";
-                        } else {
-                          code = "hiq";
-                          typeApp = "directeur hiérarchique";
-                        }
-                      } else {
-                        res.status(400);
-                        throw new Error(
-                          "proprietaire de donnees introuvable !"
-                        );
-                      }
-                    } else {
-                      code = "hiq";
-                      typeApp = "directeur hiérarchique";
-                    }
-                  }
-                } else {
-                  if (!pddDirection) {
-                    res.status(400);
-                    throw new Error("proprietaire de donnees introuvable !");
-                  }
-                  if (!dirDirection) {
-                    res.status(400);
-                    throw new Error("directeur de  l'entité introuvable !");
-                  }
-                }
-              } else {
-                if (option.signataires[1] === "dir") {
-                  const dirDirection = await Direction.findById(
-                    option.service.direction
-                  );
-                  if (dirDirection) {
-                    if (
-                      String(dirDirection.directeur) ===
-                      String(direction.directeur)
-                    ) {
-                      code = "hiq.dir";
-                      typeApp =
-                        "directeur hiérarchique et directeur de l'entité";
-                    } else {
-                      code = "hiq";
-                      typeApp = "directeur hiérarchique";
-                    }
-                  } else {
-                    res.status(400);
-                    throw new Error("directeur de l'entité introuvable !");
-                  }
-                } else if (option.signataires[1] === "pdd") {
-                  const pddDirection = await Direction.findById(
-                    String(option.proprietaireDeDonnees)
-                  );
-                  if (pddDirection) {
-                    if (
-                      String(pddDirection.directeur) ===
-                      String(direction.directeur)
-                    ) {
-                      code = "hiq.pdd";
-                      typeApp =
-                        "directeur hiérarchique et propriétaire de données";
-                    } else {
-                      code = "hiq";
-                      typeApp = "directeur hiérarchique";
-                    }
-                  } else {
-                    res.status(400);
-                    throw new Error("proprietaire de donnees introuvable !");
-                  }
-                } else {
-                  code = "hiq";
-                  typeApp = "directeur hiérarchique";
-                }
-              }
-            } else {
-              res.status(400);
-              throw new Error("la direction n'a pas de directeur !");
-            }
-          }
-        } else {
-          res.status(404);
-          throw new Error("direction introuvable !");
-        }
-
-        const demande = new Demande({
-          option: option._id,
-          demandeur: user._id,
-          contenu,
-          dateDemande: new Date(),
-          traitement: [
-            {
-              dateEnvoi: new Date(),
-              code: code,
-              utilisateur: userID,
-            },
-          ],
-        });
-
-        await demande.save();
-        await demande.populate("demandeur");
-        const messageContent = `<p>Une <a style='font-weight:bold' href="${
-          process.env.CLIENT_ADDRESS
-        }/details-demande/${demande._id}/traitement/${
-          demande.traitement[0]._id
-        }">demande</a> a été faite par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp} </p>`;
-        sendNotification(
-          userID,
-          messageContent,
-          `Demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom}`
-        );
-        res
-          .status(201)
-          .json({ message: "demande a été effectuée avec succès" });
+        throw new Error("Vous avez déjà demandé cette demande !");
       }
+
+      // demande obj pour creer la demande dans mongodb:
+      let demandeObj = {
+        option: option._id,
+        demandeur: user._id,
+        contenu,
+        dateDemande: new Date(),
+      };
+      // l'objet traitement signifie le process de la demande :
+      let objTraitement = {
+        dateEnvoi: new Date(),
+      };
+
+      // creer un obj pour avoir un filter de message :
+      // les cas possible de traitement d'une demande et le message que le signataire doit recevoire :
+      const filterMessage = {
+        // proprietaire de donnees :
+        pdd: " veuillez la traiter en tant que propriétaire de données",
+        /*
+         les cas possibles pour un chef de service ===>  :
+                    - il peut etre juste un chef de service .
+                    - il peut un chef de service et un pdd 
+         */
+        cds: " veuillez la traiter en tant que chef de service",
+        "cds.pdd":
+          " veuillez la traiter en tant que chef de service et propriétaire de données",
+
+        /*
+         les cas possibles pour un chef de departement ===>  :
+                  - il peut etre juste un chef de departement .
+                  - il peut un chef de departement et un pdd 
+                  - il peut un chef de service et chef de departement.
+                  - il peut un chef de service, chef de departement et un pdd 
+         */
+
+        cdd: " veuillez la traiter en tant que chef de derpatement",
+        "cds.cdd":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de derpatement",
+        "cdd.pdd":
+          " veuillez la traiter en tant que chef de derpatement et propriétaire de données",
+        "cds.cdd.pdd":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de derpatement et propriétaire de données",
+
+        /*
+         les cas possibles pour un directeur ===>  :
+                  - il peut etre juste un directeur hiarchique .
+                  - il peut un chef de service et directeur hiarchique
+                  - il peut un chef de departement et directeur hiarchique 
+                  - il peut un chef de service, chef de departement et directeur hiarchique
+                  - il peut un directeur hiarchique et un pdd
+                  - il peut un chef de service, un directeur hiarchique et un pdd
+                  - il peut un chef de departement, un directeur hiarchique et un pdd
+                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
+                  - il peut un directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
+                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
+                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
+         */
+
+        hiq: " veuillez la traiter en tant que directeur hiarchique",
+        "cds.hiq":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et directeur hiarchique",
+        "cdd.hiq":
+          " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>' et directeur hiarchique",
+        "cds.cdd.hiq":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>' et directeur hiarchique",
+        "hiq.pdd":
+          " veuillez la traiter en tant que directeur hiarchique et propriétaire de données",
+        "cds.hiq.pdd":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique et propriétaire de données",
+        "cdd.hiq.pdd":
+          " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et propriétaire de données",
+        "cds.cdd.hiq.pdd":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et propriétaire de données",
+        "hiq.dir":
+          " veuillez la traiter en tant que directeur hiarchique et directeur de l'entité",
+        "cds.hiq.dir":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique et directeur de l'entité",
+        "cdd.hiq.dir":
+          " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
+        "cds.cdd.hiq.dir":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
+
+        "hiq.pdd.dir":
+          " veuillez la traiter en tant que directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cds.hiq.pdd.dir":
+          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cdd.hiq.pdd.dir":
+          " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
+      };
+
+      const [code, userID] = await getTypeApp(option._id, user._id);
+
+      objTraitement.code = code;
+      objTraitement.utilisateur = userID;
+
+      demandeObj.traitement = [objTraitement];
+
+      const demande = new Demande(demandeObj);
+      await demande.save();
+      await demande.populate("demandeur");
+
+      // message pour que le signataires va recevoire :
+      let messageContent = `<p> Une <a style='font-weight:bold' `;
+      messageContent += `href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a>`;
+      messageContent += ` a été faite par <strong style='font-weight:bold'>${user.prenom.toLowerCase()}</strong> <strong style='font-weight:bold'>${user.nom.toLowerCase()}</strong>, `;
+      messageContent += filterMessage[code] + "</p>";
+
+      sendNotification(
+        userID,
+        messageContent,
+        `Demande fait par ${user.prenom} ${user.nom}`
+      );
+
+      res.status(201).json({ message: "demande a été effectuée avec succès" });
     } else {
       res.status(404);
       throw new Error("utilisateur introuvable !");
@@ -1770,13 +1689,16 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
   let demandes = await Demande.findOne({
     _id: req.params.id,
   })
-
     .populate({
       path: "option",
       populate: {
         path: "service",
+        populate: {
+          path: "departement",
+        },
       },
     })
+
     .populate("traitement.utilisateur")
     .populate("demandeur");
 
