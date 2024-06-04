@@ -140,7 +140,12 @@ const DemandesPreviewDetailsPage = () => {
                                   {tr.utilisateur.prenom.toLowerCase() +
                                     " " +
                                     tr.utilisateur.nom.toLowerCase()}{" "}
-                                  en tant que {getTypeApprobation(tr.code)}
+                                  en tant que{" "}
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: getTypeApprobation(tr.code),
+                                    }}
+                                  ></span>
                                   {Number(index) === 0 && (
                                     <span>
                                       , et pour cela, elle a été finalisée et
@@ -155,8 +160,13 @@ const DemandesPreviewDetailsPage = () => {
                                   {tr.utilisateur.prenom.toLowerCase() +
                                     " " +
                                     tr.utilisateur.nom.toLowerCase()}{" "}
-                                  en tant que {getTypeApprobation(tr.code)}.{" "}
-                                  <br />{" "}
+                                  en tant que{" "}
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: getTypeApprobation(tr.code),
+                                    }}
+                                  ></span>
+                                  . <br />{" "}
                                   <span style={{ fontWeight: "bold" }}>
                                     Motifi de refus :
                                   </span>{" "}
@@ -188,7 +198,11 @@ const DemandesPreviewDetailsPage = () => {
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
                               pour la traiter en tant que{" "}
-                              {getTypeApprobation(tr.code)}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: getTypeApprobation(tr.code),
+                                }}
+                              ></span>
                             </p>
 
                             <div className="d-flex justify-content-end">
@@ -227,7 +241,12 @@ const DemandesPreviewDetailsPage = () => {
                               {tr.utilisateur.prenom.toLowerCase() +
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
-                              en tant que {getTypeApprobation(tr.code)}
+                              en tant que{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: getTypeApprobation(tr.code),
+                                }}
+                              ></span>
                               {Number(index) === 0 && (
                                 <span>
                                   , et pour cela, elle a été finalisée et
@@ -242,7 +261,13 @@ const DemandesPreviewDetailsPage = () => {
                               {tr.utilisateur.prenom.toLowerCase() +
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
-                              en tant que {getTypeApprobation(tr.code)}. <br />{" "}
+                              en tant que{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: getTypeApprobation(tr.code),
+                                }}
+                              ></span>
+                              . <br />{" "}
                               <span style={{ fontWeight: "bold" }}>
                                 Motifi de refus :
                               </span>{" "}
@@ -270,7 +295,11 @@ const DemandesPreviewDetailsPage = () => {
                             " " +
                             tr.utilisateur.nom.toLowerCase()}{" "}
                           pour la traiter en tant que{" "}
-                          {getTypeApprobation(tr.code)}
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: getTypeApprobation(tr.code),
+                            }}
+                          ></span>
                         </p>
 
                         <div className="d-flex justify-content-end">

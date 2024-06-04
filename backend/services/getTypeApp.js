@@ -30,12 +30,9 @@ export const getTypeApp = async (optionId, userId) => {
       code = "pdd";
       break;
     case "cds":
+      console.log("cds case");
       const service = await Service.findById(user.service);
-      if (
-        service &&
-        String(service._id) === String(option.service) &&
-        service.chefService
-      ) {
+      if (service && service.chefService) {
         if (Array.from(option.signataires)[1] === "pdd") {
           const pddUser = await Utilisateur.findById(
             option.proprietaireDeDonnees
@@ -54,14 +51,13 @@ export const getTypeApp = async (optionId, userId) => {
           code = "cds";
           break;
         }
-      } else notHaveService = true;
+      } else {
+        notHaveService = true;
+      }
     case "cdd":
+      console.log("cdd case");
       const departement = await Departement.findById(user.departement);
-      if (
-        departement &&
-        String(departement._id) &&
-        departement.chefDeDepartement
-      ) {
+      if (departement && departement.chefDeDepartement) {
         if (notHaveService) {
           if (Array.from(option.signataires)[1] === "pdd") {
             const pddUser = await Utilisateur.findById(
@@ -129,6 +125,7 @@ export const getTypeApp = async (optionId, userId) => {
             String(pddUser._id) === String(direction.directeur) &&
             String(dirDirection.directeur) === String(direction.directeur)
           ) {
+            console.log("hiq pdd dir");
             if (notHaveService) {
               userID = dirDirection.directeur;
               code = "cds.hiq.pdd.dir";
@@ -144,11 +141,16 @@ export const getTypeApp = async (optionId, userId) => {
             }
           }
         }
-        if (option.signataires[1] === "dir") {
+        if (
+          option.signataires[1] === "dir" ||
+          option.signataires[2] === "dir"
+        ) {
           const dirDirection = await Direction.findById(
             option.service.direction
           );
+          console.log("hiq  dir");
           if (
+            direction &&
             dirDirection &&
             String(dirDirection.directeur) === String(direction.directeur)
           ) {
@@ -174,6 +176,7 @@ export const getTypeApp = async (optionId, userId) => {
           }
         }
         if (option.signataires[1] === "pdd") {
+          console.log("hiq  pdd");
           const pddUser = await Utilisateur.findById(
             option.proprietaireDeDonnees
           );
@@ -202,8 +205,9 @@ export const getTypeApp = async (optionId, userId) => {
 
         if (
           option.signataires[1] !== "pdd" &&
-          option.signataires[2] !== "dir"
+          option.signataires[1] !== "dir"
         ) {
+          console.log("hiq");
           if (notHaveService && notHaveDepartement) {
             code = "cds.cdd.hiq";
             userID = direction.directeur;

@@ -4,6 +4,8 @@ const getTypeApprobation = (code) => {
       return "chef de service";
     case "cdd":
       return "chef de departement";
+    case "cds.cdd":
+      return "chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de departement";
     case "hiq":
       return "directeur hiearchique";
     case "pdd":
