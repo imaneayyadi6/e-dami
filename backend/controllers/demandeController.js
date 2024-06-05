@@ -8,7 +8,7 @@ import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 import { sendNotification } from "../services/notificationService.js";
 import mongoose from "mongoose";
-import { getTypeApp } from "../services/getTypeApp.js";
+import { getTypeAppOnCreate } from "../services/getTypeApp.js";
 
 // @desc    Recuperer les demandes de demandeur
 // @route   GET /api/demandes/mesdemandes
@@ -194,7 +194,6 @@ export const createDemande = asyncHandler(async (req, res) => {
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
-
   if (option) {
     if (user) {
       // verfier est ce que le demandeur a deja fait une demande :
@@ -203,12 +202,10 @@ export const createDemande = asyncHandler(async (req, res) => {
         option: option._id,
         status: "en cours",
       });
-
       if (checkDemande) {
         res.status(400);
         throw new Error("Vous avez déjà demandé cette demande !");
       }
-
       // demande obj pour creer la demande dans mongodb:
       let demandeObj = {
         option: option._id,
@@ -229,28 +226,16 @@ export const createDemande = asyncHandler(async (req, res) => {
         /*
          les cas possibles pour un chef de service ===>  :
                     - il peut etre juste un chef de service .
-                    - il peut un chef de service et un pdd 
          */
         cds: " veuillez la traiter en tant que chef de service",
-        "cds.pdd":
-          " veuillez la traiter en tant que chef de service et propriétaire de données",
-
         /*
          les cas possibles pour un chef de departement ===>  :
                   - il peut etre juste un chef de departement .
-                  - il peut un chef de departement et un pdd 
-                  - il peut un chef de service et chef de departement.
-                  - il peut un chef de service, chef de departement et un pdd 
+                  - il peut un chef de service et chef de departement.     
          */
-
         cdd: " veuillez la traiter en tant que chef de derpatement",
         "cds.cdd":
           " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de derpatement",
-        "cdd.pdd":
-          " veuillez la traiter en tant que chef de derpatement et propriétaire de données",
-        "cds.cdd.pdd":
-          " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de derpatement et propriétaire de données",
-
         /*
          les cas possibles pour un directeur ===>  :
                   - il peut etre juste un directeur hiarchique .
@@ -269,7 +254,6 @@ export const createDemande = asyncHandler(async (req, res) => {
                   - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
                   - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
          */
-
         hiq: " veuillez la traiter en tant que directeur hiarchique",
         "cds.hiq":
           " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et directeur hiarchique",
@@ -293,7 +277,6 @@ export const createDemande = asyncHandler(async (req, res) => {
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
         "cds.cdd.hiq.dir":
           " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
-
         "hiq.pdd.dir":
           " veuillez la traiter en tant que directeur hiarchique, propriétaire de données et directeur de l'entité",
         "cds.hiq.pdd.dir":
@@ -302,7 +285,7 @@ export const createDemande = asyncHandler(async (req, res) => {
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
 
-      const [code, userID] = await getTypeApp(option._id, user._id);
+      const [code, userID] = await getTypeAppOnCreate(option._id, user._id);
 
       objTraitement.code = code;
       objTraitement.utilisateur = userID;

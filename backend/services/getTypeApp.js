@@ -4,7 +4,7 @@ import Direction from "../models/directionModel.js";
 import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 
-export const getTypeApp = async (optionId, userId) => {
+export const getTypeAppOnCreate = async (optionId, userId) => {
   const option = await Option.findById(optionId).populate("service");
   const user = await Utilisateur.findById(userId);
 
@@ -21,214 +21,312 @@ export const getTypeApp = async (optionId, userId) => {
   let code = "";
   let userID = "";
 
-  let notHaveService = false;
-  let notHaveDepartement = false;
+  // verfication de signataires (qui va signer le premier):
+  // verfication des cas possibles:
 
-  switch (Array.from(option.signataires)[0]) {
-    case "pdd":
-      userID = option.proprietaireDeDonnees;
-      code = "pdd";
-      break;
-    case "cds":
-      console.log("cds case");
-      const service = await Service.findById(user.service);
-      if (service && service.chefService) {
-        if (Array.from(option.signataires)[1] === "pdd") {
-          const pddUser = await Utilisateur.findById(
-            option.proprietaireDeDonnees
-          );
-          if (pddUser && String(pddUser._id) === String(service.chefService)) {
-            userID = service.chefService;
-            code = "cds.pdd";
-            break;
-          } else {
-            userID = service.chefService;
-            code = "cds";
-            break;
-          }
-        } else {
-          userID = service.chefService;
-          code = "cds";
-          break;
+  /* ##################### CAS CHEF DE SERVICE ##################### */
+  if (Array.from(option.signataires)[0] === "cds") {
+    const demandeurService = await Service.findById(user.service);
+    // si l'utilisateur a un service et son chef de service :
+    if (demandeurService && demandeurService.chefService) {
+      userID = demandeurService.chefService;
+      code = "cds";
+    } else {
+      // si l'utilisateur n'a un service ou son chef de service :
+      // envoyer la demande a son chef de departement :
+      if (Array.from(option.signataires)[1] === "cdd") {
+        let demandeurDepartement = await Departement.findById(user.departement);
+        if (demandeurDepartement && demandeurDepartement.chefDeDepartement) {
+          // verifier si le chef de departement et un pdd ou non :
+          userID = demandeurDepartement.chefDeDepartement;
+          code = "cds.cdd";
         }
-      } else {
-        notHaveService = true;
-      }
-    case "cdd":
-      console.log("cdd case");
-      const departement = await Departement.findById(user.departement);
-      if (departement && departement.chefDeDepartement) {
-        if (notHaveService) {
-          if (Array.from(option.signataires)[1] === "pdd") {
-            const pddUser = await Utilisateur.findById(
-              option.proprietaireDeDonnees
-            );
-            if (
-              pddUser &&
-              String(pddUser._id) === String(departement.chefDeDepartement)
-            ) {
-              userID = departement.chefDeDepartement;
-              code = "cds.cdd.pdd";
-              break;
-            } else {
-              userID = departement.chefDeDepartement;
-              code = "cds.cdd";
-              break;
-            }
-          } else {
-            userID = departement.chefDeDepartement;
-            code = "cds.cdd";
-            break;
-          }
-        } else {
-          if (Array.from(option.signataires)[1] === "pdd") {
-            const pddUser = await Utilisateur.findById(
-              option.proprietaireDeDonnees
-            );
-            if (
-              pddUser &&
-              String(pddUser._id) === String(departement.chefDeDepartement)
-            ) {
-              userID = departement.chefDeDepartement;
-              code = "cdd.pdd";
-              break;
-            } else {
-              userID = departement.chefDeDepartement;
-              code = "cdd";
-              break;
-            }
-          } else {
-            userID = departement.chefDeDepartement;
-            code = "cdd";
-            break;
-          }
-        }
-      } else {
-        notHaveDepartement = true;
-      }
-    case "hiq":
-      const direction = await Direction.findById(user.direction);
-      if (direction && direction.directeur) {
-        if (
-          option.signataires[1] === "pdd" &&
-          option.signataires[2] === "dir"
-        ) {
-          const pddUser = await Utilisateur.findById(
-            option.proprietaireDeDonnees
-          );
-          const dirDirection = await Direction.findById(
-            option.service.direction
-          );
-          if (
-            pddUser &&
-            dirDirection &&
-            String(pddUser._id) === String(direction.directeur) &&
-            String(dirDirection.directeur) === String(direction.directeur)
-          ) {
-            console.log("hiq pdd dir");
-            if (notHaveService) {
-              userID = dirDirection.directeur;
-              code = "cds.hiq.pdd.dir";
-              break;
-            } else if (notHaveDepartement) {
-              userID = dirDirection.directeur;
-              code = "cdd.hiq.pdd.dir";
-              break;
-            } else {
-              userID = dirDirection.directeur;
-              code = "hiq.pdd.dir";
-              break;
-            }
-          }
-        }
-        if (
-          option.signataires[1] === "dir" ||
-          option.signataires[2] === "dir"
-        ) {
-          const dirDirection = await Direction.findById(
-            option.service.direction
-          );
-          console.log("hiq  dir");
-          if (
-            direction &&
-            dirDirection &&
-            String(dirDirection.directeur) === String(direction.directeur)
-          ) {
-            if (notHaveService && notHaveDepartement) {
-              code = "cds.cdd.hiq.dir";
-              userID = direction.directeur;
-              break;
-            } else {
-              if (notHaveDepartement) {
-                code = "cdd.hiq.dir";
-                userID = direction.directeur;
-                break;
-              } else if (notHaveService) {
-                code = "cds.hiq.dir";
-                userID = direction.directeur;
-                break;
+        // si l'utilisateur n'a un departement ou son chef de departement :
+        // envoyer la demande a son directeur :
+        else if (Array.from(option.signataires)[2] === "hiq") {
+          const demandeurDirection = await Direction.findById(user.direction);
+          if (demandeurDirection && demandeurDirection.directeur) {
+            // verfier est ce qu'il est un proprietaire de donnes :
+            if (Array.from(option.signataires)[3] === "pdd") {
+              let utilisateurPdd = await Utilisateur.findById(
+                option.proprietaireDeDonnees
+              );
+              if (utilisateurPdd) {
+                if (
+                  String(utilisateurPdd._id) ===
+                  String(demandeurDirection.directeur)
+                ) {
+                  userID = utilisateurPdd._id;
+                  code = "cds.cdd.hiq.pdd";
+                } else {
+                  userID = demandeurDirection.directeur;
+                  code = "cds.cdd.hiq";
+                }
               } else {
-                code = "hiq.dir";
-                userID = direction.directeur;
-                break;
+                throw new Error(
+                  "utilisateur proprietaire de donnees introuvable !"
+                );
+              }
+            } else {
+              // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
+              if (Array.from(option.signataires)[3] === "dir") {
+                const entiteDirection = await Direction.findById(
+                  option.service.direction
+                );
+                if (entiteDirection) {
+                  if (
+                    entiteDirection.directeur &&
+                    String(entiteDirection.directeur) ===
+                      String(demandeurDirection.directeur)
+                  ) {
+                    userID = entiteDirection.directeur;
+                    code = "cds.cdd.hiq.dir";
+                  } else {
+                    userID = demandeurDirection.directeur;
+                    code = "cds.cdd.hiq";
+                  }
+                } else {
+                  userID = demandeurDirection.directeur;
+                  code = "cds.cdd.hiq";
+                }
+              } else {
               }
             }
-          }
-        }
-        if (option.signataires[1] === "pdd") {
-          console.log("hiq  pdd");
-          const pddUser = await Utilisateur.findById(
-            option.proprietaireDeDonnees
-          );
-          if (pddUser && String(pddUser._id) === String(direction.directeur)) {
-            if (notHaveService && notHaveDepartement) {
-              code = "cds.cdd.hiq.pdd";
-              userID = direction.directeur;
-              break;
-            } else {
-              if (notHaveDepartement) {
-                code = "cdd.hiq.pdd";
-                userID = direction.directeur;
-                break;
-              } else if (notHaveService) {
-                code = "cds.hiq.pdd";
-                userID = direction.directeur;
-                break;
-              } else {
-                code = "hiq.pdd";
-                userID = direction.directeur;
-                break;
-              }
-            }
-          }
-        }
-
-        if (
-          option.signataires[1] !== "pdd" &&
-          option.signataires[1] !== "dir"
-        ) {
-          console.log("hiq");
-          if (notHaveService && notHaveDepartement) {
-            code = "cds.cdd.hiq";
-            userID = direction.directeur;
-            break;
           } else {
-            if (notHaveDepartement) {
-              code = "cdd.hiq";
-              userID = direction.directeur;
-              break;
-            } else if (notHaveService) {
+            throw new Error("demandeur n'a pas une direction ou un directeur");
+          }
+        }
+        // envoyer la demande a son directeur hiarchique :
+      } else if (Array.from(option.signataires)[1] === "hiq") {
+        const demandeurDirection = await Direction.findById(user.direction);
+        if (demandeurDirection && demandeurDirection.directeur) {
+          // verfier si le directeur hiarchique est un pdd :
+          if (Array.from(option.signataires)[2] === "pdd") {
+            let utilisateurPdd = await Utilisateur.findById(
+              option.proprietaireDeDonnees
+            );
+            if (utilisateurPdd) {
+              if (
+                String(utilisateurPdd._id) ===
+                String(demandeurDirection.directeur)
+              ) {
+                // verfier si le directeur hiarchique est un pdd et directur de l'entite :
+                const entiteDirection = await Direction.findById(
+                  option.service.direction
+                );
+                if (entiteDirection) {
+                  if (
+                    entiteDirection.directeur &&
+                    String(entiteDirection.directeur) ===
+                      String(demandeurDirection.directeur)
+                  ) {
+                    userID = entiteDirection.directeur;
+                    code = "cds.hiq.pdd.dir";
+                  } else {
+                    userID = utilisateurPdd._id;
+                    code = "cds.hiq.pdd";
+                  }
+                } else {
+                  throw new Error("option (DAMI) n'a pas de direction !!!!");
+                }
+              } else {
+                userID = demandeurDirection.directeur;
+                code = "cds.hiq";
+              }
+            } else {
+              throw new Error(
+                "utilisateur proprietaire de donnees introuvable !"
+              );
+            }
+          } else {
+            if (Array.from(option.signataires)[2] === "dir") {
+              const entiteDirection = await Direction.findById(
+                option.service.direction
+              );
+              if (entiteDirection) {
+                if (
+                  entiteDirection.directeur &&
+                  String(entiteDirection.directeur) ===
+                    String(demandeurDirection.directeur)
+                ) {
+                  userID = entiteDirection.directeur;
+                  code = "cds.hiq.dir";
+                } else {
+                  userID = demandeurDirection.directeur;
+                  code = "cds.hiq";
+                }
+              } else {
+                userID = demandeurDirection.directeur;
+                code = "cds.hiq";
+              }
+            } else {
+              userID = demandeurDirection.directeur;
               code = "cds.hiq";
-              userID = direction.directeur;
-              break;
-            } else {
-              code = "hiq";
-              userID = direction.directeur;
-              break;
             }
           }
+        } else {
+          throw new Error("demandeur n'a pas une direction ou un directeur");
         }
       }
-  }
+    }
+  } else if (Array.from(option.signataires)[0] === "cdd") {
+    /* ##################### CAS CHEF DE DEPARTEMENT ##################### */
+    let demandeurDepartement = await Departement.findById(user.departement);
+    if (demandeurDepartement && demandeurDepartement.chefDeDepartement) {
+      // verifier si le chef de departement et un pdd ou non :
+      userID = demandeurDepartement.chefDeDepartement;
+      code = "cdd";
+    }
+    // si l'utilisateur n'a un departement ou son chef de departement :
+    // envoyer la demande a son directeur :
+    else if (Array.from(option.signataires)[1] === "hiq") {
+      const demandeurDirection = await Direction.findById(user.direction);
+      if (demandeurDirection && demandeurDirection.directeur) {
+        // verfier est ce qu'il est un proprietaire de donnes :
+        if (Array.from(option.signataires)[2] === "pdd") {
+          let utilisateurPdd = await Utilisateur.findById(
+            option.proprietaireDeDonnees
+          );
+          if (utilisateurPdd) {
+            if (
+              String(utilisateurPdd._id) ===
+              String(demandeurDirection.directeur)
+            ) {
+              if (Array.from(option.signataires)[3] == "dir") {
+                const entiteDirection = await Direction.findById(
+                  option.service.direction
+                );
+                if (entiteDirection) {
+                  if (
+                    entiteDirection.directeur &&
+                    String(entiteDirection.directeur) ===
+                      String(demandeurDirection.directeur)
+                  ) {
+                    userID = entiteDirection.directeur;
+                    code = "cdd.hiq.pdd.dir";
+                  } else {
+                    userID = utilisateurPdd._id;
+                    code = "cdd.hiq.pdd";
+                  }
+                } else {
+                  userID = utilisateurPdd._id;
+                  code = "cdd.hiq.pdd";
+                }
+              } else {
+                userId = utilisateurPdd._id;
+                code = "cdd.hiq.pdd";
+              }
+            } else {
+              userID = demandeurDirection.directeur;
+              code = "cdd.hiq";
+            }
+          } else {
+            throw new Error(
+              "utilisateur proprietaire de donnees introuvable !"
+            );
+          }
+        } else {
+          // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
+          if (Array.from(option.signataires)[2] === "dir") {
+            const entiteDirection = await Direction.findById(
+              option.service.direction
+            );
+            if (entiteDirection) {
+              if (
+                entiteDirection.directeur &&
+                String(entiteDirection.directeur) ===
+                  String(demandeurDirection.directeur)
+              ) {
+                userID = entiteDirection.directeur;
+                code = "cdd.hiq.dir";
+              } else {
+                userID = demandeurDirection.directeur;
+                code = "cdd.hiq";
+              }
+            } else {
+              userID = demandeurDirection.directeur;
+              code = "cdd.hiq";
+            }
+          } else {
+          }
+        }
+      } else {
+        throw new Error("demandeur n'a pas une direction ou un directeur");
+      }
+    }
+  } else if (Array.from(option.signataires)[0] === "hiq") {
+    /* ##################### CAS DIRECTEUR HIARCHIQUE ##################### */
+    const demandeurDirection = await Direction.findById(user.direction);
+    if (demandeurDirection && demandeurDirection.directeur) {
+      // verfier est ce qu'il est un proprietaire de donnes :
+      if (Array.from(option.signataires)[1] === "pdd") {
+        let utilisateurPdd = await Utilisateur.findById(
+          option.proprietaireDeDonnees
+        );
+        if (utilisateurPdd) {
+          if (
+            String(utilisateurPdd._id) === String(demandeurDirection.directeur)
+          ) {
+            if (Array.from(option.signataires)[2] == "dir") {
+              const entiteDirection = await Direction.findById(
+                option.service.direction
+              );
+              if (entiteDirection) {
+                if (
+                  entiteDirection.directeur &&
+                  String(entiteDirection.directeur) ===
+                    String(demandeurDirection.directeur)
+                ) {
+                  userID = entiteDirection.directeur;
+                  code = "hiq.pdd.dir";
+                } else {
+                  userID = utilisateurPdd._id;
+                  code = "hiq.pdd";
+                }
+              } else {
+                userID = utilisateurPdd._id;
+                code = "hiq.pdd";
+              }
+            } else {
+              userId = utilisateurPdd._id;
+              code = "hiq.pdd";
+            }
+          } else {
+            userID = demandeurDirection.directeur;
+            code = "hiq";
+          }
+        } else {
+          throw new Error("utilisateur proprietaire de donnees introuvable !");
+        }
+      } else {
+        // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
+        if (Array.from(option.signataires)[1] === "dir") {
+          const entiteDirection = await Direction.findById(
+            option.service.direction
+          );
+          if (entiteDirection) {
+            if (
+              entiteDirection.directeur &&
+              String(entiteDirection.directeur) ===
+                String(demandeurDirection.directeur)
+            ) {
+              userID = entiteDirection.directeur;
+              code = "hiq.dir";
+            } else {
+              userID = demandeurDirection.directeur;
+              code = "hiq";
+            }
+          } else {
+            userID = demandeurDirection.directeur;
+            code = "hiq";
+          }
+        } else {
+        }
+      }
+    } else {
+      throw new Error("demandeur n'a pas une direction ou un directeur");
+    }
+  } 
+
   return [code, String(userID)];
 };
