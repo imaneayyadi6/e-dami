@@ -9,30 +9,34 @@ export const sendNotification = async (
   subject,
   seen = false
 ) => {
-  const utilisateur = await Utilisateur.findById(utilisateurID);
-  if (utilisateur) {
-    const notification = new Notification({
-      utilisateur: utilisateurID,
-      content,
-      subject,
-      dateNotification: new Date(),
-      vue: seen,
-      vueToast: seen,
-    });
-    await notification.save();
+  try {
+    const utilisateur = await Utilisateur.findById(utilisateurID);
+    if (utilisateur) {
+      const notification = new Notification({
+        utilisateur: utilisateurID,
+        content,
+        subject,
+        dateNotification: new Date(),
+        vue: seen,
+        vueToast: seen,
+      });
+      await notification.save();
 
-    io.emit("notification", notification);
+      io.emit("notification", notification);
 
-    let mailOptions = {
-      from: '"e-dami" <e-dami@snrt.com>',
-      to: utilisateur.email,
-      // to: utilisateur.email.replace(new RegExp("ma", "g"), "com"),
-      subject: subject || "Message from e-dami",
-      html: content,
-    };
+      let mailOptions = {
+        from: '"e-dami" <e-dami@snrt.com>',
+        to: utilisateur.email,
+        // to: utilisateur.email.replace(new RegExp("ma", "g"), "com"),
+        subject: subject || "Message from e-dami",
+        html: content,
+      };
 
-    sendMail(mailOptions);
-  } else {
-    throw new Error("utilisateur introuvable !");
+      sendMail(mailOptions);
+    } else {
+      throw new Error("utilisateur introuvable !");
+    }
+  } catch (error) {
+    throw new Error("email-notification error :", error);
   }
 };

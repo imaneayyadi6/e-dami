@@ -250,6 +250,7 @@ const main = async () => {
           });
 
           findChefService.fonction = item.INTITULE;
+          findChefService.civilite = item.CIVILITE;
           findChefService.isChefDeService = true;
           findChefService.isDirecteur = false;
           findChefService.service = service ? service._id : null;
@@ -355,6 +356,7 @@ const main = async () => {
           });
 
           findChefDepartement.fonction = item.INTITULE;
+          findChefDepartement.civilite = item.CIVILITE;
           findChefDepartement.isChefDeService = false;
           findChefDepartement.isDirecteur = false;
           findChefDepartement.isChefDeDepartement = true;
@@ -461,6 +463,7 @@ const main = async () => {
           });
 
           findDirecteur.fonction = item.INTITULE;
+          findDirecteur.civilite = item.CIVILITE;
           findDirecteur.isDirecteur = true;
           findDirecteur.isChefDeService = false;
           findDirecteur.direction = direction._id;
@@ -558,6 +561,8 @@ const main = async () => {
 
         if (findUtilisateur) {
           findUtilisateur.fonction = item.QUALIFICATION;
+          findUtilisateur.civilite = item.CIVILITE;
+
           findUtilisateur.isDirecteur = false;
           findUtilisateur.isChefDeService = false;
           findUtilisateur.service = service ? service._id : null;
@@ -832,14 +837,13 @@ const main = async () => {
     console.log(`Error : ${error}`.red.inverse);
   }
 };
-main();
-// cron.schedule("0 */12 * * *", async () => {
-//   try {
-//     main();
-//     console.log(
-//       "Hello, this is a sample JavaScript file executed by cron every 10 minute."
-//     );
-//   } catch (error) {
-//     console.error("CRON ERROR:", error);
-//   }
-// });
+
+// main();
+
+cron.schedule("0 */12 * * *", async () => {
+  try {
+    main();
+  } catch (error) {
+    console.error("CRON ERROR:", error);
+  }
+});

@@ -15,6 +15,9 @@ const utilisateurSchema = Schema(
     fonction: {
       type: String,
     },
+    civilite: {
+      type: String,
+    },
     email: {
       type: String,
       unique: [true, "email existe déjà"],

@@ -121,3 +121,7 @@
 [DATA INSERT] : Wed Jun 05 2024 09:54:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Wed Jun 05 2024 10:19:31 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
 [DATA INSERT] : Wed Jun 05 2024 10:34:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 05 2024 12:47:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 06 2024 10:44:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 06 2024 10:47:26 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 06 2024 11:33:38 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 

@@ -8,7 +8,15 @@ import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 import { sendNotification } from "../services/notificationService.js";
 import mongoose from "mongoose";
-import { getTypeAppOnCreate } from "../services/getTypeApp.js";
+import {
+  getNextTypeAppOnApp,
+  getTypeAppOnCreate,
+} from "../services/getTypeApp.js";
+
+const getCv = (cv) => {
+  if (cv === "F") return "Mme";
+  else return "Mr";
+};
 
 // @desc    Recuperer les demandes de demandeur
 // @route   GET /api/demandes/mesdemandes
@@ -576,547 +584,229 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
   if (demande) {
     if (demande.status === "en cours") {
+      // creer des obj's pour avoir un filter de message :
+
+      // les cas possible de traitement d'une demande et le message que le demandeur doit recevoire :
+      const demandeurFilterMessage = {
+        // directeur generale :
+        dg: " en tant que directeur général",
+        // president directeur generale :
+        pdg: " en tant que président directeur général",
+        // proprietaire de donnees :
+        pdd: " en tant que propriétaire de données",
+        /*
+         les cas possibles pour un chef de service ===>  :
+                    - il peut etre juste un chef de service .
+         */
+        cds: " en tant que chef de service",
+        /*
+         les cas possibles pour un chef de departement ===>  :
+                  - il peut etre juste un chef de departement .
+                  - il peut un chef de service et chef de departement.     
+         */
+        cdd: " en tant que chef de derpatement",
+        "cds.cdd": " en tant que chef de service et chef de derpatement",
+        /*
+         les cas possibles pour un directeur ===>  :
+                  - il peut etre juste un directeur hiarchique .
+                  - il peut un chef de service et directeur hiarchique
+                  - il peut un chef de departement et directeur hiarchique 
+                  - il peut un chef de service, chef de departement et directeur hiarchique
+                  - il peut un directeur hiarchique et un pdd
+                  - il peut un chef de service, un directeur hiarchique et un pdd
+                  - il peut un chef de departement, un directeur hiarchique et un pdd
+                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
+                  - il peut un directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
+                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
+                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
+         */
+        hiq: " en tant que directeur hiarchique",
+        "cds.hiq": " en tant que chef de service et directeur hiarchique",
+        "cdd.hiq": " en tant que chef de departement et directeur hiarchique",
+        "cds.cdd.hiq":
+          " en tant que chef de service, chef de departement et directeur hiarchique",
+        "hiq.pdd":
+          " en tant que directeur hiarchique et propriétaire de données",
+        "cds.hiq.pdd":
+          "  en tant que chef de service, directeur hiarchique et propriétaire de données",
+        "cdd.hiq.pdd":
+          " en tant que chef de departement  directeur hiarchique et propriétaire de données",
+        "cds.cdd.hiq.pdd":
+          " en tant que chef de service, chef de departement  directeur hiarchique et propriétaire de données",
+        "hiq.dir": " en tant que directeur hiarchique et directeur de l'entité",
+        "cds.hiq.dir":
+          " en tant que chef de service, directeur hiarchique et directeur de l'entité",
+        "cdd.hiq.dir":
+          " en tant que chef de departement  directeur hiarchique et directeur de l'entité",
+        "cds.cdd.hiq.dir":
+          " en tant que chef de service, chef de departement  directeur hiarchique et directeur de l'entité",
+        "hiq.pdd.dir":
+          " en tant que directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cds.hiq.pdd.dir":
+          " en tant que chef de service, directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cdd.hiq.pdd.dir":
+          " en tant que chef de departement  directeur hiarchique, propriétaire de données et directeur de l'entité",
+      };
+
+      // les cas possible de traitement d'une demande et le message que le signataires doit recevoire :
+      const signataireFilterMessage = {
+        // directeur generale :
+        dg: " veuillez l'approuvez ou la refusez en tant que directeur général",
+        // president directeur generale :
+        pdg: " veuillez l'approuvez ou la refusez en tant que président directeur général",
+        // proprietaire de donnees :
+        pdd: " veuillez l'approuvez ou la refusez en tant que propriétaire de données",
+        /*
+         les cas possibles pour un chef de service ===>  :
+                    - il peut etre juste un chef de service .
+         */
+        cds: " veuillez l'approuvez ou la refusez en tant que chef de service",
+        /*
+         les cas possibles pour un chef de departement ===>  :
+                  - il peut etre juste un chef de departement .
+                  - il peut un chef de service et chef de departement.     
+         */
+        cdd: " veuillez l'approuvez ou la refusez en tant que chef de derpatement",
+        "cds.cdd":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de derpatement",
+        /*
+         les cas possibles pour un directeur ===>  :
+                  - il peut etre juste un directeur hiarchique .
+                  - il peut un chef de service et directeur hiarchique
+                  - il peut un chef de departement et directeur hiarchique 
+                  - il peut un chef de service, chef de departement et directeur hiarchique
+                  - il peut un directeur hiarchique et un pdd
+                  - il peut un chef de service, un directeur hiarchique et un pdd
+                  - il peut un chef de departement, un directeur hiarchique et un pdd
+                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
+                  - il peut un directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
+                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
+                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
+         */
+        hiq: " veuillez l'approuvez ou la refusez en tant que directeur hiarchique",
+        "cds.hiq":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et directeur hiarchique",
+        "cdd.hiq":
+          " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>' et directeur hiarchique",
+        "cds.cdd.hiq":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>' et directeur hiarchique",
+        "hiq.pdd":
+          " veuillez l'approuvez ou la refusez en tant que directeur hiarchique et propriétaire de données",
+        "cds.hiq.pdd":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique et propriétaire de données",
+        "cdd.hiq.pdd":
+          " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et propriétaire de données",
+        "cds.cdd.hiq.pdd":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et propriétaire de données",
+        "hiq.dir":
+          " veuillez l'approuvez ou la refusez en tant que directeur hiarchique et directeur de l'entité",
+        "cds.hiq.dir":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique et directeur de l'entité",
+        "cdd.hiq.dir":
+          " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
+        "cds.cdd.hiq.dir":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique et directeur de l'entité",
+        "hiq.pdd.dir":
+          " veuillez l'approuvez ou la refusez en tant que directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cds.hiq.pdd.dir":
+          " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
+        "cdd.hiq.pdd.dir":
+          " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
+      };
+
       // recuperer le traitement :
-      const traitement = demande.traitement.find(
+      let traitement = demande.traitement.find(
         (tr) => String(tr._id) === String(req.params.idTraitement)
       );
 
       if (traitement) {
         if (String(traitement.utilisateur) === String(req.user.id)) {
           if (traitement.status === "en cours") {
-            let crtfCode = "";
             // changer le status de traitement :
             for (let tr of demande.traitement) {
               if (String(tr._id) === String(req.params.idTraitement)) {
-                crtfCode = tr.code;
                 tr.status = "approuve";
                 tr.dateTraitement = new Date();
                 break;
               }
             }
+            // recuperer le type d'approubation et le signataire qui va signier
+            const [nextCode, nextUserId] = await getNextTypeAppOnApp(
+              demande.option._id,
+              demande._id,
+              traitement.code
+            );
 
-            let contenu = "";
-            let typeApp = null;
-            // ecrit le contenu de la notification selon le type d'approbation :
-            const arrCrtCode = crtfCode.split(".");
-            if (arrCrtCode.length > 1) {
-              const direction = await Direction.findOne({
-                directeur: req.user.id,
-              }).populate("directeur");
+            let nextSignataire = await Utilisateur.findById(
+              traitement.utilisateur
+            );
 
-              if (direction) {
-                if (crtfCode === "hiq.pdd") {
-                  contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}">demande</a> 
-                  a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de donnes `;
-                }
+            let messageDemandeur = `<p> Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a>`;
+            messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>${getCv(
+              nextSignataire.civilite
+            )}.</b>`;
+            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom} ${nextSignataire.nom}</b> `;
+            messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
 
-                if (crtfCode === "pdd.dir") {
-                  contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}">demande</a> 
-                  a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l entite`;
-                }
-
-                if (crtfCode === "hiq.dir") {
-                  contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}">demande</a> 
-                  a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l entite`;
-                }
-
-                if (crtfCode === "hiq.pdd.dir") {
-                  contenu = `<p>
-                  Votre <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}">demande</a> 
-                  a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de donnes et directeur de l entite`;
-                }
-              } else {
-                res.status(404);
-                throw Error("direction introuvable !");
-              }
+            // verfier est ce que la demande a ete fini le traitement :
+            if (nextCode === "fini") {
+              messageDemandeur +=
+                " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
             } else {
-              if (crtfCode === "cds") {
-                let service = await Service.findOne({
-                  chefService: req.user.id,
-                }).populate("chefService");
-
-                contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service`;
-              } else if (crtfCode === "cdd") {
-                let departement = await Departement.findOne({
-                  chefDeDepartement: req.user.id,
-                }).populate("chefDeDepartement");
-
-                contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le chef de departement ${departement.libelle.toLowerCase()} en tant que votre chef de departement`;
-              } else if (crtfCode === "hiq") {
-                let direction = await Direction.findOne({
-                  directeur: req.user.id,
-                }).populate("directeur");
-
-                contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique`;
-              } else if (crtfCode === "pdd") {
-                let pdd = await Utilisateur.findById(req.user.id);
-                contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le propriétaire de données`;
-              } else if (crtfCode === "dir") {
-                let direction = await Direction.findOne({
-                  directeur: req.user.id,
-                }).populate("directeur");
-                contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été approuvée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité`;
-              }
+              // envouyer la demande au signataire procaine pour la traiter :
+              demande.traitement.push({
+                utilisateur: nextUserId,
+                dateEnvoi: new Date(),
+                status: "en cours",
+                code: nextCode,
+              });
             }
 
-            // envoyer le demande a un autre utilisateur pour la traiter :
-            // est ce que le code traitement et muptiple ou non :
-            const codeArr = traitement.code.split(".");
-            if (codeArr.length > 1) {
-              let code = codeArr[codeArr.length - 1];
-              const codeIndex = demande.option.signataires.findIndex(
-                (sg) => String(sg) === String(code)
+            // sauvgarder le chnagement :
+            //await demande.save();
+
+            messageDemandeur += "</p>";
+            // envoyer le message au demandeur :
+            sendNotification(
+              demande.demandeur._id,
+              messageDemandeur,
+              `Votre demande a été approuvée`
+            );
+
+            // envoyer le message au signataire :
+            if (nextCode !== "fini") {
+              let codeIndex = Array.from(demande.traitement).findIndex(
+                (cd) => cd === nextCode
               );
-              if (codeIndex !== -1) {
-                // finalise le traitement global de la demande :
-                if (codeIndex + 1 === demande.option.signataires.length) {
-                  demande.status = "approuve";
-                  await demande.save();
-                  contenu +=
-                    " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(
-                    demande.demandeur._id,
-                    contenu,
-                    `Votre demande a été approuvée et finalisée`
-                  );
-                  let supService = await Service.findById(
-                    demande.option.service._id
-                  );
-                  let supDepratement = await Departement.findById(
-                    demande.option.service.deparatement
-                  );
-
-                  let supContent = `une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom} a été approuvée par ses supérieurs. Veuillez traiter cette demande. <b><a href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">details demande</a></b> `;
-                  if (supService) {
-                    sendNotification(
-                      supService.chefService,
-                      supContent,
-                      "traitement de la demande"
-                    );
-                  }
-
-                  if (supDepratement) {
-                    sendNotification(
-                      supDepratement.chefDeDepartement,
-                      supContent,
-                      "traitement de la demande"
-                    );
-                  }
-
-                  if (
-                    demande.option.signataires.includes("pdd") &&
-                    demande.option.proprietaireDeDonnees
-                  ) {
-                    let supPdd = await Utilisateur.findById(
-                      demande.option.proprietaireDeDonnees
-                    );
-                    if (supPdd) {
-                      sendNotification(
-                        supPdd._id,
-                        supContent,
-                        "traitement de la demande"
-                      );
-                    } else {
-                      res.json(404);
-                      throw new Error("proprietaire de données introuvable !");
-                    }
-                  }
-
-                  res.json({ message: "demande approuve" });
-                } else {
-                  // verfication de qu'est le directeur qui va traiter cette demande selon le code:
-                  let dirUserID = "";
-                  let nextCode = demande.option.signataires[codeIndex + 1];
-
-                  if (nextCode === "cdd") {
-                    const departementID = await Utilisateur.findById(
-                      req.user.id
-                    ).departement;
-
-                    const departement = await Departement.findById(
-                      departementID
-                    );
-                    if (departement) {
-                      dirUserID = departement.chefDeDepartement;
-                      typeApp = `chef de departement`;
-                    }
-                  } else if (nextCode === "hiq") {
-                    const directionID = await Utilisateur.findById(req.user.id)
-                      .direction;
-                    const direction = await Direction.findById(directionID);
-                    if (direction) {
-                      dirUserID = direction.directeur;
-                      typeApp = `directeur hiérarchique`;
-                    }
-                  } else if (nextCode === "pdd") {
-                    const pdd = await Utilisateur.findById(
-                      String(demande.option.proprietaireDeDonnees)
-                    );
-                    if (pdd) {
-                      dirUserID = pdd._id;
-                      typeApp = "propriétaire de données";
-                    }
-                  } else if (nextCode === "dir") {
-                    const service = await Service.findById(
-                      demande.option.service
-                    );
-                    const direction = await Direction.findById(
-                      String(service.direction)
-                    );
-                    if (direction) {
-                      dirUserID = direction.directeur;
-                      typeApp = "directeur de l'entité";
-                    }
-                  }
-
-                  // envoyer le traitement :
-                  demande.traitement.push({
-                    utilisateur: dirUserID,
-                    dateEnvoi: new Date(),
-                    status: "en cours",
-                    code: nextCode,
-                  });
-
-                  await demande.save();
-                  await demande.populate("demandeur");
-                  // envoyer les notifications :
-                  contenu += "</p>";
-                  sendNotification(
-                    demande.demandeur._id,
-                    contenu,
-                    `Votre demande a été approuvée`
-                  );
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}/traitement/${
-                    demande.traitement[codeIndex]._id
-                  }">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`;
-                  sendNotification(
-                    dirUserID,
-                    dirContenu,
-                    `Demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}`
-                  );
-
-                  res.json(demande);
-                }
-              } else {
-                res.status(500);
-                throw new Error("pas de code !");
-              }
-            } else {
-              const codeIndex = demande.option.signataires.findIndex(
-                (sg) => String(sg) === String(traitement.code)
+              let messageSignataire = `<p>Une <a style='font-weight:bold' href="${
+                process.env.CLIENT_ADDRESS
+              }/details-demande/${demande._id}/traitement/${
+                demande.traitement[codeIndex + 1]._id
+              }">demande</a>`;
+              messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom.toLowerCase()}</b> <b style='font-weight:bold'>${demande.demandeur.nom.toLowerCase()}</b>, ${
+                signataireFilterMessage[nextCode]
+              }</p>`;
+              sendNotification(
+                nextUserId,
+                messageSignataire,
+                `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
               );
-              if (codeIndex !== -1) {
-                // finalise le traitement global de la demande :
-                if (codeIndex + 1 === demande.option.signataires.length) {
-                  demande.status = "approuve";
-                  await demande.save();
-                  contenu +=
-                    " et pour cela, elle a été finalisée et approuvée avec succès </p>";
-                  sendNotification(
-                    demande.demandeur._id,
-                    contenu,
-                    `Votre demande a été approuvée`
-                  );
-
-                  let supService = await Service.findById(
-                    demande.option.service._id
-                  );
-
-                  let supDepratement = await Departement.findById(
-                    demande.option.service.departement
-                  );
-
-                  let supContent = `une demande fait par ${demande.demandeur.prenom} ${demande.demandeur.nom} a été approuvée par ses supérieurs. Veuillez traiter cette demande. <b><a href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">details demande</a></b> `;
-                  if (supService) {
-                    sendNotification(
-                      supService.chefService,
-                      supContent,
-                      "traitement de la demande"
-                    );
-                  }
-
-                  if (supDepratement) {
-                    sendNotification(
-                      supDepratement.chefDeDepartement,
-                      supContent,
-                      "traitement de la demande"
-                    );
-                  }
-
-                  if (
-                    demande.option.signataires.includes("pdd") &&
-                    demande.option.proprietaireDeDonnees
-                  ) {
-                    let supPdd = await Utilisateur.findById(
-                      demande.option.proprietaireDeDonnees
-                    );
-                    if (supPdd) {
-                      sendNotification(
-                        supPdd._id,
-                        supContent,
-                        "traitement de la demande"
-                      );
-                    } else {
-                      res.json(404);
-                      throw new Error("proprietaire de données introuvable !");
-                    }
-                  }
-
-                  res.json({ message: "demande approuve " });
-                } else {
-                  // verfication de qu'est le directeur qui va traiter cette demande selon le code :
-                  let dirUserID = "";
-                  let nextCode1 = demande.option.signataires[codeIndex + 1];
-                  let envCode = "";
-                  if (nextCode1) {
-                    if (nextCode1 === "cdd") {
-                      const departementID = JSON.parse(
-                        JSON.stringify(
-                          await Utilisateur.findById(demande.demandeur._id)
-                        )
-                      ).departement;
-
-                      const deparatement = await Departement.findById(
-                        departementID
-                      );
-
-                      if (deparatement) {
-                        dirUserID = deparatement.chefDeDepartement;
-                        typeApp = "chef de departement";
-                        envCode = "cdd";
-                      } else {
-                        res.status(404);
-                        throw Error("deparatement introuvable !");
-                      }
-                    } else if (nextCode1 === "hiq") {
-                      const directionID = JSON.parse(
-                        JSON.stringify(
-                          await Utilisateur.findById(demande.demandeur._id)
-                        )
-                      ).direction;
-
-                      const hiqDirection = await Direction.findById(
-                        directionID
-                      );
-
-                      if (hiqDirection) {
-                        let nextCode2 =
-                          demande.option.signataires[codeIndex + 2];
-                        if (nextCode2) {
-                          if (nextCode2 === "pdd") {
-                            const utilisateur = await Utilisateur.findById(
-                              String(demande.option.proprietaireDeDonnees)
-                            );
-                            if (utilisateur) {
-                              if (
-                                String(hiqDirection.directeur) ===
-                                String(utilisateur._id)
-                              ) {
-                                let nextCode3 =
-                                  demande.option.signataires[codeIndex + 3];
-                                if (nextCode3) {
-                                  if (nextCode3 === "dir") {
-                                    const service = await Service.findById(
-                                      demande.option.service
-                                    );
-                                    const dirDirection =
-                                      await Direction.findById(
-                                        String(service.direction)
-                                      );
-                                    if (dirDirection) {
-                                      if (
-                                        String(hiqDirection.directeur) ===
-                                        String(dirDirection.directeur)
-                                      ) {
-                                        dirUserID = hiqDirection.directeur;
-                                        typeApp =
-                                          "directeur hiérarchique, propriétaire de données et directeur de l'entité ";
-                                        envCode = "hiq.pdd.dir";
-                                      } else {
-                                        dirUserID = hiqDirection.directeur;
-                                        typeApp =
-                                          "directeur hiérarchique et propriétaire de données";
-                                        envCode = "hiq.pdd";
-                                      }
-                                    } else {
-                                      res.status(404);
-                                      throw Error("utilisateur introuvable !");
-                                    }
-                                  } else {
-                                    dirUserID = hiqDirection.directeur;
-                                    typeApp =
-                                      "directeur hiérarchique et propriétaire de données";
-                                    envCode = "hiq.pdd";
-                                  }
-                                } else {
-                                  dirUserID = hiqDirection.directeur;
-                                  typeApp =
-                                    "directeur hiérarchique et propriétaire de données";
-                                  envCode = "hiq.pdd";
-                                }
-                              } else {
-                                dirUserID = hiqDirection.directeur;
-                                typeApp = "directeur hiérarchique";
-                                envCode = "hiq";
-                              }
-                            } else {
-                              res.status(404);
-                              throw Error("direction introuvable !");
-                            }
-                          } else if (nextCode2 === "dir") {
-                            const service = await Service.findById(
-                              demande.option.service
-                            );
-                            const dirDirection = await Direction.findById(
-                              String(service.direction)
-                            );
-                            if (dirDirection) {
-                              dirUserID = hiqDirection.directeur;
-                              typeApp =
-                                "directeur hiérarchique et directeur de l'entité";
-                              envCode = "hiq.dir";
-                            } else {
-                              res.status(404);
-                              throw Error("direction introuvable !");
-                            }
-                          } else {
-                            dirUserID = hiqDirection.directeur;
-                            typeApp = "directeur hiérarchique";
-                            envCode = "hiq";
-                          }
-                        } else {
-                          dirUserID = hiqDirection.directeur;
-                          typeApp = "directeur hiérarchique";
-                          envCode = "hiq";
-                        }
-                      } else {
-                        res.status(404);
-                        throw Error("direction introuvable !");
-                      }
-                    } else if (nextCode1 === "pdd") {
-                      const pddUtilisateur = await Utilisateur.findById(
-                        String(demande.option.proprietaireDeDonnees)
-                      );
-                      if (pddUtilisateur) {
-                        let nextCode2 =
-                          demande.option.signataires[codeIndex + 2];
-                        if (nextCode2) {
-                          if (nextCode2 === "dir") {
-                            const service = await Service.findById(
-                              demande.option.service
-                            );
-                            const dirDirection = await Direction.findById(
-                              service.direction
-                            );
-                            if (dirDirection) {
-                              if (
-                                String(pddUtilisateur._id) ===
-                                String(dirDirection.directeur)
-                              ) {
-                                dirUserID = pddUtilisateur._id;
-                                typeApp =
-                                  "propriétaire de données et directeur de l'entité ";
-                                envCode = "pdd.dir";
-                              } else {
-                                dirUserID = pddUtilisateur._id;
-                                typeApp = "propriétaire de données";
-                                envCode = "pdd";
-                              }
-                            } else {
-                              res.status(404);
-                              throw Error("direction introuvable !");
-                            }
-                          } else {
-                            dirUserID = pddUtilisateur._id;
-                            typeApp = "propriétaire de données";
-                            envCode = "pdd";
-                          }
-                        } else {
-                          dirUserID = pddUtilisateur._id;
-                          typeApp = "propriétaire de données";
-                          envCode = "pdd";
-                        }
-                      } else {
-                        res.status(404);
-                        throw Error("utilisateur introuvable !");
-                      }
-                    } else if (nextCode1 === "dir") {
-                      const service = await Service.findById(
-                        demande.option.service
-                      );
-                      const direction = await Direction.findById(
-                        String(service.direction)
-                      );
-                      if (direction) {
-                        dirUserID = direction.directeur;
-                        typeApp = "directeur de l'entité";
-                        envCode = "dir";
-                      }
-                    }
-                    // envoyer le traitement :
-                    demande.traitement.push({
-                      utilisateur: dirUserID,
-                      dateEnvoi: new Date(),
-                      status: "en cours",
-                      code: envCode,
-                    });
-                  }
-                  await demande.save();
-                  contenu += "</p>";
-                  // envoyer les notifications :
-                  sendNotification(
-                    demande.demandeur._id,
-                    contenu,
-                    `Votre demande a été approuvée`
-                  );
-                  let dirContenu = `<p>Une <a style='font-weight:bold' href="${
-                    process.env.CLIENT_ADDRESS
-                  }/details-demande/${demande._id}/traitement/${
-                    demande.traitement[codeIndex + 1]._id
-                  }">demande</a> a été faite par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}, veuillez la traiter en tant que ${typeApp}</p>`;
-                  sendNotification(
-                    dirUserID,
-                    dirContenu,
-                    `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
-                  );
-                  res.json({ message: "demande approvee avec success !" });
-                }
-              } else {
-                res.status(500);
-                throw new Error("pas de code !");
-              }
             }
+
+            res.status(500);
+            throw new Error(
+              "Traitement impossible ! Il y a un développement à faire pour le moment. Merci pour votre compréhension"
+            );
+
+            // res.json({ message: "demande approvee avec success !" });
           } else {
             res.status(400);
             throw new Error("demande deja traitée");
