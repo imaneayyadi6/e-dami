@@ -63,6 +63,7 @@ import {
   fetchUsersByDivision,
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
+import { disable } from "colors";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -96,7 +97,7 @@ const validationHeaderSchema = Yup.object({
 
 const validationSousCategorieSchema = Yup.object({
   sousCategorie: Yup.string().required("il faut enntrer une sous-categorie"),
-  departement: Yup.string().required("il faut enntrer un departement"),
+  departement: Yup.string(),
   service: Yup.string().required("il faut enntrer un service"),
   typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
@@ -143,7 +144,8 @@ const DamiEditPageCrtOp = () => {
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
-    departement: userInfo && userInfo.departement && userInfo.departement._id,
+    departement:
+      userInfo && userInfo.departement ? userInfo.departement._id : "",
     service: userInfo && userInfo.service && userInfo.service._id,
     typePdd: "",
     proprietaireDeDonnees: "",
@@ -592,7 +594,8 @@ const DamiEditPageCrtOp = () => {
         ...values,
       });
       dispatch(fetchServiceByID(values.service));
-      dispatch(fetchDepartementByID(values.departement));
+      if (values.departement)
+        dispatch(fetchDepartementByID(values.departement));
 
       setActiveStep(2);
     },
@@ -1815,7 +1818,7 @@ const DamiEditPageCrtOp = () => {
       setTimeout(() => {
         sousCategorieForm.setValues({
           sousCategorie: recoveredOption.sousCategorie,
-          departement: recoveredOption.departement,
+          departement: recoveredOption.departement || null,
           service: recoveredOption.service,
           typePdd: recoveredOption.proprietaireDeDonnees.direction,
           proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees._id,
@@ -2391,16 +2394,22 @@ const DamiEditPageCrtOp = () => {
                           checked={checkValues["cds"]}
                         />
                       </div>
-                      <div className="w-100 py-2">
-                        <Form.Check
-                          id="cdd"
-                          value={checkValues["cdd"]}
-                          label={`Chef de departement de ${departement.libelle}`}
-                          className="check-signataire"
-                          onChange={sigChangeHandler}
-                          checked={checkValues["cdd"]}
-                        />
-                      </div>
+                      {departement && (
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            id="cdd"
+                            value={checkValues["cdd"]}
+                            label={`Chef de departement de ${
+                              departement && departement.libelle
+                            }`}
+                            className="check-signataire"
+                            onChange={sigChangeHandler}
+                            checked={checkValues["cdd"]}
+                            disabled={sousCategorieForm.values.departement}
+                          />
+                        </div>
+                      )}
+
                       <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
