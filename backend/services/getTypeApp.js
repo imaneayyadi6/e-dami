@@ -31,10 +31,10 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
       userID = demandeurService.chefService;
       code = "cds";
     } else {
+      let demandeurDepartement = await Departement.findById(user.departement);
       // si l'utilisateur n'a un service ou son chef de service :
       // envoyer la demande a son chef de departement :
       if (Array.from(option.signataires)[1] === "cdd") {
-        let demandeurDepartement = await Departement.findById(user.departement);
         if (demandeurDepartement && demandeurDepartement.chefDeDepartement) {
           // verifier si le chef de departement et un pdd ou non :
           userID = demandeurDepartement.chefDeDepartement;
@@ -96,6 +96,12 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
           }
         }
         // envoyer la demande a son directeur hiarchique :
+      } else if (
+        demandeurDepartement &&
+        demandeurDepartement.chefDeDepartement
+      ) {
+        userID = demandeurDepartement.chefDeDepartement;
+        code = "cds";
       } else if (Array.from(option.signataires)[1] === "hiq") {
         const demandeurDirection = await Direction.findById(user.direction);
         if (demandeurDirection && demandeurDirection.directeur) {
@@ -353,7 +359,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
   );
   const directionEntite = await Direction.findById(option.service.direction);
 
-  if (!utilisateurPdd)
+  if (option.proprietaireDeDonnees && !utilisateurPdd)
     throw new Error("utilisateur proprietaire de données introuvable !");
 
   if (!directionEntite) throw new Error("option n'a pas direction (entite) !");
@@ -361,7 +367,6 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
   let nextCode = "";
   let nextUserId = "";
   let arrayCode = code.split(".");
-
   if (arrayCode.length > 1) {
     const lastArrayCode = arrayCode[arrayCode.length - 1];
     const nextCodeIndex = Array.from(option.signataires).findIndex(
@@ -436,6 +441,19 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
         ) {
           nextCode = "hiq.dir";
           nextUserId = directionEntite.directeur;
+        } else {
+          nextCode = "hiq";
+          nextUserId = demandeurDirection.directeur;
+        }
+      } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "pdd") {
+        if (
+          String(demandeurDirection.directeur) === String(utilisateurPdd._id)
+        ) {
+          nextCode = "hiq.pdd";
+          nextUserId = utilisateurPdd._id;
+        } else {
+          nextCode = "hiq";
+          nextUserId = demandeurDirection.directeur;
         }
       } else {
         nextCode = "hiq";
@@ -458,6 +476,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       const dgUtilisateur = await Utilisateur.findOne({
         fonction: "directeur général",
       });
+      console.log(dgUtilisateur);
       nextCode = "dg";
       nextUserId = dgUtilisateur._id;
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "pdg") {
@@ -471,6 +490,11 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     const nextCodeIndex = Array.from(option.signataires).findIndex(
       (codeItem) => codeItem === code
     );
+    console.log(
+      "nextCode Item:",
+      Array.from(option.signataires)[nextCodeIndex + 1]
+    );
+
     if (Array.from(option.signataires)[nextCodeIndex + 1] === undefined) {
       nextCode = "fini";
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "cdd") {
@@ -532,6 +556,26 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
         ) {
           nextCode = "hiq.pdd.dir";
           nextUserId = demandeurDirection.directeur;
+        } else {
+          if (
+            String(demandeurDirection.directeur) === String(utilisateurPdd._id)
+          ) {
+            nextCode = "hiq.pdd";
+            nextUserId = utilisateurPdd._id;
+          } else {
+            nextCode = "hiq";
+            nextUserId = demandeurDirection.directeur;
+          }
+        }
+      } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "pdd") {
+        if (
+          String(demandeurDirection.directeur) === String(utilisateurPdd._id)
+        ) {
+          nextCode = "hiq.pdd";
+          nextUserId = utilisateurPdd._id;
+        } else {
+          nextCode = "hiq";
+          nextUserId = demandeurDirection.directeur;
         }
       } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "dir") {
         if (
@@ -540,6 +584,9 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
         ) {
           nextCode = "hiq.dir";
           nextUserId = directionEntite.directeur;
+        } else {
+          nextCode = "hiq";
+          nextUserId = demandeurDirection.directeur;
         }
       } else {
         nextCode = "hiq";

@@ -13,7 +13,8 @@ const DamiDemande = ({ demande }) => {
     cdd: "Approbation Chef de Departement",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
-    dir: `Approbation Directeur de la  `,
+    dir: `Approbation Directeur de la `,
+    dg: "Approbation directeur generale",
     pdg: "Approbation President-directeur generale",
   });
 

@@ -5,23 +5,35 @@ const getTypeApprobation = (code) => {
     case "cdd":
       return "chef de departement";
     case "cds.cdd":
-      return "chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de departement";
+      return "chef de service  et chef de departement";
     case "hiq":
       return "directeur hiearchique";
+    case "cds.hiq":
+      return "chef de service et directeur hiearchique";
+    case "cdd.hiq":
+      return "chef de departement et directeur hiearchique";
+    case "cds.cdd.hiq":
+      return "chef de service, chef de departement et directeur hiearchique";
     case "pdd":
       return "propriétaire de données";
+    case "cds.cdd.hiq.pdd":
+      return "chef de service, chef de departement, directeur hiearchique et propriétaire de données";
     case "dir":
       return "directeur de l'entité";
+    case "cds.cdd.hiq.dir":
+      return "chef de service, chef de departement, directeur hiearchique et directeur de l'entité";
+    case "dg":
+      return "directeur generale";
     case "pdg":
       return "president-directeur generale";
     case "hiq.dir":
-      return "directeur hiearchique - directeur de l'entité";
+      return "directeur hiearchique et directeur de l'entité";
     case "pdd.dir":
-      return "propriétaire de données - directeur de l'entité";
+      return "propriétaire de données et directeur de l'entité";
     case "hiq.pdd":
-      return "directeur hiearchique - propriétaire de données";
+      return "directeur hiearchique et propriétaire de données";
     case "hiq.pdd.dir":
-      return "directeur hiearchique - propriétaire de données - directeur de l'entité";
+      return "directeur hiearchique, propriétaire de données et directeur de l'entité";
     default:
       return "(pas de donnees)";
   }

@@ -313,7 +313,7 @@ export const createDemande = asyncHandler(async (req, res) => {
       sendNotification(
         userID,
         messageContent,
-        `Demande fait par ${user.prenom} ${user.nom}`
+        `Demande fait par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}`
       );
 
       res.status(201).json({ message: "demande a été effectuée avec succès" });
@@ -348,10 +348,6 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
         demande.demandeur.service
       ).populate("chefService");
 
-      const departement = await Departement.findById(
-        demande.demandeur.departement
-      ).populate("chefDeDepartement");
-
       const direction = await Direction.findById(
         demande.demandeur.direction
       ).populate("directeur");
@@ -361,12 +357,6 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
       ).populate({
         path: "chefService",
       });
-
-      let optionPDD = null;
-      if (demande.option.proprietaireDeDonnees)
-        optionPDD = await Utilisateur.findById(
-          demande.option.proprietaireDeDonnees
-        );
 
       const optionDirection = await Direction.findById(
         optionService.direction
@@ -382,14 +372,17 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
           let obj = null;
           let status = traitement.status;
 
+          const traitementUtilisateur = await Utilisateur.findById(
+            traitement.utilisateur
+          );
           if (status && status !== "en cours") {
             let dateTraitement = traitement.dateTraitement;
 
             if (s === "cds") {
               obj = {
                 code: "cds",
-                nom: service.chefService.nom,
-                prenom: service.chefService.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -400,8 +393,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
             if (s === "cdd") {
               obj = {
                 code: "cdd",
-                nom: departement.chefDeDepartement.nom,
-                prenom: departement.chefDeDepartement.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -412,8 +405,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
             if (s === "hiq") {
               obj = {
                 code: "hiq",
-                nom: direction.directeur.nom,
-                prenom: direction.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -424,20 +417,41 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.nom,
-                prenom: optionPDD.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
               };
             }
-
+            if (s === "dg") {
+              obj = {
+                code: "dg",
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
+            if (s === "pdg") {
+              obj = {
+                code: "pdg",
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
+                approuve: status === "approuve" ? true : false,
+                refuse: status === "refuse" ? true : false,
+                dateTraitement: dateTraitement,
+                // date:trai
+              };
+            }
             if (s === "dir") {
               obj = {
                 code: "dir",
-                nom: optionDirection.directeur.nom,
-                prenom: optionDirection.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -455,15 +469,17 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 if (traitement) {
                   let obj = null;
                   let status = traitement.status;
-
+                  const traitementUtilisateur = await Utilisateur.findById(
+                    traitement.utilisateur
+                  );
                   if (status && status !== "en cours") {
                     let dateTraitement = traitement.dateTraitement;
 
                     if (item === "cds") {
                       obj = {
                         code: "cds",
-                        nom: service.chefService.nom,
-                        prenom: service.chefService.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -473,8 +489,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                     if (s === "cdd") {
                       obj = {
                         code: "cdd",
-                        nom: departement.chefDeDepartement.nom,
-                        prenom: departement.chefDeDepartement.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -484,8 +500,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                     if (item === "hiq") {
                       obj = {
                         code: "hiq",
-                        nom: direction.directeur.nom,
-                        prenom: direction.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -496,8 +512,8 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.nom,
-                        prenom: optionPDD.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -508,13 +524,35 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                     if (item === "dir") {
                       obj = {
                         code: "dir",
-                        nom: optionDirection.directeur.nom,
-                        prenom: optionDirection.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
                       };
+                      if (s === "dg") {
+                        obj = {
+                          code: "dg",
+                          nom: traitementUtilisateur.nom,
+                          prenom: traitementUtilisateur.prenom,
+                          approuve: status === "approuve" ? true : false,
+                          refuse: status === "refuse" ? true : false,
+                          dateTraitement: dateTraitement,
+                          // date:trai
+                        };
+                      }
+                      if (s === "pdg") {
+                        obj = {
+                          code: "pdg",
+                          nom: traitementUtilisateur.nom,
+                          prenom: traitementUtilisateur.prenom,
+                          approuve: status === "approuve" ? true : false,
+                          refuse: status === "refuse" ? true : false,
+                          dateTraitement: dateTraitement,
+                          // date:trai
+                        };
+                      }
                     }
                     sig.push(obj);
                   }
@@ -585,7 +623,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
   if (demande) {
     if (demande.status === "en cours") {
       // creer des obj's pour avoir un filter de message :
-
       // les cas possible de traitement d'une demande et le message que le demandeur doit recevoire :
       const demandeurFilterMessage = {
         // directeur generale :
@@ -753,15 +790,16 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>${getCv(
               nextSignataire.civilite
             )}.</b>`;
-            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom} ${nextSignataire.nom}</b> `;
+            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom.toLowerCase()} ${nextSignataire.nom.toLowerCase()}</b> `;
             messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
 
             // verfier est ce que la demande a ete fini le traitement :
             if (nextCode === "fini") {
               messageDemandeur +=
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
+              demande.status = "approuve";
             } else {
-              // envouyer la demande au signataire procaine pour la traiter :
+              // envoyer la demande au signataire procaine pour la traiter :
               demande.traitement.push({
                 utilisateur: nextUserId,
                 dateEnvoi: new Date(),
@@ -771,7 +809,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             }
 
             // sauvgarder le chnagement :
-            //await demande.save();
+            await demande.save();
 
             messageDemandeur += "</p>";
             // envoyer le message au demandeur :
@@ -784,29 +822,84 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             // envoyer le message au signataire :
             if (nextCode !== "fini") {
               let codeIndex = Array.from(demande.traitement).findIndex(
-                (cd) => cd === nextCode
+                (cd) => String(cd.code) === String(nextCode)
               );
-              let messageSignataire = `<p>Une <a style='font-weight:bold' href="${
-                process.env.CLIENT_ADDRESS
-              }/details-demande/${demande._id}/traitement/${
-                demande.traitement[codeIndex + 1]._id
-              }">demande</a>`;
-              messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom.toLowerCase()}</b> <b style='font-weight:bold'>${demande.demandeur.nom.toLowerCase()}</b>, ${
-                signataireFilterMessage[nextCode]
-              }</p>`;
-              sendNotification(
-                nextUserId,
-                messageSignataire,
-                `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
-              );
+              let traitementItem = demande.traitement[codeIndex];
+              if (traitementItem) {
+                let messageSignataire = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${traitementItem._id}">demande</a>`;
+                messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom.toLowerCase()}</b> <b style='font-weight:bold'>${demande.demandeur.nom.toLowerCase()}</b>, ${
+                  signataireFilterMessage[nextCode]
+                }</p>`;
+
+                sendNotification(
+                  nextUserId,
+                  messageSignataire,
+                  `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                );
+              }
             }
 
-            res.status(500);
-            throw new Error(
-              "Traitement impossible ! Il y a un développement à faire pour le moment. Merci pour votre compréhension"
-            );
+            if (nextCode === "fini") {
+              let optionService = await Service.findById(
+                demande.option.service
+              );
+              let optionDepartement = await Departement.findById(
+                optionService.departement
+              );
 
-            // res.json({ message: "demande approvee avec success !" });
+              let optionPdd = await Utilisateur.findById(
+                optionService.proprietaireDeDonnees
+              );
+
+              if (optionService && optionService.chefService) {
+                let message = `<p> Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">demande</a> fait`;
+                message += `par <b style='font-weight:bold'>${getCv(
+                  demande.demandeur.civilite
+                )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+                sendNotification(
+                  optionService.chefService,
+                  message,
+                  `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                );
+              }
+
+              if (optionDepartement && optionDepartement.chefDeDepartement) {
+                let message = `<p> Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">demande</a> fait`;
+                message += ` par <b style='font-weight:bold'>${getCv(
+                  demande.demandeur.civilite
+                )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de departement, et votre departement sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+                sendNotification(
+                  optionDepartement.chefDeDepartement,
+                  message,
+                  `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                );
+              }
+
+              if (optionPdd) {
+                let message = `<p> Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">demande</a> fait`;
+                message += ` par <b style='font-weight:bold'>${getCv(
+                  demande.demandeur.civilite
+                )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en propriétaire de données de la DAMI ('<i>${demande.option.libelle}</i>')</p>`;
+                sendNotification(
+                  optionPdd._id,
+                  message,
+                  `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                );
+              }
+
+              
+
+            }
+
+            // res.status(500);
+            // throw new Error(
+            //   "Traitement impossible ! Il y a un développement à faire pour le moment. Merci pour votre compréhension"
+            // );
+
+            res.json({ message: "demande approvee avec success !" });
           } else {
             res.status(400);
             throw new Error("demande deja traitée");
@@ -845,10 +938,8 @@ export const refuserDemande = asyncHandler(async (req, res) => {
         if (traitement) {
           if (String(traitement.utilisateur) === String(req.user.id)) {
             if (traitement.status === "en cours") {
-              let crtfCode = null;
               for (let tr of demande.traitement) {
                 if (String(tr._id) === String(req.params.idTraitement)) {
-                  crtfCode = tr.code;
                   tr.motifRefus = req.body.motif;
                   tr.status = "refuse";
                   tr.dateTraitement = new Date();
@@ -858,124 +949,93 @@ export const refuserDemande = asyncHandler(async (req, res) => {
 
               demande.status = "refuse";
               await demande.save();
-              let contenu = "";
+
+              let signataireUser = await Utilisateur.findById(
+                traitement.utilisateur
+              );
+
               // ecrit le contenu de la notification selon le type d'approbation :
-              const arrCrtCode = crtfCode.split(".");
-              if (arrCrtCode.length > 1) {
-                const direction = await Direction.findOne({
-                  directeur: req.user.id,
-                }).populate("directeur");
-
-                if (direction) {
-                  if (crtfCode === "hiq.pdd") {
-                    contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique et propritaire de données. motif de refus: ${
-                      req.body.motif
-                    } </p>`;
-                  }
-
-                  if (crtfCode === "pdd.dir") {
-                    contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propritaire de donnes et directeur de l'entité. motif de refus: ${
-                      req.body.motif
-                    } </p>`;
-                  }
-
-                  if (crtfCode === "hiq.dir") {
-                    contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur hiarchique et directeur de l'entite. motif de refus: ${
-                      req.body.motif
-                    } </p>`;
-                  }
-
-                  if (crtfCode === "hiq.pdd.dir") {
-                    contenu = `<p>
-                    Votre <a style='font-weight:bold' href="${
-                      process.env.CLIENT_ADDRESS
-                    }/details-demande/${demande._id}">demande</a> 
-                    a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiarchique, propritaire de données et directeur de l'entite. motif de refus: ${
-                      req.body.motif
-                    } </p>`;
-                  }
-                } else {
-                  res.status(404);
-                  throw Error("direction introuvable !");
-                }
-              } else {
-                if (crtfCode === "cds") {
-                  let service = await Service.findOne({
-                    chefService: req.user.id,
-                  }).populate("chefService");
-
-                  contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${
-                        process.env.CLIENT_ADDRESS
-                      }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le chef de service ${service.libelle.toLowerCase()} en tant que votre chef de service. motif de refus: ${
-                    req.body.motif
-                  } </p>`;
-                } else if (crtfCode === "cdd") {
-                  let departement = await Departement.findOne({
-                    chefDeDepartement: req.user.id,
-                  }).populate("chefDeDepartement");
-
-                  contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${
-                        process.env.CLIENT_ADDRESS
-                      }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le chef de service ${departement.libelle.toLowerCase()} en tant que votre chef de departement. motif de refus: ${
-                    req.body.motif
-                  } </p>`;
-                } else if (crtfCode === "hiq") {
-                  let direction = await Direction.findOne({
-                    directeur: req.user.id,
-                  }).populate("directeur");
-
-                  contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${
-                        process.env.CLIENT_ADDRESS
-                      }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que votre directeur hiérarchique. motif de refus: ${
-                    req.body.motif
-                  } </p>`;
-                } else if (crtfCode === "pdd") {
-                  let direction = await Direction.findOne({
-                    directeur: req.user.id,
-                  }).populate("directeur");
-
-                  contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${
-                        process.env.CLIENT_ADDRESS
-                      }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que propriétaire de données. motif de refus: <b>${
-                    req.body.motif
-                  } </b></p>`;
-                } else if (crtfCode === "dir") {
-                  let direction = await Direction.findOne({
-                    directeur: req.user.id,
-                  }).populate("directeur");
-                  contenu = `<p>
-                      Votre <a style='font-weight:bold' href="${
-                        process.env.CLIENT_ADDRESS
-                      }/details-demande/${demande._id}">demande</a> 
-                      a été refusée par le directeur de la direction '${direction.libelle.toLowerCase()}' en tant que directeur de l'entité. motif de refus: <b>${
-                    req.body.motif
-                  } </b></p>`;
-                }
-              }
-
+              // creer des obj's pour avoir un filter de message :
+              // les cas possible de traitement d'une demande et le message que le demandeur doit recevoire :
+              const demandeurFilterMessage = {
+                // directeur generale :
+                dg: " en tant que directeur général",
+                // president directeur generale :
+                pdg: " en tant que président directeur général",
+                // proprietaire de donnees :
+                pdd: " en tant que propriétaire de données",
+                /*
+         les cas possibles pour un chef de service ===>  :
+                    - il peut etre juste un chef de service .
+         */
+                cds: " en tant que chef de service",
+                /*
+         les cas possibles pour un chef de departement ===>  :
+                  - il peut etre juste un chef de departement .
+                  - il peut un chef de service et chef de departement.     
+         */
+                cdd: " en tant que chef de derpatement",
+                "cds.cdd":
+                  " en tant que chef de service et chef de derpatement",
+                /*
+         les cas possibles pour un directeur ===>  :
+                  - il peut etre juste un directeur hiarchique .
+                  - il peut un chef de service et directeur hiarchique
+                  - il peut un chef de departement et directeur hiarchique 
+                  - il peut un chef de service, chef de departement et directeur hiarchique
+                  - il peut un directeur hiarchique et un pdd
+                  - il peut un chef de service, un directeur hiarchique et un pdd
+                  - il peut un chef de departement, un directeur hiarchique et un pdd
+                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
+                  - il peut un directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
+                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
+                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
+                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
+                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
+         */
+                hiq: " en tant que directeur hiarchique",
+                "cds.hiq":
+                  " en tant que chef de service et directeur hiarchique",
+                "cdd.hiq":
+                  " en tant que chef de departement et directeur hiarchique",
+                "cds.cdd.hiq":
+                  " en tant que chef de service, chef de departement et directeur hiarchique",
+                "hiq.pdd":
+                  " en tant que directeur hiarchique et propriétaire de données",
+                "cds.hiq.pdd":
+                  "  en tant que chef de service, directeur hiarchique et propriétaire de données",
+                "cdd.hiq.pdd":
+                  " en tant que chef de departement  directeur hiarchique et propriétaire de données",
+                "cds.cdd.hiq.pdd":
+                  " en tant que chef de service, chef de departement  directeur hiarchique et propriétaire de données",
+                "hiq.dir":
+                  " en tant que directeur hiarchique et directeur de l'entité",
+                "cds.hiq.dir":
+                  " en tant que chef de service, directeur hiarchique et directeur de l'entité",
+                "cdd.hiq.dir":
+                  " en tant que chef de departement  directeur hiarchique et directeur de l'entité",
+                "cds.cdd.hiq.dir":
+                  " en tant que chef de service, chef de departement  directeur hiarchique et directeur de l'entité",
+                "hiq.pdd.dir":
+                  " en tant que directeur hiarchique, propriétaire de données et directeur de l'entité",
+                "cds.hiq.pdd.dir":
+                  " en tant que chef de service, directeur hiarchique, propriétaire de données et directeur de l'entité",
+                "cdd.hiq.pdd.dir":
+                  " en tant que chef de departement  directeur hiarchique, propriétaire de données et directeur de l'entité",
+              };
+              let messageDemandeur = `<p> Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a>`;
+              messageDemandeur += ` a été refuseée par <b style='font-weight:bold'>${getCv(
+                signataireUser.civilite
+              )}.</b>`;
+              messageDemandeur += ` <b style='font-weight:bold'>${signataireUser.prenom.toLowerCase()} ${signataireUser.nom.toLowerCase()}</b> `;
+              messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
+              messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif}"`;
+              messageDemandeur += "</p>";
               sendNotification(
                 demande.demandeur,
-                contenu,
+                messageDemandeur,
                 `Votre demande a été refusée`
               );
               res.json({ message: "demande refuse!" });
@@ -1056,13 +1116,16 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
         if (traitement) {
           let obj = null;
           let status = traitement.status;
+          const traitementUtilisateur = await Utilisateur.findById(
+            traitement.utilisateur
+          );
           if (status && status !== "en cours") {
             let dateTraitement = traitement.dateTraitement;
             if (s === "cds") {
               obj = {
                 code: "cds",
-                nom: service.chefService.nom,
-                prenom: service.chefService.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1073,8 +1136,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "cdd") {
               obj = {
                 code: "cdd",
-                nom: departement.chefDeDepartement.nom,
-                prenom: departement.chefDeDepartement.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1085,8 +1148,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "hiq") {
               obj = {
                 code: "hiq",
-                nom: direction.directeur.nom,
-                prenom: direction.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1097,8 +1160,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.nom,
-                prenom: optionPDD.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1109,8 +1172,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
             if (s === "dir") {
               obj = {
                 code: "dir",
-                nom: optionDirection.directeur.nom,
-                prenom: optionDirection.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1128,15 +1191,29 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                 if (traitement) {
                   let obj = null;
                   let status = traitement.status;
-
+                  const traitementUtilisateur = await Utilisateur.findById(
+                    traitement.utilisateur
+                  );
                   if (status && status !== "en cours") {
                     let dateTraitement = traitement.dateTraitement;
 
                     if (item === "cds") {
                       obj = {
                         code: "cds",
-                        nom: service.nom,
-                        prenom: service.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
+                        approuve: status === "approuve" ? true : false,
+                        refuse: status === "refuse" ? true : false,
+                        dateTraitement: dateTraitement,
+                        // date:trai
+                      };
+                    }
+
+                    if (item === "cdd") {
+                      obj = {
+                        code: "cdd",
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1147,8 +1224,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                     if (item === "hiq") {
                       obj = {
                         code: "hiq",
-                        nom: direction.directeur.nom,
-                        prenom: direction.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1159,8 +1236,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.nom,
-                        prenom: optionPDD.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1171,8 +1248,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                     if (item === "dir") {
                       obj = {
                         code: "dir",
-                        nom: optionDirection.directeur.nom,
-                        prenom: optionDirection.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1379,6 +1456,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
     let isChefDeService = false;
     let isChefDeDepartement = false;
     let isDirecteur = false;
+    let isPDG = false;
+    let isDG = false;
 
     if (req.user.isChefDeService) {
       let service = await Service.findOne(req.user.service);
@@ -1403,6 +1482,10 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
         isDirecteur = true;
     }
 
+    if (req.user.fonction === "directeur général") isDG = true;
+
+    if (req.user.fonction === "président directeur général") isPDG = true;
+
     let supService = await Service.findById(demandes.option.service._id);
     let supDepratement = await Service.findById(
       demandes.option.service.deparatement
@@ -1425,7 +1508,9 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
       isDirecteur ||
       supService ||
       supDepratement ||
-      supPdd
+      supPdd ||
+      isDG ||
+      isPDG
     ) {
       demandes = JSON.parse(JSON.stringify(demandes));
       const service = await Service.findById(
@@ -1460,7 +1545,9 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
         if (traitement) {
           let obj = null;
           let status = traitement.status;
-
+          const traitementUtilisateur = await Utilisateur.findById(
+            traitement.utilisateur
+          );
           if (status && status !== "en cours") {
             let dateTraitement = traitement.dateTraitement;
 
@@ -1475,8 +1562,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 ).populate("chefDeDepartement");
                 obj = {
                   code: "cdd",
-                  nom: departement.chefDeDepartement.nom,
-                  prenom: departement.chefDeDepartement.prenom,
+                  nom: traitementUtilisateur.nom,
+                  prenom: traitementUtilisateur.prenom,
                   approuve: status === "approuve" ? true : false,
                   refuse: status === "refuse" ? true : false,
                   dateTraitement: dateTraitement,
@@ -1488,8 +1575,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             if (s === "cds") {
               obj = {
                 code: "cds",
-                nom: service.chefService.nom,
-                prenom: service.chefService.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1500,8 +1587,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             if (s === "hiq") {
               obj = {
                 code: "hiq",
-                nom: direction.directeur.nom,
-                prenom: direction.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1512,8 +1599,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             if (s === "pdd") {
               obj = {
                 code: "pdd",
-                nom: optionPDD.nom,
-                prenom: optionPDD.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
@@ -1524,13 +1611,35 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
             if (s === "dir") {
               obj = {
                 code: "dir",
-                nom: optionDirection.directeur.nom,
-                prenom: optionDirection.directeur.prenom,
+                nom: traitementUtilisateur.nom,
+                prenom: traitementUtilisateur.prenom,
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
                 // date:trai
               };
+              if (s === "dg") {
+                obj = {
+                  code: "dg",
+                  nom: traitementUtilisateur.nom,
+                  prenom: traitementUtilisateur.prenom,
+                  approuve: status === "approuve" ? true : false,
+                  refuse: status === "refuse" ? true : false,
+                  dateTraitement: dateTraitement,
+                  // date:trai
+                };
+              }
+              if (s === "pdg") {
+                obj = {
+                  code: "pdg",
+                  nom: traitementUtilisateur.nom,
+                  prenom: traitementUtilisateur.prenom,
+                  approuve: status === "approuve" ? true : false,
+                  refuse: status === "refuse" ? true : false,
+                  dateTraitement: dateTraitement,
+                  // date:trai
+                };
+              }
             }
             sig.push(obj);
           }
@@ -1541,6 +1650,9 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
               for (const item of arrCode) {
                 let traitement = tr;
                 if (traitement) {
+                  const traitementUtilisateur = await Utilisateur.findById(
+                    traitement.utilisateur
+                  );
                   let obj = null;
                   let status = traitement.status;
 
@@ -1550,8 +1662,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "cds") {
                       obj = {
                         code: "cds",
-                        nom: service.chefService.nom,
-                        prenom: service.chefService.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1562,8 +1674,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "cdd") {
                       obj = {
                         code: "cdd",
-                        nom: departement.chefDeDepartement.nom,
-                        prenom: departement.chefDeDepartement.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1574,8 +1686,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "hiq") {
                       obj = {
                         code: "hiq",
-                        nom: direction.directeur.nom,
-                        prenom: direction.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1586,8 +1698,8 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "pdd") {
                       obj = {
                         code: "pdd",
-                        nom: optionPDD.nom,
-                        prenom: optionPDD.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
@@ -1598,13 +1710,35 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                     if (item === "dir") {
                       obj = {
                         code: "dir",
-                        nom: optionDirection.directeur.nom,
-                        prenom: optionDirection.directeur.prenom,
+                        nom: traitementUtilisateur.nom,
+                        prenom: traitementUtilisateur.prenom,
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
                         // date:trai
                       };
+                      if (s === "dg") {
+                        obj = {
+                          code: "dg",
+                          nom: traitementUtilisateur.nom,
+                          prenom: traitementUtilisateur.prenom,
+                          approuve: status === "approuve" ? true : false,
+                          refuse: status === "refuse" ? true : false,
+                          dateTraitement: dateTraitement,
+                          // date:trai
+                        };
+                      }
+                      if (s === "pdg") {
+                        obj = {
+                          code: "pdg",
+                          nom: traitementUtilisateur.nom,
+                          prenom: traitementUtilisateur.prenom,
+                          approuve: status === "approuve" ? true : false,
+                          refuse: status === "refuse" ? true : false,
+                          dateTraitement: dateTraitement,
+                          // date:trai
+                        };
+                      }
                     }
                     sig.push(obj);
                   }

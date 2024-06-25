@@ -63,7 +63,6 @@ import {
   fetchUsersByDivision,
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
-import { disable } from "colors";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -97,8 +96,8 @@ const validationHeaderSchema = Yup.object({
 
 const validationSousCategorieSchema = Yup.object({
   sousCategorie: Yup.string().required("il faut enntrer une sous-categorie"),
-  departement: Yup.string(),
   service: Yup.string().required("il faut enntrer un service"),
+  departement: Yup.string(),
   typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
 });
@@ -130,8 +129,10 @@ const DamiEditPageCrtOp = () => {
   const [callOptionByIDOnce, setCallOptionByIDOnce] = useState(false);
   const [htmlContent, setHtmlContent] = useState("");
   const [isUpdateForm, setIsUpdateForm] = useState(false);
+
   const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] =
     useState(false);
+
   const [typePdd, setTypePdd] = useState("srv");
 
   const [headerInitialValues] = useState({
@@ -142,11 +143,12 @@ const DamiEditPageCrtOp = () => {
     creation: "",
     maj: "",
   });
+
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
     departement:
       userInfo && userInfo.departement ? userInfo.departement._id : "",
-    service: userInfo && userInfo.service && userInfo.service._id,
+    service: userInfo && userInfo.service ? userInfo.service._id : "",
     typePdd: "",
     proprietaireDeDonnees: "",
   });
@@ -593,7 +595,9 @@ const DamiEditPageCrtOp = () => {
         ...option,
         ...values,
       });
+
       dispatch(fetchServiceByID(values.service));
+
       if (values.departement)
         dispatch(fetchDepartementByID(values.departement));
 
@@ -1720,14 +1724,14 @@ const DamiEditPageCrtOp = () => {
       dispatch(fetchSousCategories());
       dispatch(fetchServices());
       dispatch(fetchDepartements());
-
       dispatch(resetFetchOptionByID());
       setCallOnce(true);
     }
 
-    if (option && option.service && option.departement) {
+    if (option && option.service) {
       dispatch(getByServiceID(option.service));
-      dispatch(fetchDepartementByID(option.departement));
+      if (option.deparatement)
+        dispatch(fetchDepartementByID(option.departement));
     }
     if (successOptionCrtOpCreate) {
       setDraggedItems([]);
@@ -1753,7 +1757,6 @@ const DamiEditPageCrtOp = () => {
     }
 
     if (successOptionByID && recoveredOption) {
-      console.log("recovred option ");
       getUpdatedComponent(recoveredOption);
       setIsUpdateForm(true);
       const dateCreationString = new Date(
@@ -1809,19 +1812,26 @@ const DamiEditPageCrtOp = () => {
         maj: formattedMajDate,
       });
       setTypePdd("dir");
-      dispatch(
-        fetchUsersByDivision(
-          "dir",
-          recoveredOption.proprietaireDeDonnees.direction
-        )
-      );
+      if (recoveredOption && recoveredOption.proprietaireDeDonnees)
+        dispatch(
+          fetchUsersByDivision(
+            "dir",
+            recoveredOption.proprietaireDeDonnees.direction
+          )
+        );
       setTimeout(() => {
         sousCategorieForm.setValues({
           sousCategorie: recoveredOption.sousCategorie,
-          departement: recoveredOption.departement || null,
+          departement: recoveredOption.departement,
           service: recoveredOption.service,
-          typePdd: recoveredOption.proprietaireDeDonnees.direction,
-          proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees._id,
+          typePdd:
+            recoveredOption && recoveredOption.proprietaireDeDonnees
+              ? recoveredOption.proprietaireDeDonnees.direction
+              : "",
+          proprietaireDeDonnees:
+            recoveredOption && recoveredOption.proprietaireDeDonnees
+              ? recoveredOption.proprietaireDeDonnees._id
+              : "",
         });
       }, 1000);
     }
@@ -2210,11 +2220,11 @@ const DamiEditPageCrtOp = () => {
                 )}
               <label>
                 <small className="text-danger mt-3">*</small>
-                deparatement :
+                departement :
               </label>
               <Form.Select
                 className="mb-3"
-                name="service"
+                name="departement"
                 disabled
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
@@ -2388,24 +2398,25 @@ const DamiEditPageCrtOp = () => {
                         <Form.Check
                           id="cds"
                           value={checkValues["cds"]}
-                          label={`Chef de service de ${service.libelle}`}
+                          label={`Chef de service `}
                           className="check-signataire"
                           onChange={sigChangeHandler}
                           checked={checkValues["cds"]}
                         />
                       </div>
-                      {departement && (
+                      {sousCategorieForm.values.departement && departement && (
                         <div className="w-100 py-2">
                           <Form.Check
                             id="cdd"
                             value={checkValues["cdd"]}
-                            label={`Chef de departement de ${
-                              departement && departement.libelle
-                            }`}
+                            label={`Chef de departement`}
                             className="check-signataire"
                             onChange={sigChangeHandler}
                             checked={checkValues["cdd"]}
-                            disabled={sousCategorieForm.values.departement}
+                            disabled={
+                              !sousCategorieForm.values.departement ||
+                              !departement
+                            }
                           />
                         </div>
                       )}
@@ -2426,6 +2437,7 @@ const DamiEditPageCrtOp = () => {
                           Directeur hiérarchique doit signer toutes les demandes
                         </small>
                       </div>
+
                       <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
@@ -2441,20 +2453,21 @@ const DamiEditPageCrtOp = () => {
                           className="d-block mr-2 check-signataire"
                         />
                       </div>
+
                       <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
                           id="dir"
                           value={checkValues["dir"]}
                           checked={checkValues["dir"]}
-                          label={`directeur de ${direction.libelle}`}
+                          label={`directeur de ${String(direction.libelle).toLowerCase()}`}
                           className="d-block mr-2 check-signataire"
                           readOnly
                           disabled
                         />
                         <small className="d-block text-warning">
                           <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                          Le directeur de la direction {direction.libelle} doit
+                          Le directeur de la direction {String(direction.libelle).toLowerCase()} doit
                           obligatoirement signer dans cette option.
                         </small>
                       </div>

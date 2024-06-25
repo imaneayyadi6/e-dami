@@ -101,8 +101,9 @@ const validationHeaderSchema = Yup.object({
 
 const validationSousCategorieSchema = Yup.object({
   sousCategorie: Yup.string().required("il faut entrer une sous-categorie"),
-  departement: Yup.string().required("il faut enntrer un departement"),
-  service: Yup.string().required("il faut enntrer un service"),
+  departement: Yup.string(),
+  service: Yup.string().required("il faut entrer un service"),
+  typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
 });
 
@@ -162,6 +163,7 @@ const DamiEditPage = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const dispatch = useDispatch();
+  const [recoveredConditions, setRecoveredConditions] = useState([]);
 
   // const navigate = useNavigate();
   const directionList = useSelector((state) => state.directionList);
@@ -1757,7 +1759,6 @@ const DamiEditPage = () => {
     }
 
     if (successOptionByID && recoveredOption) {
-      console.log("recovred option ");
       getUpdatedComponent(recoveredOption);
       setIsUpdateForm(true);
       const dateCreationString = new Date(
@@ -1827,19 +1828,25 @@ const DamiEditPage = () => {
             recoveredOption.proprietaireDeDonnees.direction
           )
         );
+      setOption({
+        ...recoveredOption,
+        conditions: recoveredOption.conditions,
+      });
+      console.log(" recoveredOption : ",recoveredOption)
       setTimeout(() => {
         sousCategorieForm.setValues({
-          sousCategorie: recoveredOption.sousCategorie,
+          sousCategorie:recoveredOption && recoveredOption.sousCategorie ? recoveredOption.sousCategorie: "",
           departement: recoveredOption.departement,
-          service: recoveredOption.service,
+          service: recoveredOption.service ,
           typePdd:
-            recoveredOption &&
-            recoveredOption.proprietaireDeDonnees &&
-            recoveredOption.proprietaireDeDonnees.direction,
-          proprietaireDeDonnees:
-            recoveredOption.proprietaireDeDonnees &&
-            recoveredOption.proprietaireDeDonnees._id,
+            recoveredOption && recoveredOption.proprietaireDeDonnees
+              ? recoveredOption.proprietaireDeDonnees.direction
+              : "",
+          proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees
+            ? recoveredOption.proprietaireDeDonnees._id
+            : "",
         });
+        setRecoveredConditions(recoveredOption.conditions);
       }, 1000);
     }
 
@@ -2044,7 +2051,7 @@ const DamiEditPage = () => {
           )}
           {errorDepartementByID && (
             <Message itWillBeHidden={true} type="danger">
-              {errorserviceListByDepartementID}
+              {errorDepartementByID}
             </Message>
           )}
           {errordDepartementList && (
@@ -2445,7 +2452,7 @@ const DamiEditPage = () => {
                           <Form.Check
                             id="cds"
                             value={checkValues["cds"]}
-                            label={`Chef de service de ${service.libelle}`}
+                            label={`Chef de service `}
                             className="check-signataire"
                             onChange={sigChangeHandler}
                             checked={checkValues["cds"]}
@@ -2455,7 +2462,7 @@ const DamiEditPage = () => {
                           <Form.Check
                             id="cdd"
                             value={checkValues["cdd"]}
-                            label={`Chef de departement de ${departement.libelle}`}
+                            label={`Chef de departement `}
                             className="check-signataire"
                             onChange={sigChangeHandler}
                             checked={checkValues["cdd"]}
@@ -2482,19 +2489,18 @@ const DamiEditPage = () => {
                         <div className="w-100 py-2">
                           <Form.Check
                             onChange={sigChangeHandler}
-                            id="pdd"
-                            value={checkValues["pdd"]}
+                            id="atr"
+                            value={checkValues["atr"]}
                             checked={
                               option.proprietaireDeDonnees
-                                ? checkValues["pdd"]
+                                ? checkValues["atr"]
                                 : false
                             }
-                            disabled={!option.proprietaireDeDonnees}
-                            label="Proprietaire de donnees"
+                            // disabled={!option.proprietaireDeDonnees}
+                            label="Autre"
                             className="d-block mr-2 check-signataire"
                           />
 
-                          <small>si un radio est cochee</small>
                           {ids.length > 0 &&
                             ids.map((id) => (
                               <Form.Check
@@ -2508,6 +2514,21 @@ const DamiEditPage = () => {
                                 value={id}
                                 label={`id : ${id}`}
                                 id={id}
+                                checked={
+                                  recoveredConditions.length > 0
+                                    ? recoveredConditions.find(
+                                        (cd) => String(cd.type) === "pdd"
+                                      )
+                                      ? String(
+                                          recoveredConditions.find(
+                                            (cd) => String(cd.type) === "pdd"
+                                          ).element
+                                        ) === String(id)
+                                        ? true
+                                        : false
+                                      : false
+                                    : false
+                                }
                               />
                             ))}
                         </div>
@@ -2517,7 +2538,7 @@ const DamiEditPage = () => {
                             id="dir"
                             value={checkValues["dir"]}
                             checked={checkValues["dir"]}
-                            label={`Directeur de ${direction.libelle}`}
+                            label={`Directeur de ${String(direction.libelle).toLowerCase()}`}
                             className="d-block mr-2 check-signataire"
                             readOnly
                             disabled
@@ -2525,7 +2546,7 @@ const DamiEditPage = () => {
 
                           <small className="d-block text-warning">
                             <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                            Le directeur de la direction {direction.libelle}{" "}
+                            Le directeur de la direction {String(direction.libelle).toLowerCase()}{" "}
                             doit obligatoirement signer dans cette option.
                           </small>
                         </div>
@@ -2541,7 +2562,6 @@ const DamiEditPage = () => {
                             />
                           </div>
 
-                          <small>si un radio est cochee</small>
                           {ids.length > 0 &&
                             ids.map((id) => (
                               <Form.Check
@@ -2552,6 +2572,21 @@ const DamiEditPage = () => {
                                 value={id}
                                 label={`id : ${id}`}
                                 id={id}
+                                checked={
+                                  recoveredConditions.length > 0
+                                    ? recoveredConditions.find(
+                                        (cd) => String(cd.type) === "dg"
+                                      )
+                                      ? String(
+                                          recoveredConditions.find(
+                                            (cd) => String(cd.type) === "dg"
+                                          ).element
+                                        ) === String(id)
+                                        ? true
+                                        : false
+                                      : false
+                                    : false
+                                }
                               />
                             ))}
                         </div>
@@ -2565,7 +2600,6 @@ const DamiEditPage = () => {
                             className="d-block mr-2 check-signataire"
                           />
 
-                          <small>si un radio est cochee</small>
                           {ids.length > 0 &&
                             ids.map((id) => (
                               <Form.Check
@@ -2576,6 +2610,21 @@ const DamiEditPage = () => {
                                 value={id}
                                 label={`id : ${id}`}
                                 id={id}
+                                checked={
+                                  recoveredConditions.length > 0
+                                    ? recoveredConditions.find(
+                                        (cd) => String(cd.type) === "pdg"
+                                      )
+                                      ? String(
+                                          recoveredConditions.find(
+                                            (cd) => String(cd.type) === "pdg"
+                                          ).element
+                                        ) === String(id)
+                                        ? true
+                                        : false
+                                      : false
+                                    : false
+                                }
                               />
                             ))}
                         </div>

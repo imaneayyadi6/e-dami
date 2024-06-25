@@ -106,6 +106,14 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       const optionDirection = await Direction.findById(optionService.direction);
       option.dirLibelle = optionDirection.libelle;
     }
+    if(!option.departement){
+      let departement = optionService.departement;
+      console.log("departement :",departement);
+      option.departement = departement;
+    }
+
+
+
     res.json(option);
   } else {
     res.status(404);
@@ -239,6 +247,7 @@ export const updateOption = asyncHandler(async (req, res) => {
     }
 
     option.signataires = req.body.signataires || option.signataires;
+    option.conditions = req.body.conditions || option.conditions;
 
     const updatedOption = await option.save();
     res.json({

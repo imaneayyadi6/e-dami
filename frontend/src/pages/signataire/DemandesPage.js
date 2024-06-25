@@ -332,11 +332,7 @@ const DemandesPage = () => {
                               {String(traitement.option).toLowerCase()}
                             </small>
                           </td>
-                          <td>
-                            <small className="inline-text">
-                              {getTypeApprobation(traitement.code)}
-                            </small>
-                          </td>
+
                           <td>
                             <small
                               className={`table-text-status-${String(

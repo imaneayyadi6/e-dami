@@ -99,6 +99,7 @@ const FaireUneDemandeOption = () => {
     if (!isEmpty) {
       convertTheValueToAttribute();
       const contenu = damiBody.outerHTML;
+      
       dispatch(createDemande(id, contenu));
     } else {
       Toast.open({
