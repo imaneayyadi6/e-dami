@@ -59,7 +59,7 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
       $options: "i",
     };
   }
-  console.log(query);
+
   const options = await Option.find({
     ...query,
     isDeleted: false,
@@ -96,9 +96,9 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
 // @route   GET /api/options/:id
 // @access  private
 export const getOptionByID = asyncHandler(async (req, res) => {
-  let option = await Option.findById(req.params.id).populate(
-    "proprietaireDeDonnees"
-  );
+  let option = await Option.findById(req.params.id)
+    .populate("proprietaireDeDonnees")
+    .populate("autreUtilisateur");
   if (option) {
     option = JSON.parse(JSON.stringify(option));
     const optionService = await Service.findById(option.service);
@@ -106,13 +106,10 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       const optionDirection = await Direction.findById(optionService.direction);
       option.dirLibelle = optionDirection.libelle;
     }
-    if(!option.departement){
+    if (!option.departement) {
       let departement = optionService.departement;
-      console.log("departement :",departement);
       option.departement = departement;
     }
-
-
 
     res.json(option);
   } else {
@@ -152,6 +149,8 @@ export const createOption = asyncHandler(async (req, res) => {
             contenu,
             signataires: req.body.signataires,
             conditions: req.body.conditions,
+            autreResponsableTitre: req.body.autreResponsableTitre,
+            autreUtilisateur: req.body.autreUtilisateur,
           });
           const createdOption = await option.save();
           res.status(201).json(createdOption);
@@ -170,6 +169,8 @@ export const createOption = asyncHandler(async (req, res) => {
           contenu,
           signataires: req.body.signataires,
           conditions: req.body.conditions,
+          autreResponsableTitre: req.body.autreResponsableTitre,
+          autreUtilisateur: req.body.autreUtilisateur,
         });
         const createdOption = await option.save();
         res.status(201).json(createdOption);
@@ -248,6 +249,10 @@ export const updateOption = asyncHandler(async (req, res) => {
 
     option.signataires = req.body.signataires || option.signataires;
     option.conditions = req.body.conditions || option.conditions;
+    option.autreResponsableTitre =
+      req.body.autreResponsableTitre || option.autreResponsableTitre;
+    option.autreUtilisateur =
+      req.body.autreUtilisateur || option.autreUtilisateur;
 
     const updatedOption = await option.save();
     res.json({
@@ -260,6 +265,8 @@ export const updateOption = asyncHandler(async (req, res) => {
       sousCategorie: updatedOption.sousCategorie,
       service: updatedOption.service,
       signataires: updatedOption.signataires,
+      autreResponsableTitre: updatedOption.autreResponsableTitre,
+      autreUtilisateur: updatedOption.autreUtilisateur,
     });
   } else {
     res.status(404);
@@ -323,6 +330,8 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
             departement: service.departement,
             contenu,
             signataires: req.body.signataires,
+            autreResponsableTitre: req.body.autreResponsableTitre,
+            autreUtilisateur: req.body.autreUtilisateur,
           });
           const createdOption = await option.save();
           res.status(201).json(createdOption);
@@ -341,6 +350,8 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
           departement: service.departement,
           contenu,
           signataires: req.body.signataires,
+          autreResponsableTitre: req.body.autreResponsableTitre,
+          autreUtilisateur: req.body.autreUtilisateur,
         });
         const createdOption = await option.save();
         res.status(201).json(createdOption);
@@ -417,7 +428,10 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
         }
       }
       option.signataires = req.body.signataires || option.signataires;
-
+      option.autreResponsableTitre =
+        req.body.autreResponsableTitre || option.autreResponsableTitre;
+      option.autreUtilisateur =
+        req.body.autreUtilisateur || option.autreUtilisateur;
       const updatedOption = await option.save();
       res.json({
         _id: updatedOption.id,

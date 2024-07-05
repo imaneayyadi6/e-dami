@@ -12,6 +12,7 @@ const DamiDemande = ({ demande }) => {
     cds: "Approbation Chef de Service",
     cdd: "Approbation Chef de Departement",
     hiq: "Approbation Directeur Hiearchique",
+    atr: "Approbation de ",
     pdd: "Approbation Proprietaire de donnees",
     dir: `Approbation Directeur de la `,
     dg: "Approbation directeur generale",
@@ -291,6 +292,13 @@ const DamiDemande = ({ demande }) => {
                 <span>{sigTypes[sig]}</span>
                 {sig === "dir" && (
                   <span>{demande.dirLibelle.toLowerCase()}</span>
+                )}
+                {sig === "atr" && (
+                  <span>
+                    {demande.option &&
+                      demande.option.autreResponsableTitre &&
+                      demande.option.autreResponsableTitre.toLowerCase()}
+                  </span>
                 )}
               </div>
             ))}

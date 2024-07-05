@@ -59,6 +59,13 @@ const optionSchema = Schema(
       default: false,
     },
     signataires: [{ type: String }],
+    autreResponsableTitre: {
+      type: String,
+    },
+    autreUtilisateur: {
+      type: Schema.Types.ObjectId,
+      ref: "utilisateur",
+    },
     conditions: [
       {
         type: {

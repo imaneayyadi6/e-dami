@@ -7,8 +7,6 @@ import {
   Form,
   ListGroup,
   Modal,
-  OverlayTrigger,
-  Popover,
   Row,
 } from "react-bootstrap";
 import {
@@ -56,9 +54,6 @@ import {
   resetUpdateOption,
   updateOption,
 } from "../../redux/option/optionActions";
-
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { OPTION_LIST_REMOVE } from "../../redux/option/optionTypes";
 import {
   fetchDepartementByID,
@@ -68,6 +63,7 @@ import {
   fetchUsersByDivision,
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
+import axios from "axios";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -105,6 +101,8 @@ const validationSousCategorieSchema = Yup.object({
   service: Yup.string().required("il faut entrer un service"),
   typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
+  typeAtr: Yup.string(),
+  atr: Yup.string(),
 });
 
 const DamiEditPage = () => {
@@ -126,6 +124,7 @@ const DamiEditPage = () => {
     cds: false,
     cdd: false,
     hiq: true,
+    atr: false,
     pdd: false,
     dir: true,
     dg: false,
@@ -152,9 +151,15 @@ const DamiEditPage = () => {
     service: "",
     proprietaireDeDonnees: "",
     typePdd: "",
+    autreUtilisateur: "",
+    typeAtr: "",
   });
-  const [typePdd, setTypePdd] = useState("srv");
+
   const [ids, setIds] = useState([]);
+  const [typePdd, setTypePdd] = useState("srv");
+  const [typeAtr, setTypeAtr] = useState("srv");
+  const [usersAtr, setUsersAtr] = useState([]);
+  const [atrTitle, setAtrTitle] = useState("");
 
   const docRef = useRef(null);
   const btnRef = useRef(null);
@@ -166,6 +171,10 @@ const DamiEditPage = () => {
   const [recoveredConditions, setRecoveredConditions] = useState([]);
 
   // const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const directionList = useSelector((state) => state.directionList);
   const {
     loading: loadingDirectionList,
@@ -206,6 +215,7 @@ const DamiEditPage = () => {
   const directionByServiceID = useSelector(
     (state) => state.directionByServiceID
   );
+
   const {
     loading: loadingDirectionByServiceID,
     error: errorDirectionByServiceID,
@@ -653,6 +663,7 @@ const DamiEditPage = () => {
       ...option,
       dirLibelle: direction.libelle,
       signataires: signataires,
+      autreResponsableTitre: atrTitle,
       conditions: condition,
     });
 
@@ -687,6 +698,7 @@ const DamiEditPage = () => {
         cds: false,
         cdd: false,
         hiq: true,
+        atr: false,
         pdd: false,
         dir: true,
         pdg: false,
@@ -697,6 +709,7 @@ const DamiEditPage = () => {
   };
 
   const addOptionHandler = () => {
+    // console.log(option);
     dispatch(createOption(option));
   };
 
@@ -1717,7 +1730,22 @@ const DamiEditPage = () => {
       });
     }
   };
+  const getUserArt = async () => {
+    if (userInfo) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/utilisateurs/${typeAtr}/division/${sousCategorieForm.values.typeAtr}`,
+        config
+      );
 
+      setUsersAtr(data);
+    }
+  };
   useEffect(() => {
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
 
@@ -1748,7 +1776,10 @@ const DamiEditPage = () => {
         if (stoptions) {
           stoptions = stoptions.filter((op) => String(op._id) !== String(id));
           localStorage.setItem("options", JSON.stringify(stoptions));
-          dispatch({ type: OPTION_LIST_REMOVE, payload: id });
+          dispatch({
+            type: OPTION_LIST_REMOVE,
+            payload: id,
+          });
         }
       }
       Toast.open({
@@ -1786,6 +1817,7 @@ const DamiEditPage = () => {
       let cds = false;
       let cdd = false;
       let hiq = false;
+      let atr = false;
       let pdd = false;
       let dir = false;
       let dg = false;
@@ -1794,8 +1826,8 @@ const DamiEditPage = () => {
       for (const item of recoveredOption.signataires) {
         if (String(item) === "cds") cds = true;
         if (String(item) === "cdd") cdd = true;
-
         if (String(item) === "hiq") hiq = true;
+        if (String(item) === "atr") atr = true;
         if (String(item) === "pdd") pdd = true;
         if (String(item) === "dir") dir = true;
         if (String(item) === "dg") dg = true;
@@ -1806,6 +1838,7 @@ const DamiEditPage = () => {
         cds,
         cdd,
         hiq,
+        atr,
         pdd,
         dir,
         dg,
@@ -1821,6 +1854,7 @@ const DamiEditPage = () => {
         maj: formattedMajDate,
       });
       setTypePdd("dir");
+      setTypeAtr("dir");
       if (recoveredOption && recoveredOption.proprietaireDeDonnees)
         dispatch(
           fetchUsersByDivision(
@@ -1828,16 +1862,21 @@ const DamiEditPage = () => {
             recoveredOption.proprietaireDeDonnees.direction
           )
         );
+      getUserArt();
       setOption({
         ...recoveredOption,
         conditions: recoveredOption.conditions,
       });
-      console.log(" recoveredOption : ",recoveredOption)
+     
+      setAtrTitle(recoveredOption.autreResponsableTitre ? recoveredOption.autreResponsableTitre : "")
       setTimeout(() => {
         sousCategorieForm.setValues({
-          sousCategorie:recoveredOption && recoveredOption.sousCategorie ? recoveredOption.sousCategorie: "",
+          sousCategorie:
+            recoveredOption && recoveredOption.sousCategorie
+              ? recoveredOption.sousCategorie
+              : "",
           departement: recoveredOption.departement,
-          service: recoveredOption.service ,
+          service: recoveredOption.service,
           typePdd:
             recoveredOption && recoveredOption.proprietaireDeDonnees
               ? recoveredOption.proprietaireDeDonnees.direction
@@ -1845,6 +1884,9 @@ const DamiEditPage = () => {
           proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees
             ? recoveredOption.proprietaireDeDonnees._id
             : "",
+            typeAtr: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur.direction : '',
+            autreUtilisateur: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur._id : '' 
+            
         });
         setRecoveredConditions(recoveredOption.conditions);
       }, 1000);
@@ -1952,6 +1994,14 @@ const DamiEditPage = () => {
       dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
     }
   }, [sousCategorieForm.values.typePdd]);
+
+ 
+
+  useEffect(() => {
+    if (userInfo && sousCategorieForm.values.typeAtr) {
+      getUserArt();
+    }
+  }, [sousCategorieForm.values.typeAtr]);
 
   useEffect(() => {
     const handleBodyClick = (event) => {
@@ -2079,19 +2129,16 @@ const DamiEditPage = () => {
               {errorOptionCreate}
             </Message>
           )}
-
           {errorServiceByID && (
             <Message type="danger" itWillBeHidden={true}>
               {errorServiceByID}
             </Message>
           )}
-
           {errorOptionUpdate && (
             <Message type="danger" itWillBeHidden={true}>
               {errorOptionUpdate}
             </Message>
           )}
-
           <div className="d-flex justify-content-between align-items-center">
             <Button
               variant="light"
@@ -2298,6 +2345,137 @@ const DamiEditPage = () => {
                     {sousCategorieForm.errors.service}
                   </small>
                 )}
+              <div>
+                <label>
+                  autre responsable de cette option (autre signataire)
+                </label>
+                <div className="d-flex align-items-center">
+                  <Form.Check
+                    name="ftlAtr"
+                    className="mr-1"
+                    type="radio"
+                    checked={typeAtr === "srv"}
+                    onChange={() => {
+                      setUsersAtr([]);
+                      setTypeAtr("srv");
+                    }}
+                    label="filtrer par service"
+                  />
+                  <Form.Check
+                    name="ftlAtr"
+                    className="mr-1"
+                    type="radio"
+                    checked={typeAtr === "dep"}
+                    value={typeAtr}
+                    onChange={() => {
+                      setUsersAtr([]);
+                      setTypeAtr("dep");
+                    }}
+                    label="filtrer par departement"
+                  />
+
+                  <Form.Check
+                    name="ftlAtr"
+                    className="mr-1"
+                    type="radio"
+                    checked={typeAtr === "dir"}
+                    value={typeAtr}
+                    onChange={() => {
+                      setUsersAtr([]);
+                      setTypeAtr("dir");
+                    }}
+                    label="filtrer par direction"
+                  />
+                </div>
+                {typeAtr === "srv" ? (
+                  <Form.Select
+                    className="mb-3"
+                    name="typeAtr"
+                    onChange={sousCategorieForm.handleChange}
+                    onBlur={sousCategorieForm.handleBlur}
+                    value={sousCategorieForm.values.typeAtr}
+                    disabled={loadingServiceList}
+                  >
+                    <option value="">
+                      ---- veuillez choisire un service ----
+                    </option>
+                    {services.length > 0 &&
+                      services.map((srv) => (
+                        <option key={srv._id} value={srv._id}>
+                          {srv.libelle}
+                        </option>
+                      ))}
+                  </Form.Select>
+                ) : typeAtr === "dep" ? (
+                  <Form.Select
+                    className="mb-3"
+                    name="typeAtr"
+                    onChange={sousCategorieForm.handleChange}
+                    onBlur={sousCategorieForm.handleBlur}
+                    value={sousCategorieForm.values.typeAtr}
+                    disabled={loadingDepartementList}
+                  >
+                    <option value="">
+                      ---- veuillez choisire un departement ----
+                    </option>
+                    {departements.length > 0 &&
+                      departements.map((dep) => (
+                        <option key={dep._id} value={dep._id}>
+                          {dep.libelle}
+                        </option>
+                      ))}
+                  </Form.Select>
+                ) : (
+                  <Form.Select
+                    className="mb-3"
+                    name="typeAtr"
+                    onChange={sousCategorieForm.handleChange}
+                    onBlur={sousCategorieForm.handleBlur}
+                    value={sousCategorieForm.values.typeAtr}
+                    disabled={loadingDirectionList}
+                  >
+                    <option value="">
+                      ---- veuillez choisire une direction ----
+                    </option>
+                    {directions.length > 0 &&
+                      directions.map((direction) => (
+                        <option key={direction._id} value={direction._id}>
+                          {direction.libelle}
+                        </option>
+                      ))}
+                  </Form.Select>
+                )}
+                {sousCategorieForm.touched.typeAtr &&
+                  sousCategorieForm.errors.typeAtr && (
+                    <small className="text-danger d-block">
+                      {sousCategorieForm.errors.typeAtr}
+                    </small>
+                  )}
+
+                <Form.Select
+                  name="autreUtilisateur"
+                  disabled={loadingUserByDivision}
+                  value={sousCategorieForm.values.autreUtilisateur}
+                  onChange={sousCategorieForm.handleChange}
+                  onBlur={sousCategorieForm.handleBlur}
+                >
+                  <option value="">
+                    ----- choisire un responsable (autre signataire) -----
+                  </option>
+                  {usersAtr && usersAtr.length > 0 &&
+                    usersAtr.map((user) => (
+                      <option value={user._id}>
+                        {user.prenom} {user.nom}
+                      </option>
+                    ))}
+                </Form.Select>
+                {sousCategorieForm.touched.autreUtilisateur &&
+                  sousCategorieForm.errors.autreUtilisateur && (
+                    <small className="text-danger d-block">
+                      {sousCategorieForm.errors.autreUtilisateur}
+                    </small>
+                  )}
+              </div>
               <label>proprietaire de donnees : </label>
               <div className="d-flex align-items-center">
                 <Form.Check
@@ -2323,6 +2501,7 @@ const DamiEditPage = () => {
                   }}
                   label="filtrer par departement"
                 />
+
                 <Form.Check
                   name="fltPdd"
                   className="mr-1"
@@ -2486,51 +2665,43 @@ const DamiEditPage = () => {
                             demandes
                           </small>
                         </div>
+
+                        <div className="w-100 py-2">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="pdd"
+                            value={checkValues["pdd"]}
+                            checked={checkValues["pdd"]}
+                            disabled={!option.proprietaireDeDonnees}
+                            label="proprietaire de donnees"
+                            className="d-block mr-2 check-signataire"
+                          />
+                        </div>
+
                         <div className="w-100 py-2">
                           <Form.Check
                             onChange={sigChangeHandler}
                             id="atr"
                             value={checkValues["atr"]}
-                            checked={
-                              option.proprietaireDeDonnees
-                                ? checkValues["atr"]
-                                : false
+                            checked={checkValues["atr"]}
+                            disabled={
+                              !sousCategorieForm.values.autreUtilisateur
                             }
-                            // disabled={!option.proprietaireDeDonnees}
                             label="Autre"
                             className="d-block mr-2 check-signataire"
                           />
 
-                          {ids.length > 0 &&
-                            ids.map((id) => (
-                              <Form.Check
-                                disabled={
-                                  !option.proprietaireDeDonnees ||
-                                  !checkValues["pdd"]
-                                }
-                                type="radio"
-                                name="pdd-id"
-                                className="pdd-id"
-                                value={id}
-                                label={`id : ${id}`}
-                                id={id}
-                                checked={
-                                  recoveredConditions.length > 0
-                                    ? recoveredConditions.find(
-                                        (cd) => String(cd.type) === "pdd"
-                                      )
-                                      ? String(
-                                          recoveredConditions.find(
-                                            (cd) => String(cd.type) === "pdd"
-                                          ).element
-                                        ) === String(id)
-                                        ? true
-                                        : false
-                                      : false
-                                    : false
-                                }
-                              />
-                            ))}
+                          <div className="w-50">
+                            <Form.Control
+                              placeholder="veuillez saisir l'intitulé de signataire"
+                              value={atrTitle}
+                              onChange={(e) => setAtrTitle(e.target.value)}
+                              disabled={
+                                !sousCategorieForm.values.autreUtilisateur ||
+                                !checkValues["atr"]
+                              }
+                            />
+                          </div>
                         </div>
                         <div className="w-100 py-2">
                           <Form.Check
@@ -2538,7 +2709,9 @@ const DamiEditPage = () => {
                             id="dir"
                             value={checkValues["dir"]}
                             checked={checkValues["dir"]}
-                            label={`Directeur de ${String(direction.libelle).toLowerCase()}`}
+                            label={`Directeur de ${String(
+                              direction.libelle
+                            ).toLowerCase()}`}
                             className="d-block mr-2 check-signataire"
                             readOnly
                             disabled
@@ -2546,8 +2719,9 @@ const DamiEditPage = () => {
 
                           <small className="d-block text-warning">
                             <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                            Le directeur de la direction {String(direction.libelle).toLowerCase()}{" "}
-                            doit obligatoirement signer dans cette option.
+                            Le directeur de la direction{" "}
+                            {String(direction.libelle).toLowerCase()} doit
+                            obligatoirement signer dans cette option.
                           </small>
                         </div>
                         <div className="w-100 py-2 d-block">
@@ -2561,34 +2735,6 @@ const DamiEditPage = () => {
                               className="d-block mr-2 check-signataire"
                             />
                           </div>
-
-                          {ids.length > 0 &&
-                            ids.map((id) => (
-                              <Form.Check
-                                disabled={!checkValues["dg"]}
-                                type="radio"
-                                name="dg-id"
-                                className="dg-id"
-                                value={id}
-                                label={`id : ${id}`}
-                                id={id}
-                                checked={
-                                  recoveredConditions.length > 0
-                                    ? recoveredConditions.find(
-                                        (cd) => String(cd.type) === "dg"
-                                      )
-                                      ? String(
-                                          recoveredConditions.find(
-                                            (cd) => String(cd.type) === "dg"
-                                          ).element
-                                        ) === String(id)
-                                        ? true
-                                        : false
-                                      : false
-                                    : false
-                                }
-                              />
-                            ))}
                         </div>
                         <div className="w-100 py-2 d-block">
                           <Form.Check

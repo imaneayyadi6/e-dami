@@ -9,6 +9,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     cdd: "Approbation Chef de Departement",
     hiq: "Approbation Directeur Hiearchique",
     pdd: "Approbation Proprietaire de donnees",
+    atr: "Approbation de ",
     dir: `Approbation Directeur de la `,
     dg: "Approbation directeur général",
     pdg: "Approbation président-directeur général",
@@ -333,6 +334,13 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                           vOption.dirLibelle.toLowerCase()}
                       </span>
                     )}
+                    {sig === "atr" && (
+                      <span>
+                        {option &&
+                          vOption.autreResponsableTitre &&
+                          vOption.autreResponsableTitre.toLowerCase()}
+                      </span>
+                    )}
                   </div>
                 )
               ) : (
@@ -343,6 +351,14 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                       {option &&
                         vOption.dirLibelle &&
                         vOption.dirLibelle.toLowerCase()}
+                    </span>
+                  )}
+
+                  {sig === "atr" && (
+                    <span>
+                      {option &&
+                        vOption.autreResponsableTitre &&
+                        vOption.autreResponsableTitre.toLowerCase()}
                     </span>
                   )}
                 </div>

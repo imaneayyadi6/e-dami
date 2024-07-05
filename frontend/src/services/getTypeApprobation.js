@@ -18,8 +18,12 @@ const getTypeApprobation = (code) => {
       return "propriétaire de données";
     case "cds.cdd.hiq.pdd":
       return "chef de service, chef de departement, directeur hiearchique et propriétaire de données";
+    case "cdd.hiq.pdd":
+      return "chef de departement, directeur hiearchique et propriétaire de données";
     case "dir":
       return "directeur de l'entité";
+    case "cdd.hiq.dir":
+      return "chef de departement, directeur hiearchique et directeur de l'entité";
     case "cds.cdd.hiq.dir":
       return "chef de service, chef de departement, directeur hiearchique et directeur de l'entité";
     case "dg":

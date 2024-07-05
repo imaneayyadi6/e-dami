@@ -88,7 +88,6 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
                   userID = demandeurDirection.directeur;
                   code = "cds.cdd.hiq";
                 }
-              } else {
               }
             }
           } else {
@@ -326,12 +325,16 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
             code = "hiq";
           }
         } else {
+          userID = demandeurDirection.directeur;
+          code = "hiq";
         }
       }
     } else {
       throw new Error("demandeur n'a pas une direction ou un directeur");
     }
   }
+
+  console.log([code, String(userID)]);
 
   return [code, String(userID)];
 };
@@ -358,10 +361,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     option.proprietaireDeDonnees
   );
   const directionEntite = await Direction.findById(option.service.direction);
-
-  if (option.proprietaireDeDonnees && !utilisateurPdd)
-    throw new Error("utilisateur proprietaire de données introuvable !");
-
+  
   if (!directionEntite) throw new Error("option n'a pas direction (entite) !");
 
   let nextCode = "";
@@ -472,6 +472,9 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
       nextCode = "dir";
       nextUserId = demandeurDirection.directeur;
+    } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "atr") {
+      nextCode = "atr";
+      nextUserId = option.autreUtilisateur;
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dg") {
       const dgUtilisateur = await Utilisateur.findOne({
         fonction: "directeur général",
@@ -605,6 +608,9 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
       nextCode = "dir";
       nextUserId = demandeurDirection.directeur;
+    } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "atr") {
+      nextCode = "atr";
+      nextUserId = option.autreUtilisateur;
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dg") {
       const dgUtilisateur = await Utilisateur.findOne({
         fonction: "directeur général",

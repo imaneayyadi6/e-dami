@@ -530,7 +530,6 @@ export const fetchUsersByDivision = (type, id) => {
         config
       );
 
-      console.log(data);
 
       dispatch({
         type: USER_BY_DIVISION_SUCCESS,
