@@ -129,6 +129,7 @@ export const createOption = asyncHandler(async (req, res) => {
     // proprietaireDeDonnees,
     contenu,
   } = req.body;
+
   const sousCategorie = await SousCategorie.findById(req.body.sousCategorie);
   if (sousCategorie) {
     const service = await Service.findById(req.body.service);
@@ -149,9 +150,14 @@ export const createOption = asyncHandler(async (req, res) => {
             contenu,
             signataires: req.body.signataires,
             conditions: req.body.conditions,
-            autreResponsableTitre: req.body.autreResponsableTitre,
-            autreUtilisateur: req.body.autreUtilisateur,
+            shouldAskAnyTime: req.body.shouldAskAnyTime,
           });
+          if (req.body.autreResponsableTitre) {
+            option.autreResponsableTitre = req.body.autreResponsableTitre;
+          }
+          if (req.body.autreUtilisateur) {
+            option.autreUtilisateur = req.body.autreUtilisateur;
+          }
           const createdOption = await option.save();
           res.status(201).json(createdOption);
         } else {
@@ -169,9 +175,14 @@ export const createOption = asyncHandler(async (req, res) => {
           contenu,
           signataires: req.body.signataires,
           conditions: req.body.conditions,
-          autreResponsableTitre: req.body.autreResponsableTitre,
-          autreUtilisateur: req.body.autreUtilisateur,
+          shouldAskAnyTime: req.body.shouldAskAnyTime,
         });
+        if (req.body.autreResponsableTitre) {
+          option.autreResponsableTitre = req.body.autreResponsableTitre;
+        }
+        if (req.body.autreUtilisateur) {
+          option.autreUtilisateur = req.body.autreUtilisateur;
+        }
         const createdOption = await option.save();
         res.status(201).json(createdOption);
       }
@@ -253,6 +264,8 @@ export const updateOption = asyncHandler(async (req, res) => {
       req.body.autreResponsableTitre || option.autreResponsableTitre;
     option.autreUtilisateur =
       req.body.autreUtilisateur || option.autreUtilisateur;
+    option.shouldAskAnyTime =
+      req.body.shouldAskAnyTime || option.shouldAskAnyTime;
 
     const updatedOption = await option.save();
     res.json({
@@ -330,9 +343,14 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
             departement: service.departement,
             contenu,
             signataires: req.body.signataires,
-            autreResponsableTitre: req.body.autreResponsableTitre,
-            autreUtilisateur: req.body.autreUtilisateur,
+            shouldAskAnyTime: req.body.shouldAskAnyTime,
           });
+          if (req.body.autreResponsableTitre) {
+            option.autreResponsableTitre = req.body.autreResponsableTitre;
+          }
+          if (req.body.autreUtilisateur) {
+            option.autreUtilisateur = req.body.autreUtilisateur;
+          }
           const createdOption = await option.save();
           res.status(201).json(createdOption);
         } else {
@@ -350,9 +368,14 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
           departement: service.departement,
           contenu,
           signataires: req.body.signataires,
-          autreResponsableTitre: req.body.autreResponsableTitre,
-          autreUtilisateur: req.body.autreUtilisateur,
+          shouldAskAnyTime: req.body.shouldAskAnyTime,
         });
+        if (req.body.autreResponsableTitre) {
+          option.autreResponsableTitre = req.body.autreResponsableTitre;
+        }
+        if (req.body.autreUtilisateur) {
+          option.autreUtilisateur = req.body.autreUtilisateur;
+        }
         const createdOption = await option.save();
         res.status(201).json(createdOption);
       }
@@ -432,6 +455,8 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
         req.body.autreResponsableTitre || option.autreResponsableTitre;
       option.autreUtilisateur =
         req.body.autreUtilisateur || option.autreUtilisateur;
+        option.shouldAskAnyTime =
+        req.body.shouldAskAnyTime || option.shouldAskAnyTime;
       const updatedOption = await option.save();
       res.json({
         _id: updatedOption.id,

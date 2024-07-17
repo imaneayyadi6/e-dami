@@ -646,7 +646,7 @@ const DamiEditPageCrtOp = () => {
       }
     });
 
-    if (nbr === 5) {
+    if (nbr === 6) {
       event.target.checked = false;
     } else {
       const key = event.target.getAttribute("id");
@@ -676,6 +676,7 @@ const DamiEditPageCrtOp = () => {
   };
 
   const addOptionHandler = () => {
+    console.log(option)
     dispatch(createOptionCrtOp(option));
   };
 
@@ -2418,9 +2419,8 @@ const DamiEditPageCrtOp = () => {
                   <option value="">
                     ----- choisire un responsable (autre signataire) -----
                   </option>
-                  {usersAtr &&
-                    usersAtr.length > 0 &&
-                    usersAtr.map((user) => (
+                  {usersAtr && Array.from(usersAtr).length > 0 &&
+                    Array.from(usersAtr).map((user) => (
                       <option value={user._id}>
                         {user.prenom} {user.nom}
                       </option>
@@ -2572,7 +2572,7 @@ const DamiEditPageCrtOp = () => {
                 case à cocher
               </Message>
               <Message type="warning">
-                Le nombre maximum de signataires autorisés est de 4.
+                Le nombre maximum de signataires autorisés est de 5.
               </Message>
               <div className="px-1 py-4 mb-3 h-100">
                 <div style={{ height: "450px" }}>

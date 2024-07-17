@@ -137,7 +137,7 @@ const DemandeurDetailsDemande = () => {
                                       ></span>
                                       . <br />{" "}
                                       <span style={{ fontWeight: "bold" }}>
-                                        Motifi de refus :
+                                        Motif de refus :
                                       </span>{" "}
                                       {tr.motifRefus}
                                     </p>
@@ -244,7 +244,7 @@ const DemandeurDetailsDemande = () => {
                                       ></span>.{" "}
                                   <br />{" "}
                                   <span style={{ fontWeight: "bold" }}>
-                                    Motifi de refus :
+                                    Motif de refus :
                                   </span>{" "}
                                   {tr.motifRefus}
                                 </p>

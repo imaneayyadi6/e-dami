@@ -66,6 +66,10 @@ const optionSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "utilisateur",
     },
+    shouldAskAnyTime: {
+      type: Boolean,
+      default: false,
+    },
     conditions: [
       {
         type: {

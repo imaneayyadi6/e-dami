@@ -46,13 +46,7 @@ const backupDatabase = async () => {
         await fs.promises.appendFile(collectionPath1, JSON.stringify(data));
       }
 
-      // // backup data in folder 2 :
-      // if (fs.existsSync(collectionPath2)) {
-      //   await fs.promises.appendFile(collectionPath2, "");
-      //   await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
-      // } else {
-      //   await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
-      // }
+    
     }
 
     console.log("Backup completed successfully");

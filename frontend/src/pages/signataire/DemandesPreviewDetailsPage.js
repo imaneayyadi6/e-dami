@@ -168,7 +168,7 @@ const DemandesPreviewDetailsPage = () => {
                                   ></span>
                                   . <br />{" "}
                                   <span style={{ fontWeight: "bold" }}>
-                                    Motifi de refus :
+                                    Motif de refus :
                                   </span>{" "}
                                   {tr.motifRefus}
                                 </p>
@@ -269,7 +269,7 @@ const DemandesPreviewDetailsPage = () => {
                               ></span>
                               . <br />{" "}
                               <span style={{ fontWeight: "bold" }}>
-                                Motifi de refus :
+                                Motif de refus :
                               </span>{" "}
                               {tr.motifRefus}
                             </p>

@@ -210,7 +210,7 @@ export const createDemande = asyncHandler(async (req, res) => {
         option: option._id,
         status: "en cours",
       });
-      if (checkDemande) {
+      if (checkDemande && !option.shouldAskAnyTime) {
         res.status(400);
         throw new Error("Vous avez déjà demandé cette demande !");
       }
@@ -930,10 +930,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               }
               // Notifier le responsable de service magazin si un demandeur a demander 'DEMANDE D'UN PERIPHERIQUE INFORMATIQUE' || 'DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE' :
               if (
-                demande.option.libelle ===
-                  "DEMANDE D'UN PERIPHERIQUE INFORMATIQUE" ||
-                demande.option.libelle ===
-                  "DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE"
+                String(demande.option.libelle).toUpperCase() ===
+                  "E-DAMI - DEMANDE D'UN PERIPHERIQUE INFORMATIQUE" ||
+                String(demande.option.libelle).toUpperCase() ===
+                  "E-DAMI - DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE"
               ) {
                 let serviceMagasin = await Service.findOne({
                   libelle: "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT",

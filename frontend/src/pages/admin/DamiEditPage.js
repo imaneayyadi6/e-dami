@@ -144,6 +144,7 @@ const DamiEditPage = () => {
     classification: "",
     creation: "",
     maj: "",
+   
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
@@ -211,6 +212,8 @@ const DamiEditPage = () => {
     error: errorSousCategorieList,
     souscategories,
   } = sousCategorieList;
+
+  const [shouldAskAnyTime,setShouldAskAnyTime] = useState(false);
 
   const directionByServiceID = useSelector(
     (state) => state.directionByServiceID
@@ -679,7 +682,7 @@ const DamiEditPage = () => {
       }
     });
 
-    if (nbr === 5) {
+    if (nbr === 6) {
       event.target.checked = false;
     } else {
       const key = event.target.getAttribute("id");
@@ -709,14 +712,13 @@ const DamiEditPage = () => {
   };
 
   const addOptionHandler = () => {
-    // console.log(option);
-    dispatch(createOption(option));
+     document.documentElement.scrollTop = 0;
+     dispatch(createOption({...option,shouldAskAnyTime:shouldAskAnyTime}));
   };
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
-      // console.log(option);
-      dispatch(updateOption(id, option));
+      dispatch(updateOption(id, {...option,shouldAskAnyTime:shouldAskAnyTime}));
     }
   };
 
@@ -1730,6 +1732,7 @@ const DamiEditPage = () => {
       });
     }
   };
+
   const getUserArt = async () => {
     if (userInfo) {
       const config = {
@@ -1746,6 +1749,7 @@ const DamiEditPage = () => {
       setUsersAtr(data);
     }
   };
+
   useEffect(() => {
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
 
@@ -1869,6 +1873,7 @@ const DamiEditPage = () => {
       });
      
       setAtrTitle(recoveredOption.autreResponsableTitre ? recoveredOption.autreResponsableTitre : "")
+      setShouldAskAnyTime(recoveredOption.shouldAskAnyTime);
       setTimeout(() => {
         sousCategorieForm.setValues({
           sousCategorie:
@@ -2255,6 +2260,8 @@ const DamiEditPage = () => {
                   {headerForm.errors.maj}
                 </small>
               )}
+
+
               <Button variant="dark" className="w-100 mt-3" type="submit">
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
@@ -2462,8 +2469,8 @@ const DamiEditPage = () => {
                   <option value="">
                     ----- choisire un responsable (autre signataire) -----
                   </option>
-                  {usersAtr && usersAtr.length > 0 &&
-                    usersAtr.map((user) => (
+                  {usersAtr && Array.from(usersAtr).length > 0 &&
+                    Array.from(usersAtr).map((user) => (
                       <option value={user._id}>
                         {user.prenom} {user.nom}
                       </option>
@@ -2617,7 +2624,7 @@ const DamiEditPage = () => {
                   la case à cocher
                 </Message>
                 <Message type="warning">
-                  Le nombre maximum de signataires autorisés est de 4.
+                  Le nombre maximum de signataires autorisés est de 5.
                 </Message>
 
                 <div className="px-1 py-4 d-block ">
@@ -2796,10 +2803,24 @@ const DamiEditPage = () => {
                 quelque chose à changer, retournez et modifiez avant de
                 confirmer
               </Message>
-
+             
               <Row>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
                 <Col xl={8} lg={12} md={12} sm={12}>
+               
+                <div className="d-block">
+                  <Form.Check // prettier-ignore
+                    type="switch"
+                    id="custom-switch"
+                    label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                    value={shouldAskAnyTime}
+                    checked={shouldAskAnyTime}
+                    onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                  />
+                 
+                </div>  
+                <br/>
+             
                   <Dami option={option} showAdmin />
                 </Col>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
