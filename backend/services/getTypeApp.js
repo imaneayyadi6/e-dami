@@ -334,7 +334,10 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
     }
   }
 
-  console.log([code, String(userID)]);
+  const userInterim = await Utilisateur.findById(userID);
+  if (userInterim.interim) {
+    userID = userInterim.interim;
+  }
 
   return [code, String(userID)];
 };
@@ -361,7 +364,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     option.proprietaireDeDonnees
   );
   const directionEntite = await Direction.findById(option.service.direction);
-  
+
   if (!directionEntite) throw new Error("option n'a pas direction (entite) !");
 
   let nextCode = "";
@@ -625,8 +628,10 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       nextUserId = pdgUtilisateur._id;
     }
   }
-
-  console.log("nextCode : ", nextCode);
+  const userInterim = await Utilisateur.findById(nextUserId);
+  if (userInterim.interim) {
+    nextUserId = userInterim.interim;
+  }
 
   return [nextCode, String(nextUserId)];
 };

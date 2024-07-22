@@ -587,3 +587,99 @@ export const getUsersByDivison = asyncHandler(async (req, res) => {
   }
   res.json(utilisateurs);
 });
+
+// @desc    Recuperer l'interim
+// @route   GET /api/utilisateurs/interim
+// @access  private
+export const getInterimUser = asyncHandler(async (req, res) => {
+  const loggedUtilisateur = await Utilisateur.findById(req.user.id).populate(
+    "interim"
+  );
+  if (loggedUtilisateur.interim && loggedUtilisateur.interim !== "") {
+    res.json({
+      ...JSON.parse(JSON.stringify(loggedUtilisateur.interim)),
+      haveInterim: true,
+    });
+  } else {
+    res.json({ haveInterim: false });
+  }
+});
+
+// @desc    Modifier l'interim
+// @route   PUT /api/utilisateurs/interim/:matricule
+// @access  private
+export const putInterimUser = asyncHandler(async (req, res) => {
+  const interimUtilisateur = await Utilisateur.findOne({
+    matricule: Number(req.params.matricule),
+  });
+  if (interimUtilisateur) {
+    const loggedUtilisateur = await Utilisateur.findById(req.user.id);
+    if (!loggedUtilisateur.interim || loggedUtilisateur.interim === "") {
+
+      const checkInterim = await Utilisateur.findOne({
+        interim: interimUtilisateur._id,
+      });
+
+      console.log(checkInterim);
+
+      if (checkInterim) {
+        res.status(400);
+        throw new Error("Utilisateur déjà défini comme interim !");
+      } else {
+        const signataireRole = await Role.findOne({ code: "sig" });
+        const findIndexSigRole = interimUtilisateur.roles.findIndex(
+          (r) => String(r.role) === String(signataireRole._id)
+        );
+        if (findIndexSigRole === -1) {
+          loggedUtilisateur.interim = interimUtilisateur._id;
+          interimUtilisateur.roles.push({ role: signataireRole._id });
+
+          await loggedUtilisateur.save();
+          await interimUtilisateur.save();
+
+          res.json({ message: "Interim défini avec succès" });
+        } else {
+          res.status(400);
+          throw new Error(
+            "Vous ne pouvez pas définir cet utilisateur en tant qu'intérim !"
+          );
+        }
+      }
+    } else {
+      res.status(400);
+      throw new Error("Vous avez déjà défini un interim !");
+    }
+  } else {
+    res.status(404);
+    throw new Error("utilisateur interim introuvable !");
+  }
+});
+
+// @desc    Supprimer l'interim
+// @route   DELETE /api/utilisateurs/interim/
+// @access  private
+export const removeInterimUser = asyncHandler(async (req, res) => {
+  const loggedUtilisateur = await Utilisateur.findById(req.user.id);
+  if (loggedUtilisateur.interim && loggedUtilisateur.interim !== "") {
+    const interimUtilisateur = await Utilisateur.findById(
+      loggedUtilisateur.interim
+    );
+    if (interimUtilisateur) {
+      const signataireRole = await Role.findOne({ code: "sig" });
+      loggedUtilisateur.interim = null;
+      interimUtilisateur.roles = interimUtilisateur.roles.filter(
+        (role) => String(role.role) !== String(signataireRole._id)
+      );
+      await loggedUtilisateur.save();
+      await interimUtilisateur.save();
+
+      res.json({ message: "intrim supprime avec success !" });
+    } else {
+      res.status(404);
+      throw new Error("utilisateur interim introuvable !");
+    }
+  } else {
+    res.status(404);
+    throw new Error("Vous n'avez pas défini un interim !");
+  }
+});

@@ -61,6 +61,18 @@ import {
   USER_BY_DIVISION_REQUEST,
   USER_BY_DIVISION_RESET,
   USER_BY_DIVISION_SUCCESS,
+  USER_PUT_INTERIM_FAIL,
+  USER_PUT_INTERIM_REQUEST,
+  USER_PUT_INTERIM_RESET,
+  USER_PUT_INTERIM_SUCCESS,
+  USER_DELETE_INTERIM_FAIL,
+  USER_DELETE_INTERIM_REQUEST,
+  USER_DELETE_INTERIM_RESET,
+  USER_DELETE_INTERIM_SUCCESS,
+  USER_GET_INTERIM_FAIL,
+  USER_GET_INTERIM_REQUEST,
+  USER_GET_INTERIM_RESET,
+  USER_GET_INTERIM_SUCCESS,
 } from "./userTypes";
 
 import axios from "axios";
@@ -530,7 +542,6 @@ export const fetchUsersByDivision = (type, id) => {
         config
       );
 
-
       dispatch({
         type: USER_BY_DIVISION_SUCCESS,
         payload: data,
@@ -547,4 +558,110 @@ export const fetchUsersByDivision = (type, id) => {
 
 export const resetFetchUsersByDivision = () => {
   return { type: USER_BY_DIVISION_RESET };
+};
+
+export const getUserIntrim = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_GET_INTERIM_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(`/api/utilisateurs/interim`, config);
+
+      dispatch({
+        type: USER_GET_INTERIM_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_GET_INTERIM_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetGetUserIntrim = () => {
+  return { type: USER_GET_INTERIM_RESET };
+};
+
+export const putUserIntrim = (matricule) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_PUT_INTERIM_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/utilisateurs/interim/${matricule}`,
+        {},
+        config
+      );
+
+      dispatch({
+        type: USER_PUT_INTERIM_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_PUT_INTERIM_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetPutUserIntrim = () => {
+  return { type: USER_PUT_INTERIM_RESET };
+};
+
+export const deleteUserIntrim = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_DELETE_INTERIM_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.delete(`/api/utilisateurs/interim`, config);
+
+      dispatch({
+        type: USER_DELETE_INTERIM_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_DELETE_INTERIM_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetDeleteUserIntrim = () => {
+  return { type: USER_DELETE_INTERIM_RESET };
 };

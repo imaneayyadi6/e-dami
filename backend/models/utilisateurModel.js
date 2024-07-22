@@ -95,6 +95,10 @@ const utilisateurSchema = Schema(
       type: Boolean,
       default: false,
     },
+    interim: {
+      type: Schema.Types.ObjectId,
+      ref: "utilisateur",
+    },
   },
   {
     timestamps: true,

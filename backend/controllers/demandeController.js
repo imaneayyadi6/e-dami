@@ -819,8 +819,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               traitement.code
             );
 
-            console.log("nextCode :", nextCode);
-
             let nextSignataire = await Utilisateur.findById(
               traitement.utilisateur
             );

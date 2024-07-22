@@ -17,6 +17,9 @@ import {
   userChangePasswordReducer,
   userSetNewPasswordReducer,
   userByDivisionReducer,
+  userPutInterimReducer,
+  userDeleteInterimReducer,
+  userGetInterimReducer,
 } from "./user/userReducers.js";
 import { dialogReducer } from "./dialog/dialogReducers.js";
 import { alertReducer } from "./alert/alertReducers.js";
@@ -182,6 +185,9 @@ const reducer = combineReducers({
   userChangePassword: userChangePasswordReducer,
   userSetNewPasswordToken: userSetNewPasswordReducer,
   userByDivision: userByDivisionReducer,
+  userPutInterim: userPutInterimReducer,
+  userDeleteInterim: userDeleteInterimReducer,
+  userGetInterim: userGetInterimReducer,
   // chart :
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,

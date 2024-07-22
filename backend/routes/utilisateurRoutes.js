@@ -15,14 +15,24 @@ import {
   changePasswordUser,
   setNewPasswordUser,
   getUsersByDivison,
+  putInterimUser,
+  removeInterimUser,
+  getInterimUser,
 } from "../controllers/utilisateurController.js";
-import { createur, protect } from "../middlewares/authMidlleware.js";
+import {
+  createur,
+  protect,
+  signataire,
+} from "../middlewares/authMidlleware.js";
 
 const router = express.Router();
 
 router.route("/login").post(authUser);
 router.route("/validatetoken").post(validateTokenUser);
-
+router
+  .route("/interim")
+  .delete(protect, signataire, removeInterimUser)
+  .get(protect, signataire, getInterimUser);
 router.route("/register").post(registerUser);
 router.route("/setpassword").post(setPasswordUser);
 
@@ -46,5 +56,6 @@ router
 
 router.route("/infos/:id").put(protect, createur, updateUserInfo);
 router.route("/password/:id").put(protect, updateUserPassword);
+router.route("/interim/:matricule").put(protect, signataire, putInterimUser);
 
 export default router;

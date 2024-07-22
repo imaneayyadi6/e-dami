@@ -61,6 +61,18 @@ import {
   USER_BY_DIVISION_REQUEST,
   USER_BY_DIVISION_RESET,
   USER_BY_DIVISION_SUCCESS,
+  USER_GET_INTERIM_FAIL,
+  USER_GET_INTERIM_REQUEST,
+  USER_GET_INTERIM_RESET,
+  USER_GET_INTERIM_SUCCESS,
+  USER_PUT_INTERIM_FAIL,
+  USER_PUT_INTERIM_REQUEST,
+  USER_PUT_INTERIM_RESET,
+  USER_PUT_INTERIM_SUCCESS,
+  USER_DELETE_INTERIM_FAIL,
+  USER_DELETE_INTERIM_REQUEST,
+  USER_DELETE_INTERIM_RESET,
+  USER_DELETE_INTERIM_SUCCESS,
 } from "./userTypes";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -341,6 +353,66 @@ export const userByDivisionReducer = (state = { users: [] }, action) => {
       return { loading: false, error: payload, users: [] };
     case USER_BY_DIVISION_RESET:
       return { users: [] };
+    default:
+      return state;
+  }
+};
+
+export const userGetInterimReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_GET_INTERIM_REQUEST:
+      return { loading: true };
+    case USER_GET_INTERIM_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        interim: payload,
+      };
+
+    case USER_GET_INTERIM_FAIL:
+      return { loading: false, error: payload };
+    case USER_GET_INTERIM_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userPutInterimReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_PUT_INTERIM_REQUEST:
+      return { loading: true };
+    case USER_PUT_INTERIM_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+
+    case USER_PUT_INTERIM_FAIL:
+      return { loading: false, error: payload };
+    case USER_PUT_INTERIM_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userDeleteInterimReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_DELETE_INTERIM_REQUEST:
+      return { loading: true };
+    case USER_DELETE_INTERIM_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case USER_DELETE_INTERIM_FAIL:
+      return { loading: false, error: payload };
+    case USER_DELETE_INTERIM_RESET:
+      return {};
     default:
       return state;
   }

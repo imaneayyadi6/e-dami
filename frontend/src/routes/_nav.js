@@ -13,6 +13,7 @@ let _nav = [
     ),
     roles: ["sig"],
   },
+  
   {
     to: "/demandes/all/apercu",
     name: "Aperçu les demandes",
@@ -71,6 +72,12 @@ let _nav = [
     name: "Utilisateurs",
     icon: <i className="side-bar-icon fas fa-users"></i>,
     roles: ["crt"],
+  },
+  {
+    to: "/definir/interim",
+    name: "Définir un Interim",
+    icon: <i className="fa-solid fa-users" style={{ fontSize: "14px" }}></i>,
+    roles: ["sig"],
   },
 ];
 

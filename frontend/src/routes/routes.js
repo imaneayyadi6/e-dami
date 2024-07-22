@@ -31,6 +31,7 @@ import {
   DemandesPage,
   SignataireDashboardPage,
 } from "../pages/signataire";
+import DefinirInterimePage from "../pages/signataire/DefinirInterimePage";
 import DemandesPreviewDetailsPage from "../pages/signataire/DemandesPreviewDetailsPage";
 import DemandesPreviewPage from "../pages/signataire/DemandesPreviewPage";
 
@@ -271,6 +272,13 @@ const routes = [
     exact: true,
     roles: ["dmr", "sig", "crt"],
     element: <NotificationsPage />,
+  },
+  {
+    path: "/definir/interim",
+    name: "Définir un Interim",
+    exact: true,
+    roles: ["sig"],
+    element: <DefinirInterimePage />,
   },
 ];
 
