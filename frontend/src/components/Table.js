@@ -144,7 +144,7 @@ const Table = ({
     const start = Math.max(1, pageIndex - Math.floor(range / 2)) - 1;
     const end = Math.min(pageCount, start + range - 1);
 
-    for (let i = start; i <= end - 1; i++) {
+    for (let i = start; i <= end; i++) {
       pageButtons.push(
         <Button
           size="sm"

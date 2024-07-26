@@ -335,7 +335,7 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
   }
 
   const userInterim = await Utilisateur.findById(userID);
-  if (userInterim.interim) {
+  if (userInterim && userInterim.interim) {
     userID = userInterim.interim;
   }
 
@@ -343,7 +343,12 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
 };
 
 export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
-  const option = await Option.findById(optionId).populate("service");
+  const option = await Option.findById(optionId).populate({
+    path: "service",
+    populate: {
+      path: "direction",
+    },
+  });
   const demande = await Demande.findById(demandeId).populate("demandeur");
 
   const utilisateur = await Utilisateur.findById(demande.demandeur._id);
@@ -363,6 +368,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
   const utilisateurPdd = await Utilisateur.findById(
     option.proprietaireDeDonnees
   );
+
   const directionEntite = await Direction.findById(option.service.direction);
 
   if (!directionEntite) throw new Error("option n'a pas direction (entite) !");
@@ -370,6 +376,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
   let nextCode = "";
   let nextUserId = "";
   let arrayCode = code.split(".");
+
   if (arrayCode.length > 1) {
     const lastArrayCode = arrayCode[arrayCode.length - 1];
     const nextCodeIndex = Array.from(option.signataires).findIndex(
@@ -474,7 +481,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
       nextCode = "dir";
-      nextUserId = demandeurDirection.directeur;
+      nextUserId = option.service.direction.directeur;
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "atr") {
       nextCode = "atr";
       nextUserId = option.autreUtilisateur;
@@ -610,7 +617,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
       nextCode = "dir";
-      nextUserId = demandeurDirection.directeur;
+      nextUserId = option.service.direction.directeur;
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "atr") {
       nextCode = "atr";
       nextUserId = option.autreUtilisateur;
@@ -628,9 +635,11 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       nextUserId = pdgUtilisateur._id;
     }
   }
-  const userInterim = await Utilisateur.findById(nextUserId);
-  if (userInterim.interim) {
-    nextUserId = userInterim.interim;
+  if (nextUserId) {
+    const userInterim = await Utilisateur.findById(nextUserId);
+    if (userInterim && userInterim.interim) {
+      nextUserId = String(userInterim.interim);
+    }
   }
 
   return [nextCode, String(nextUserId)];

@@ -812,6 +812,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 break;
               }
             }
+
             // recuperer le type d'approubation et le signataire qui va signier
             const [nextCode, nextUserId] = await getNextTypeAppOnApp(
               demande.option._id,
@@ -836,9 +837,9 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
               demande.status = "approuve";
             } else {
-              // envoyer la demande au signataire procaine pour la traiter :
+              // envoyer la demande au signataire prochaine pour la traiter :
               demande.traitement.push({
-                utilisateur: nextUserId,
+                utilisateur: new mongoose.Types.ObjectId(nextUserId),
                 dateEnvoi: new Date(),
                 status: "en cours",
                 code: nextCode,
@@ -855,6 +856,31 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               messageDemandeur,
               `Votre demande a été approuvée`
             );
+
+            // envoyer un email au chef de departement si le demandeur a demander une demande de prouction informatique:
+
+            if (
+              traitement.code === "cds" &&
+              nextCode === "hiq" &&
+              demande.option.service.libelle ===
+                "SERVICE PRODUCTION INFORMATIQUE"
+            ) {
+              let prodCddmessage = `<p> Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">demande</a> fait`;
+              prodCddmessage += ` par <b style='font-weight:bold'>${getCv(
+                demande.demandeur.civilite
+              )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
+              prodCddmessage += ` a été approuvée par son chef de service.  DAMI : ('<i>${demande.option.libelle}</i>')</p>`;
+
+              const prodService = await Service.findById(
+                demande.option.service._id
+              ).populate("departement");
+
+              sendNotification(
+                prodService.departement.chefDeDepartement,
+                prodCddmessage,
+                `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+              );
+            }
 
             // envoyer le message au signataire :
             if (nextCode !== "fini") {
@@ -926,6 +952,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                 );
               }
+
               // Notifier le responsable de service magazin si un demandeur a demander 'DEMANDE D'UN PERIPHERIQUE INFORMATIQUE' || 'DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE' :
               if (
                 String(demande.option.libelle).toUpperCase() ===
@@ -952,11 +979,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }
               }
             }
-
-            // res.status(500);
-            // throw new Error(
-            //   "Traitement impossible ! Il y a un développement à faire pour le moment. Merci pour votre compréhension"
-            // );
 
             res.json({ message: "demande approvee avec success !" });
           } else {

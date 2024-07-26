@@ -35,7 +35,7 @@ const NotificationsPage = () => {
   const renderPageLinks = () => {
     const links = [];
 
-    const range = 20;
+    const range = 10;
     const start = Math.max(1, currentPage - Math.floor(range / 2));
     const end = Math.min(totalPages, start + range);
 

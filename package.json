@@ -5,12 +5,12 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node backend/server",
+    "start": "concurrently \"node backend/server\"  \"npm run data:extract\"  \"npm run data:backup\"",
     "server": "nodemon backend/server",
     "data:extract": "node backend/extractData.mjs",
     "data:backup": "node backend/backupData.mjs",
     "client": "cd frontend && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"  \"npm run data:extract\"  \"npm run data:backup\" ",
+    "dev": "concurrently \"npm run server\" \"npm run client\"  ",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d"
   },

@@ -20,7 +20,7 @@ import { fetchDirections } from "../../redux/direction/directionActions";
 const validationSchema = Yup.object({
   matricule: Yup.string("le matricule doit etre un nombre de 6 chiffres")
     .matches(
-      /^([1-9]{1})([0-9]{6})$/,
+      /^([1-9]{1})([0-9]{5,7})$/,
       "le matricule doit être un nombre qui comporte 6 chiffres"
     )
     .required("il faut saisire le matricule"),
