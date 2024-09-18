@@ -1,0 +1,5 @@
+[TICKET ERROR] : Thu Sep 05 2024 13:01:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : Mon Sep 09 2024 08:34:18 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> SequelizeDatabaseError: Unknown column 'undefined' in 'where clause' 
+[TICKET ERROR] : Mon Sep 09 2024 08:34:46 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> SequelizeDatabaseError: Unknown column 'undefined' in 'where clause' 
+[TICKET ERROR] : Mon Sep 09 2024 12:54:13 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : Wed Sep 11 2024 10:39:56 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 

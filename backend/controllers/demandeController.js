@@ -12,6 +12,7 @@ import {
   getNextTypeAppOnApp,
   getTypeAppOnCreate,
 } from "../services/getTypeApp.js";
+import { createItopTicket } from "../services/createItopTicketService.js";
 
 const getCv = (cv) => {
   if (cv === "F") return "Mme";
@@ -978,6 +979,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   );
                 }
               }
+
+              // creer nu ticket sur itop :
+              createItopTicket({
+                title: demande.option.libelle,
+                lien: `https://e-dami.snrt.ma/demandes/apercu/details/${demande._id}`,
+                caller_email: demande.demandeur.matricule,
+                uo: optionService.uo,
+              });
             }
 
             res.json({ message: "demande approvee avec success !" });
