@@ -79,14 +79,14 @@ export const createItopTicket = async ({ title, matricule, uo, lien }) => {
           }
         )
         .then((response) => {
-          const dataToWrite = `[TICKET CREATED] : ${new Date()} ============> Ticket Created succcessfully \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
+          const dataToWrite = `[TICKET CREATED] : ${new Date().toLocaleString()} ============> Ticket Created succcessfully \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
           fs.appendFileSync(logFilePath, dataToWrite, (err) => {
             if (err) throw err;
             console.log(`ticket succcessfully !`.green.inverse);
           });
         })
         .catch((error) => {
-          const dataToWrite = `[TICKET ERROR] : ${new Date()} ============> ${error} \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
+          const dataToWrite = `[TICKET ERROR] : ${new Date().toLocaleString()} ============> ${error} \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
           fs.appendFileSync(logFilePath, dataToWrite, (err) => {
             if (err) throw err;
             console.log(`Error : ${error}`.red.inverse);
@@ -94,7 +94,7 @@ export const createItopTicket = async ({ title, matricule, uo, lien }) => {
         });
     }
   } catch (error) {
-    const dataToWrite = `[TICKET ERROR] : ${new Date()} ============> ${error} \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
+    const dataToWrite = `[TICKET ERROR] : ${new Date().toLocaleString()} ============> ${error} \n  resSql1:${JSON.stringify(resSql1)} - resSql2:${JSON.stringify(resSql2)}`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log(`Error : ${error}`.red.inverse);

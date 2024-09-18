@@ -50,7 +50,7 @@ const backupDatabase = async () => {
     }
 
     console.log("Backup completed successfully");
-    const dataToWrite = `[DATA INSERT] : ${new Date()} ============> Data has been backed up successfully  \n`;
+    const dataToWrite = `[DATA INSERT] : ${new Date().toLocaleString()} ============> Data has been backed up successfully  \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("Data has been backed up successfully !");
@@ -59,7 +59,7 @@ const backupDatabase = async () => {
     console.log(`Data Inserted succcessfully !`.green.inverse);
     process.exit();
   } catch (error) {
-    const dataToWrite = `[ERROR] : ${new Date()} ============> ${error} \n`;
+    const dataToWrite = `[ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("error data backup !");
