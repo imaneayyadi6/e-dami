@@ -1,90 +1,46 @@
-﻿[DATA INSERT] : Tue Aug 27 2024 12:04:47 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Aug 28 2024 00:04:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Aug 28 2024 12:04:08 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Aug 29 2024 00:04:07 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Aug 29 2024 12:04:11 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Aug 30 2024 00:04:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Aug 30 2024 12:04:13 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Aug 31 2024 00:03:55 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Aug 31 2024 12:03:54 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 01 2024 00:03:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 01 2024 12:04:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 02 2024 00:04:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 02 2024 12:04:07 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 03 2024 00:04:07 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 03 2024 12:04:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 04 2024 00:04:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 04 2024 12:05:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 04 2024 12:05:48 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 04 2024 12:05:48 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 00:05:51 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 00:05:51 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 00:05:56 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 12:06:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 12:06:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 05 2024 12:06:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 00:09:26 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 00:09:28 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 00:09:28 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 00:09:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 00:09:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 12:09:58 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 12:10:00 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 12:10:00 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 12:10:00 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 06 2024 12:10:01 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:11:52 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:11:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:11:54 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:11:55 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:11:58 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 00:12:00 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:11:52 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:11:57 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:12:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:12:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:12:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 07 2024 12:12:04 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:10:46 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:11:15 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:11:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:11:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:11:26 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 00:11:28 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:14 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:15 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 08 2024 12:12:27 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 00:09:38 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 00:09:39 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 00:09:39 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 00:09:44 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 00:09:45 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:14:50 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:14:54 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:15:02 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:15:02 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:15:02 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:15:05 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 09 2024 12:15:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 10 2024 00:04:24 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 10 2024 12:04:18 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 11 2024 00:03:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 11 2024 12:04:29 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 12 2024 00:04:25 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 12 2024 12:04:03 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Thu Sep 12 2024 12:04:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 13 2024 00:04:17 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 13 2024 00:04:17 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Fri Sep 13 2024 12:04:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 14 2024 00:04:00 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sat Sep 14 2024 12:03:54 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 15 2024 00:04:09 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Sun Sep 15 2024 12:03:52 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 16 2024 00:04:12 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Mon Sep 16 2024 12:03:59 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 17 2024 00:03:52 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Tue Sep 17 2024 12:03:53 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
-[DATA INSERT] : Wed Sep 18 2024 00:04:06 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> Data Inserted succcessfully 
+﻿[ERROR] : 18/09/2024 12:03:35 ============> MongoServerError: interrupted at shutdown 
+[ERROR] : 18/09/2024 12:03:35 ============> MongoServerError: interrupted at shutdown 
+[DATA INSERT] : 19/09/2024 00:04:11 ============> Data Inserted succcessfully 
+[ERROR] : 19/09/2024 12:05:56 ============> MongoServerError: interrupted at shutdown 
+[ERROR] : 19/09/2024 12:05:56 ============> MongoServerError: interrupted at shutdown 
+[DATA INSERT] : 20/09/2024 00:04:03 ============> Data Inserted succcessfully 
+[DATA INSERT] : 20/09/2024 12:05:58 ============> Data Inserted succcessfully 
+[DATA INSERT] : 20/09/2024 12:05:58 ============> Data Inserted succcessfully 
+[DATA INSERT] : 20/09/2024 12:06:00 ============> Data Inserted succcessfully 
+[DATA INSERT] : 21/09/2024 00:05:43 ============> Data Inserted succcessfully 
+[DATA INSERT] : 21/09/2024 00:05:43 ============> Data Inserted succcessfully 
+[DATA INSERT] : 21/09/2024 00:05:44 ============> Data Inserted succcessfully 
+[DATA INSERT] : 21/09/2024 12:03:50 ============> Data Inserted succcessfully 
+[DATA INSERT] : 21/09/2024 12:03:51 ============> Data Inserted succcessfully 
+[DATA INSERT] : 22/09/2024 00:05:39 ============> Data Inserted succcessfully 
+[DATA INSERT] : 22/09/2024 00:05:39 ============> Data Inserted succcessfully 
+[DATA INSERT] : 22/09/2024 00:05:39 ============> Data Inserted succcessfully 
+[DATA INSERT] : 22/09/2024 12:04:00 ============> Data Inserted succcessfully 
+[DATA INSERT] : 23/09/2024 00:03:49 ============> Data Inserted succcessfully 
+[DATA INSERT] : 23/09/2024 12:04:03 ============> Data Inserted succcessfully 
+[DATA INSERT] : 24/09/2024 00:03:49 ============> Data Inserted succcessfully 
+[DATA INSERT] : 24/09/2024 12:03:48 ============> Data Inserted succcessfully 
+[DATA INSERT] : 25/09/2024 00:03:51 ============> Data Inserted succcessfully 
+[DATA INSERT] : 25/09/2024 12:03:55 ============> Data Inserted succcessfully 
+[DATA INSERT] : 26/09/2024 00:04:06 ============> Data Inserted succcessfully 
+[DATA INSERT] : 26/09/2024 12:03:59 ============> Data Inserted succcessfully 
+[DATA INSERT] : 27/09/2024 00:03:55 ============> Data Inserted succcessfully 
+[DATA INSERT] : 27/09/2024 12:04:02 ============> Data Inserted succcessfully 
+[DATA INSERT] : 28/09/2024 00:03:58 ============> Data Inserted succcessfully 
+[DATA INSERT] : 28/09/2024 12:04:04 ============> Data Inserted succcessfully 
+[DATA INSERT] : 29/09/2024 00:04:03 ============> Data Inserted succcessfully 
+[DATA INSERT] : 29/09/2024 12:04:00 ============> Data Inserted succcessfully 
+[DATA INSERT] : 30/09/2024 00:03:59 ============> Data Inserted succcessfully 
+[DATA INSERT] : 30/09/2024 12:04:05 ============> Data Inserted succcessfully 
+[DATA INSERT] : 30/09/2024 12:04:11 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:16 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:17 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 00:16:18 ============> Data Inserted succcessfully 
+[DATA INSERT] : 01/10/2024 12:04:10 ============> Data Inserted succcessfully 
+[DATA INSERT] : 02/10/2024 00:03:50 ============> Data Inserted succcessfully 
+[DATA INSERT] : 02/10/2024 00:03:50 ============> Data Inserted succcessfully 

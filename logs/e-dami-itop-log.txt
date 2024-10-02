@@ -1,5 +1,60 @@
-[TICKET ERROR] : Thu Sep 05 2024 13:01:32 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET ERROR] : Mon Sep 09 2024 08:34:18 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> SequelizeDatabaseError: Unknown column 'undefined' in 'where clause' 
-[TICKET ERROR] : Mon Sep 09 2024 08:34:46 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> SequelizeDatabaseError: Unknown column 'undefined' in 'where clause' 
-[TICKET ERROR] : Mon Sep 09 2024 12:54:13 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET ERROR] : Wed Sep 11 2024 10:39:56 GMT+0100 (heure normale d’Afrique de l’Ouest) ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED] : 19/09/2024 11:29:05 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 19/09/2024 11:38:46 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 19/09/2024 11:48:21 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 19/09/2024 11:54:26 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 19/09/2024 15:33:47 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 19/09/2024 15:34:54 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 19/09/2024 15:35:03 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 19/09/2024 15:35:42 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 19/09/2024 15:35:50 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED] : 19/09/2024 15:35:59 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 20/09/2024 09:28:49 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 20/09/2024 09:36:18 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 20/09/2024 09:39:59 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 20/09/2024 09:46:25 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 20/09/2024 10:52:48 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 25/09/2024 09:50:01 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED] : 26/09/2024 16:01:36 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 26/09/2024 16:20:10 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 26/09/2024 16:20:24 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 26/09/2024 16:20:43 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 27/09/2024 11:10:04 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED] : 30/09/2024 11:25:44 ============> Ticket Created succcessfully 
+[TICKET CREATED] : 30/09/2024 14:35:18 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 30/09/2024 15:27:54 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 15:43:47 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 15:47:01 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 15:49:17 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 16:06:35 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 16:08:37 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 16:11:02 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 16:12:50 ============> ReferenceError: org_id is not defined 
+[TICKET ERROR] : 30/09/2024 16:14:27 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 30/09/2024 16:43:58 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 01/10/2024 09:27:06 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 01/10/2024 09:38:15 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 01/10/2024 09:48:06 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 01/10/2024 09:50:30 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET ERROR] : 01/10/2024 09:52:22 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED] : 01/10/2024 09:53:43 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 01/10/2024 10:28:07 ============> TypeError: Cannot read properties of undefined (reading 'key') 
+[TICKET ERROR] : 01/10/2024 10:31:09 ============> TypeError: Cannot read properties of undefined (reading 'key') 
+[TICKET ERROR] : 01/10/2024 10:34:30 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:36:39 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:39:22 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:44:07 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:45:40 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:47:37 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET ERROR] : 01/10/2024 10:51:29 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET CREATED] : 01/10/2024 10:55:59 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 01/10/2024 10:55:59 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET CREATED] : 01/10/2024 10:57:13 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 01/10/2024 10:57:13 ============> TypeError: Cannot convert undefined or null to object 
+[TICKET CREATED] : 01/10/2024 10:57:59 ============> Ticket Created succcessfully 
+[TICKET ERROR] : 01/10/2024 10:57:59 ============> ReferenceError: agent_id is not defined 
+[TICKET CREATED] : 01/10/2024 10:59:07 ============> Ticket Created succcessfully 
+[TICKET UPDATED] : 01/10/2024 10:59:07 ============> Ticket ID: 30596 assigned to agent 111222333 
+[TICKET CREATED] : 01/10/2024 11:11:59 ============> Ticket Created succcessfully 
+[TICKET UPDATED] : 01/10/2024 11:12:00 ============> Ticket ID: 30597 assigned to agent 111222333 
+[TICKET CREATED] : 01/10/2024 15:33:45 ============> Ticket Created succcessfully 
+[TICKET UPDATED] : 01/10/2024 15:33:45 ============> Ticket ID: 30598 assigned to agent 1042871 

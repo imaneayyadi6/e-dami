@@ -1,1 +1,29 @@
-﻿
+﻿[DATA INSERT] : 18/09/2024 11:00:00 ============> Data has been backed up successfully  
+[ERROR] : 18/09/2024 11:04:00 ============> Error: EPERM: operation not permitted, unlink 'C:\Users\a.shaim\Desktop\backup' 
+[ERROR] : 18/09/2024 11:10:00 ============> Error: ENOENT: no such file or directory, open 'C:\Users\a.shaim\Desktop\e-dami\Usersa.shaimDesktopackup' 
+[DATA INSERT] : 18/09/2024 11:12:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 18/09/2024 11:14:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 18/09/2024 11:18:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 18/09/2024 11:22:01 ============> Data has been backed up successfully  
+[ERROR] : 18/09/2024 11:24:00 ============> Error: ENOENT: no such file or directory, unlink 'C:\Users\a.shaim\Desktop\backup' 
+[DATA INSERT] : 18/09/2024 11:26:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 18/09/2024 12:06:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 18/09/2024 13:58:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 19/09/2024 10:44:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 19/09/2024 10:50:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 19/09/2024 11:28:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 19/09/2024 11:52:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 19/09/2024 12:08:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 20/09/2024 09:40:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 20/09/2024 09:46:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 22/09/2024 03:28:02 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 11:26:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 14:28:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 14:32:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 14:34:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 14:36:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 15:14:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 15:14:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 30/09/2024 16:16:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 01/10/2024 09:42:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 01/10/2024 12:02:00 ============> Data has been backed up successfully  

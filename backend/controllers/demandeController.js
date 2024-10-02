@@ -859,7 +859,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             );
 
             // envoyer un email au chef de departement si le demandeur a demander une demande de prouction informatique:
-
             if (
               traitement.code === "cds" &&
               nextCode === "hiq" &&
@@ -980,12 +979,17 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }
               }
 
-              // creer nu ticket sur itop :
+              // CREER UN TICKET SUR ITOP :
+              const chefDeService = await Utilisateur.findById(
+                optionService.chefService
+              );
+              // ...
               createItopTicket({
                 title: demande.option.libelle,
                 lien: `https://e-dami.snrt.ma/demandes/apercu/details/${demande._id}`,
-                caller_email: demande.demandeur.matricule,
+                matricule: demande.demandeur.matricule,
                 uo: optionService.uo,
+                agent_matricule: chefDeService.matricule,
               });
             }
 

@@ -12,7 +12,6 @@ dotenv.config();
 const __dirname = path.resolve();
 const logFilePath = path.join(__dirname, "logs", "e-dami-backup-data-log.txt");
 
-const backupFolderPath = path.join(__dirname, "backup");
 // MongoDB connection URI
 const uri = "mongodb://localhost:27017/e-dami";
 
@@ -36,8 +35,6 @@ const backupDatabase = async () => {
         `${collection.collectionName}.json`
       );
 
-      // const collectionPath2 = "C:\\Users\\a.shaim\\Desktop\\backup";
-
       // backup data in folder 1 :
       if (fs.existsSync(collectionPath1)) {
         await fs.promises.unlink(collectionPath1);
@@ -46,7 +43,23 @@ const backupDatabase = async () => {
         await fs.promises.appendFile(collectionPath1, JSON.stringify(data));
       }
 
-    
+      // backup data in folder 2 :
+      const collectionPath2 = `C:\\Users\\a.shaim\\Desktop\\backup\\${collection.collectionName}.json`;
+
+      // backup data in folder 1 :
+      if (fs.existsSync(collectionPath2)) {
+        // Check if it's a directory
+        const stats = await fs.promises.stat(collectionPath2);
+        if (stats.isDirectory()) {
+          await fs.promises.rmdir(collectionPath2, { recursive: true });
+          await fs.promises.unlink(collectionPath2);
+        } else {
+          await fs.promises.unlink(collectionPath2);
+        }
+        await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
+      } else {
+        await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
+      }
     }
 
     console.log("Backup completed successfully");
