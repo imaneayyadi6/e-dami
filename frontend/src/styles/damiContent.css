@@ -4,7 +4,7 @@
   overflow: hidden;
 }
 
-@media screen and (min-width:1400px) {
+@media screen and (min-width: 1400px) {
   .dami-page-container {
     padding: 0% 15%;
   }
@@ -21,6 +21,11 @@
 .mini-dami .dami-logo {
   width: 20px;
   height: 20px;
+}
+
+.dami-pdf .dami-logo {
+  width: 15px;
+  height: 15px;
 }
 
 .dami-snrt-logo {
@@ -69,6 +74,10 @@
   font-size: 7px !important;
 }
 
+.dami-pdf .dami-type-de-processus {
+  font-size: 13px !important;
+}
+
 .dami-libelle {
   font-weight: bold;
   font-size: 16px;
@@ -82,6 +91,10 @@
   font-size: 7px !important;
 }
 
+.dami-pdf .dami-libelle {
+  font-size: 13px !important;
+}
+
 .dami-codification-table {
   font-size: 12px;
   height: 100%;
@@ -90,6 +103,10 @@
 
 .mini-dami .dami-codification-table {
   font-size: 7px !important;
+}
+
+.dami-pdf .dami-codification-table {
+  font-size: 10px !important;
 }
 
 .dami-codification-table tr {
@@ -128,6 +145,11 @@
   font-size: 7px !important;
 }
 
+.dami-pdf .demandeur-section {
+  font-size: 10px !important;
+}
+
+
 .demandeur-section table .dami-input {
   margin: 0;
 }
@@ -142,6 +164,10 @@
 .mini-dami .demandeur-section table .dami-input {
   font-size: 7px !important;
   width: 100px !important;
+}
+
+.dami-pdf .demandeur-section table .dami-input {
+  font-size: 10px !important;
 }
 
 .dami-body {
@@ -172,6 +198,10 @@
 
 .mini-dami .dami-footer .dami-input {
   font-size: 9px !important;
+}
+
+.dami-pdf .dami-footer .dami-input {
+  font-size: 8px !important;
 }
 
 .signataires {
@@ -226,7 +256,6 @@
   border-right: none;
 }
 
-
 .mini-dami p,
 .mini-dami .dami-label,
 .mini-dami .dami-body .dami-label {
@@ -234,9 +263,22 @@
   margin: 0 !important;
 }
 
+
+.dami-pdf p,
+.dami-pdf .dami-label,
+.dami-pdf .dami-body .dami-label {
+  font-size: 8px !important;
+  margin: 0 !important;
+}
+
 .mini-dami .dami-check-box {
   width: 12px !important;
   height: 12px !important;
+}
+
+.dami-pdf .dami-check-box {
+  width: 10px !important;
+  height: 10px !important;
 }
 
 
@@ -290,7 +332,6 @@
   user-select: auto;
   white-space: nowrap;
   margin: 5px 0;
-
 }
 
 .dami-label.block {
@@ -491,7 +532,7 @@
 /* End TextArea */
 
 /* Begin List Of CheckBox */
-.lst-check-boxes-header>tr {
+.lst-check-boxes-header > tr {
   background-color: #f4f4f4;
 }
 
@@ -573,7 +614,7 @@
   margin: 10px 0;
 }
 
-.divider>div {
+.divider > div {
   border-right: 1px solid lightgray;
   min-height: 40px;
   width: 50%;
@@ -581,7 +622,7 @@
   overflow-x: hidden;
 }
 
-.divider>div:last-child {
+.divider > div:last-child {
   border-right: none;
 }
 

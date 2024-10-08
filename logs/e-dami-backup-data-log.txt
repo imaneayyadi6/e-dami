@@ -27,3 +27,9 @@
 [DATA INSERT] : 30/09/2024 16:16:01 ============> Data has been backed up successfully  
 [DATA INSERT] : 01/10/2024 09:42:01 ============> Data has been backed up successfully  
 [DATA INSERT] : 01/10/2024 12:02:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 07/10/2024 11:12:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 07/10/2024 12:06:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 07/10/2024 14:50:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 07/10/2024 15:24:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 08/10/2024 11:04:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 08/10/2024 11:24:01 ============> Data has been backed up successfully  
