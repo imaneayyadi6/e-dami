@@ -81,6 +81,7 @@ const backupDatabase = async () => {
     process.exit();
   }
 };
+// backupDatabase();
 
 cron.schedule("*/2 * * * *", async () => {
   try {

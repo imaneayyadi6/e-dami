@@ -1,6 +1,6 @@
 import colors from "colors";
 import express from "express";
-import dotenv from "dotenv";
+
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 import connectDB from "./config/database.js";
 import directionRoutes from "./routes/directionRoutes.js";
@@ -13,7 +13,6 @@ import chartRoutes from "./routes/chartRoutes.js";
 import demandeRoutes from "./routes/demandeRoutes.js";
 import notificationRoutes from "./routes/notificationsRoutes.js";
 import departementRoutes from "./routes/departementRoutes.js";
-
 import generateFileRoutes from "./routes/generateFileRoutes.js";
 import http from "http";
 import { Server } from "socket.io";
@@ -21,7 +20,7 @@ import socketRoutes from "./routes/socketRoutes.js";
 import path from "path";
 import fs from "fs";
 import punycode from "punycode";
-
+import dotenv from "dotenv";
 // Init dotenv :
 dotenv.config();
 

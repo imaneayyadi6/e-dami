@@ -10,7 +10,6 @@ import Service from "./models/serviceModel.js";
 import Utilisateur from "./models/utilisateurModel.js";
 import Departement from "./models/departementModel.js";
 import connectDB from "./config/database.js";
-import cron from "node-cron";
 
 dotenv.config();
 connectDB();
@@ -55,8 +54,19 @@ const main = async () => {
     });
 
     /******************************   DIRECTIONS   ******************************/
-    const query1 =
-      "select SIGLE,UO from dbo.UNITE_ORG WHERE SIGLE like 'direction%'";
+    const query1 = `select SIGLE,UO from dbo.UNITE_ORG
+                    WHERE SIGLE not like 'service%' 
+                    and SIGLE not like 'departement%'
+                    AND SIGLE not like 'DEPARTEMNT%'
+                    AND SIGLE not like 'REDACTEUR%'
+                    and SIGLE not like '%CENTRE%'
+                    and SIGLE not like '%CENTRALE%'
+                    and SIGLE not like '%UNITE%'
+                    and SIGLE not like '%CELLULE%'
+                    and SIGLE not like '%STATION%'
+                    and SIGLE not like '%SECRETARIAT%'
+                    and SIGLE not like '%RESPONSABLE%'`;
+
     const resSql1 = await sequelize.query(query1, {
       type: Sequelize.QueryTypes.SELECT,
     });
@@ -126,13 +136,10 @@ const main = async () => {
     }
 
     /******************************   SERVICES   ******************************/
-    const query2 = `SELECT DISTINCT dir.UO 'UO_direction', dir.SIGLE 'direction', dep.UO 'UO_departement',  dep.SIGLE 'departement', srv.UO 'UO_service',  srv.SIGLE 'service'
-    FROM dbo.UNITE_ORG  as srv inner join dbo.UNITE_ORG  as dep
-    on srv.UO_RATTACHEMENT = dep.UO
-    inner join dbo.UNITE_ORG as dir
-    on dep.UO_RATTACHEMENT = dir.UO
-    WHERE srv.SIGLE like 'service%' 
-    group by dir.UO, dir.SIGLE ,dep.UO,  dep.SIGLE, srv.SIGLE ,srv.UO`;
+    const query2 = `SELECT DISTINCT dir.UO AS 'UO_direction', dir.SIGLE AS 'direction', dep.UO AS 'UO_departement',   dep.SIGLE AS 'departement',  srv.UO AS 'UO_service',  srv.SIGLE AS 'service'
+                    FROM dbo.UNITE_ORG AS srv LEFT JOIN dbo.UNITE_ORG AS dep ON srv.UO_RATTACHEMENT = dep.UO AND dep.SIGLE LIKE 'departement%' LEFT JOIN dbo.UNITE_ORG AS dir ON (dep.UO_RATTACHEMENT = dir.UO OR srv.UO_RATTACHEMENT = dir.UO)
+                    WHERE srv.SIGLE LIKE 'service%' and dir.SIGLE not like 'DEPARTEMENT%'
+                    GROUP BY dir.UO, dir.SIGLE, dep.UO, dep.SIGLE, srv.SIGLE, srv.UO`;
 
     let resSql2 = await sequelize.query(query2, {
       type: Sequelize.QueryTypes.SELECT,
@@ -341,7 +348,8 @@ const main = async () => {
             },
           ],
           departement: departement ? departement._id : null,
-          direction: departement ? departement.direction : null,
+          direction:
+            departement && departement.direction ? departement.direction : null,
         };
 
         let findChefDepartement = await Utilisateur.findOne({
@@ -363,10 +371,24 @@ const main = async () => {
           findChefDepartement.departement = departement
             ? departement._id
             : null;
-          findChefDepartement.direction = departement
-            ? departement.direction
-            : null;
-          findChefDepartement.roles = findChefDepartement.roles;
+          findChefDepartement.direction =
+            departement && departement.direction ? departement.direction : null;
+          findChefDepartement.roles = [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a13a"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ];
           findChefDepartement.updatedAt = new Date();
 
           await findChefDepartement.save();
@@ -397,15 +419,17 @@ const main = async () => {
 
     /******************************  DIRECTEURS  ******************************/
     let query5 = `SELECT distinct ag.MATRICULE,ag.NOM,ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL,cl.QUALIFICATION ,tr.INTITULE, af.LIEU
-          from dbo.AGENT ag inner join dbo.ADRESSE adr
-          on adr.MATRICULE = ag.MATRICULE
-          inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
-          inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
-          inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
-          inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO
-          INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
-          WHERE  YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE()) and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31
-          and   cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE WHERE Table_name = 'responsabilite') and tr.INTITULE like 'DIRECTEUR%'`;
+            from dbo.AGENT ag inner join dbo.ADRESSE adr
+            on adr.MATRICULE = ag.MATRICULE
+            inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
+            inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
+            inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
+            inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO 
+            INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+            WHERE  YEAR(cog.FIN_VALIDITE) =  YEAR(GETDATE())
+            and MONTH(cog.FIN_VALIDITE) = 12 and DAY(cog.FIN_VALIDITE) = 31  
+            and cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE WHERE Table_name = 'responsabilite') 
+            and tr.INTITULE like 'DIRECTEUR%' and tr.INTITULE  not like '%ADJOINT%'`;
 
     const resSql5 = await sequelize.query(query5, {
       type: Sequelize.QueryTypes.SELECT,
@@ -467,7 +491,17 @@ const main = async () => {
           findDirecteur.isDirecteur = true;
           findDirecteur.isChefDeService = false;
           findDirecteur.direction = direction._id;
-          findDirecteur.roles = findDirecteur.roles;
+          findDirecteur.roles = [
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a139"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+
+            {
+              role: new mongoose.Types.ObjectId("65c34e0c4d1e2f50c262a138"),
+              _id: new mongoose.Types.ObjectId(),
+            },
+          ];
           findDirecteur.updatedAt = new Date();
 
           const updatedDirection = await Direction.findOne({
@@ -519,6 +553,7 @@ const main = async () => {
       const findIsChefDeDepartement = chefDeDepartements.findIndex(
         (cdp) => cdp && String(cdp.email) === String(item.EMAIL)
       );
+
       const service = services.find(
         (srv) => String(srv.uo) === String(item.LIEU)
       );
@@ -551,8 +586,20 @@ const main = async () => {
             },
           ],
           service: service ? service._id : null,
-          direction: service ? service.direction : null,
-          departement: service ? service.departement : null,
+          direction:
+            service && service.direction
+              ? service.direction
+              : directions.find((dir) => String(dir.uo) === String(item.LIEU))
+              ? directions.find((dir) => String(dir.uo) === String(item.LIEU))
+                  ._id
+              : null,
+          departement:
+            service && service.departement
+              ? service.departement
+              : departements.find((dep) => String(dep.uo) === String(item.LIEU))
+              ? departements.find((dep) => String(dep.uo) === String(item.LIEU))
+                  ._id
+              : null,
         };
 
         let findUtilisateur = await Utilisateur.findOne({
@@ -566,8 +613,20 @@ const main = async () => {
           findUtilisateur.isDirecteur = false;
           findUtilisateur.isChefDeService = false;
           findUtilisateur.service = service ? service._id : null;
-          findUtilisateur.direction = service ? service.direction : null;
-          findUtilisateur.departement = service ? service.departement : null;
+          findUtilisateur.direction =
+            service && service.direction
+              ? service.direction
+              : directions.find((dir) => String(dir.uo) === String(item.LIEU))
+              ? directions.find((dir) => String(dir.uo) === String(item.LIEU))
+                  ._id
+              : null;
+          findUtilisateur.departement =
+            service && service.departement
+              ? service.departement
+              : departements.find((dep) => String(dep.uo) === String(item.LIEU))
+              ? departements.find((dep) => String(dep.uo) === String(item.LIEU))
+                  ._id
+              : null;
           findUtilisateur.roles = findUtilisateur.roles;
           findUtilisateur.updatedAt = new Date();
 
@@ -821,26 +880,37 @@ const main = async () => {
       await updatedHelloWorldDirection.save();
     }
 
-    const dataToWrite = `[DATA INSERT] : ${new Date().toLocaleString()} ============> Data Inserted succcessfully \n`;
+    const dataToWrite = `[DATA INSERT] : ${new Date()} ============> Data Inserted succcessfully \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("The data was appended to the file!");
     });
 
-    console.log(`Data Inserted succcessfully !`.green.inverse);
+    console.log(`[BACKUP] Data Inserted succcessfully !`.green.inverse);
   } catch (error) {
-    const dataToWrite = `[ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
+    const dataToWrite = `[ERROR] : ${new Date()} ============> ${error} \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("The data was appended to the file!");
     });
-    console.log(`Error : ${error}`.red.inverse);
+    console.log(`[BACKUP] Error : ${error}`.red.inverse);
   }
 };
 
 // main();
 
-cron.schedule("0 */12 * * *", async () => {
+
+// // 12 hours :
+// cron.schedule("0 */12 * * *", async () => {
+//   try {
+//     main();
+//   } catch (error) {
+//     console.error("CRON ERROR:", error);
+//   }
+// });
+
+// 2 minutes :
+cron.schedule("*/2 * * * *", async () => {
   try {
     main();
   } catch (error) {

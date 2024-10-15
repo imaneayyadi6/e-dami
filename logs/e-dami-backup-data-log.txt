@@ -33,3 +33,22 @@
 [DATA INSERT] : 07/10/2024 15:24:00 ============> Data has been backed up successfully  
 [DATA INSERT] : 08/10/2024 11:04:01 ============> Data has been backed up successfully  
 [DATA INSERT] : 08/10/2024 11:24:01 ============> Data has been backed up successfully  
+[ERROR] : 10/10/2024 14:27:01 ============> Error: ENOENT: no such file or directory, open 'C:\Users\a.shaim\Desktop\e-dami\backend\backup\directions.json' 
+[DATA INSERT] : 10/10/2024 14:30:48 ============> Data has been backed up successfully  
+[DATA INSERT] : 10/10/2024 14:40:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 10/10/2024 14:58:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:24:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:32:02 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:34:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:36:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:40:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:44:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:46:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:52:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 14:56:01 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 15:00:02 ============> Data has been backed up successfully  
+[DATA INSERT] : 11/10/2024 16:12:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 14/10/2024 15:50:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 14/10/2024 16:04:00 ============> Data has been backed up successfully  
+[DATA INSERT] : 15/10/2024 09:50:02 ============> Data has been backed up successfully  
+[DATA INSERT] : 15/10/2024 10:20:01 ============> Data has been backed up successfully  

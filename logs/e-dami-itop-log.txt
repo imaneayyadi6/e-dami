@@ -1,4 +1,16 @@
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:51:28 ============> Ticket Created succcessfully [TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:54:42 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
+[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:51:28 ============> Ticket Created succcessfully 
+[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:54:42 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
 [TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:58:30 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
 [TICKET CREATED SUCCESSFULLY] : 08/10/2024 11:00:07 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
 [TICKET CREATED SUCCESSFULLY] : 08/10/2024 11:02:10 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
+[TICKET CREATED ERROR] : 08/10/2024 18:44:49 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 08/10/2024 19:39:42 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 08/10/2024 19:42:31 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 10/10/2024 17:39:03 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 10/10/2024 17:39:15 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 10/10/2024 17:39:25 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED ERROR] : 11/10/2024 09:37:37 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED SUCCESSFULLY] : 14/10/2024 10:42:29 ============> Ticket Created succcessfully by : 2019199 && Agent : 1425507  
+[TICKET CREATED ERROR] : 14/10/2024 10:54:43 ============> TypeError: Cannot read properties of undefined (reading 'id') 
+[TICKET CREATED SUCCESSFULLY] : 14/10/2024 15:15:09 ============> Ticket Created succcessfully by : 731825 && Agent : 1425507  
+[TICKET CREATED ERROR] : 14/10/2024 17:24:32 ============> TypeError: Cannot read properties of undefined (reading 'id') 
