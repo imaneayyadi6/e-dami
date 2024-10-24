@@ -45,6 +45,7 @@ const backupDatabase = async () => {
 
       // backup data in folder 2 :
       const collectionPath2 = `C:\\Users\\a.shaim\\Desktop\\backup\\${collection.collectionName}.json`;
+      // \\192.168.1.161\a.shaim
 
       // backup data in folder 1 :
       if (fs.existsSync(collectionPath2)) {
@@ -60,6 +61,25 @@ const backupDatabase = async () => {
       } else {
         await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
       }
+
+      // backup data in folder 2 :
+      //  \\192.168.1.161\a.shaim
+      const collectionPath3 = `\\\\192.168.1.161\\a.shaim\\backup\\${collection.collectionName}.json`;
+
+      // backup data in folder 1 :
+      if (fs.existsSync(collectionPath3)) {
+        // Check if it's a directory
+        const stats = await fs.promises.stat(collectionPath3);
+        if (stats.isDirectory()) {
+          await fs.promises.rmdir(collectionPath3, { recursive: true });
+          await fs.promises.unlink(collectionPath3);
+        } else {
+          await fs.promises.unlink(collectionPath3);
+        }
+        await fs.promises.appendFile(collectionPath3, JSON.stringify(data));
+      } else {
+        await fs.promises.appendFile(collectionPath3, JSON.stringify(data));
+      }
     }
 
     console.log("Backup completed successfully");
@@ -70,7 +90,7 @@ const backupDatabase = async () => {
     });
 
     console.log(`Data Inserted succcessfully !`.green.inverse);
-    process.exit();
+    // process.exit();
   } catch (error) {
     const dataToWrite = `[ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
@@ -78,7 +98,7 @@ const backupDatabase = async () => {
       console.log("error data backup !");
     });
     console.log(`Error : ${error}`.red.inverse);
-    process.exit();
+    // process.exit();
   }
 };
 // backupDatabase();

@@ -9,13 +9,13 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
   host: process.env.ZIMBRA_ADDRESS,
   port: 587,
-  secure: false, // Set to false to allow STARTTLS
+  secure: false, 
   auth: {
     user: process.env.ZIMBRA_USERNAME,
     pass: process.env.ZIMBRA_MOTDEPASSE,
   },
   tls: {
-    rejectUnauthorized: false, // Set to false to skip certificate validation (not recommended for production)
+    rejectUnauthorized: false, 
   },
 });
 

@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
   process.env.ITOP_DATABASE_USERNAME,
   process.env.ITOP_DATABASE_PASSWORD,
   {
-    host: "192.168.3.13",
+    host: process.env.ITOP_DATABSE_HOST,
     dialect: "mysql",
     port: 3306,
     dialectOptions: {
@@ -32,13 +32,45 @@ const credentials = Buffer.from(
   `${process.env.ITOP_USERNAME}:${process.env.ITOP_PASSWORD}`
 ).toString("base64");
 
+async function getOrganizationIdByCode(code) {
+  if (!code) return null; // Return null if code is empty
+  const query = `SELECT * FROM organization WHERE code = ?`;
+  const result = await sequelize.query(query, {
+    replacements: [code], // Using parameterized query to avoid SQL injection
+    type: Sequelize.QueryTypes.SELECT,
+  });
+  return result[0] ? result[0].id : null; // Return the id if found, otherwise null
+}
+
+async function getClientOrganizationId(
+  client_service,
+  client_departement,
+  client_direction
+) {
+  let client_org_id = null;
+
+  if (client_service) {
+    client_org_id = await getOrganizationIdByCode(client_service);
+  }
+  if (!client_org_id && client_departement) {
+    client_org_id = await getOrganizationIdByCode(client_departement);
+  }
+  if (!client_org_id && client_direction) {
+    client_org_id = await getOrganizationIdByCode(client_direction);
+  }
+
+  return client_org_id;
+}
+
 export const createItopTicket = async ({
   title,
   lien,
   agent_matricule,
   agent_service,
-  client_service,
   client_matricule,
+  client_service,
+  client_departement,
+  client_direction,
 }) => {
   try {
     // recuperer le l'id de client
@@ -47,27 +79,25 @@ export const createItopTicket = async ({
       type: Sequelize.QueryTypes.SELECT,
     });
 
-    const caller = resSql1[0].id;
+    const caller = resSql1[0] ? resSql1[0].id : null;
 
-    const query2 = `SELECT * FROM organization where code = '${client_service}'`;
-    const resSql2 = await sequelize.query(query2, {
-      type: Sequelize.QueryTypes.SELECT,
-    });
-
-    const client_org_id = resSql2[0].id;
-
+    const client_org_id = await getClientOrganizationId(
+      client_service,
+      client_departement,
+      client_direction
+    );
     const queryAgent = `SELECT * FROM person WHERE employee_number = '${agent_matricule}'`;
     const resSqlAgent = await sequelize.query(queryAgent, {
       type: Sequelize.QueryTypes.SELECT,
     });
-    const agent_id = resSqlAgent[0].id;
+    const agent_id = resSqlAgent[0] ? resSqlAgent[0].id : null;
 
     const query3 = `SELECT * FROM organization where code = '${agent_service}'`;
     const resSql3 = await sequelize.query(query3, {
       type: Sequelize.QueryTypes.SELECT,
     });
 
-    const agent_org_id = resSql3[0].id;
+    const agent_org_id = resSql3[0] ? resSql3[0].id : null;
 
     if (client_org_id && caller && agent_id) {
       // Define the JSON data for creating a new ticket
@@ -118,14 +148,14 @@ export const createItopTicket = async ({
           });
         });
     } else {
-      const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> Information not defined correctly \n`;
+      const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> Information not defined correctly (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
       fs.appendFileSync(logFilePath, dataToWrite, (err) => {
         if (err) throw err;
         console.log(`Error : ${error}`.red.inverse);
       });
     }
   } catch (error) {
-    const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
+    const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> ${error} (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log(`Error : ${error}`.red.inverse);

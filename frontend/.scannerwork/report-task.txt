@@ -1,0 +1,6 @@
+projectKey=e-dami-frontend-version02
+serverUrl=http://172.16.0.21:9000
+serverVersion=10.6.0.92116
+dashboardUrl=http://172.16.0.21:9000/dashboard?id=e-dami-frontend-version02
+ceTaskId=2bb68dd4-f7b5-4fad-848e-2f05064b2395
+ceTaskUrl=http://172.16.0.21:9000/api/ce/task?id=2bb68dd4-f7b5-4fad-848e-2f05064b2395

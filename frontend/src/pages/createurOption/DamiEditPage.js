@@ -198,6 +198,8 @@ const DamiEditPageCrtOp = () => {
     souscategories,
   } = sousCategorieList;
 
+  const [shouldAskAnyTime, setShouldAskAnyTime] = useState(false);
+
   const directionByServiceID = useSelector(
     (state) => state.directionByServiceID
   );
@@ -631,7 +633,6 @@ const DamiEditPageCrtOp = () => {
       signataires: signataires,
       dirLibelle: direction.libelle,
       autreResponsableTitre: atrTitle,
-    
     });
 
     setHtmlContent(docRef.current.innerHTML);
@@ -665,10 +666,10 @@ const DamiEditPageCrtOp = () => {
         cds: false,
         cdd: false,
         hiq: true,
-        atr:false,
+        atr: false,
         pdd: false,
         dir: true,
-        dg:false,
+        dg: false,
         pdg: false,
       });
     }
@@ -676,14 +677,14 @@ const DamiEditPageCrtOp = () => {
   };
 
   const addOptionHandler = () => {
-    console.log(option)
-    dispatch(createOptionCrtOp(option));
+    console.log(option);
+    dispatch(createOptionCrtOp({...option,shouldAskAnyTime:shouldAskAnyTime}));
   };
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
       // console.log(option);
-      dispatch(updateOptionCrtOp(id, option));
+      dispatch(updateOptionCrtOp(id, {...option,shouldAskAnyTime:shouldAskAnyTime}));
     }
   };
 
@@ -1856,6 +1857,7 @@ const DamiEditPageCrtOp = () => {
           ? recoveredOption.autreResponsableTitre
           : ""
       );
+      setShouldAskAnyTime(recoveredOption.shouldAskAnyTime);
       if (recoveredOption && recoveredOption.proprietaireDeDonnees)
         dispatch(
           fetchUsersByDivision(
@@ -2419,7 +2421,8 @@ const DamiEditPageCrtOp = () => {
                   <option value="">
                     ----- choisire un responsable (autre signataire) -----
                   </option>
-                  {usersAtr && Array.from(usersAtr).length > 0 &&
+                  {usersAtr &&
+                    Array.from(usersAtr).length > 0 &&
                     Array.from(usersAtr).map((user) => (
                       <option value={user._id}>
                         {user.prenom} {user.nom}
@@ -2581,142 +2584,134 @@ const DamiEditPageCrtOp = () => {
                     loadingDepartementByID) && <Loader />}
                   {direction && service && (
                     <>
-                    <div className="w-100 py-2">
-                      <Form.Check
-                        id="cds"
-                        value={checkValues["cds"]}
-                        label={`Chef de service `}
-                        className="check-signataire"
-                        onChange={sigChangeHandler}
-                        checked={checkValues["cds"]}
-                      />
-                    </div>
-                    <div className="w-100 py-2">
-                      <Form.Check
-                        id="cdd"
-                        value={checkValues["cdd"]}
-                        label={`Chef de departement `}
-                        className="check-signataire"
-                        onChange={sigChangeHandler}
-                        checked={checkValues["cdd"]}
-                      />
-                    </div>
-                    <div className="w-100 py-2 ">
-                      <Form.Check
-                        onChange={sigChangeHandler}
-                        id="hiq"
-                        value={checkValues["hiq"]}
-                        checked={checkValues["hiq"]}
-                        label="Directeur hiarchique"
-                        className="d-block mr-2 check-signataire"
-                        disabled
-                        readOnly
-                      />
-
-                      <small className="d-block text-warning">
-                        <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                        Directeur hiérarchique doit signer toutes les
-                        demandes
-                      </small>
-                    </div>
-
-                    <div className="w-100 py-2">
-                      <Form.Check
-                        onChange={sigChangeHandler}
-                        id="pdd"
-                        value={checkValues["pdd"]}
-                        checked={checkValues["pdd"]}
-                        disabled={!option.proprietaireDeDonnees}
-                        label="proprietaire de donnees"
-                        className="d-block mr-2 check-signataire"
-                      />
-                    </div>
-
-                    <div className="w-100 py-2">
-                      <Form.Check
-                        onChange={sigChangeHandler}
-                        id="atr"
-                        value={checkValues["atr"]}
-                        checked={checkValues["atr"]}
-                        disabled={
-                          !sousCategorieForm.values.autreUtilisateur
-                        }
-                        label="Autre"
-                        className="d-block mr-2 check-signataire"
-                      />
-
-                      <div className="w-50">
-                        <Form.Control
-                          placeholder="veuillez saisir l'intitulé de signataire"
-                          value={atrTitle}
-                          onChange={(e) => setAtrTitle(e.target.value)}
-                          disabled={
-                            !sousCategorieForm.values.autreUtilisateur ||
-                            !checkValues["atr"]
-                          }
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          id="cds"
+                          value={checkValues["cds"]}
+                          label={`Chef de service `}
+                          className="check-signataire"
+                          onChange={sigChangeHandler}
+                          checked={checkValues["cds"]}
                         />
                       </div>
-                    </div>
-                    <div className="w-100 py-2">
-                      <Form.Check
-                        onChange={sigChangeHandler}
-                        id="dir"
-                        value={checkValues["dir"]}
-                        checked={checkValues["dir"]}
-                        label={`Directeur de ${String(
-                          direction.libelle
-                        ).toLowerCase()}`}
-                        className="d-block mr-2 check-signataire"
-                        readOnly
-                        disabled
-                      />
-
-                      <small className="d-block text-warning">
-                        <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                        Le directeur de la direction{" "}
-                        {String(direction.libelle).toLowerCase()} doit
-                        obligatoirement signer dans cette option.
-                      </small>
-                    </div>
-                    <div className="w-100 py-2 d-block">
-                      <div className="d-flex align-items-center">
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          id="cdd"
+                          value={checkValues["cdd"]}
+                          label={`Chef de departement `}
+                          className="check-signataire"
+                          onChange={sigChangeHandler}
+                          checked={checkValues["cdd"]}
+                        />
+                      </div>
+                      <div className="w-100 py-2 ">
                         <Form.Check
                           onChange={sigChangeHandler}
-                          id="dg"
-                          value={checkValues["dg"]}
-                          checked={checkValues["dg"]}
-                          label="directeur général"
+                          id="hiq"
+                          value={checkValues["hiq"]}
+                          checked={checkValues["hiq"]}
+                          label="Directeur hiarchique"
+                          className="d-block mr-2 check-signataire"
+                          disabled
+                          readOnly
+                        />
+
+                        <small className="d-block text-warning">
+                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                          Directeur hiérarchique doit signer toutes les demandes
+                        </small>
+                      </div>
+
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          onChange={sigChangeHandler}
+                          id="pdd"
+                          value={checkValues["pdd"]}
+                          checked={checkValues["pdd"]}
+                          disabled={!option.proprietaireDeDonnees}
+                          label="proprietaire de donnees"
                           className="d-block mr-2 check-signataire"
                         />
                       </div>
-                    </div>
-                    <div className="w-100 py-2 d-block">
-                      <Form.Check
-                        onChange={sigChangeHandler}
-                        id="pdg"
-                        value={checkValues["pdg"]}
-                        checked={checkValues["pdg"]}
-                        label="président directeur général"
-                        className="d-block mr-2 check-signataire"
-                      />
 
-                    
-                    </div>
-                  </>
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          onChange={sigChangeHandler}
+                          id="atr"
+                          value={checkValues["atr"]}
+                          checked={checkValues["atr"]}
+                          disabled={!sousCategorieForm.values.autreUtilisateur}
+                          label="Autre"
+                          className="d-block mr-2 check-signataire"
+                        />
+
+                        <div className="w-50">
+                          <Form.Control
+                            placeholder="veuillez saisir l'intitulé de signataire"
+                            value={atrTitle}
+                            onChange={(e) => setAtrTitle(e.target.value)}
+                            disabled={
+                              !sousCategorieForm.values.autreUtilisateur ||
+                              !checkValues["atr"]
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="w-100 py-2">
+                        <Form.Check
+                          onChange={sigChangeHandler}
+                          id="dir"
+                          value={checkValues["dir"]}
+                          checked={checkValues["dir"]}
+                          label={`Directeur de ${String(
+                            direction.libelle
+                          ).toLowerCase()}`}
+                          className="d-block mr-2 check-signataire"
+                          readOnly
+                          disabled
+                        />
+
+                        <small className="d-block text-warning">
+                          <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                          Le directeur de la direction{" "}
+                          {String(direction.libelle).toLowerCase()} doit
+                          obligatoirement signer dans cette option.
+                        </small>
+                      </div>
+                      <div className="w-100 py-2 d-block">
+                        <div className="d-flex align-items-center">
+                          <Form.Check
+                            onChange={sigChangeHandler}
+                            id="dg"
+                            value={checkValues["dg"]}
+                            checked={checkValues["dg"]}
+                            label="directeur général"
+                            className="d-block mr-2 check-signataire"
+                          />
+                        </div>
+                      </div>
+                      <div className="w-100 py-2 d-block">
+                        <Form.Check
+                          onChange={sigChangeHandler}
+                          id="pdg"
+                          value={checkValues["pdg"]}
+                          checked={checkValues["pdg"]}
+                          label="président directeur général"
+                          className="d-block mr-2 check-signataire"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
-            
+
                 <Button
-                      variant="dark"
-                      className="w-100 mb-5"
-                      onClick={putSignatairesHandler}
-                    >
-                      continue <i className="fas fa-arrow-right"></i>
-                    </Button>
-             
+                  variant="dark"
+                  className="w-100 mb-5"
+                  onClick={putSignatairesHandler}
+                >
+                  continue <i className="fas fa-arrow-right"></i>
+                </Button>
               </div>
-              
-             
             </>
           ) : (
             <>
@@ -2731,6 +2726,17 @@ const DamiEditPageCrtOp = () => {
               <Row>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
                 <Col xl={8} lg={12} md={12} sm={12}>
+                  <div className="d-block">
+                    <Form.Check // prettier-ignore
+                      type="switch"
+                      id="custom-switch"
+                      label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                      value={shouldAskAnyTime}
+                      checked={shouldAskAnyTime}
+                      onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                    />
+                  </div>
+
                   <Dami option={option} showAdmin />
                 </Col>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>

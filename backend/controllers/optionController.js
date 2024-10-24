@@ -23,7 +23,7 @@ export const getOptions = asyncHandler(async (req, res) => {
 // @access  private
 export const getOptionsCrtOp = asyncHandler(async (req, res) => {
   const options = await Option.find({
-    createur: req.user.id,
+    service: req.user.service,
   })
     .populate("service")
     .populate("proprietaireDeDonnees")
@@ -264,8 +264,12 @@ export const updateOption = asyncHandler(async (req, res) => {
       req.body.autreResponsableTitre || option.autreResponsableTitre;
     option.autreUtilisateur =
       req.body.autreUtilisateur || option.autreUtilisateur;
-    option.shouldAskAnyTime =
-      req.body.shouldAskAnyTime || option.shouldAskAnyTime;
+    if (
+      req.body.shouldAskAnyTime !== undefined &&
+      req.body.shouldAskAnyTime !== null
+    ) {
+      option.shouldAskAnyTime = req.body.shouldAskAnyTime;
+    }
 
     const updatedOption = await option.save();
     res.json({
@@ -398,7 +402,7 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
 
   const option = await Option.findById(req.params.id);
   if (option) {
-    if (String(option.createur) === String(req.user.id)) {
+    if (String(option.service) === String(req.user.service)) {
       option.libelle = libelle || option.libelle;
       option.typeProcessus = typeProcessus || option.typeProcessus;
       if (header) {
@@ -455,8 +459,13 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
         req.body.autreResponsableTitre || option.autreResponsableTitre;
       option.autreUtilisateur =
         req.body.autreUtilisateur || option.autreUtilisateur;
-        option.shouldAskAnyTime =
-        req.body.shouldAskAnyTime || option.shouldAskAnyTime;
+      if (
+        req.body.shouldAskAnyTime !== undefined &&
+        req.body.shouldAskAnyTime !== null
+      ) {
+        option.shouldAskAnyTime = req.body.shouldAskAnyTime;
+      }
+
       const updatedOption = await option.save();
       res.json({
         _id: updatedOption.id,

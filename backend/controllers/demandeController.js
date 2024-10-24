@@ -986,12 +986,24 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               const demandeurService = await Service.findById(
                 demande.demandeur.service
               );
+              const demandeurDepartement = await Departement.findById(
+                demande.demandeur.deparatement
+              );
+              const demandeurDirection = await Direction.findById(
+                demande.demandeur.direction
+              );
               // ...
               createItopTicket({
                 title: demande.option.libelle,
                 lien: `https://e-dami.snrt.ma/demandes/apercu/details/${demande._id}`,
                 client_matricule: demande.demandeur.matricule,
-                client_service: demandeurService.uo,
+                client_service: demandeurService ? demandeurService.uo : null,
+                client_departement: demandeurDepartement
+                  ? demandeurDepartement.uo
+                  : null,
+                client_direction: demandeurDirection
+                  ? demandeurDirection.uo
+                  : null,
                 agent_service: optionService.uo,
                 agent_matricule: chefDeService.matricule,
               });

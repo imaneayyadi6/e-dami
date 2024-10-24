@@ -14,7 +14,7 @@ const DamiBySousCategorieDoughnutChart = () => {
   const chartRef = useRef(null);
   const dispatch = useDispatch();
   const chartGetOptionsCountOfSousCategorie = useSelector(
-    state => state.chartGetOptionsCountOfSousCategorie
+    (state) => state.chartGetOptionsCountOfSousCategorie
   );
   const {
     loading: loadingChartGetOptionsCountOfSousCategorie,
@@ -23,13 +23,23 @@ const DamiBySousCategorieDoughnutChart = () => {
     data,
   } = chartGetOptionsCountOfSousCategorie;
 
-  const generateColors = number => {
+  const generateColors = (number) => {
     const colors = [];
-
+    const crypto = window.crypto || window.msCrypto;
     for (let i = 0; i < number; i++) {
-      const red = Math.floor(Math.random() * 256);
-      const green = Math.floor(Math.random() * 256);
-      const blue = Math.floor(Math.random() * 256);
+      const redArray = new Uint8Array(1);
+      const greenArray = new Uint8Array(1);
+      const blueArray = new Uint8Array(1);
+
+      // Generate secure random values for red, green, and blue
+      crypto.getRandomValues(redArray);
+      crypto.getRandomValues(greenArray);
+      crypto.getRandomValues(blueArray);
+
+      // The random value is between 0 and 255
+      const red = redArray[0]; // 0-255
+      const green = greenArray[0]; // 0-255
+      const blue = blueArray[0]; // 0-255
       const alpha = 0.2;
 
       const color = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
@@ -88,17 +98,17 @@ const DamiBySousCategorieDoughnutChart = () => {
   return (
     <>
       {errorChartGetOptionsCountOfSousCategorie && (
-        <Message itWillBeHidden type='danger'>
+        <Message itWillBeHidden type="danger">
           {errorChartGetOptionsCountOfSousCategorie}
         </Message>
       )}
       {loadingChartGetOptionsCountOfSousCategorie && <Loader />}
       {data && (
-        <Card className='mb-2 '>
-          <div className='d-flex justify-content-center mt-2'>
+        <Card className="mb-2 ">
+          <div className="d-flex justify-content-center mt-2">
             <h6>Options par sous-categorie</h6>
           </div>
-          <Card.Body className='w-50' style={{ marginLeft: "25%" }}>
+          <Card.Body className="w-50" style={{ marginLeft: "25%" }}>
             {chartRef && <canvas ref={chartRef} id={uuidv4()}></canvas>}
           </Card.Body>
         </Card>

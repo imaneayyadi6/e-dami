@@ -10,6 +10,8 @@ import Service from "./models/serviceModel.js";
 import Utilisateur from "./models/utilisateurModel.js";
 import Departement from "./models/departementModel.js";
 import connectDB from "./config/database.js";
+import cron from "node-cron";
+import crypto from "crypto";
 
 dotenv.config();
 connectDB();
@@ -23,7 +25,7 @@ function generatePassword(length) {
   let password = "";
 
   for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
+    const randomIndex = crypto.randomInt(0, charset.length); // Secure random index
     password += charset.charAt(randomIndex);
   }
 
@@ -724,8 +726,6 @@ const main = async () => {
     let joeBloe = await Utilisateur.findOne({
       email: "joe.bloe@snrt.ma",
     });
-    console.log("helloWorldDepratement:", helloWorldDepratement);
-    console.log("helloWorldService:", helloWorldService);
 
     if (!joeBloe) {
       await new Utilisateur({
@@ -899,18 +899,8 @@ const main = async () => {
 
 // main();
 
-
-// // 12 hours :
-// cron.schedule("0 */12 * * *", async () => {
-//   try {
-//     main();
-//   } catch (error) {
-//     console.error("CRON ERROR:", error);
-//   }
-// });
-
-// 2 minutes :
-cron.schedule("*/2 * * * *", async () => {
+// 12 hours :
+cron.schedule("0 */12 * * *", async () => {
   try {
     main();
   } catch (error) {
