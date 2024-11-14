@@ -916,7 +916,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
               if (optionService && optionService.chefService) {
                 let message = `<p> Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/demandes/apercu/details/${demande._id}">demande</a> fait`;
-                message += `par <b style='font-weight:bold'>${getCv(
+                message += ` par <b style='font-weight:bold'>${getCv(
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
@@ -970,12 +970,24 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     demande.demandeur.civilite
                   )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                   message += ` a été approuvée par ses supérieurs et tous les signataires possibles.  DAMI : ('<i>${demande.option.libelle}</i>')</p>`;
-
-                  sendNotification(
-                    serviceMagasin.chefService._id,
-                    message,
-                    `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                  // recuperer le chef de service de magasin :
+                  const chefServiceMagasin = await Utilisateur.findById(
+                    serviceMagasin.chefService._id
                   );
+                  // verfier est ce que l' utilisateur a un interim ou non :
+                  if (chefServiceMagasin.interim) {
+                    sendNotification(
+                      chefServiceMagasin.interim,
+                      message,
+                      `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                    );
+                  } else {
+                    sendNotification(
+                      chefServiceMagasin._id,
+                      message,
+                      `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                    );
+                  }
                 }
               }
 
@@ -987,7 +999,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 demande.demandeur.service
               );
               const demandeurDepartement = await Departement.findById(
-                demande.demandeur.deparatement
+                demande.demandeur.departement
               );
               const demandeurDirection = await Direction.findById(
                 demande.demandeur.direction

@@ -880,7 +880,7 @@ const main = async () => {
       await updatedHelloWorldDirection.save();
     }
 
-    const dataToWrite = `[DATA INSERT] : ${new Date()} ============> Data Inserted succcessfully \n`;
+    const dataToWrite = `[DATA INSERT] : ${new Date()} :: Data Inserted succcessfully \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("The data was appended to the file!");
@@ -888,7 +888,7 @@ const main = async () => {
 
     console.log(`[BACKUP] Data Inserted succcessfully !`.green.inverse);
   } catch (error) {
-    const dataToWrite = `[ERROR] : ${new Date()} ============> ${error} \n`;
+    const dataToWrite = `[ERROR] : ${new Date()} :: ${error} \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("The data was appended to the file!");

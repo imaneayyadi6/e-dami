@@ -1,34 +1,16 @@
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:51:28 ============> Ticket Created succcessfully 
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:54:42 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 10:58:30 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 11:00:07 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 08/10/2024 11:02:10 ============> Ticket Created succcessfully by : 101202303 && Agent : 111222333  
-[TICKET CREATED ERROR] : 08/10/2024 18:44:49 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 08/10/2024 19:39:42 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 08/10/2024 19:42:31 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 10/10/2024 17:39:03 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 10/10/2024 17:39:15 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 10/10/2024 17:39:25 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 11/10/2024 09:37:37 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED SUCCESSFULLY] : 14/10/2024 10:42:29 ============> Ticket Created succcessfully by : 2019199 && Agent : 1425507  
-[TICKET CREATED ERROR] : 14/10/2024 10:54:43 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED SUCCESSFULLY] : 14/10/2024 15:15:09 ============> Ticket Created succcessfully by : 731825 && Agent : 1425507  
-[TICKET CREATED ERROR] : 14/10/2024 17:24:32 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED ERROR] : 15/10/2024 12:08:52 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED SUCCESSFULLY] : 17/10/2024 10:43:44 ============> Ticket Created succcessfully by : 1425847 && Agent : 1076929  
-[TICKET CREATED ERROR] : 17/10/2024 15:45:36 ============> TypeError: Cannot read properties of undefined (reading 'id') 
-[TICKET CREATED SUCCESSFULLY] : 23/10/2024 13:46:06 ============> Ticket Created succcessfully by : 1426163 && Agent : 1076929  
-[TICKET CREATED SUCCESSFULLY] : 23/10/2024 13:59:59 ============> Ticket Created succcessfully by : 111222333 && Agent : 111222333  
-[TICKET CREATED ERROR] : 24/10/2024 11:13:31 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED ERROR] : 24/10/2024 11:22:50 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED ERROR] : 24/10/2024 11:24:16 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED ERROR] : 24/10/2024 11:29:14 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED ERROR] : 24/10/2024 11:30:55 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED ERROR] : 24/10/2024 11:33:46 ============> TypeError: Cannot read properties of undefined (reading 'id') (by : 101200 && Agent : 111222333) 
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:38:35 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:39:46 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:40:30 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:41:41 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:42:12 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:44:06 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
-[TICKET CREATED SUCCESSFULLY] : 24/10/2024 11:46:06 ============> Ticket Created succcessfully by : 101200 && Agent : 111222333  
+[TICKET CREATED SUCCESSFULLY] : 08/11/2024 13:59:51 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 08/11/2024 14:00:14 ============> Ticket Created succcessfully by : 2019209 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 11/11/2024 12:12:42 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 11/11/2024 12:12:55 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 11/11/2024 15:29:25 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425507  
+[TICKET CREATED ERROR] : 12/11/2024 13:50:32 :: Information not defined correctly (by : 1134542 && Agent : 1892993) 
+[TICKET CREATED ERROR] : 12/11/2024 13:50:51 :: Information not defined correctly (by : 1134542 && Agent : 1425507) 
+[TICKET CREATED ERROR] : 12/11/2024 13:51:04 :: Information not defined correctly (by : 1134542 && Agent : 1425507) 
+[TICKET CREATED SUCCESSFULLY] : 12/11/2024 14:14:34 ============> Ticket Created succcessfully by : 2065549 && Agent : 1425507  
+[TICKET CREATED SUCCESSFULLY] : 12/11/2024 15:50:01 ============> Ticket Created succcessfully by : 1425501 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 12/11/2024 15:50:17 ============> Ticket Created succcessfully by : 2033817 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 12/11/2024 16:04:50 ============> Ticket Created succcessfully by : 1425501 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 13/11/2024 14:58:52 ============> Ticket Created succcessfully by : 1134551 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 13/11/2024 14:59:39 ============> Ticket Created succcessfully by : 1042871 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 13/11/2024 15:00:01 ============> Ticket Created succcessfully by : 1042871 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 13/11/2024 16:37:15 ============> Ticket Created succcessfully by : 330664 && Agent : 1076929  

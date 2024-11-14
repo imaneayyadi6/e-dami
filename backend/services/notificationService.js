@@ -46,7 +46,7 @@ export const sendNotification = async (
         "logs",
         "e-dami-notification-log.txt"
       );
-      const dataToWrite = `[NOTIFICATION SENT] : ${new Date().toLocaleString()} ============>NOTIFICATION SENT : [${JSON.stringify(
+      const dataToWrite = `[NOTIFICATION SENT] : ${new Date().toLocaleString()} :: NOTIFICATION SENT : [${JSON.stringify(
         mailOptions
       )}] \n`;
       fs.appendFileSync(logFilePath, dataToWrite, (err) => {

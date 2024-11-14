@@ -47,15 +47,13 @@ async function getClientOrganizationId(
   client_departement,
   client_direction
 ) {
-  let client_org_id = null;
+  // Attempt to get organization ID in the defined priority order
+  let client_org_id = await getOrganizationIdByCode(client_service);
 
-  if (client_service) {
-    client_org_id = await getOrganizationIdByCode(client_service);
-  }
-  if (!client_org_id && client_departement) {
+  if (!client_org_id) {
     client_org_id = await getOrganizationIdByCode(client_departement);
   }
-  if (!client_org_id && client_direction) {
+  if (!client_org_id) {
     client_org_id = await getOrganizationIdByCode(client_direction);
   }
 
@@ -80,6 +78,8 @@ export const createItopTicket = async ({
     });
 
     const caller = resSql1[0] ? resSql1[0].id : null;
+
+    console.log("client_departement :", client_departement);
 
     const client_org_id = await getClientOrganizationId(
       client_service,
@@ -148,14 +148,14 @@ export const createItopTicket = async ({
           });
         });
     } else {
-      const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> Information not defined correctly (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
+      const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} :: Information not defined correctly (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
       fs.appendFileSync(logFilePath, dataToWrite, (err) => {
         if (err) throw err;
         console.log(`Error : ${error}`.red.inverse);
       });
     }
   } catch (error) {
-    const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> ${error} (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
+    const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} :: ${error} (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log(`Error : ${error}`.red.inverse);

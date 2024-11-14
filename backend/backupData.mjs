@@ -49,14 +49,7 @@ const backupDatabase = async () => {
 
       // backup data in folder 1 :
       if (fs.existsSync(collectionPath2)) {
-        // Check if it's a directory
-        const stats = await fs.promises.stat(collectionPath2);
-        if (stats.isDirectory()) {
-          await fs.promises.rmdir(collectionPath2, { recursive: true });
-          await fs.promises.unlink(collectionPath2);
-        } else {
-          await fs.promises.unlink(collectionPath2);
-        }
+        await fs.promises.unlink(collectionPath2);
         await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
       } else {
         await fs.promises.appendFile(collectionPath2, JSON.stringify(data));
@@ -66,24 +59,17 @@ const backupDatabase = async () => {
       //  \\192.168.1.161\a.shaim
       const collectionPath3 = `\\\\192.168.1.161\\a.shaim\\backup\\${collection.collectionName}.json`;
 
-      // backup data in folder 1 :
       if (fs.existsSync(collectionPath3)) {
-        // Check if it's a directory
-        const stats = await fs.promises.stat(collectionPath3);
-        if (stats.isDirectory()) {
-          await fs.promises.rmdir(collectionPath3, { recursive: true });
-          await fs.promises.unlink(collectionPath3);
-        } else {
-          await fs.promises.unlink(collectionPath3);
-        }
-        await fs.promises.appendFile(collectionPath3, JSON.stringify(data));
-      } else {
+        // remove file
+        await fs.promises.unlink(collectionPath3);
         await fs.promises.appendFile(collectionPath3, JSON.stringify(data));
       }
+      // Append data to file (create if it doesn't exist)
+      await fs.promises.appendFile(collectionPath3, JSON.stringify(data));
     }
 
     console.log("Backup completed successfully");
-    const dataToWrite = `[DATA INSERT] : ${new Date().toLocaleString()} ============> Data has been backed up successfully  \n`;
+    const dataToWrite = `[DATA INSERT] : ${new Date().toLocaleString()} :: Data has been backed up successfully  \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("Data has been backed up successfully !");
@@ -92,7 +78,7 @@ const backupDatabase = async () => {
     console.log(`Data Inserted succcessfully !`.green.inverse);
     // process.exit();
   } catch (error) {
-    const dataToWrite = `[ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
+    const dataToWrite = `[ERROR] : ${new Date().toLocaleString()} :: ${error} \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log("error data backup !");
