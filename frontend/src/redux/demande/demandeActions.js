@@ -180,6 +180,7 @@ export const getDemandesPreviewTeamAll = () => {
       );
       dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS, payload: data });
     } catch (error) {
+      console.log(error);
       const err =
         error.response && error.response.data.message
           ? error.response.data.message

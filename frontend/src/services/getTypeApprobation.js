@@ -39,7 +39,7 @@ const getTypeApprobation = (code) => {
     case "hiq.pdd.dir":
       return "directeur hiearchique, propriétaire de données et directeur de l'entité";
     default:
-      return "(pas de donnees)";
+      return "N/A";
   }
 };
 

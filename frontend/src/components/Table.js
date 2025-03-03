@@ -4,6 +4,7 @@ import { useTable, usePagination, useFilters } from "react-table";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { Link } from "react-router-dom";
 
 const TextFilter = ({ column }) => {
   const handleFilterChange = (e) => {
@@ -63,6 +64,7 @@ const Table = ({
   loadingRemove,
   dropdownFilters,
   showDetailsRowSpecificData,
+  showDetailsLink,
 }) => {
   const [callOnce, setCallOnce] = useState(false);
 
@@ -273,6 +275,15 @@ const Table = ({
 
                       <td>
                         <div className="d-flex justify-content-end">
+                          {showDetailsLink && (
+                            <Link
+                              to={showDetailsLink}
+                              className="btn btn-sm btn-light"
+                            >
+                              details
+                            </Link>
+                          )}
+
                           {(showDetailsRow || showDetailsRowSpecificData) &&
                             !row.original.notSavedYet && (
                               <span
@@ -298,6 +309,7 @@ const Table = ({
                                 <i className="fa-solid fa-eye mr-1"></i>
                               </span>
                             )}
+
                           {updateRow && (
                             <span
                               className="cursor-pointer"
@@ -309,6 +321,7 @@ const Table = ({
                               <i className="fa-solid fa-pen-to-square mr-1"></i>
                             </span>
                           )}
+
                           {removeRow && (
                             <span
                               className="cursor-pointer"
@@ -380,6 +393,15 @@ const Table = ({
 
                     <td>
                       <div className="d-flex justify-content-end">
+                        {showDetailsLink && (
+                          <Link
+                            to={showDetailsLink + "/" + rowId}
+                            className="btn btn-sm btn-light"
+                          >
+                            details
+                          </Link>
+                        )}
+
                         {(showDetailsRow || showDetailsRowSpecificData) &&
                           !row.original.notSavedYet && (
                             <span

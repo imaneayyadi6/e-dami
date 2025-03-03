@@ -35,7 +35,6 @@ const io = new Server(server, {
 
 // Connect Database :
 connectDB();
-
 // Serve static files from the "uploads" folder
 app.use("/uploads", express.static("uploads"));
 app.use("/styles", express.static("frontend/src/styles"));

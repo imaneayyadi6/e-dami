@@ -5,6 +5,189 @@ import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 import Demande from "../models/demandeModel.js";
 
+/**
+ * Récupère l'ID du directeur hiérarchique d'un demandeur.
+ *
+ * @param {String} demandeurId - L'ID de l'utilisateur demandeur.
+ * @returns {String|null} - L'ID du directeur hiérarchique ou null si non trouvé.
+ */
+const getDirecteurHiarchique = async (demandeurId) => {
+  const demandeur = await Utilisateur.findById(demandeurId);
+  let dirHiqID = null;
+  let findDirHiq = false;
+  const demandeurDirection = await Direction.findById(demandeur.direction);
+  if (demandeur && demandeur.direction) {
+    if (demandeurDirection && demandeurDirection.directeur) {
+      const demandeurDirecteur = await Utilisateur.findById(
+        demandeurDirection.directeur
+      );
+      if (demandeurDirecteur) {
+        if (
+          Number(demandeurDirecteur.matricule) ===
+          Number(demandeur.matriculeSupN1)
+        ) {
+          dirHiqID = demandeurDirecteur._id;
+          findDirHiq = true;
+        } else if (
+          Number(demandeurDirecteur.matricule) ===
+          Number(demandeur.matriculeSupN2)
+        ) {
+          dirHiqID = demandeurDirecteur._id;
+          findDirHiq = true;
+        } else if (
+          Number(demandeurDirecteur.matricule) ===
+          Number(demandeur.matriculeSupN3)
+        ) {
+          dirHiqID = demandeurDirecteur._id;
+          findDirHiq = true;
+        }
+      }
+    }
+
+    if (
+      !findDirHiq &&
+      demandeurDirection &&
+      demandeurDirection.directeursAdjoints &&
+      demandeurDirection.directeursAdjoints.length > 0
+    ) {
+      const dirAdjIds = demandeurDirection.directeursAdjoints;
+      for (const dirAdjId of dirAdjIds) {
+        console.log("dirAdjId : ",dirAdjId);
+        const directeurAdjoint = await Utilisateur.findById(dirAdjId);
+        if (directeurAdjoint && directeurAdjoint.matricule) {
+          if (
+            Number(directeurAdjoint.matricule) ===
+            Number(demandeur.matriculeSupN1)
+          ) {
+            dirHiqID = directeurAdjoint._id;
+            findDirHiq = true;
+          } else if (
+            Number(directeurAdjoint.matricule) ===
+            Number(demandeur.matriculeSupN2)
+          ) {
+            dirHiqID = directeurAdjoint._id;
+            findDirHiq = true;
+          } else if (
+            Number(directeurAdjoint.matricule) ===
+            Number(demandeur.matriculeSupN3)
+          ) {
+            dirHiqID = directeurAdjoint._id;
+            findDirHiq = true;
+          }
+        }
+      }
+    }
+  }
+
+  if (!findDirHiq) {
+    if (demandeurDirection && demandeurDirection.directeur) {
+      dirHiqID = demandeurDirection.directeur;
+    }
+  }
+  console.log("dirHiqID : ", dirHiqID);
+  return dirHiqID;
+};
+
+const getCode = async (demandeurId, option) => {
+  let code = "";
+  let userId = "";
+
+  const demandeur = await Utilisateur.findById(demandeurId);
+  const demandeurHiq =
+    demandeur && demandeur.direction
+      ? await Direction.findById(demandeur.direction)
+      : null;
+  const demandeurService =
+    demandeur && demandeur.service
+      ? await Service.findById(demandeur.service)
+      : null;
+  const demandeurDepartement =
+    demandeur && demandeur.departement
+      ? await Departement.findById(demandeur.departement)
+      : null;
+
+  const optionDirection = await Direction.findById(option.service.direction);
+
+  const dirHiqId = await getDirecteurHiarchique(demandeurId);
+
+  if (option.signataires.length > 0) {
+    for (let cd of option.signataires) {
+      switch (cd) {
+        case "cds":
+          code = "cds";
+          if (demandeurService && demandeurService.chefService)
+            userId = demandeurService.chefService;
+          break;
+        case "cdd":
+          if (!userId) {
+            if (code == "") code = "cdd";
+            else code += ".cdd";
+            if (demandeurDepartement)
+              userId = demandeurDepartement.chefDeDepartement;
+          }
+          break;
+        case "hiq":
+          if (!userId) {
+            console.log("hiq");
+            if (code == "") code = "hiq";
+            else code += ".hiq";
+            if (demandeurHiq) {
+              const dirHiqId = await getDirecteurHiarchique(demandeurId);
+              userId = dirHiqId;
+            }
+          } else {
+            if (
+              String(userId) === String(demandeurHiq.directeurAdjoint) ||
+              String(userId) === String(demandeurHiq.directeur)
+            ) {
+              code += ".hiq";
+              const dirHiqId = await getDirecteurHiarchique(demandeurId);
+              userId = dirHiqId;
+            }
+          }
+          break;
+        case "pdd":
+          if (!userId) {
+            if (code == "") code = "pdd";
+            else code += ".pdd";
+            if (option.proprietaireDeDonnees)
+              userId = option.proprietaireDeDonnees;
+          } else {
+            if (String(userId) === String(option.proprietaireDeDonnees)) {
+              code += ".pdd";
+              userId = option.proprietaireDeDonnees;
+            }
+          }
+          break;
+        case "dir":
+          if (!userId) {
+            if (code == "") code = "dir";
+            else code += ".dir";
+            if (optionDirection) {
+              const dirHiqId = await getDirecteurHiarchique(demandeurId);
+              userId = dirHiqId;
+            }
+          } else {
+            if (
+              String(userId) === String(optionDirection.directeurAdjoint) ||
+              String(userId) === String(optionDirection.directeur)
+            ) {
+              code += ".dir";
+              const dirHiqId = await getDirecteurHiarchique(demandeurId);
+              userId = dirHiqId;
+            }
+          }
+          break;
+      }
+    }
+  }
+
+  console.log("the code : ", code);
+  console.log("the user ID : ", userId);
+
+  return [userId, code];
+};
+
 export const getTypeAppOnCreate = async (optionId, userId) => {
   const option = await Option.findById(optionId).populate("service");
   const user = await Utilisateur.findById(userId);
@@ -17,322 +200,7 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
     throw new Error("Utilisateur introuvable !");
   }
 
-  let code = "";
-  let userID = "";
-
-  // verfication de signataires (qui va signer le premier) :
-  // verfication des cas possibles :
-
-  /* ##################### CAS CHEF DE SERVICE ##################### */
-  if (Array.from(option.signataires)[0] === "cds") {
-    const demandeurService = await Service.findById(user.service);
-    // si l'utilisateur a un service et son chef de service :
-    if (demandeurService && demandeurService.chefService) {
-      userID = demandeurService.chefService;
-      code = "cds";
-    } else {
-      let demandeurDepartement = await Departement.findById(user.departement);
-      // si l'utilisateur n'a un service ou son chef de service :
-      // envoyer la demande a son chef de departement :
-      if (Array.from(option.signataires)[1] === "cdd") {
-        if (demandeurDepartement && demandeurDepartement.chefDeDepartement) {
-          // verifier si le chef de departement et un pdd ou non :
-          userID = demandeurDepartement.chefDeDepartement;
-          code = "cds.cdd";
-        }
-        // si l'utilisateur n'a un departement ou son chef de departement :
-        // envoyer la demande a son directeur :
-        else if (Array.from(option.signataires)[2] === "hiq") {
-          const demandeurDirection = await Direction.findById(user.direction);
-          if (demandeurDirection && demandeurDirection.directeur) {
-            // verfier est ce qu'il est un proprietaire de donnes :
-            if (Array.from(option.signataires)[3] === "pdd") {
-              let utilisateurPdd = await Utilisateur.findById(
-                option.proprietaireDeDonnees
-              );
-              if (utilisateurPdd) {
-                if (
-                  String(utilisateurPdd._id) ===
-                  String(demandeurDirection.directeur)
-                ) {
-                  userID = utilisateurPdd._id;
-                  code = "cds.cdd.hiq.pdd";
-                } else {
-                  userID = demandeurDirection.directeur;
-                  code = "cds.cdd.hiq";
-                }
-              } else {
-                throw new Error(
-                  "utilisateur proprietaire de donnees introuvable !"
-                );
-              }
-            } else {
-              // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
-              if (Array.from(option.signataires)[3] === "dir") {
-                const entiteDirection = await Direction.findById(
-                  option.service.direction
-                );
-                if (entiteDirection) {
-                  if (
-                    entiteDirection.directeur &&
-                    String(entiteDirection.directeur) ===
-                      String(demandeurDirection.directeur)
-                  ) {
-                    userID = entiteDirection.directeur;
-                    code = "cds.cdd.hiq.dir";
-                  } else {
-                    userID = demandeurDirection.directeur;
-                    code = "cds.cdd.hiq";
-                  }
-                } else {
-                  userID = demandeurDirection.directeur;
-                  code = "cds.cdd.hiq";
-                }
-              }
-            }
-          } else {
-            throw new Error("demandeur n'a pas une direction ou un directeur");
-          }
-        }
-        // envoyer la demande a son directeur hiarchique :
-      } else if (
-        demandeurDepartement &&
-        demandeurDepartement.chefDeDepartement
-      ) {
-        userID = demandeurDepartement.chefDeDepartement;
-        code = "cds";
-      } else if (Array.from(option.signataires)[1] === "hiq") {
-        const demandeurDirection = await Direction.findById(user.direction);
-        if (demandeurDirection && demandeurDirection.directeur) {
-          // verfier si le directeur hiarchique est un pdd :
-          if (Array.from(option.signataires)[2] === "pdd") {
-            let utilisateurPdd = await Utilisateur.findById(
-              option.proprietaireDeDonnees
-            );
-            if (utilisateurPdd) {
-              if (
-                String(utilisateurPdd._id) ===
-                String(demandeurDirection.directeur)
-              ) {
-                // verfier si le directeur hiarchique est un pdd et directur de l'entite :
-                const entiteDirection = await Direction.findById(
-                  option.service.direction
-                );
-                if (entiteDirection) {
-                  if (
-                    entiteDirection.directeur &&
-                    String(entiteDirection.directeur) ===
-                      String(demandeurDirection.directeur)
-                  ) {
-                    userID = entiteDirection.directeur;
-                    code = "cds.hiq.pdd.dir";
-                  } else {
-                    userID = utilisateurPdd._id;
-                    code = "cds.hiq.pdd";
-                  }
-                } else {
-                  throw new Error("option (DAMI) n'a pas de direction !!!!");
-                }
-              } else {
-                userID = demandeurDirection.directeur;
-                code = "cds.hiq";
-              }
-            } else {
-              throw new Error(
-                "utilisateur proprietaire de donnees introuvable !"
-              );
-            }
-          } else {
-            if (Array.from(option.signataires)[2] === "dir") {
-              const entiteDirection = await Direction.findById(
-                option.service.direction
-              );
-              if (entiteDirection) {
-                if (
-                  entiteDirection.directeur &&
-                  String(entiteDirection.directeur) ===
-                    String(demandeurDirection.directeur)
-                ) {
-                  userID = entiteDirection.directeur;
-                  code = "cds.hiq.dir";
-                } else {
-                  userID = demandeurDirection.directeur;
-                  code = "cds.hiq";
-                }
-              } else {
-                userID = demandeurDirection.directeur;
-                code = "cds.hiq";
-              }
-            } else {
-              userID = demandeurDirection.directeur;
-              code = "cds.hiq";
-            }
-          }
-        } else {
-          throw new Error("demandeur n'a pas une direction ou un directeur");
-        }
-      }
-    }
-  } else if (Array.from(option.signataires)[0] === "cdd") {
-    /* ##################### CAS CHEF DE DEPARTEMENT ##################### */
-    let demandeurDepartement = await Departement.findById(user.departement);
-    if (demandeurDepartement && demandeurDepartement.chefDeDepartement) {
-      // verifier si le chef de departement et un pdd ou non :
-      userID = demandeurDepartement.chefDeDepartement;
-      code = "cdd";
-    }
-    // si l'utilisateur n'a un departement ou son chef de departement :
-    // envoyer la demande a son directeur :
-    else if (Array.from(option.signataires)[1] === "hiq") {
-      const demandeurDirection = await Direction.findById(user.direction);
-      if (demandeurDirection && demandeurDirection.directeur) {
-        // verfier est ce qu'il est un proprietaire de donnes :
-        if (Array.from(option.signataires)[2] === "pdd") {
-          let utilisateurPdd = await Utilisateur.findById(
-            option.proprietaireDeDonnees
-          );
-          if (utilisateurPdd) {
-            if (
-              String(utilisateurPdd._id) ===
-              String(demandeurDirection.directeur)
-            ) {
-              if (Array.from(option.signataires)[3] == "dir") {
-                const entiteDirection = await Direction.findById(
-                  option.service.direction
-                );
-                if (entiteDirection) {
-                  if (
-                    entiteDirection.directeur &&
-                    String(entiteDirection.directeur) ===
-                      String(demandeurDirection.directeur)
-                  ) {
-                    userID = entiteDirection.directeur;
-                    code = "cdd.hiq.pdd.dir";
-                  } else {
-                    userID = utilisateurPdd._id;
-                    code = "cdd.hiq.pdd";
-                  }
-                } else {
-                  userID = utilisateurPdd._id;
-                  code = "cdd.hiq.pdd";
-                }
-              } else {
-                userId = utilisateurPdd._id;
-                code = "cdd.hiq.pdd";
-              }
-            } else {
-              userID = demandeurDirection.directeur;
-              code = "cdd.hiq";
-            }
-          } else {
-            throw new Error(
-              "utilisateur proprietaire de donnees introuvable !"
-            );
-          }
-        } else {
-          // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
-          if (Array.from(option.signataires)[2] === "dir") {
-            const entiteDirection = await Direction.findById(
-              option.service.direction
-            );
-            if (entiteDirection) {
-              if (
-                entiteDirection.directeur &&
-                String(entiteDirection.directeur) ===
-                  String(demandeurDirection.directeur)
-              ) {
-                userID = entiteDirection.directeur;
-                code = "cdd.hiq.dir";
-              } else {
-                userID = demandeurDirection.directeur;
-                code = "cdd.hiq";
-              }
-            } else {
-              userID = demandeurDirection.directeur;
-              code = "cdd.hiq";
-            }
-          } else {
-          }
-        }
-      } else {
-        throw new Error("demandeur n'a pas une direction ou un directeur");
-      }
-    }
-  } else if (Array.from(option.signataires)[0] === "hiq") {
-    /* ##################### CAS DIRECTEUR HIARCHIQUE ##################### */
-    const demandeurDirection = await Direction.findById(user.direction);
-    if (demandeurDirection && demandeurDirection.directeur) {
-      // verfier est ce qu'il est un proprietaire de donnes :
-      if (Array.from(option.signataires)[1] === "pdd") {
-        let utilisateurPdd = await Utilisateur.findById(
-          option.proprietaireDeDonnees
-        );
-        if (utilisateurPdd) {
-          if (
-            String(utilisateurPdd._id) === String(demandeurDirection.directeur)
-          ) {
-            if (Array.from(option.signataires)[2] == "dir") {
-              const entiteDirection = await Direction.findById(
-                option.service.direction
-              );
-              if (entiteDirection) {
-                if (
-                  entiteDirection.directeur &&
-                  String(entiteDirection.directeur) ===
-                    String(demandeurDirection.directeur)
-                ) {
-                  userID = entiteDirection.directeur;
-                  code = "hiq.pdd.dir";
-                } else {
-                  userID = utilisateurPdd._id;
-                  code = "hiq.pdd";
-                }
-              } else {
-                userID = utilisateurPdd._id;
-                code = "hiq.pdd";
-              }
-            } else {
-              userId = utilisateurPdd._id;
-              code = "hiq.pdd";
-            }
-          } else {
-            userID = demandeurDirection.directeur;
-            code = "hiq";
-          }
-        } else {
-          throw new Error("utilisateur proprietaire de donnees introuvable !");
-        }
-      } else {
-        // verifier le directeur hiarchique est ce qu'il est un directeur de l'entite  :
-        if (Array.from(option.signataires)[1] === "dir") {
-          const entiteDirection = await Direction.findById(
-            option.service.direction
-          );
-          if (entiteDirection) {
-            if (
-              entiteDirection.directeur &&
-              String(entiteDirection.directeur) ===
-                String(demandeurDirection.directeur)
-            ) {
-              userID = entiteDirection.directeur;
-              code = "hiq.dir";
-            } else {
-              userID = demandeurDirection.directeur;
-              code = "hiq";
-            }
-          } else {
-            userID = demandeurDirection.directeur;
-            code = "hiq";
-          }
-        } else {
-          userID = demandeurDirection.directeur;
-          code = "hiq";
-        }
-      }
-    } else {
-      throw new Error("demandeur n'a pas une direction ou un directeur");
-    }
-  }
+  let [userID, code] = await getCode(user.id, option);
 
   const userInterim = await Utilisateur.findById(userID);
   if (userInterim && userInterim.interim) {
@@ -382,6 +250,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     const nextCodeIndex = Array.from(option.signataires).findIndex(
       (codeItem) => codeItem === lastArrayCode
     );
+
     if (Array.from(option.signataires)[nextCodeIndex + 1] === undefined) {
       nextCode = "fini";
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "cdd") {
@@ -401,7 +270,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
               String(directionEntite.directeur)
           ) {
             nextCode = "cdd.hiq.pdd.dir";
-            nextUserId = demandeurDirection.directeur;
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         } else if (
           Array.from(option.signataires)[nextCodeIndex + 2] === "hiq" &&
@@ -422,16 +291,17 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
             String(directionEntite.directeur)
           ) {
             nextCode = "cdd.hiq.dir";
-            nextUserId = directionEntite.directeur;
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         } else if (
           Array.from(option.signataires)[nextCodeIndex + 2] === "hiq"
         ) {
           nextCode = "cdd.hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "hiq") {
+      let isOnlyHiq = true;
       if (
         Array.from(option.signataires)[nextCodeIndex + 2] === "pdd" &&
         Array.from(option.signataires)[nextCodeIndex + 3] === "dir"
@@ -441,39 +311,46 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
           String(demandeurDirection.directeur) ===
             String(directionEntite.directeur)
         ) {
+          isOnlyHiq = false;
           nextCode = "hiq.pdd.dir";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "dir") {
         if (
           String(demandeurDirection.directeur) ===
           String(directionEntite.directeur)
         ) {
+          isOnlyHiq = false;
           nextCode = "hiq.dir";
-          nextUserId = directionEntite.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         } else {
           nextCode = "hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "pdd") {
         if (
           String(demandeurDirection.directeur) === String(utilisateurPdd._id)
         ) {
+          isOnlyHiq = false;
           nextCode = "hiq.pdd";
           nextUserId = utilisateurPdd._id;
         } else {
           nextCode = "hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else {
         nextCode = "hiq";
-        nextUserId = demandeurDirection.directeur;
+        nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
+      }
+      if (isOnlyHiq) {
+        nextCode = "hiq";
+        nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "pdd") {
       if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
         if (String(utilisateurPdd._id) === String(directionEntite.directeur)) {
           nextCode = "pdd.dir";
-          nextUserId = directionEntite.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else {
         nextCode = "pdd";
@@ -527,7 +404,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
               String(directionEntite.directeur)
           ) {
             nextCode = "cdd.hiq.pdd.dir";
-            nextUserId = demandeurDirection.directeur;
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         } else if (
           Array.from(option.signataires)[nextCodeIndex + 2] === "hiq" &&
@@ -538,6 +415,9 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
           ) {
             nextCode = "cdd.hiq.pdd";
             nextUserId = utilisateurPdd._id;
+          } else {
+            nextCode = "cdd.hiq";
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         } else if (
           Array.from(option.signataires)[nextCodeIndex + 2] === "hiq" &&
@@ -548,13 +428,16 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
             String(directionEntite.directeur)
           ) {
             nextCode = "cdd.hiq.dir";
-            nextUserId = directionEntite.directeur;
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
+          } else {
+            nextCode = "cdd.hiq";
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         } else if (
           Array.from(option.signataires)[nextCodeIndex + 2] === "hiq"
         ) {
           nextCode = "cdd.hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "hiq") {
@@ -568,7 +451,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
             String(directionEntite.directeur)
         ) {
           nextCode = "hiq.pdd.dir";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         } else {
           if (
             String(demandeurDirection.directeur) === String(utilisateurPdd._id)
@@ -577,7 +460,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
             nextUserId = utilisateurPdd._id;
           } else {
             nextCode = "hiq";
-            nextUserId = demandeurDirection.directeur;
+            nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
           }
         }
       } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "pdd") {
@@ -588,7 +471,7 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
           nextUserId = utilisateurPdd._id;
         } else {
           nextCode = "hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else if (Array.from(option.signataires)[nextCodeIndex + 2] === "dir") {
         if (
@@ -596,20 +479,20 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
           String(directionEntite.directeur)
         ) {
           nextCode = "hiq.dir";
-          nextUserId = directionEntite.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         } else {
           nextCode = "hiq";
-          nextUserId = demandeurDirection.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else {
         nextCode = "hiq";
-        nextUserId = demandeurDirection.directeur;
+        nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
       }
     } else if (Array.from(option.signataires)[nextCodeIndex + 1] === "pdd") {
       if (Array.from(option.signataires)[nextCodeIndex + 1] === "dir") {
         if (String(utilisateurPdd._id) === String(directionEntite.directeur)) {
           nextCode = "pdd.dir";
-          nextUserId = directionEntite.directeur;
+          nextUserId = await getDirecteurHiarchique(demande.demandeur._id);
         }
       } else {
         nextCode = "pdd";
@@ -635,10 +518,17 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
       nextUserId = pdgUtilisateur._id;
     }
   }
+
+  console.log("nextUserId : ", nextUserId);
+
   if (nextUserId) {
     const userInterim = await Utilisateur.findById(nextUserId);
     if (userInterim && userInterim.interim) {
       nextUserId = String(userInterim.interim);
+    }
+  } else {
+    if (nextCode != "fini") {
+      throw new Error("next utilisateur introuvable !");
     }
   }
 

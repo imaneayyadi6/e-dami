@@ -4,6 +4,7 @@ import { getDemandesPreviewTeamAll } from "../../redux/demande/demandeActions";
 import { Message, Table, TableLoading, WarningMessage } from "../../components";
 import { Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import RTable from "../../components/RTable";
 
 const DemandesListPage = () => {
   const [callOnce, setCallOnce] = useState(false);
@@ -72,9 +73,10 @@ const DemandesListPage = () => {
               ]}
               data={demandes}
               dropdownFilters={["option", "status"]}
-              showDetailsRow={(id) => {
-                navigate(`/demandes/apercu/details/${id}`);
-              }}
+              showDetailsLink={`/demandes/apercu/details`}
+              // showDetailsRow={(id) => {
+              //   navigate(`/demandes/apercu/details/${id}`);
+              // }}
             />
           )}
           {demandePreviewTeamAdminSuccess &&

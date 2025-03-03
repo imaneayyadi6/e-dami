@@ -196,6 +196,16 @@ export const createOption = asyncHandler(async (req, res) => {
   }
 });
 
+// Helper function to validate date
+function isValidDate(value) {
+  if (typeof value === "string" || value instanceof Date) {
+    const date = new Date(value);
+    console.log(!isNaN(date.getTime()));
+    return !isNaN(date.getTime());
+  }
+  return false;
+}
+
 // @desc    Modifier une option
 // @route   PUT /api/options/:id
 // @access  private
@@ -207,15 +217,20 @@ export const updateOption = asyncHandler(async (req, res) => {
   if (option) {
     option.libelle = libelle || option.libelle;
     option.typeProcessus = typeProcessus || option.typeProcessus;
-    if (header) {
-      option.header = {
-        document: header.document || option.header.document,
-        classification: header.classification || option.header.classification,
-        creation: header.creation || option.header.creation,
-        maj: header.maj || option.header.maj,
-      };
-    }
 
+    // Update header fields safely
+    if (header) {
+      option.header.document = header.document || option.header.document;
+      option.header.classification =
+        header.classification || option.header.classification;
+      option.header.creation = isValidDate(header.creation)
+        ? Date(header.creation)
+        : option.header.creation;
+
+      option.header.maj = isValidDate(header.maj)
+        ? Date(header.maj)
+        : option.header.maj;
+    }
     option.contenu = contenu || option.contenu;
     if (proprietaireDeDonnees) {
       const pddUser = await Utilisateur.findById(proprietaireDeDonnees);
@@ -271,6 +286,12 @@ export const updateOption = asyncHandler(async (req, res) => {
       option.shouldAskAnyTime = req.body.shouldAskAnyTime;
     }
 
+    option.createdAt =
+      option.createdAt && isValidDate(option.createdAt)
+        ? new Date(option.createdAt)
+        : new Date();
+    option.updatedAt = new Date();
+
     const updatedOption = await option.save();
     res.json({
       _id: updatedOption.id,
@@ -298,12 +319,24 @@ export const deleteOption = asyncHandler(async (req, res) => {
   const option = await Option.findById(req.params.id);
   if (option) {
     if (!option.isDeleted) {
+      option.createdAt =
+        option.createdAt && isValidDate(option.createdAt)
+          ? new Date(option.createdAt)
+          : new Date();
+      option.updatedAt = new Date();
+
       option.isDeleted = true;
       await option.save();
       res.json({
         message: "option supprimé !",
       });
     } else {
+      option.createdAt =
+        option.createdAt && isValidDate(option.createdAt)
+          ? new Date(option.createdAt)
+          : new Date();
+      option.updatedAt = new Date();
+
       option.isDeleted = false;
       await option.save();
       res.json({
@@ -406,12 +439,17 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
       option.libelle = libelle || option.libelle;
       option.typeProcessus = typeProcessus || option.typeProcessus;
       if (header) {
-        option.header = {
-          document: header.document || option.header.document,
-          classification: header.classification || option.header.classification,
-          creation: header.creation || option.header.creation,
-          maj: header.maj || option.header.maj,
-        };
+        option.header.document = header.document || option.header.document;
+        option.header.classification =
+          header.classification || option.header.classification;
+        console.log(Date(header.creation));
+        option.header.creation = isValidDate(header.creation)
+          ? Date(header.creation)
+          : option.header.creation;
+
+        option.header.maj = isValidDate(header.maj)
+          ? Date(header.maj)
+          : option.header.maj;
       }
 
       option.contenu = contenu || option.contenu;
@@ -466,6 +504,12 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
         option.shouldAskAnyTime = req.body.shouldAskAnyTime;
       }
 
+      option.createdAt =
+        option.createdAt && isValidDate(option.createdAt)
+          ? new Date(option.createdAt)
+          : new Date();
+      option.updatedAt = new Date();
+
       const updatedOption = await option.save();
       res.json({
         _id: updatedOption.id,
@@ -496,12 +540,24 @@ export const deleteOptionCrtOp = asyncHandler(async (req, res) => {
   if (option) {
     if (String(option.createur) === String(req.user.id)) {
       if (!option.isDeleted) {
+        option.createdAt =
+          option.createdAt && isValidDate(option.createdAt)
+            ? new Date(option.createdAt)
+            : new Date();
+        option.updatedAt = new Date();
+
         option.isDeleted = true;
         await option.save();
         res.json({
           message: "option supprimé !",
         });
       } else {
+        option.createdAt =
+          option.createdAt && isValidDate(option.createdAt)
+            ? new Date(option.createdAt)
+            : new Date();
+        option.updatedAt = new Date();
+
         option.isDeleted = false;
         await option.save();
         res.json({

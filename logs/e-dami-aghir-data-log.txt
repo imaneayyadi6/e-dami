@@ -1,14 +1,207 @@
-﻿[DATA INSERT] : Fri Nov 08 2024 00:04:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Fri Nov 08 2024 12:04:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Sat Nov 09 2024 00:04:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Sat Nov 09 2024 12:03:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Sun Nov 10 2024 00:04:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Sun Nov 10 2024 12:03:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Mon Nov 11 2024 00:04:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Mon Nov 11 2024 12:04:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Tue Nov 12 2024 00:04:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Tue Nov 12 2024 12:04:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Wed Nov 13 2024 00:04:11 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Wed Nov 13 2024 12:04:14 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Thu Nov 14 2024 00:04:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
-[DATA INSERT] : Thu Nov 14 2024 12:04:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+﻿[DATA INSERT] : Thu Jan 02 2025 14:49:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Fri Jan 03 2025 00:00:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1174 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Jan 03 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Fri Jan 03 2025 12:00:37 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df18bbfc882c17ca27f58b" version 984 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Jan 03 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sat Jan 04 2025 00:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1177 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat Jan 04 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sat Jan 04 2025 12:00:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1178 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat Jan 04 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sun Jan 05 2025 00:01:35 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1963fc882c17ca280c9b" version 966 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Jan 05 2025 00:01:53 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 05 2025 12:01:53 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 05 2025 12:01:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 00:01:51 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 00:01:52 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Mon Jan 06 2025 12:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1188 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon Jan 06 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 14:00:45 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 14:10:28 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 14:13:09 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 06 2025 14:39:18 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 07 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 07 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 08 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 08 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 09 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 09 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 10 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 10 2025 12:01:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 10 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 11 2025 00:01:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 11 2025 00:01:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 11 2025 12:01:53 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 11 2025 12:01:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 12 2025 00:01:52 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 12 2025 00:01:52 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sun Jan 12 2025 12:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1205 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Jan 12 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 13 2025 00:01:52 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 13 2025 00:01:53 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Mon Jan 13 2025 12:00:11 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1879fc882c17ca27ecf0" version 1028 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon Jan 13 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 14 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 14 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 15 2025 00:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 15 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 16 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 16 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 17 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 17 2025 11:08:46 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 17 2025 12:02:11 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 17 2025 12:04:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 17 2025 12:09:32 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 18 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 18 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 19 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 19 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 20 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 20 2025 12:01:55 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 20 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 21 2025 00:01:55 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 21 2025 00:01:55 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Tue Jan 21 2025 12:00:08 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1235 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Tue Jan 21 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 22 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 22 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 22 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 22 2025 14:44:30 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 23 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 23 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 23 2025 12:52:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Fri Jan 24 2025 00:00:46 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df18d2fc882c17ca27f8b7" version 1042 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Jan 24 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 24 2025 09:44:09 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 24 2025 12:02:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 25 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jan 25 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 26 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jan 26 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 27 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jan 27 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 28 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jan 28 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 29 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jan 29 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 30 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jan 30 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 31 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jan 31 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 01 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 01 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 02 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 02 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 03 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 03 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 03 2025 15:28:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 03 2025 15:42:53 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 04 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 04 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 05 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 05 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 06 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 06 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 06 2025 12:50:35 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 07 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 07 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 08 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 08 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 09 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 09 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 10 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 10 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 11 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 11 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 12 2025 00:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 12 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 13 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 13 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 14 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 14 2025 12:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 15 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 15 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 16 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 16 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 17 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 17 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 18 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 18 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 19 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 19 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 20 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 20 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 21 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 21 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 22 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Feb 22 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 23 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Feb 23 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 24 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Feb 24 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 25 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Tue Feb 25 2025 00:00:13 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1310 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Tue Feb 25 2025 00:02:09 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 25 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 25 2025 12:02:10 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Feb 25 2025 12:02:12 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 26 2025 00:02:05 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 26 2025 12:01:58 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Feb 26 2025 12:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Thu Feb 27 2025 00:00:20 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1322 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 00:00:20 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1322 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 00:00:21 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1873fc882c17ca27ec16" version 1325 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 00:00:23 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df188efc882c17ca27efcf" version 1130 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu Feb 27 2025 00:02:13 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Thu Feb 27 2025 12:00:29 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1327 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 12:00:29 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1327 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 12:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec76" version 1321 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 12:00:43 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18c1fc882c17ca27f64f" version 1123 modifiedPaths "roles, updatedAt" 
+[ERROR] : Thu Feb 27 2025 12:01:36 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df193efc882c17ca28076b" version 1105 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu Feb 27 2025 12:02:25 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 27 2025 14:25:42 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Feb 27 2025 15:32:42 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Fri Feb 28 2025 00:00:21 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1331 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 00:00:31 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1978fc882c17ca280f7b" version 1103 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 00:00:46 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18c1fc882c17ca27f664" version 1127 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 00:01:01 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18eafc882c17ca27fbf9" version 1118 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Feb 28 2025 00:02:30 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 28 2025 00:02:32 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Fri Feb 28 2025 12:00:18 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1336 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 12:00:27 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1338 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 12:00:27 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1338 modifiedPaths "roles, updatedAt" 
+[ERROR] : Fri Feb 28 2025 12:02:06 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1913fc882c17ca2801a0" version 1113 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Feb 28 2025 12:02:49 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 28 2025 12:02:50 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Feb 28 2025 15:43:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Sat Mar 01 2025 00:00:22 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1340 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sat Mar 01 2025 00:00:24 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1342 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat Mar 01 2025 00:03:07 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 01 2025 00:03:08 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 01 2025 00:03:10 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Sat Mar 01 2025 12:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1346 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sat Mar 01 2025 12:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1346 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sat Mar 01 2025 12:00:58 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "67902754c5c1374040edf0ca" version 101 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat Mar 01 2025 12:03:12 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 01 2025 12:03:14 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 01 2025 12:03:18 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Sun Mar 02 2025 00:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1350 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sun Mar 02 2025 00:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1350 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sun Mar 02 2025 00:00:35 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1919fc882c17ca280267" version 1316 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sun Mar 02 2025 00:00:55 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18c2fc882c17ca27f687" version 1143 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Mar 02 2025 00:03:16 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 02 2025 00:03:19 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 02 2025 00:03:20 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Sun Mar 02 2025 12:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1357 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sun Mar 02 2025 12:01:02 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18c2fc882c17ca27f687" version 1147 modifiedPaths "roles, updatedAt" 
+[ERROR] : Sun Mar 02 2025 12:01:52 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df18b1fc882c17ca27f483" version 1152 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Mar 02 2025 12:04:19 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 02 2025 12:04:21 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 02 2025 12:04:23 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 02 2025 12:04:23 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Mon Mar 03 2025 00:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1362 modifiedPaths "roles, updatedAt" 
+[ERROR] : Mon Mar 03 2025 00:00:35 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1978fc882c17ca280f7b" version 1128 modifiedPaths "roles, updatedAt" 
+[ERROR] : Mon Mar 03 2025 00:00:48 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1973fc882c17ca280ece" version 1132 modifiedPaths "roles, updatedAt" 
+[ERROR] : Mon Mar 03 2025 00:02:38 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "67883e0bc5c1374040ebdc6e" version 125 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon Mar 03 2025 00:03:47 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 03 2025 00:03:48 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 03 2025 00:03:48 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 

@@ -1,16 +1,149 @@
-[TICKET CREATED SUCCESSFULLY] : 08/11/2024 13:59:51 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
-[TICKET CREATED SUCCESSFULLY] : 08/11/2024 14:00:14 ============> Ticket Created succcessfully by : 2019209 && Agent : 1076929  
-[TICKET CREATED SUCCESSFULLY] : 11/11/2024 12:12:42 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
-[TICKET CREATED SUCCESSFULLY] : 11/11/2024 12:12:55 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425501  
-[TICKET CREATED SUCCESSFULLY] : 11/11/2024 15:29:25 ============> Ticket Created succcessfully by : 1892993 && Agent : 1425507  
-[TICKET CREATED ERROR] : 12/11/2024 13:50:32 :: Information not defined correctly (by : 1134542 && Agent : 1892993) 
-[TICKET CREATED ERROR] : 12/11/2024 13:50:51 :: Information not defined correctly (by : 1134542 && Agent : 1425507) 
-[TICKET CREATED ERROR] : 12/11/2024 13:51:04 :: Information not defined correctly (by : 1134542 && Agent : 1425507) 
-[TICKET CREATED SUCCESSFULLY] : 12/11/2024 14:14:34 ============> Ticket Created succcessfully by : 2065549 && Agent : 1425507  
-[TICKET CREATED SUCCESSFULLY] : 12/11/2024 15:50:01 ============> Ticket Created succcessfully by : 1425501 && Agent : 1425501  
-[TICKET CREATED SUCCESSFULLY] : 12/11/2024 15:50:17 ============> Ticket Created succcessfully by : 2033817 && Agent : 1042871  
-[TICKET CREATED SUCCESSFULLY] : 12/11/2024 16:04:50 ============> Ticket Created succcessfully by : 1425501 && Agent : 1425501  
-[TICKET CREATED SUCCESSFULLY] : 13/11/2024 14:58:52 ============> Ticket Created succcessfully by : 1134551 && Agent : 1076929  
-[TICKET CREATED SUCCESSFULLY] : 13/11/2024 14:59:39 ============> Ticket Created succcessfully by : 1042871 && Agent : 1892993  
-[TICKET CREATED SUCCESSFULLY] : 13/11/2024 15:00:01 ============> Ticket Created succcessfully by : 1042871 && Agent : 1892993  
-[TICKET CREATED SUCCESSFULLY] : 13/11/2024 16:37:15 ============> Ticket Created succcessfully by : 330664 && Agent : 1076929  
+[TICKET CREATED ERROR] : 08/02/2025 23:18:52 :: Information not defined correctly (by : 1425895 && Agent : 1042871) 
+[TICKET CREATED SUCCESSFULLY] : 08/02/2025 23:19:41 ============> Ticket Created succcessfully by : 1426196 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 08/02/2025 23:20:29 ============> Ticket Created succcessfully by : 1426196 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 08:00:37 ============> Ticket Created succcessfully by : 1426166 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 08:01:11 ============> Ticket Created succcessfully by : 80995 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 08:02:42 ============> Ticket Created succcessfully by : 2065489 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:50:38 ============> Ticket Created succcessfully by : 1425501 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:51:17 ============> Ticket Created succcessfully by : 1892979 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:51:51 ============> Ticket Created succcessfully by : 1892985 && Agent : 1892993  
+[TICKET CREATED ERROR] : 10/02/2025 21:52:29 :: Information not defined correctly (by : 2319950 && Agent : 1892993) 
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:52:54 ============> Ticket Created succcessfully by : 1892982 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:53:22 ============> Ticket Created succcessfully by : 2319907 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 10/02/2025 21:54:26 ============> Ticket Created succcessfully by : 2065492 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 11/02/2025 10:21:44 ============> Ticket Created succcessfully by : 2319936 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 11/02/2025 10:22:04 ============> Ticket Created succcessfully by : 2319935 && Agent : 1042871  
+[TICKET CREATED ERROR] : 11/02/2025 16:01:09 :: Information not defined correctly (by : 101200 && Agent : 111222333) 
+[TICKET CREATED SUCCESSFULLY] : 11/02/2025 16:34:08 ============> Ticket Created succcessfully by : 2319937 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 11/02/2025 16:35:30 ============> Ticket Created succcessfully by : 1575740 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 11/02/2025 16:35:40 ============> Ticket Created succcessfully by : 1575740 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 12/02/2025 12:02:04 ============> Ticket Created succcessfully by : 1042871 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 12/02/2025 18:04:09 ============> Ticket Created succcessfully by : 2065549 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 12/02/2025 18:09:51 ============> Ticket Created succcessfully by : 1892985 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 13/02/2025 10:06:00 ============> Ticket Created succcessfully by : 2319991 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 13/02/2025 12:33:36 ============> Ticket Created succcessfully by : 1425499 && Agent : 1892993  
+[TICKET CREATED ERROR] : 14/02/2025 12:57:27 :: Information not defined correctly (by : 1425895 && Agent : 1076929) 
+[TICKET CREATED SUCCESSFULLY] : 14/02/2025 14:41:53 ============> Ticket Created succcessfully by : 2065540 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 14/02/2025 15:50:38 ============> Ticket Created succcessfully by : 2065628 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 15/02/2025 15:07:33 ============> Ticket Created succcessfully by : 2065540 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 17/02/2025 10:28:52 ============> Ticket Created succcessfully by : 2319907 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 17/02/2025 10:50:45 ============> Ticket Created succcessfully by : 2319907 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 17/02/2025 17:06:01 ============> Ticket Created succcessfully by : 1286888 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 17/02/2025 19:58:44 ============> Ticket Created succcessfully by : 1892982 && Agent : 1892993  
+[TICKET CREATED ERROR] : 18/02/2025 09:50:47 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 18/02/2025 11:31:54 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 18/02/2025 11:42:12 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 19/02/2025 17:40:21 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 19/02/2025 17:44:02 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 19/02/2025 17:44:12 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 09:46:46 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 09:47:06 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 09:47:31 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 09:47:56 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 10:02:34 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 10:02:44 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 10:02:53 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 10:05:35 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 11:44:17 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 11:44:28 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 11:50:16 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:03:08 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:07:52 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:08:10 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:08:24 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:09:01 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:09:31 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:09:40 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:09:50 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:10:19 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:10:28 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 12:10:37 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:03 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:11 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:22 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:30 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:37 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:45 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:19:55 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:20:03 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:20:10 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:20:19 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:20:26 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:20:35 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 13:36:16 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:04:23 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:04:29 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:04:35 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:04:43 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:05:19 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:05:56 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 14:06:02 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:01:36 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:01:52 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:02:13 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:02:29 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:02:44 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:02:56 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:03:13 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:03:31 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:03:52 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:04:13 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:04:29 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:04:45 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:05:02 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:05:19 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 20/02/2025 15:08:05 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 21/02/2025 11:10:04 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 21/02/2025 13:40:20 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 21/02/2025 14:11:25 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 21/02/2025 16:00:14 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 24/02/2025 09:33:56 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 24/02/2025 09:34:23 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 24/02/2025 10:44:55 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 24/02/2025 10:45:19 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED ERROR] : 24/02/2025 11:10:54 ============> AxiosError: Request failed with status code 401 
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 10:05:41 ============> Ticket Created succcessfully by : 2033817 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 11:30:18 ============> Ticket Created succcessfully by : 1426164 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 11:52:02 ============> Ticket Created succcessfully by : 1426164 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 11:52:18 ============> Ticket Created succcessfully by : 1426209 && Agent : 1892993  
+[TICKET CREATED ERROR] : 25/02/2025 12:31:32 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 13:36:57 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:06:01 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:06:18 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:09:01 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:09:58 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:11:56 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:12:15 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:12:41 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:13:01 ============> Error: unable to verify the first certificate 
+[TICKET CREATED ERROR] : 25/02/2025 14:13:20 ============> Error: unable to verify the first certificate 
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:03:00 ============> Ticket Created succcessfully by : 2019209 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:20:27 ============> Ticket Created succcessfully by : 1426295 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:20:49 ============> Ticket Created succcessfully by : 1426257 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:21:15 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:21:25 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:21:34 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:21:44 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:21:54 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:22:03 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:22:12 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 25/02/2025 19:22:22 ============> Ticket Created succcessfully by : 1286888 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 09:29:45 ============> Ticket Created succcessfully by : 2065609 && Agent : 1042871  
+[TICKET CREATED ERROR] : 26/02/2025 09:30:12 :: Information not defined correctly (by : 2065544 && Agent : 1042871) 
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 09:30:29 ============> Ticket Created succcessfully by : 2065543 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 09:30:43 ============> Ticket Created succcessfully by : 2065610 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 09:30:56 ============> Ticket Created succcessfully by : 2065548 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 11:43:29 ============> Ticket Created succcessfully by : 2065548 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 26/02/2025 13:47:57 ============> Ticket Created succcessfully by : 2065628 && Agent : 1042871  
+[TICKET CREATED ERROR] : 26/02/2025 14:23:39 :: Information not defined correctly (by : 1425686 && Agent : 1076929) 
+[TICKET CREATED ERROR] : 26/02/2025 14:32:12 :: Information not defined correctly (by : 1425683 && Agent : 1076929) 
+[TICKET CREATED ERROR] : 27/02/2025 11:53:32 ============> Error: connect ETIMEDOUT 192.168.1.2:3128 
+[TICKET CREATED SUCCESSFULLY] : 27/02/2025 18:57:22 ============> Ticket Created succcessfully by : 1425479 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 27/02/2025 19:01:40 ============> Ticket Created succcessfully by : 2065540 && Agent : 1042871  
+[TICKET CREATED SUCCESSFULLY] : 28/02/2025 08:10:17 ============> Ticket Created succcessfully by : 1134145 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 28/02/2025 08:10:32 ============> Ticket Created succcessfully by : 1426036 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 28/02/2025 10:56:33 ============> Ticket Created succcessfully by : 2065436 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 28/02/2025 10:56:58 ============> Ticket Created succcessfully by : 2319917 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:24:32 ============> Ticket Created succcessfully by : 1076929 && Agent : 1425501  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:39:39 ============> Ticket Created succcessfully by : 2065549 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:39:57 ============> Ticket Created succcessfully by : 1425778 && Agent : 1076929  

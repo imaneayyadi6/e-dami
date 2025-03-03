@@ -11,6 +11,12 @@ const directionSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "utilisateur",
     },
+    directeursAdjoints: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "utilisateur",
+      },
+    ],
     uo: {
       type: String,
     },

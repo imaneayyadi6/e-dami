@@ -64,7 +64,6 @@ const routes = [
     exact: true,
     roles: ["crt"],
   },
-
   {
     path: "/profile",
     name: "Profile",
@@ -72,7 +71,6 @@ const routes = [
     exact: true,
     roles: ["crt", "dmr", "sig"],
   },
-
   {
     path: "/changer-mdp",
     name: "Chnager le mot de passe",
@@ -94,7 +92,7 @@ const routes = [
     name: "Aperçu des demandes",
     element: <DemandesPreviewPage />,
     exact: true,
-    roles: ["sig"],
+    roles: ["sig", "dmr"],
   },
   {
     path: "/demandes/all/apercu",
@@ -108,7 +106,7 @@ const routes = [
     name: "Aperçu demande details",
     element: <DemandesPreviewDetailsPage />,
     exact: true,
-    roles: ["sig", "crt"],
+    roles: ["sig", "crt", "dmr"],
   },
 
   {

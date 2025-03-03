@@ -670,7 +670,9 @@ export const removeInterimUser = asyncHandler(async (req, res) => {
 
       if (
         !interimUtilisateur.isChefDeService &&
-        !interimUtilisateur.isChefDeDepartement
+        !interimUtilisateur.isChefDeDepartement &&
+        !interimUtilisateur.isDirecteur &&
+        !interimUtilisateur.isDirecteurAdjoint
       ) {
         interimUtilisateur.roles = interimUtilisateur.roles.filter(
           (role) => String(role.role) !== String(signataireRole._id)

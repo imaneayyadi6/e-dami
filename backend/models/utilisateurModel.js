@@ -55,6 +55,11 @@ const utilisateurSchema = Schema(
       required: true,
       default: false,
     },
+    isDirecteurAdj: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     isDirecteur: {
       type: Boolean,
       required: true,
@@ -98,6 +103,15 @@ const utilisateurSchema = Schema(
     interim: {
       type: Schema.Types.ObjectId,
       ref: "utilisateur",
+    },
+    matriculeSupN1:{
+      type: Number,
+    },
+    matriculeSupN2:{
+      type: Number,
+    },
+    matriculeSupN3:{
+      type: Number,
     },
   },
   {

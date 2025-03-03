@@ -298,7 +298,7 @@ export const createDemande = asyncHandler(async (req, res) => {
         "cdd.hiq.pdd.dir":
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
-
+      console.log("hello world from createDemande");
       const [code, userID] = await getTypeAppOnCreate(option._id, user._id);
 
       objTraitement.code = code;
@@ -637,7 +637,7 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
 // @route   PUT /api/demandes/:id/approuve/:idTraitement
 // @access  private
 export const approuverDemande = asyncHandler(async (req, res) => {
-  let demande = await Demande.findById(req.params.id)
+  let demande = await Demande.findById(String(req.params.id))
     .populate({
       path: "option",
       populate: {
@@ -838,6 +838,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
               demande.status = "approuve";
             } else {
+              console.log("nextUserId:", nextUserId);
               // envoyer la demande au signataire prochaine pour la traiter :
               demande.traitement.push({
                 utilisateur: new mongoose.Types.ObjectId(nextUserId),
@@ -910,6 +911,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 optionService.departement
               );
 
+              let optionDirection = await Direction.findById(
+                optionService.direction
+              );
+
               let optionPdd = await Utilisateur.findById(
                 optionService.proprietaireDeDonnees
               );
@@ -958,7 +963,13 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 String(demande.option.libelle).toUpperCase() ===
                   "E-DAMI - DEMANDE D'UN PERIPHERIQUE INFORMATIQUE" ||
                 String(demande.option.libelle).toUpperCase() ===
-                  "E-DAMI - DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE"
+                  "E-DAMI - DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE" ||
+                String(demande.option.libelle).toUpperCase() ===
+                  "E-DAMI - DEMANDE DE CONSOMMABLES POUR IMPRIMANTE" ||
+                String(demande.option.libelle).toUpperCase() ===
+                  "DEMANDE DE CONSOMMABLES POUR IMPRIMANTE" ||
+                String(demande.option.libelle).toUpperCase() ===
+                  "E-DAMI - DEMANDE DE CONSOMMABLES POUR IMPRIMANTE"
               ) {
                 let serviceMagasin = await Service.findOne({
                   libelle: "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT",
@@ -995,6 +1006,15 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               const chefDeService = await Utilisateur.findById(
                 optionService.chefService
               );
+
+              const chefDeDepartement = await Utilisateur.findById(
+                optionDepartement.chefDeDepartement
+              );
+
+              const directeur = await Utilisateur.findById(
+                optionDirection.directeur
+              );
+
               const demandeurService = await Service.findById(
                 demande.demandeur.service
               );
@@ -1017,7 +1037,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   ? demandeurDirection.uo
                   : null,
                 agent_service: optionService.uo,
-                agent_matricule: chefDeService.matricule,
+                agent_matricule: chefDeService
+                  ? chefDeService.matricule
+                  : chefDeDepartement
+                  ? chefDeDepartement.matricule
+                  : directeur.matricule,
               });
             }
 
@@ -1437,7 +1461,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, ...filters } = req.query;
   let utilisateur = await Utilisateur.findById(req.user.id);
   if (utilisateur) {
-    if (utilisateur.isDirecteur) {
+    if (utilisateur.isDirecteur || utilisateur.isDirecteurAdj) {
       let demandes = await Demande.aggregate([
         {
           $lookup: {
@@ -1615,7 +1639,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
         isChefDeDepartement = true;
     }
 
-    if (req.user.isDirecteur) {
+    if (req.user.isDirecteur || req.user.isDirecteurAdj) {
       let direction = await Direction.findOne(req.user.direction);
       if (
         direction &&
@@ -1971,5 +1995,19 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
       },
     },
   ]);
+
+  // const { page = 1, limit = 50, demandeur, option, status } = req.query;
+  // const searchQuery = {};
+
+  // if (demandeur) searchQuery.demandeur = { $regex: demandeur, $options: "i" };
+  // if (option) searchQuery.option = { $regex: option, $options: "i" };
+  // if (status) searchQuery.status = status;
+
+  // const demandes = await Demande.find(searchQuery)
+  //   .populate("option")
+  //   .populate("demandeur")
+  //   .skip((page - 1) * limit)
+  //   .limit(Number(limit));
+
   res.json(demandes);
 });

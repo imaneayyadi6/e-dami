@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"node backend/server\"  \"npm run data:extract\"  \"npm run data:backup\"",
+    "start": "concurrently \"node backend/server\" \"SET USER_CONTEXT=a.shaim && npm run data:extract\" \"npm run data:backup\"",
     "server": "nodemon backend/server",
     "data:extract": "node backend/extractData.mjs",
     "data:backup": "node backend/backupData.mjs",
