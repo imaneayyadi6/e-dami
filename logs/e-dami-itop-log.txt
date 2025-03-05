@@ -147,3 +147,15 @@
 [TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:24:32 ============> Ticket Created succcessfully by : 1076929 && Agent : 1425501  
 [TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:39:39 ============> Ticket Created succcessfully by : 2065549 && Agent : 2019209  
 [TICKET CREATED SUCCESSFULLY] : 03/03/2025 09:39:57 ============> Ticket Created succcessfully by : 1425778 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 12:50:37 ============> Ticket Created succcessfully by : 1557262 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 13:28:01 ============> Ticket Created succcessfully by : 1426007 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 14:02:23 ============> Ticket Created succcessfully by : 2319922 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 14:02:53 ============> Ticket Created succcessfully by : 2319992 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 14:03:10 ============> Ticket Created succcessfully by : 2065491 && Agent : 1892993  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 14:03:34 ============> Ticket Created succcessfully by : 350965 && Agent : 2019209  
+[TICKET CREATED SUCCESSFULLY] : 03/03/2025 14:03:44 ============> Ticket Created succcessfully by : 350965 && Agent : 2019209  
+[TICKET CREATED ERROR] : 04/03/2025 09:20:02 :: Information not defined correctly (by : 2319950 && Agent : 1042871) 
+[TICKET CREATED ERROR] : 04/03/2025 09:24:59 :: Information not defined correctly (by : 2319950 && Agent : 1076929) 
+[TICKET CREATED SUCCESSFULLY] : 04/03/2025 12:12:18 ============> Ticket Created succcessfully by : 78956 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 04/03/2025 14:30:13 ============> Ticket Created succcessfully by : 359177 && Agent : 1076929  
+[TICKET CREATED SUCCESSFULLY] : 05/03/2025 09:18:11 ============> Ticket Created succcessfully by : 2319991 && Agent : 1076929  

@@ -205,3 +205,27 @@
 [DATA INSERT] : Mon Mar 03 2025 00:03:47 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
 [DATA INSERT] : Mon Mar 03 2025 00:03:48 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
 [DATA INSERT] : Mon Mar 03 2025 00:03:48 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Mon Mar 03 2025 12:00:23 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "6646051efb22db419b2f8973" version 128 modifiedPaths "roles, updatedAt" 
+[ERROR] : Mon Mar 03 2025 12:00:25 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1978fc882c17ca280f7b" version 1134 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon Mar 03 2025 12:02:08 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 03 2025 12:02:11 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Tue Mar 04 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1370 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1370 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1370 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1370 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Tue Mar 04 2025 00:03:06 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Mar 04 2025 00:03:07 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Mar 04 2025 00:03:08 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Tue Mar 04 2025 12:00:29 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1373 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 12:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1873fc882c17ca27ec16" version 1374 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 12:00:35 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1978fc882c17ca280f7b" version 1140 modifiedPaths "roles, updatedAt" 
+[ERROR] : Tue Mar 04 2025 12:02:05 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df193efc882c17ca28076b" version 1135 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Tue Mar 04 2025 12:02:52 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Mar 04 2025 12:02:55 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
+[ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
+[ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
+[ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
+[ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
+[ERROR] : Wed Mar 05 2025 00:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1952fc882c17ca280a2e" version 1149 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Wed Mar 05 2025 00:02:26 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
