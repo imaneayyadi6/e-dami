@@ -229,3 +229,34 @@
 [ERROR] : Wed Mar 05 2025 00:00:30 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1377 modifiedPaths "roles, updatedAt" 
 [ERROR] : Wed Mar 05 2025 00:00:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1952fc882c17ca280a2e" version 1149 modifiedPaths "roles, updatedAt" 
 [DATA INSERT] : Wed Mar 05 2025 00:02:26 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Mar 05 2025 12:02:05 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 06 2025 00:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 06 2025 11:22:07 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 06 2025 12:02:09 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Mar 07 2025 00:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Mar 07 2025 12:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 08 2025 00:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 08 2025 12:01:58 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 09 2025 00:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 09 2025 12:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 10 2025 00:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 10 2025 12:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Mar 11 2025 00:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Mar 11 2025 12:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Mar 12 2025 00:02:03 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Wed Mar 12 2025 12:00:16 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1394 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Wed Mar 12 2025 12:02:08 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Mar 12 2025 12:02:10 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Thu Mar 13 2025 00:00:14 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1391 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu Mar 13 2025 00:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 13 2025 00:02:04 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Thu Mar 13 2025 12:02:33 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1890fc882c17ca27f007" version 1181 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu Mar 13 2025 12:02:48 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Mar 13 2025 12:02:49 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Mar 14 2025 00:02:05 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Mar 14 2025 12:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 15 2025 00:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Mar 15 2025 12:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 16 2025 00:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Mar 16 2025 12:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Mar 17 2025 00:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 

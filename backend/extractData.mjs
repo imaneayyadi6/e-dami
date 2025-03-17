@@ -456,17 +456,17 @@ WHERE Table_name = 'responsabilite') and tr.INTITULE like 'CHEF DE SERVICE%'  AN
 
     /******************************  DIRECTEURS  ******************************/
     let query5 = `SELECT distinct ag.MATRICULE,ag.NOM,ag.PRENOM,ag.CIVILITE,adr.TELEPHONE,adr.EMAIL,cl.QUALIFICATION ,tr.INTITULE, af.LIEU,af.MATRIC_SUPERIEUR,af.MATRIC_SUP_1,af.MATRIC_SUP_2 
-from dbo.AGENT ag inner join dbo.ADRESSE adr
-on adr.MATRICULE = ag.MATRICULE
-inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
-inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
-inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
-inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO 
-INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
-INNER JOIN dbo.CONTRAT ct on ag.MATRICULE = ct.MATRICULE
-WHERE cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE WHERE Table_name = 'responsabilite') 
-and tr.INTITULE like 'DIRECTEUR%' and tr.INTITULE  not like '%ADJOINT%'  AND ct.SITUAT_EFFECTIF = '1'
-and ag.MATRICULE not in ('351712')`;
+                from dbo.AGENT ag inner join dbo.ADRESSE adr
+                on adr.MATRICULE = ag.MATRICULE
+                inner join CLASSIFICATION cl on ag.MATRICULE = cl.MATRICULE
+                inner join TABLE_REFERENCE tr on tr.CODE=cl.NIV_RESPONSABILITE
+                inner join dbo.AFFECTATION af on af.MATRICULE = ag.MATRICULE
+                inner join dbo.UNITE_ORG dir on af.LIEU = dir.UO 
+                INNER JOIN dbo.CONGES cog on cog.MATRICULE = ag.MATRICULE
+                INNER JOIN dbo.CONTRAT ct on ag.MATRICULE = ct.MATRICULE
+                WHERE cl.NIV_RESPONSABILITE IN (SELECT CODE FROM TABLE_REFERENCE WHERE Table_name = 'responsabilite') 
+                and tr.INTITULE like 'DIRECTEUR%' and tr.INTITULE  not like '%ADJOINT%'  AND ct.SITUAT_EFFECTIF = '1'
+                and ag.MATRICULE not in ('351712')`;
 
     const resSql5 = await sequelize.query(query5, {
       type: Sequelize.QueryTypes.SELECT,

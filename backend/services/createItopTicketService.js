@@ -133,7 +133,7 @@ export const createItopTicket = async ({
           }
         )
         .then((response) => {
-          const dataToWrite = `[TICKET CREATED SUCCESSFULLY] : ${new Date().toLocaleString()} ============> Ticket Created succcessfully by : ${client_matricule} && Agent : ${agent_matricule}  \n`;
+          const dataToWrite = `[TICKET CREATED SUCCESSFULLY] :: [SERVER URL : "${process.env.ITOP_ADDRESS}"] :: ${new Date().toLocaleString()} :: Ticket Created succcessfully by : ${client_matricule} && Agent : ${agent_matricule}  \n`;
           console.log("TICKET RESPONSE :", response.data);
 
           fs.appendFileSync(logFilePath, dataToWrite, (err) => {
@@ -142,21 +142,21 @@ export const createItopTicket = async ({
           });
         })
         .catch((error) => {
-          const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} ============> ${error} \n`;
+          const dataToWrite = `[TICKET CREATED ERROR] :: [SERVER URL : "${process.env.ITOP_ADDRESS}"] :: ${new Date().toLocaleString()} ============> ${error} \n`;
           fs.appendFileSync(logFilePath, dataToWrite, (err) => {
             if (err) throw err;
             console.log(`Error : ${error}`.red.inverse);
           });
         });
     } else {
-      const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} :: Information not defined correctly (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
+      const dataToWrite = `[TICKET CREATED ERROR] :: [SERVER URL : "${process.env.ITOP_ADDRESS}"] :: ${new Date().toLocaleString()} :: Information not defined correctly (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
       fs.appendFileSync(logFilePath, dataToWrite, (err) => {
         if (err) throw err;
         console.log(`Error : ${error}`.red.inverse);
       });
     }
   } catch (error) {
-    const dataToWrite = `[TICKET CREATED ERROR] : ${new Date().toLocaleString()} :: ${error} (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
+    const dataToWrite = `[TICKET CREATED ERROR] :: [SERVER URL : "${process.env.ITOP_ADDRESS}"] :: ${new Date().toLocaleString()} :: ${error} (by : ${client_matricule} && Agent : ${agent_matricule}) \n`;
     fs.appendFileSync(logFilePath, dataToWrite, (err) => {
       if (err) throw err;
       console.log(`Error : ${error}`.red.inverse);
