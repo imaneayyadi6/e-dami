@@ -1130,6 +1130,7 @@ WHERE Table_name = 'responsabilite') and tr.INTITULE like 'CHEF DE SERVICE%'  AN
 
 // main();
 
+
 // 12 hours :
 cron.schedule("0 */12 * * *", async () => {
   try {
