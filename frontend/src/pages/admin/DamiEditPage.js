@@ -64,6 +64,7 @@ import {
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
 import axios from "axios";
+import SectionCondtion from "../../components/documentComponents/SectionCondtion";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -73,6 +74,7 @@ const UICOMPONENTS = {
   lsttextinput: <ListOfTextInput />,
   lstcheckboxes: <ListOfCheckBoxes />,
   lstradiobuttons: <ListOfRadiosButtons />,
+  sectionCondtion: <SectionCondtion />,
   line: <Line />,
   divider: <Divider />,
 };
@@ -144,7 +146,7 @@ const DamiEditPage = () => {
     classification: "",
     creation: "",
     maj: "",
-   
+
   });
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
@@ -213,7 +215,7 @@ const DamiEditPage = () => {
     souscategories,
   } = sousCategorieList;
 
-  const [shouldAskAnyTime,setShouldAskAnyTime] = useState(false);
+  const [shouldAskAnyTime, setShouldAskAnyTime] = useState(false);
 
   const directionByServiceID = useSelector(
     (state) => state.directionByServiceID
@@ -712,13 +714,13 @@ const DamiEditPage = () => {
   };
 
   const addOptionHandler = () => {
-     document.documentElement.scrollTop = 0;
-     dispatch(createOption({...option,shouldAskAnyTime:shouldAskAnyTime}));
+    document.documentElement.scrollTop = 0;
+    dispatch(createOption({ ...option, shouldAskAnyTime: shouldAskAnyTime }));
   };
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
-      dispatch(updateOption(id, {...option,shouldAskAnyTime:shouldAskAnyTime}));
+      dispatch(updateOption(id, { ...option, shouldAskAnyTime: shouldAskAnyTime }));
     }
   };
 
@@ -1668,9 +1670,9 @@ const DamiEditPage = () => {
                 if (option._id === id) {
                   option.contenu =
                     docRef &&
-                    docRef.current &&
-                    docRef.current.querySelector("div") &&
-                    docRef.current.querySelector("div").innerHTML !== ""
+                      docRef.current &&
+                      docRef.current.querySelector("div") &&
+                      docRef.current.querySelector("div").innerHTML !== ""
                       ? docRef.current.querySelector("div").innerHTML
                       : "";
                   option.updatedAt = new Date();
@@ -1689,9 +1691,9 @@ const DamiEditPage = () => {
               notSavedYet: true,
               contenu:
                 docRef &&
-                docRef.current &&
-                docRef.current.querySelector("div") &&
-                docRef.current.querySelector("div").innerHTML !== ""
+                  docRef.current &&
+                  docRef.current.querySelector("div") &&
+                  docRef.current.querySelector("div").innerHTML !== ""
                   ? docRef.current.querySelector("div").innerHTML
                   : "",
               createdAt: new Date(),
@@ -1710,9 +1712,9 @@ const DamiEditPage = () => {
             notSavedYet: true,
             contenu:
               docRef &&
-              docRef.current &&
-              docRef.current.querySelector("div") &&
-              docRef.current.querySelector("div").innerHTML !== ""
+                docRef.current &&
+                docRef.current.querySelector("div") &&
+                docRef.current.querySelector("div").innerHTML !== ""
                 ? docRef.current.querySelector("div").innerHTML
                 : "",
             createdAt: new Date(),
@@ -1871,7 +1873,7 @@ const DamiEditPage = () => {
         ...recoveredOption,
         conditions: recoveredOption.conditions,
       });
-     
+
       setAtrTitle(recoveredOption.autreResponsableTitre ? recoveredOption.autreResponsableTitre : "")
       setShouldAskAnyTime(recoveredOption.shouldAskAnyTime);
       setTimeout(() => {
@@ -1889,9 +1891,9 @@ const DamiEditPage = () => {
           proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees
             ? recoveredOption.proprietaireDeDonnees._id
             : "",
-            typeAtr: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur.direction : '',
-            autreUtilisateur: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur._id : '' 
-            
+          typeAtr: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur.direction : '',
+          autreUtilisateur: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur._id : ''
+
         });
         setRecoveredConditions(recoveredOption.conditions);
       }, 1000);
@@ -2000,7 +2002,7 @@ const DamiEditPage = () => {
     }
   }, [sousCategorieForm.values.typePdd]);
 
- 
+
 
   useEffect(() => {
     if (userInfo && sousCategorieForm.values.typeAtr) {
@@ -2766,13 +2768,13 @@ const DamiEditPage = () => {
                                 checked={
                                   recoveredConditions.length > 0
                                     ? recoveredConditions.find(
-                                        (cd) => String(cd.type) === "pdg"
-                                      )
+                                      (cd) => String(cd.type) === "pdg"
+                                    )
                                       ? String(
-                                          recoveredConditions.find(
-                                            (cd) => String(cd.type) === "pdg"
-                                          ).element
-                                        ) === String(id)
+                                        recoveredConditions.find(
+                                          (cd) => String(cd.type) === "pdg"
+                                        ).element
+                                      ) === String(id)
                                         ? true
                                         : false
                                       : false
@@ -2803,24 +2805,24 @@ const DamiEditPage = () => {
                 quelque chose à changer, retournez et modifiez avant de
                 confirmer
               </Message>
-             
+
               <Row>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
                 <Col xl={8} lg={12} md={12} sm={12}>
-               
-                <div className="d-block">
-                  <Form.Check // prettier-ignore
-                    type="switch"
-                    id="custom-switch"
-                    label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
-                    value={shouldAskAnyTime}
-                    checked={shouldAskAnyTime}
-                    onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
-                  />
-                 
-                </div>  
-                <br/>
-             
+
+                  <div className="d-block">
+                    <Form.Check // prettier-ignore
+                      type="switch"
+                      id="custom-switch"
+                      label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                      value={shouldAskAnyTime}
+                      checked={shouldAskAnyTime}
+                      onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                    />
+
+                  </div>
+                  <br />
+
                   <Dami option={option} showAdmin />
                 </Col>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
@@ -3013,6 +3015,14 @@ const DamiEditPage = () => {
 
           <Card className="mt-2">
             <ListGroup>
+              <ListGroup.Item
+                className="cursor-pointer crt-dami-com-item"
+                draggable
+                onDrag={handleDrag}
+                onDragStart={(e) => handleDragStart(e, "sectionCondtion")}
+              >
+                Section Condtion
+              </ListGroup.Item>
               <ListGroup.Item
                 className="cursor-pointer crt-dami-com-item"
                 draggable
