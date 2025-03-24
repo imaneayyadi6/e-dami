@@ -153,6 +153,7 @@
 .demandeur-section table .dami-input {
   margin: 0;
 }
+
 .demandeur-section table {
   width: 100%;
 }
@@ -161,6 +162,7 @@
   width: 200px;
   margin-right: 15px;
 }
+
 .mini-dami .demandeur-section table .dami-input {
   font-size: 7px !important;
   width: 100px !important;
@@ -532,7 +534,7 @@
 /* End TextArea */
 
 /* Begin List Of CheckBox */
-.lst-check-boxes-header > tr {
+.lst-check-boxes-header>tr {
   background-color: #f4f4f4;
 }
 
@@ -614,7 +616,7 @@
   margin: 10px 0;
 }
 
-.divider > div {
+.divider>div {
   border-right: 1px solid lightgray;
   min-height: 40px;
   width: 50%;
@@ -622,7 +624,7 @@
   overflow-x: hidden;
 }
 
-.divider > div:last-child {
+.divider>div:last-child {
   border-right: none;
 }
 
@@ -638,3 +640,18 @@
 }
 
 /* end document */
+
+.section-condtion {
+  min-height: 100px;
+  position: relative;
+}
+
+.btn-condtion {
+  background-color: #f4f4f4;
+  border: none;
+  padding: 7px 15px;
+  border-radius: 5px;
+  position: absolute;
+  right: -4%;
+  top:50%
+}

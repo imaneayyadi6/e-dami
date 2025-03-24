@@ -173,8 +173,6 @@ const DamiEditPage = () => {
   const dispatch = useDispatch();
   const [recoveredConditions, setRecoveredConditions] = useState([]);
 
-  // const navigate = useNavigate();
-
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -195,6 +193,7 @@ const DamiEditPage = () => {
   const serviceListByDepartementID = useSelector(
     (state) => state.serviceListByDepartementID
   );
+
   const {
     loading: loadingserviceListByDepartementID,
     error: errorserviceListByDepartementID,
@@ -238,14 +237,12 @@ const DamiEditPage = () => {
   const {
     loading: loadingDepartementByID,
     error: errorDepartementByID,
-    departement,
   } = departementByID;
 
   const optionCreate = useSelector((state) => state.optionCreate);
   const {
     loading: loadingOptionCreate,
     error: errorOptionCreate,
-    // option: createdOption,
     success: successOptionCreate,
   } = optionCreate;
 
@@ -268,8 +265,6 @@ const DamiEditPage = () => {
   const userByDivision = useSelector((state) => state.userByDivision);
   const {
     loading: loadingUserByDivision,
-    error: errorUserByDivision,
-    success: successUserByDivision,
     users,
   } = userByDivision;
 
@@ -283,77 +278,120 @@ const DamiEditPage = () => {
       const data = event.dataTransfer.getData("text/plain");
 
       if (data) {
-        if (String(data) !== "divider") {
+        if (String(data) !== "divider" && String(data) !== "sectionCondtion") {
           const dividers = draggedItems.filter(
-            (item) => String(item.type) === "divider"
+            (item) => String(item.type) === "divider" || String(item.type) === "sectionCondtion"
           );
           const mouseY = event.clientY;
           const mouseX = event.clientX;
+
           if (dividers.length > 0) {
             for (const divider of dividers) {
+
               const uiElement = document.querySelector(
                 `#comp-ui-${divider.id}`
               );
-              const divs = uiElement.querySelectorAll(`.divider-child`);
 
-              const div1 = divs[0];
-              const div2 = divs[1];
+              const sectionCondtion = uiElement.querySelector(".section-condtion");
 
-              const div1Rect = div1.getBoundingClientRect();
-              const div2Rect = div2.getBoundingClientRect();
+              if (sectionCondtion) {
 
-              if (
-                mouseY >= div1Rect.top &&
-                mouseY <= div1Rect.bottom &&
-                mouseX >= div1Rect.left &&
-                mouseX <= div1Rect.right
-              ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
-                  if (String(item.id) === String(divider.id)) {
-                    item.children1.push({
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                    });
+                const sectionConditionRec = sectionCondtion.getBoundingClientRect();
+
+                if (mouseY >= sectionConditionRec.top &&
+                  mouseY <= sectionConditionRec.bottom &&
+                  mouseX >= sectionConditionRec.left &&
+                  mouseX <= sectionConditionRec.right) {
+
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = []
+
+                  for (let item of draggedItems) {
+                    console.log(item.id);
+                    console.log(uiElement.id);
+                    if (String(item.id) === String(uiElement.id).split("comp-ui-")[1]) {
+                      item.children.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                      });
+                    }
+                    nDraggedItems.push(item);
+                  };
+
+                  console.log(nDraggedItems)
+                  setDraggedItems(nDraggedItems);
+                  sectionCondtion.style.backgroundColor = "#fff";
+                }
+                else
+                  sectionCondtion.style.backgroundColor = "#fff";
+
+              }
+              else {
+                const divs = uiElement.querySelectorAll(`.divider-child`);
+
+                const div1 = divs[0];
+                const div2 = divs[1];
+
+                const div1Rect = div1.getBoundingClientRect();
+                const div2Rect = div2.getBoundingClientRect();
+
+                if (
+                  mouseY >= div1Rect.top &&
+                  mouseY <= div1Rect.bottom &&
+                  mouseX >= div1Rect.left &&
+                  mouseX <= div1Rect.right
+                ) {
+
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = draggedItems.map((item) => {
+                    if (String(item.id) === String(divider.id)) {
+                      item.children1.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                      });
+                    }
+                    return item;
+                  });
+
+                  setDraggedItems(nDraggedItems);
+                  div1.style.backgroundColor = "#fff";
+                } else if (
+                  mouseY >= div2Rect.top &&
+                  mouseY <= div2Rect.bottom &&
+                  mouseX >= div2Rect.left &&
+                  mouseX <= div2Rect.right
+                ) {
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = draggedItems.map((item) => {
+                    if (String(item.id) === String(divider.id)) {
+                      item.children2.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children: [],
+                      });
+                    }
+                    return item;
+                  });
+
+                  setDraggedItems(nDraggedItems);
+                  div2.style.backgroundColor = "#fff";
+                } else {
+                  if (UICOMPONENTS[data]) {
+                    setDraggedItems((prevItems) => [
+                      ...prevItems,
+                      {
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children1: [],
+                        children2: [],
+                        children: [],
+                      },
+                    ]);
                   }
-                  return item;
-                });
-
-                setDraggedItems(nDraggedItems);
-                div1.style.backgroundColor = "#fff";
-              } else if (
-                mouseY >= div2Rect.top &&
-                mouseY <= div2Rect.bottom &&
-                mouseX >= div2Rect.left &&
-                mouseX <= div2Rect.right
-              ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
-                  if (String(item.id) === String(divider.id)) {
-                    item.children2.push({
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                    });
-                  }
-                  return item;
-                });
-
-                setDraggedItems(nDraggedItems);
-                div2.style.backgroundColor = "#fff";
-              } else {
-                if (UICOMPONENTS[data]) {
-                  setDraggedItems((prevItems) => [
-                    ...prevItems,
-                    {
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                      children1: [],
-                      children2: [],
-                    },
-                  ]);
                 }
               }
             }
@@ -367,6 +405,7 @@ const DamiEditPage = () => {
                   type: data,
                   children1: [],
                   children2: [],
+                  children: [],
                 },
               ]);
             }
@@ -381,6 +420,7 @@ const DamiEditPage = () => {
                 type: data,
                 children1: [],
                 children2: [],
+                children: [],
               },
             ]);
           }
@@ -401,7 +441,7 @@ const DamiEditPage = () => {
 
   const handleDrag = (event) => {
     const dividers = draggedItems.filter(
-      (item) => String(item.type) === "divider"
+      (item) => String(item.type) === "divider" || String(item.type) === "sectionCondtion"
     );
 
     const mouseY = event.clientY;
@@ -410,34 +450,55 @@ const DamiEditPage = () => {
     if (dividers.length > 0) {
       for (const divider of dividers) {
         const uiElement = document.querySelector(`#comp-ui-${divider.id}`);
-        const divs = uiElement.querySelectorAll(`.divider-child`);
 
-        const div1 = divs[0];
-        const div2 = divs[1];
+        if (uiElement != null) {
+          const sectionCondtion = uiElement.querySelector(".section-condtion");
+          if (sectionCondtion) {
+            const sectionCondtionRect = sectionCondtion.getBoundingClientRect()
 
-        const div1Rect = div1.getBoundingClientRect();
-        const div2Rect = div2.getBoundingClientRect();
+            if (mouseY >= sectionCondtionRect.top &&
+              mouseY <= sectionCondtionRect.bottom &&
+              mouseX >= sectionCondtionRect.left &&
+              mouseX <= sectionCondtionRect.right) {
+              sectionCondtion.style.backgroundColor = "#f4f4f4";
+            }
+            else {
+              sectionCondtion.style.backgroundColor = "#fff";
+            }
+          }
+          else {
+            const divs = uiElement.querySelectorAll(`.divider-child`);
 
-        if (
-          mouseY >= div1Rect.top &&
-          mouseY <= div1Rect.bottom &&
-          mouseX >= div1Rect.left &&
-          mouseX <= div1Rect.right
-        ) {
-          div1.style.backgroundColor = "#f4f4f4";
-        } else {
-          div1.style.backgroundColor = "#fff";
-        }
+            const div1 = divs[0];
+            const div2 = divs[1];
 
-        if (
-          mouseY >= div2Rect.top &&
-          mouseY <= div2Rect.bottom &&
-          mouseX >= div2Rect.left &&
-          mouseX <= div2Rect.right
-        ) {
-          div2.style.backgroundColor = "#f4f4f4";
-        } else {
-          div2.style.backgroundColor = "#fff";
+            const div1Rect = div1.getBoundingClientRect();
+            const div2Rect = div2.getBoundingClientRect();
+
+            if (
+              mouseY >= div1Rect.top &&
+              mouseY <= div1Rect.bottom &&
+              mouseX >= div1Rect.left &&
+              mouseX <= div1Rect.right
+            ) {
+              div1.style.backgroundColor = "#f4f4f4";
+            } else {
+              div1.style.backgroundColor = "#fff";
+            }
+
+            if (
+              mouseY >= div2Rect.top &&
+              mouseY <= div2Rect.bottom &&
+              mouseX >= div2Rect.left &&
+              mouseX <= div2Rect.right
+            ) {
+              div2.style.backgroundColor = "#f4f4f4";
+            } else {
+              div2.style.backgroundColor = "#fff";
+            }
+          }
+
+
         }
       }
     }
@@ -512,6 +573,40 @@ const DamiEditPage = () => {
 
     setDraggedItems(updatedItems);
   };
+
+  const removeChildHandler = (idScCond, idChild) => {
+    const updatedItems = [];
+
+    for (const item of draggedItems) {
+
+      if (
+        item.type === "sectionCondtion" &&
+        String(item.id) === String(idScCond)
+      ) {
+
+        const updatedChildren = item.children.filter(
+          (ch) => String(ch.id) !== String(idChild)
+        );
+
+        updatedItems.push({
+          ...item,
+          children: updatedChildren,
+          component: {
+            ...item.component,
+            props: {
+              ...item.component.props,
+              children: updatedChildren,
+            },
+          },
+        });
+
+      } else {
+        updatedItems.push(item);
+      }
+
+    }
+    setDraggedItems(updatedItems);
+  }
 
   const removeChild1Handler = (idDivider, idChild1) => {
     const updatedItems = [];
@@ -1926,7 +2021,9 @@ const DamiEditPage = () => {
   ]);
 
   useEffect(() => {
+
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
+
     if (!callOptionByIDOnce) {
       if (id) {
         if (
@@ -2001,8 +2098,6 @@ const DamiEditPage = () => {
       dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
     }
   }, [sousCategorieForm.values.typePdd]);
-
-
 
   useEffect(() => {
     if (userInfo && sousCategorieForm.values.typeAtr) {
@@ -2908,9 +3003,11 @@ const DamiEditPage = () => {
                             >
                               {React.createElement(item.component.type, {
                                 ...item.component.props,
+                                children: item.children,
                                 children1: item.children1,
                                 children2: item.children2,
                                 id: item.id,
+                                removeChild: removeChildHandler,
                                 removeChild1: removeChild1Handler,
                                 removeChild2: removeChild2Handler,
                               })}
