@@ -45,7 +45,7 @@ import {
   fetchServicesByDepartementID,
 } from "../../redux/service/serviceActions";
 import { fetchSousCategories } from "../../redux/sousCategorie/sousCategorieActions";
-import { Toast, cssStringToObject } from "../../services";
+import { Toast, cssStringToObject, getTypeApprobation } from "../../services";
 import {
   createOption,
   fetchOptionByID,
@@ -108,6 +108,7 @@ const validationSousCategorieSchema = Yup.object({
 });
 
 const DamiEditPage = () => {
+
   const [callOnce, setCallOnce] = useState(false);
   const [draggedItems, setDraggedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -119,6 +120,7 @@ const DamiEditPage = () => {
     "entête",
     "sous-categorie & service & proprietaire de donnees",
     "signataires",
+    "Afficher une ou plusieurs sections pour un signataire unique",
     "confirmation",
   ]);
 
@@ -137,8 +139,8 @@ const DamiEditPage = () => {
   const [callOptionByIDOnce, setCallOptionByIDOnce] = useState(false);
   const [htmlContent, setHtmlContent] = useState("");
   const [isUpdateForm, setIsUpdateForm] = useState(false);
-  const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] =
-    useState(false);
+  const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] = useState(false);
+
   const [headerInitialValues] = useState({
     libelle: "",
     typeProcessus: "",
@@ -146,8 +148,8 @@ const DamiEditPage = () => {
     classification: "",
     creation: "",
     maj: "",
-
   });
+
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
     departement: "",
@@ -163,6 +165,9 @@ const DamiEditPage = () => {
   const [typeAtr, setTypeAtr] = useState("srv");
   const [usersAtr, setUsersAtr] = useState([]);
   const [atrTitle, setAtrTitle] = useState("");
+
+  const [sectionsIds, setSectionsIds] = useState({});
+  const [linkSectionConditionSig, setLinkSectionConditionSig] = useState({});
 
   const docRef = useRef(null);
   const btnRef = useRef(null);
@@ -258,7 +263,6 @@ const DamiEditPage = () => {
   const {
     loading: loadingOptionUpdate,
     error: errorOptionUpdate,
-    // option: updatedOption,
     success: successOptionUpdate,
   } = optionUpdate;
 
@@ -267,6 +271,32 @@ const DamiEditPage = () => {
     loading: loadingUserByDivision,
     users,
   } = userByDivision;
+
+  const setSectionsIdsHandler = (id, value) => {
+    setSectionsIds(prevSectionsIds => ({
+      ...prevSectionsIds,
+      [id]: value
+    }));
+
+    console.log(sectionsIds);
+  };
+
+  const setLinkCondSig = (id, value) => {
+    if (value) {
+      setLinkSectionConditionSig(prev => ({
+        ...prev,
+        [id]: value
+      }));
+    } else {
+      setLinkSectionConditionSig(prev => {
+        const updated = { ...prev };
+        delete updated[id]; // remove the key directly if no value
+        return updated;
+      });
+    }
+    console.log(linkSectionConditionSig);
+  };
+
 
   const handleDragStart = (event, item) => {
     event.dataTransfer.setData("text/plain", item);
@@ -307,13 +337,13 @@ const DamiEditPage = () => {
                   let nDraggedItems = []
 
                   for (let item of draggedItems) {
-                    console.log(item.id);
-                    console.log(uiElement.id);
+
                     if (String(item.id) === String(uiElement.id).split("comp-ui-")[1]) {
                       item.children.push({
                         id: uuidv4(),
                         component: UICOMPONENTS[data],
                         type: data,
+
                       });
                     }
                     nDraggedItems.push(item);
@@ -539,6 +569,15 @@ const DamiEditPage = () => {
       el.querySelectorAll(".btn-add-checkbox-line").forEach((element) => {
         element.remove();
       });
+      el.querySelectorAll(".btn-condtion").forEach((element) => {
+        element.remove();
+      });
+
+      el.querySelectorAll(".section-condtion .btn-remove-divider-children").forEach(
+        (element) => {
+          element.remove();
+        }
+      );
     } catch (error) {
       Toast.open({
         type: "danger",
@@ -769,6 +808,48 @@ const DamiEditPage = () => {
 
     setHtmlContent(docRef.current.innerHTML);
   };
+
+  const putCondLinkSig = () => {
+    console.log("put connd link")
+    const condSection = document.querySelectorAll(".section-condtion");
+    if (condSection && condSection.length > 0) {
+      if (linkSectionConditionSig === null || linkSectionConditionSig === undefined || Object.keys(linkSectionConditionSig).length === 0) {
+
+        Toast.open({
+          type: "danger",
+          title: "Erreur",
+          message: "Les sections doivent être liées par les signataires",
+        });
+      }
+      else {
+        console.log(Object.keys(linkSectionConditionSig).length);
+        console.log(condSection.length)
+        if (Number(Object.keys(linkSectionConditionSig).length) === Number(condSection.length)) {
+          Toast.open({
+            type: "success",
+            title: "good",
+            message: "goood",
+          });
+          alert("good");
+        }
+        else {
+          Toast.open({
+            type: "danger",
+            title: "Erreur",
+            message: "Les sections doivent être liées par les signataires",
+          });
+        }
+
+
+        // setOption({
+        //   ...option,
+        // });
+
+      }
+
+    }
+
+  }
 
   const sigChangeHandler = (event) => {
     let nbr = 0;
@@ -2891,57 +2972,96 @@ const DamiEditPage = () => {
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
             </>
-          ) : (
-            <>
-              {loadingOptionCreate && <Loader />}
-              {loadingOptionUpdate && <Loader />}
-              <Message type="info">
-                Voici l'option (DAMI) telle qu'elle sera présentée. Si vous avez
-                quelque chose à changer, retournez et modifiez avant de
-                confirmer
-              </Message>
+          )
+            : activeStep === 3 ? (
+              <div style={{ minHeight: "200px" }}>
+                {sectionsIds === null || sectionsIds === undefined || Object.keys(sectionsIds).length === 0 ?
+                  (
+                    <>
+                      <Message type="warning">
+                        Vous n'avez glissé aucune section de condition.
+                      </Message>
+                    </>
+                  )
+                  :
+                  (
+                    <>
+                      <h6>les id's des sections :</h6>
+                      <ListGroup>
+                        {Object.values(sectionsIds).map(valSec =>
+                        (
+                          <ListGroup.Item>
+                            <Row>
+                              <Col>
+                                <h4 className="mt-2">{valSec}</h4>
+                              </Col>
+                              <Col>
+                                <Form.Select onChange={(e) => setLinkCondSig(valSec, e.target.value)}>
+                                  <option value={""}>-- veuillez selectionner un signataire --</option>
+                                  {option.signataires.map(valSig => (<option value={valSig}>{getTypeApprobation(valSig)}</option>))}
+                                </Form.Select>
+                              </Col>
+                            </Row>
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                      <Button onClick={putCondLinkSig} className="w-100 mt-1">suivant</Button>
+                    </>
+                  )
+                }
+              </div>
+            ) :
+              (
+                <>
+                  {loadingOptionCreate && <Loader />}
+                  {loadingOptionUpdate && <Loader />}
+                  <Message type="info">
+                    Voici l'option (DAMI) telle qu'elle sera présentée. Si vous avez
+                    quelque chose à changer, retournez et modifiez avant de
+                    confirmer
+                  </Message>
 
-              <Row>
-                <Col xl={2} lg={12} md={12} sm={12}></Col>
-                <Col xl={8} lg={12} md={12} sm={12}>
+                  <Row>
+                    <Col xl={2} lg={12} md={12} sm={12}></Col>
+                    <Col xl={8} lg={12} md={12} sm={12}>
 
-                  <div className="d-block">
-                    <Form.Check // prettier-ignore
-                      type="switch"
-                      id="custom-switch"
-                      label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
-                      value={shouldAskAnyTime}
-                      checked={shouldAskAnyTime}
-                      onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
-                    />
+                      <div className="d-block">
+                        <Form.Check // prettier-ignore
+                          type="switch"
+                          id="custom-switch"
+                          label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                          value={shouldAskAnyTime}
+                          checked={shouldAskAnyTime}
+                          onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                        />
 
-                  </div>
-                  <br />
+                      </div>
+                      <br />
 
-                  <Dami option={option} showAdmin />
-                </Col>
-                <Col xl={2} lg={12} md={12} sm={12}></Col>
-              </Row>
+                      <Dami option={option} showAdmin />
+                    </Col>
+                    <Col xl={2} lg={12} md={12} sm={12}></Col>
+                  </Row>
 
-              {isUpdateForm ? (
-                <Button
-                  variant="dark"
-                  className="w-100"
-                  onClick={modifierOptionHandler}
-                >
-                  Modifier
-                </Button>
-              ) : (
-                <Button
-                  variant="dark"
-                  className="w-100"
-                  onClick={addOptionHandler}
-                >
-                  Ajouter
-                </Button>
+                  {isUpdateForm ? (
+                    <Button
+                      variant="dark"
+                      className="w-100"
+                      onClick={modifierOptionHandler}
+                    >
+                      Modifier
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="dark"
+                      className="w-100"
+                      onClick={addOptionHandler}
+                    >
+                      Ajouter
+                    </Button>
+                  )}
+                </>
               )}
-            </>
-          )}
         </Modal.Body>
       </Modal>
 
@@ -3010,6 +3130,7 @@ const DamiEditPage = () => {
                                 removeChild: removeChildHandler,
                                 removeChild1: removeChild1Handler,
                                 removeChild2: removeChild2Handler,
+                                changeSectionsIds: setSectionsIdsHandler
                               })}
 
                               <span

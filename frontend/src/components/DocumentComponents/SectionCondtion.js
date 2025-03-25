@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { OverlayTrigger, Form, Popover } from "react-bootstrap";
 
-const SectionCondtion = ({ children, removeChild, id }) => {
+const SectionCondtion = ({ children, removeChild, id, changeSectionsIds }) => {
     const [show, setShow] = useState(false);
-    const popoverRef = useRef();
+    const [idSec, setIdSec] = useState("");
     const popover = (
         <Popover>
             <Popover.Header>
@@ -11,18 +11,23 @@ const SectionCondtion = ({ children, removeChild, id }) => {
             </Popover.Header>
             <Popover.Body>
                 <label>id section :</label>
-                <Form.Control size="sm" placeholder="veuillez saisire un ID de cette section" />
+                <Form.Control
+                    onChange={(e) => {
+                        setIdSec(e.target.value)
+                        changeSectionsIds(id, e.target.value);
+                    }}
+                    value={idSec}
+                    size="sm"
+                    placeholder="veuillez saisire un ID de cette section" />
             </Popover.Body>
         </Popover>
     );
     useEffect(() => {
         const handleBodyClick = (event) => {
-            console.log(popover)
+            const popoverElment = document.querySelector(".popover");
             if (
-                popover &&
-                !popover.contains(event.target) &&
-                popoverRef &&
-                !popoverRef.contains(event.target)
+                popoverElment &&
+                !popoverElment.contains(event.target)
             ) {
                 setShow(false);
             }
@@ -64,8 +69,6 @@ const SectionCondtion = ({ children, removeChild, id }) => {
                 trigger="click"
                 placement="left"
                 overlay={popover}
-                show={show}
-                onToggle={() => setShow(!show)}
                 rootClose
             >
                 <button className="btn-condtion">
