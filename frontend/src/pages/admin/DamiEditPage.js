@@ -810,7 +810,6 @@ const DamiEditPage = () => {
   };
 
   const putCondLinkSig = () => {
-    console.log("put connd link")
     const condSection = document.querySelectorAll(".section-condtion");
     if (condSection && condSection.length > 0) {
       if (linkSectionConditionSig === null || linkSectionConditionSig === undefined || Object.keys(linkSectionConditionSig).length === 0) {
@@ -822,15 +821,12 @@ const DamiEditPage = () => {
         });
       }
       else {
-        console.log(Object.keys(linkSectionConditionSig).length);
-        console.log(condSection.length)
         if (Number(Object.keys(linkSectionConditionSig).length) === Number(condSection.length)) {
-          Toast.open({
-            type: "success",
-            title: "good",
-            message: "goood",
+          setOption({
+            ...option,
+            sectionConditions: linkSectionConditionSig
           });
-          alert("good");
+          setActiveStep(5)
         }
         else {
           Toast.open({
@@ -839,16 +835,9 @@ const DamiEditPage = () => {
             message: "Les sections doivent être liées par les signataires",
           });
         }
-
-
-        // setOption({
-        //   ...option,
-        // });
-
       }
-
+      console.log(linkSectionConditionSig);
     }
-
   }
 
   const sigChangeHandler = (event) => {
@@ -907,7 +896,11 @@ const DamiEditPage = () => {
       div.innerHTML = recoveredOption.contenu;
       let nDraggedItems = [];
       let elements = div.querySelectorAll(".comp-ui");
+
+      let cpt = 0;
+
       for (const el of elements) {
+
         if (el.classList.contains("type-label")) {
           const label = el.querySelector(".dami-label");
           let obj = {
@@ -925,6 +918,7 @@ const DamiEditPage = () => {
             children2: [],
           };
           nDraggedItems.push(obj);
+
         } else if (el.classList.contains("type-checkboxes")) {
           const mainLabel = el.querySelector(".dami-label:first-child");
           const checkboxes = el.querySelectorAll(
@@ -1809,6 +1803,322 @@ const DamiEditPage = () => {
             removeChild2: removeChild2Handler,
           };
           nDraggedItems.push(obj);
+        } else if (el.classList.contains("type-sectionCondtion")) {
+
+          const elChildren = el.querySelectorAll("div");
+          let children = [];
+
+          for (const elfor of elChildren) {
+
+            if (elfor.querySelector(".child-type-label")) {
+              const label = elfor.querySelector(".dami-label");
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <Label
+                    block
+                    text={label.innerText}
+                    className={label.className}
+                    style={cssStringToObject(label.getAttribute("style"))}
+                  />
+                ),
+                type: "label",
+              };
+
+              children.push(obj);
+
+            } else if (elfor.querySelector(".child-type-checkboxes")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const checkboxes = elfor.querySelectorAll(
+                ".dami-check-box-container div"
+              );
+              const checkboxItems = [];
+
+              for (const checkbox of checkboxes) {
+                checkboxItems.push({
+                  text: checkbox.querySelector(".dami-label").innerText,
+                  className: checkbox.querySelector(".dami-label").className,
+                  style: checkbox
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                });
+              }
+
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <CheckBox
+                    mainLabelProps={mainLabelProps}
+                    checkboxItems={checkboxItems}
+                  />
+                ),
+                type: "checkboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-textinput")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const textInput = elfor.querySelector(".dami-input");
+
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+              let style = textInput.getAttribute("style");
+              let fontsize = style
+                ? style.split("font-size:")[1].split("px")[0]
+                : 12;
+              const textInputProp = {
+                type: textInput.getAttribute("type"),
+                block: textInput.classList.contains("block"),
+                placeholder: textInput.getAttribute("placeholder"),
+
+                size: Number(fontsize),
+                min: textInput.getAttribute("min"),
+                max: textInput.getAttribute("max"),
+                value: textInput.value,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <TextInput
+                    mainLabelProps={mainLabelProps}
+                    textInputProp={textInputProp}
+                  />
+                ),
+                type: "textinput",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-radiobuttons")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const radiobuttons = elfor.querySelectorAll(
+                ".dami-radio-button-container div"
+              );
+
+              const radioButtonItems = [];
+
+              for (const radiobutton of radiobuttons) {
+                radioButtonItems.push({
+                  text: radiobutton.querySelector(".dami-label").innerText,
+                  className: radiobutton.querySelector(".dami-label").className,
+                  style: radiobutton
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                });
+              }
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <RadioButtons
+                    mainLabelProps={mainLabelProps}
+                    radioButtonItems={radioButtonItems}
+                  />
+                ),
+                type: "checkboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lsttextinput")) {
+              const lstinputs = elfor.querySelector(".lst-of-text-input");
+              const firstLine = lstinputs.querySelector(".dami-textarea-line");
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              const style = firstLine.getAttribute("style");
+              const size = style
+                ? style.split("font-size:")[1].split("px")[0]
+                : 12;
+              const placeholder = firstLine.getAttribute("placeholder");
+
+              const lineProps = {
+                nbrLines: lstinputs.querySelectorAll(".dami-textarea-line")
+                  .length,
+                size: Number(size),
+                placeholder: placeholder ? firstLine.placeholder : "",
+              };
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfTextInput
+                    mainLabelProps={mainLabelProps}
+                    isBlock={lstinputs.classList.contains("block")}
+                    lineProps={lineProps}
+                  />
+                ),
+                type: "lsttextinput",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lstcheckboxes")) {
+              const header = elfor.querySelector(".lst-check-boxes-header");
+              const mainLabel = header.querySelector(".dami-label");
+              const headerElements = header.querySelectorAll("td div");
+              const body = elfor.querySelector("tbody");
+              const lines = body.querySelectorAll("tr");
+
+              const filteredlines = Array.from(lines).filter((row) => {
+                return !row.querySelector(".btn-add-checkbox-line");
+              });
+
+              const headerItems = [];
+              const bodyItems = [];
+
+              for (const item of headerElements) {
+                headerItems.push({
+                  className: item.querySelector(".dami-label").className,
+                  style: item
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                  text: item.querySelector(".dami-label").innerText,
+                });
+              }
+
+              for (const item of filteredlines) {
+                const lineLabel = item.querySelector("td .dami-label");
+                const chks = item.querySelectorAll(".dami-check-box");
+
+                let disableds = [];
+
+                for (const item of chks) {
+                  disableds.push(item.classList.contains("disabled"));
+                }
+
+                bodyItems.push({
+                  className: lineLabel && lineLabel.className,
+                  style: lineLabel && lineLabel.getAttribute("style"),
+                  text: lineLabel && lineLabel.innerText,
+                  isSection: item.classList.contains("line-section"),
+                  disableds: disableds,
+                });
+              }
+
+              const headerProps = {
+                mainLabelProps: {
+                  className: mainLabel.className,
+                  style: mainLabel.getAttribute("style"),
+                  text: mainLabel.innerText,
+                },
+                headerItems: headerItems,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfCheckBoxes
+                    headerProps={headerProps}
+                    bodyItems={bodyItems}
+                  />
+                ),
+                type: "lstcheckboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lstradiobuttons")) {
+              const header = elfor.querySelector(".lst-check-boxes-header");
+              const mainLabel = header.querySelector(
+                "td[colspan='100'] .dami-label"
+              );
+              const headerElements = header.querySelectorAll(
+                "td:not([colspan]) .dami-label"
+              );
+              const body = elfor.querySelector("tbody");
+              const lines = body.querySelectorAll("tr");
+
+              const filteredlines = Array.from(lines).filter((row) => {
+                return !row.querySelector(".btn-add-checkbox-line");
+              });
+
+              const headerItems = [];
+              const bodyItems = [];
+
+              for (const item of headerElements) {
+                headerItems.push({
+                  className: item.className,
+                  style: item.getAttribute("style"),
+                  text: item.innerText,
+                });
+              }
+
+              for (const item of filteredlines) {
+                const lineLabel = item.querySelector("td .dami-label");
+                const chks = item.querySelectorAll(".dami-radio-button");
+                let disableds = [];
+
+                for (const item of chks) {
+                  disableds.push(item.classList.contains("disabled"));
+                }
+                bodyItems.push({
+                  className: lineLabel && lineLabel.className,
+                  style: lineLabel && lineLabel.getAttribute("style"),
+                  text: lineLabel && lineLabel.innerText,
+                  isSection: item.classList.contains("line-section"),
+                  disableds: disableds,
+                });
+              }
+
+              const headerProps = {
+                mainLabelProps: {
+                  className: mainLabel.className,
+                  style: mainLabel.getAttribute("style"),
+                  text: mainLabel.innerText,
+                },
+                headerItems: headerItems,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfRadiosButtons
+                    headerProps={headerProps}
+                    bodyItems={bodyItems}
+                  />
+                ),
+                type: "lstradiobuttons",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-line")) {
+
+              let obj = {
+                id: uuidv4(),
+                component: <Line />,
+                type: "line",
+              };
+              children.push(obj);
+            }
+
+          }
+          const idSection = uuidv4();
+          let obj = {
+            id: idSection,
+            component: <SectionCondtion idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]} />,
+            type: "sectionCondtion",
+            children: children,
+            removeChild: removeChildHandler
+          };
+
+          nDraggedItems.push(obj);
+
+          setSectionsIds(prev => ({
+            ...prev,
+            [idSection]: Object.keys(recoveredOption.sectionConditions)[cpt]
+          }));
+
+          cpt++;
         }
       }
 
@@ -2996,10 +3306,15 @@ const DamiEditPage = () => {
                                 <h4 className="mt-2">{valSec}</h4>
                               </Col>
                               <Col>
-                                <Form.Select onChange={(e) => setLinkCondSig(valSec, e.target.value)}>
+                                <Form.Select
+                                  id={valSec}
+                                  onChange={(e) => setLinkCondSig(valSec, e.target.value)}
+                                  value={linkSectionConditionSig[valSec]}
+                                >
                                   <option value={""}>-- veuillez selectionner un signataire --</option>
                                   {option.signataires.map(valSig => (<option value={valSig}>{getTypeApprobation(valSig)}</option>))}
                                 </Form.Select>
+
                               </Col>
                             </Row>
                           </ListGroup.Item>

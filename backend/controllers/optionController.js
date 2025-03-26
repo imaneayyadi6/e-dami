@@ -159,8 +159,8 @@ export const createOption = asyncHandler(async (req, res) => {
             option.autreUtilisateur = req.body.autreUtilisateur;
           }
 
-          if (req.body.sectionCondtions) {
-            option.sectionCondtions = req.body.sectionCondtions;
+          if (req.body.sectionConditions) {
+            option.sectionConditions = req.body.sectionConditions;
           }
 
           const createdOption = await option.save();
@@ -191,8 +191,8 @@ export const createOption = asyncHandler(async (req, res) => {
           option.autreUtilisateur = req.body.autreUtilisateur;
         }
 
-        if (req.body.sectionCondtions) {
-          option.sectionCondtions = req.body.sectionCondtions;
+        if (req.body.sectionConditions) {
+          option.sectionConditions = req.body.sectionConditions;
         }
 
         const createdOption = await option.save();

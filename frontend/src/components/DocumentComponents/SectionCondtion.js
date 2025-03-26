@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { OverlayTrigger, Form, Popover } from "react-bootstrap";
 
-const SectionCondtion = ({ children, removeChild, id, changeSectionsIds }) => {
+const SectionCondtion = ({ children, removeChild, id, changeSectionsIds, idSecEx }) => {
     const [show, setShow] = useState(false);
-    const [idSec, setIdSec] = useState("");
+    const [idSec, setIdSec] = useState(idSecEx);
     const popover = (
         <Popover>
             <Popover.Header>
