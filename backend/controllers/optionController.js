@@ -291,6 +291,10 @@ export const updateOption = asyncHandler(async (req, res) => {
       req.body.autreResponsableTitre || option.autreResponsableTitre;
     option.autreUtilisateur =
       req.body.autreUtilisateur || option.autreUtilisateur;
+
+    option.sectionConditions =
+      req.body.sectionConditions || option.sectionConditions;
+
     if (
       req.body.shouldAskAnyTime !== undefined &&
       req.body.shouldAskAnyTime !== null

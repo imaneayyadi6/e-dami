@@ -885,6 +885,8 @@ const DamiEditPage = () => {
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
+      document.documentElement.scrollTop = 0;
+      console.log(option);
       dispatch(updateOption(id, { ...option, shouldAskAnyTime: shouldAskAnyTime }));
     }
   };
@@ -917,7 +919,7 @@ const DamiEditPage = () => {
             children1: [],
             children2: [],
           };
-          nDraggedItems.push(obj);
+          nDraggedItems.push(obj)
 
         } else if (el.classList.contains("type-checkboxes")) {
           const mainLabel = el.querySelector(".dami-label:first-child");
@@ -2100,23 +2102,32 @@ const DamiEditPage = () => {
               };
               children.push(obj);
             }
-
           }
+
           const idSection = uuidv4();
           let obj = {
             id: idSection,
-            component: <SectionCondtion idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]} />,
+            component: <SectionCondtion
+              idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]}
+            />,
             type: "sectionCondtion",
             children: children,
             removeChild: removeChildHandler
           };
-
-          nDraggedItems.push(obj);
+          const sectionValueCond = Object.keys(recoveredOption.sectionConditions)[cpt];
+          const secLinkValueCond = Object.values(recoveredOption.sectionConditions)[cpt];
 
           setSectionsIds(prev => ({
             ...prev,
-            [idSection]: Object.keys(recoveredOption.sectionConditions)[cpt]
+            [idSection]: sectionValueCond
           }));
+          setLinkSectionConditionSig(prev => ({
+            ...prev,
+            [sectionValueCond]: secLinkValueCond
+          }))
+          nDraggedItems.push(obj);
+
+
 
           cpt++;
         }
@@ -2529,7 +2540,13 @@ const DamiEditPage = () => {
       );
     }
   }, [showCreateOpModal]);
+  useEffect(() => {
+    console.log("sectionsIds updated:", sectionsIds);
+  }, [sectionsIds]);
 
+  useEffect(() => {
+    console.log("linkSectionConditionSig updated:", linkSectionConditionSig);
+  }, [linkSectionConditionSig]);
   return (
     <>
       {/* Begin Modal View Result */}
