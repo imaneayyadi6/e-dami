@@ -107,6 +107,8 @@ const validationSousCategorieSchema = Yup.object({
   atr: Yup.string(),
 });
 
+
+
 const DamiEditPage = () => {
 
   const [callOnce, setCallOnce] = useState(false);
@@ -819,14 +821,33 @@ const DamiEditPage = () => {
           title: "Erreur",
           message: "Les sections doivent être liées par les signataires",
         });
+
       }
       else {
+
         if (Number(Object.keys(linkSectionConditionSig).length) === Number(condSection.length)) {
-          setOption({
-            ...option,
-            sectionConditions: linkSectionConditionSig
-          });
-          setActiveStep(5)
+          let isNotValid = false;
+          const linkCondDrps = document.querySelectorAll(".linkCondDrp");
+          for (const lkc of linkCondDrps) {
+            if (lkc.value === null || lkc.value === undefined || lkc.value === "") {
+              isNotValid = true;
+            }
+          }
+          if (!isNotValid) {
+            setOption({
+              ...option,
+              sectionConditions: linkSectionConditionSig
+            });
+
+            setActiveStep(5)
+          }
+          else {
+            Toast.open({
+              type: "danger",
+              title: "Erreur",
+              message: "Les sections doivent être liées par les signataires",
+            });
+          }
         }
         else {
           Toast.open({
@@ -836,7 +857,7 @@ const DamiEditPage = () => {
           });
         }
       }
-      console.log(linkSectionConditionSig);
+
     }
   }
 
@@ -2540,6 +2561,7 @@ const DamiEditPage = () => {
       );
     }
   }, [showCreateOpModal]);
+
   useEffect(() => {
     console.log("sectionsIds updated:", sectionsIds);
   }, [sectionsIds]);
@@ -3324,6 +3346,7 @@ const DamiEditPage = () => {
                               </Col>
                               <Col>
                                 <Form.Select
+                                  className="linkCondDrp"
                                   id={valSec}
                                   onChange={(e) => setLinkCondSig(valSec, e.target.value)}
                                   value={linkSectionConditionSig[valSec]}
