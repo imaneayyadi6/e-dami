@@ -107,10 +107,7 @@ const validationSousCategorieSchema = Yup.object({
   atr: Yup.string(),
 });
 
-
-
 const DamiEditPage = () => {
-
   const [callOnce, setCallOnce] = useState(false);
   const [draggedItems, setDraggedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -141,7 +138,8 @@ const DamiEditPage = () => {
   const [callOptionByIDOnce, setCallOptionByIDOnce] = useState(false);
   const [htmlContent, setHtmlContent] = useState("");
   const [isUpdateForm, setIsUpdateForm] = useState(false);
-  const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] = useState(false);
+  const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] =
+    useState(false);
 
   const [headerInitialValues] = useState({
     libelle: "",
@@ -241,10 +239,8 @@ const DamiEditPage = () => {
   } = serviceByID;
 
   const departementByID = useSelector((state) => state.departementByID);
-  const {
-    loading: loadingDepartementByID,
-    error: errorDepartementByID,
-  } = departementByID;
+  const { loading: loadingDepartementByID, error: errorDepartementByID } =
+    departementByID;
 
   const optionCreate = useSelector((state) => state.optionCreate);
   const {
@@ -269,15 +265,12 @@ const DamiEditPage = () => {
   } = optionUpdate;
 
   const userByDivision = useSelector((state) => state.userByDivision);
-  const {
-    loading: loadingUserByDivision,
-    users,
-  } = userByDivision;
+  const { loading: loadingUserByDivision, users } = userByDivision;
 
   const setSectionsIdsHandler = (id, value) => {
-    setSectionsIds(prevSectionsIds => ({
+    setSectionsIds((prevSectionsIds) => ({
       ...prevSectionsIds,
-      [id]: value
+      [id]: value,
     }));
 
     console.log(sectionsIds);
@@ -285,12 +278,12 @@ const DamiEditPage = () => {
 
   const setLinkCondSig = (id, value) => {
     if (value) {
-      setLinkSectionConditionSig(prev => ({
+      setLinkSectionConditionSig((prev) => ({
         ...prev,
-        [id]: value
+        [id]: value,
       }));
     } else {
-      setLinkSectionConditionSig(prev => {
+      setLinkSectionConditionSig((prev) => {
         const updated = { ...prev };
         delete updated[id]; // remove the key directly if no value
         return updated;
@@ -298,7 +291,6 @@ const DamiEditPage = () => {
     }
     console.log(linkSectionConditionSig);
   };
-
 
   const handleDragStart = (event, item) => {
     event.dataTransfer.setData("text/plain", item);
@@ -312,54 +304,54 @@ const DamiEditPage = () => {
       if (data) {
         if (String(data) !== "divider" && String(data) !== "sectionCondtion") {
           const dividers = draggedItems.filter(
-            (item) => String(item.type) === "divider" || String(item.type) === "sectionCondtion"
+            (item) =>
+              String(item.type) === "divider" ||
+              String(item.type) === "sectionCondtion"
           );
           const mouseY = event.clientY;
           const mouseX = event.clientX;
 
           if (dividers.length > 0) {
             for (const divider of dividers) {
-
               const uiElement = document.querySelector(
                 `#comp-ui-${divider.id}`
               );
 
-              const sectionCondtion = uiElement.querySelector(".section-condtion");
+              const sectionCondtion =
+                uiElement.querySelector(".section-condtion");
 
               if (sectionCondtion) {
+                const sectionConditionRec =
+                  sectionCondtion.getBoundingClientRect();
 
-                const sectionConditionRec = sectionCondtion.getBoundingClientRect();
-
-                if (mouseY >= sectionConditionRec.top &&
+                if (
+                  mouseY >= sectionConditionRec.top &&
                   mouseY <= sectionConditionRec.bottom &&
                   mouseX >= sectionConditionRec.left &&
-                  mouseX <= sectionConditionRec.right) {
-
+                  mouseX <= sectionConditionRec.right
+                ) {
                   // L'élément a été déposé à l'emplacement du diviseur
-                  let nDraggedItems = []
+                  let nDraggedItems = [];
 
                   for (let item of draggedItems) {
-
-                    if (String(item.id) === String(uiElement.id).split("comp-ui-")[1]) {
+                    if (
+                      String(item.id) ===
+                      String(uiElement.id).split("comp-ui-")[1]
+                    ) {
                       item.children.push({
                         id: uuidv4(),
                         component: UICOMPONENTS[data],
                         type: data,
-
                       });
                     }
                     nDraggedItems.push(item);
-                  };
+                  }
 
-                  console.log(nDraggedItems)
+                  console.log(nDraggedItems);
                   setDraggedItems(nDraggedItems);
                   sectionCondtion.style.backgroundColor = "#fff";
-                }
-                else
-                  sectionCondtion.style.backgroundColor = "#fff";
-
-              }
-              else {
+                } else sectionCondtion.style.backgroundColor = "#fff";
+              } else {
                 const divs = uiElement.querySelectorAll(`.divider-child`);
 
                 const div1 = divs[0];
@@ -374,7 +366,6 @@ const DamiEditPage = () => {
                   mouseX >= div1Rect.left &&
                   mouseX <= div1Rect.right
                 ) {
-
                   // L'élément a été déposé à l'emplacement du diviseur
                   let nDraggedItems = draggedItems.map((item) => {
                     if (String(item.id) === String(divider.id)) {
@@ -473,7 +464,9 @@ const DamiEditPage = () => {
 
   const handleDrag = (event) => {
     const dividers = draggedItems.filter(
-      (item) => String(item.type) === "divider" || String(item.type) === "sectionCondtion"
+      (item) =>
+        String(item.type) === "divider" ||
+        String(item.type) === "sectionCondtion"
     );
 
     const mouseY = event.clientY;
@@ -486,19 +479,19 @@ const DamiEditPage = () => {
         if (uiElement != null) {
           const sectionCondtion = uiElement.querySelector(".section-condtion");
           if (sectionCondtion) {
-            const sectionCondtionRect = sectionCondtion.getBoundingClientRect()
+            const sectionCondtionRect = sectionCondtion.getBoundingClientRect();
 
-            if (mouseY >= sectionCondtionRect.top &&
+            if (
+              mouseY >= sectionCondtionRect.top &&
               mouseY <= sectionCondtionRect.bottom &&
               mouseX >= sectionCondtionRect.left &&
-              mouseX <= sectionCondtionRect.right) {
+              mouseX <= sectionCondtionRect.right
+            ) {
               sectionCondtion.style.backgroundColor = "#f4f4f4";
-            }
-            else {
+            } else {
               sectionCondtion.style.backgroundColor = "#fff";
             }
-          }
-          else {
+          } else {
             const divs = uiElement.querySelectorAll(`.divider-child`);
 
             const div1 = divs[0];
@@ -529,8 +522,6 @@ const DamiEditPage = () => {
               div2.style.backgroundColor = "#fff";
             }
           }
-
-
         }
       }
     }
@@ -575,11 +566,11 @@ const DamiEditPage = () => {
         element.remove();
       });
 
-      el.querySelectorAll(".section-condtion .btn-remove-divider-children").forEach(
-        (element) => {
-          element.remove();
-        }
-      );
+      el.querySelectorAll(
+        ".section-condtion .btn-remove-divider-children"
+      ).forEach((element) => {
+        element.remove();
+      });
     } catch (error) {
       Toast.open({
         type: "danger",
@@ -604,6 +595,14 @@ const DamiEditPage = () => {
       (item) => String(item.id) !== String(id)
     );
     setDraggedItems(nItems);
+    const nSectionsIds = sectionsIds;
+    const linkcond = nSectionsIds[id];
+    delete nSectionsIds[id];
+    const nLinkSectionConditionSig = linkSectionConditionSig;
+    delete nLinkSectionConditionSig[linkcond];
+
+    setSectionsIds(nSectionsIds);
+    setLinkSectionConditionSig(nLinkSectionConditionSig);
   };
 
   const onDragEnd = (result) => {
@@ -619,12 +618,10 @@ const DamiEditPage = () => {
     const updatedItems = [];
 
     for (const item of draggedItems) {
-
       if (
         item.type === "sectionCondtion" &&
         String(item.id) === String(idScCond)
       ) {
-
         const updatedChildren = item.children.filter(
           (ch) => String(ch.id) !== String(idChild)
         );
@@ -640,14 +637,12 @@ const DamiEditPage = () => {
             },
           },
         });
-
       } else {
         updatedItems.push(item);
       }
-
     }
     setDraggedItems(updatedItems);
-  }
+  };
 
   const removeChild1Handler = (idDivider, idChild1) => {
     const updatedItems = [];
@@ -814,42 +809,47 @@ const DamiEditPage = () => {
   const putCondLinkSig = () => {
     const condSection = document.querySelectorAll(".section-condtion");
     if (condSection && condSection.length > 0) {
-      if (linkSectionConditionSig === null || linkSectionConditionSig === undefined || Object.keys(linkSectionConditionSig).length === 0) {
-
+      if (
+        linkSectionConditionSig === null ||
+        linkSectionConditionSig === undefined ||
+        Object.keys(linkSectionConditionSig).length === 0
+      ) {
         Toast.open({
           type: "danger",
           title: "Erreur",
           message: "Les sections doivent être liées par les signataires",
         });
-
-      }
-      else {
-
-        if (Number(Object.keys(linkSectionConditionSig).length) === Number(condSection.length)) {
+      } else {
+        if (
+          Number(Object.keys(linkSectionConditionSig).length) ===
+          Number(condSection.length)
+        ) {
           let isNotValid = false;
           const linkCondDrps = document.querySelectorAll(".linkCondDrp");
           for (const lkc of linkCondDrps) {
-            if (lkc.value === null || lkc.value === undefined || lkc.value === "") {
+            if (
+              lkc.value === null ||
+              lkc.value === undefined ||
+              lkc.value === ""
+            ) {
               isNotValid = true;
             }
           }
           if (!isNotValid) {
             setOption({
               ...option,
-              sectionConditions: linkSectionConditionSig
+              sectionConditions: linkSectionConditionSig,
             });
 
-            setActiveStep(5)
-          }
-          else {
+            setActiveStep(5);
+          } else {
             Toast.open({
               type: "danger",
               title: "Erreur",
               message: "Les sections doivent être liées par les signataires",
             });
           }
-        }
-        else {
+        } else {
           Toast.open({
             type: "danger",
             title: "Erreur",
@@ -857,9 +857,8 @@ const DamiEditPage = () => {
           });
         }
       }
-
     }
-  }
+  };
 
   const sigChangeHandler = (event) => {
     let nbr = 0;
@@ -908,7 +907,9 @@ const DamiEditPage = () => {
     if (isUpdateForm) {
       document.documentElement.scrollTop = 0;
       console.log(option);
-      dispatch(updateOption(id, { ...option, shouldAskAnyTime: shouldAskAnyTime }));
+      dispatch(
+        updateOption(id, { ...option, shouldAskAnyTime: shouldAskAnyTime })
+      );
     }
   };
 
@@ -923,7 +924,6 @@ const DamiEditPage = () => {
       let cpt = 0;
 
       for (const el of elements) {
-
         if (el.classList.contains("type-label")) {
           const label = el.querySelector(".dami-label");
           let obj = {
@@ -940,8 +940,7 @@ const DamiEditPage = () => {
             children1: [],
             children2: [],
           };
-          nDraggedItems.push(obj)
-
+          nDraggedItems.push(obj);
         } else if (el.classList.contains("type-checkboxes")) {
           const mainLabel = el.querySelector(".dami-label:first-child");
           const checkboxes = el.querySelectorAll(
@@ -1827,12 +1826,10 @@ const DamiEditPage = () => {
           };
           nDraggedItems.push(obj);
         } else if (el.classList.contains("type-sectionCondtion")) {
-
           const elChildren = el.querySelectorAll("div");
           let children = [];
 
           for (const elfor of elChildren) {
-
             if (elfor.querySelector(".child-type-label")) {
               const label = elfor.querySelector(".dami-label");
 
@@ -1850,7 +1847,6 @@ const DamiEditPage = () => {
               };
 
               children.push(obj);
-
             } else if (elfor.querySelector(".child-type-checkboxes")) {
               const mainLabel = elfor.querySelector(".dami-label:first-child");
               const checkboxes = elfor.querySelectorAll(
@@ -2115,7 +2111,6 @@ const DamiEditPage = () => {
               };
               children.push(obj);
             } else if (elfor.querySelector(".child-type-line")) {
-
               let obj = {
                 id: uuidv4(),
                 component: <Line />,
@@ -2128,27 +2123,31 @@ const DamiEditPage = () => {
           const idSection = uuidv4();
           let obj = {
             id: idSection,
-            component: <SectionCondtion
-              idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]}
-            />,
+            component: (
+              <SectionCondtion
+                idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]}
+              />
+            ),
             type: "sectionCondtion",
             children: children,
-            removeChild: removeChildHandler
+            removeChild: removeChildHandler,
           };
-          const sectionValueCond = Object.keys(recoveredOption.sectionConditions)[cpt];
-          const secLinkValueCond = Object.values(recoveredOption.sectionConditions)[cpt];
+          const sectionValueCond = Object.keys(
+            recoveredOption.sectionConditions
+          )[cpt];
+          const secLinkValueCond = Object.values(
+            recoveredOption.sectionConditions
+          )[cpt];
 
-          setSectionsIds(prev => ({
+          setSectionsIds((prev) => ({
             ...prev,
-            [idSection]: sectionValueCond
+            [idSection]: sectionValueCond,
           }));
-          setLinkSectionConditionSig(prev => ({
+          setLinkSectionConditionSig((prev) => ({
             ...prev,
-            [sectionValueCond]: secLinkValueCond
-          }))
+            [sectionValueCond]: secLinkValueCond,
+          }));
           nDraggedItems.push(obj);
-
-
 
           cpt++;
         }
@@ -2188,9 +2187,9 @@ const DamiEditPage = () => {
                 if (option._id === id) {
                   option.contenu =
                     docRef &&
-                      docRef.current &&
-                      docRef.current.querySelector("div") &&
-                      docRef.current.querySelector("div").innerHTML !== ""
+                    docRef.current &&
+                    docRef.current.querySelector("div") &&
+                    docRef.current.querySelector("div").innerHTML !== ""
                       ? docRef.current.querySelector("div").innerHTML
                       : "";
                   option.updatedAt = new Date();
@@ -2209,9 +2208,9 @@ const DamiEditPage = () => {
               notSavedYet: true,
               contenu:
                 docRef &&
-                  docRef.current &&
-                  docRef.current.querySelector("div") &&
-                  docRef.current.querySelector("div").innerHTML !== ""
+                docRef.current &&
+                docRef.current.querySelector("div") &&
+                docRef.current.querySelector("div").innerHTML !== ""
                   ? docRef.current.querySelector("div").innerHTML
                   : "",
               createdAt: new Date(),
@@ -2230,9 +2229,9 @@ const DamiEditPage = () => {
             notSavedYet: true,
             contenu:
               docRef &&
-                docRef.current &&
-                docRef.current.querySelector("div") &&
-                docRef.current.querySelector("div").innerHTML !== ""
+              docRef.current &&
+              docRef.current.querySelector("div") &&
+              docRef.current.querySelector("div").innerHTML !== ""
                 ? docRef.current.querySelector("div").innerHTML
                 : "",
             createdAt: new Date(),
@@ -2392,7 +2391,11 @@ const DamiEditPage = () => {
         conditions: recoveredOption.conditions,
       });
 
-      setAtrTitle(recoveredOption.autreResponsableTitre ? recoveredOption.autreResponsableTitre : "")
+      setAtrTitle(
+        recoveredOption.autreResponsableTitre
+          ? recoveredOption.autreResponsableTitre
+          : ""
+      );
       setShouldAskAnyTime(recoveredOption.shouldAskAnyTime);
       setTimeout(() => {
         sousCategorieForm.setValues({
@@ -2409,9 +2412,12 @@ const DamiEditPage = () => {
           proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees
             ? recoveredOption.proprietaireDeDonnees._id
             : "",
-          typeAtr: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur.direction : '',
-          autreUtilisateur: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur._id : ''
-
+          typeAtr: recoveredOption.autreUtilisateur
+            ? recoveredOption.autreUtilisateur.direction
+            : "",
+          autreUtilisateur: recoveredOption.autreUtilisateur
+            ? recoveredOption.autreUtilisateur._id
+            : "",
         });
         setRecoveredConditions(recoveredOption.conditions);
       }, 1000);
@@ -2444,7 +2450,6 @@ const DamiEditPage = () => {
   ]);
 
   useEffect(() => {
-
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
 
     if (!callOptionByIDOnce) {
@@ -2562,13 +2567,6 @@ const DamiEditPage = () => {
     }
   }, [showCreateOpModal]);
 
-  useEffect(() => {
-    console.log("sectionsIds updated:", sectionsIds);
-  }, [sectionsIds]);
-
-  useEffect(() => {
-    console.log("linkSectionConditionSig updated:", linkSectionConditionSig);
-  }, [linkSectionConditionSig]);
   return (
     <>
       {/* Begin Modal View Result */}
@@ -2787,8 +2785,6 @@ const DamiEditPage = () => {
                   {headerForm.errors.maj}
                 </small>
               )}
-
-
               <Button variant="dark" className="w-100 mt-3" type="submit">
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
@@ -2996,7 +2992,8 @@ const DamiEditPage = () => {
                   <option value="">
                     ----- choisire un responsable (autre signataire) -----
                   </option>
-                  {usersAtr && Array.from(usersAtr).length > 0 &&
+                  {usersAtr &&
+                    Array.from(usersAtr).length > 0 &&
                     Array.from(usersAtr).map((user) => (
                       <option value={user._id}>
                         {user.prenom} {user.nom}
@@ -3293,13 +3290,13 @@ const DamiEditPage = () => {
                                 checked={
                                   recoveredConditions.length > 0
                                     ? recoveredConditions.find(
-                                      (cd) => String(cd.type) === "pdg"
-                                    )
+                                        (cd) => String(cd.type) === "pdg"
+                                      )
                                       ? String(
-                                        recoveredConditions.find(
-                                          (cd) => String(cd.type) === "pdg"
-                                        ).element
-                                      ) === String(id)
+                                          recoveredConditions.find(
+                                            (cd) => String(cd.type) === "pdg"
+                                          ).element
+                                        ) === String(id)
                                         ? true
                                         : false
                                       : false
@@ -3321,102 +3318,104 @@ const DamiEditPage = () => {
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
             </>
-          )
-            : activeStep === 3 ? (
-              <div style={{ minHeight: "200px" }}>
-                {sectionsIds === null || sectionsIds === undefined || Object.keys(sectionsIds).length === 0 ?
-                  (
-                    <>
-                      <Message type="warning">
-                        Vous n'avez glissé aucune section de condition.
-                      </Message>
-                    </>
-                  )
-                  :
-                  (
-                    <>
-                      <h6>les id's des sections :</h6>
-                      <ListGroup>
-                        {Object.values(sectionsIds).map(valSec =>
-                        (
-                          <ListGroup.Item>
-                            <Row>
-                              <Col>
-                                <h4 className="mt-2">{valSec}</h4>
-                              </Col>
-                              <Col>
-                                <Form.Select
-                                  className="linkCondDrp"
-                                  id={valSec}
-                                  onChange={(e) => setLinkCondSig(valSec, e.target.value)}
-                                  value={linkSectionConditionSig[valSec]}
-                                >
-                                  <option value={""}>-- veuillez selectionner un signataire --</option>
-                                  {option.signataires.map(valSig => (<option value={valSig}>{getTypeApprobation(valSig)}</option>))}
-                                </Form.Select>
-
-                              </Col>
-                            </Row>
-                          </ListGroup.Item>
-                        ))}
-                      </ListGroup>
-                      <Button onClick={putCondLinkSig} className="w-100 mt-1">suivant</Button>
-                    </>
-                  )
-                }
-              </div>
-            ) :
-              (
+          ) : activeStep === 3 ? (
+            <div style={{ minHeight: "200px" }}>
+              {sectionsIds === null ||
+              sectionsIds === undefined ||
+              Object.keys(sectionsIds).length === 0 ? (
                 <>
-                  {loadingOptionCreate && <Loader />}
-                  {loadingOptionUpdate && <Loader />}
-                  <Message type="info">
-                    Voici l'option (DAMI) telle qu'elle sera présentée. Si vous avez
-                    quelque chose à changer, retournez et modifiez avant de
-                    confirmer
+                  <Message type="warning">
+                    Vous n'avez glissé aucune section de condition.
                   </Message>
-
-                  <Row>
-                    <Col xl={2} lg={12} md={12} sm={12}></Col>
-                    <Col xl={8} lg={12} md={12} sm={12}>
-
-                      <div className="d-block">
-                        <Form.Check // prettier-ignore
-                          type="switch"
-                          id="custom-switch"
-                          label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
-                          value={shouldAskAnyTime}
-                          checked={shouldAskAnyTime}
-                          onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
-                        />
-
-                      </div>
-                      <br />
-
-                      <Dami option={option} showAdmin />
-                    </Col>
-                    <Col xl={2} lg={12} md={12} sm={12}></Col>
-                  </Row>
-
-                  {isUpdateForm ? (
-                    <Button
-                      variant="dark"
-                      className="w-100"
-                      onClick={modifierOptionHandler}
-                    >
-                      Modifier
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="dark"
-                      className="w-100"
-                      onClick={addOptionHandler}
-                    >
-                      Ajouter
-                    </Button>
-                  )}
+                </>
+              ) : (
+                <>
+                  <h6>les id's des sections :</h6>
+                  <ListGroup>
+                    {Object.values(sectionsIds).map((valSec) => (
+                      <ListGroup.Item>
+                        <Row>
+                          <Col>
+                            <h4 className="mt-2">{valSec}</h4>
+                          </Col>
+                          <Col>
+                            <Form.Select
+                              className="linkCondDrp"
+                              id={valSec}
+                              onChange={(e) =>
+                                setLinkCondSig(valSec, e.target.value)
+                              }
+                              value={linkSectionConditionSig[valSec]}
+                            >
+                              <option value={""}>
+                                -- veuillez selectionner un signataire --
+                              </option>
+                              {option.signataires.map((valSig) => (
+                                <option value={valSig}>
+                                  {getTypeApprobation(valSig)}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                  <Button onClick={putCondLinkSig} className="w-100 mt-1">
+                    suivant
+                  </Button>
                 </>
               )}
+            </div>
+          ) : (
+            <>
+              {loadingOptionCreate && <Loader />}
+              {loadingOptionUpdate && <Loader />}
+              <Message type="info">
+                Voici l'option (DAMI) telle qu'elle sera présentée. Si vous avez
+                quelque chose à changer, retournez et modifiez avant de
+                confirmer
+              </Message>
+
+              <Row>
+                <Col xl={2} lg={12} md={12} sm={12}></Col>
+                <Col xl={8} lg={12} md={12} sm={12}>
+                  <div className="d-block">
+                    <Form.Check // prettier-ignore
+                      type="switch"
+                      id="custom-switch"
+                      label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                      value={shouldAskAnyTime}
+                      checked={shouldAskAnyTime}
+                      onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                    />
+                  </div>
+                  <br />
+
+                  <Dami option={option} showAdmin />
+                </Col>
+                <Col xl={2} lg={12} md={12} sm={12}></Col>
+              </Row>
+
+              {isUpdateForm ? (
+                <Button
+                  variant="dark"
+                  className="w-100"
+                  onClick={modifierOptionHandler}
+                >
+                  Modifier
+                </Button>
+              ) : (
+                <Button
+                  variant="dark"
+                  className="w-100"
+                  onClick={addOptionHandler}
+                >
+                  Ajouter
+                </Button>
+              )}
+            </>
+          )}
         </Modal.Body>
       </Modal>
 
@@ -3485,7 +3484,7 @@ const DamiEditPage = () => {
                                 removeChild: removeChildHandler,
                                 removeChild1: removeChild1Handler,
                                 removeChild2: removeChild2Handler,
-                                changeSectionsIds: setSectionsIdsHandler
+                                changeSectionsIds: setSectionsIdsHandler,
                               })}
 
                               <span
