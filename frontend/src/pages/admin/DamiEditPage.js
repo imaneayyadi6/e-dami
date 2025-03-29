@@ -300,7 +300,6 @@ const DamiEditPage = () => {
     event.preventDefault();
     try {
       const data = event.dataTransfer.getData("text/plain");
-
       if (data) {
         if (String(data) !== "divider" && String(data) !== "sectionCondtion") {
           const dividers = draggedItems.filter(
@@ -310,7 +309,6 @@ const DamiEditPage = () => {
           );
           const mouseY = event.clientY;
           const mouseX = event.clientX;
-
           if (dividers.length > 0) {
             for (const divider of dividers) {
               const uiElement = document.querySelector(
@@ -347,10 +345,24 @@ const DamiEditPage = () => {
                     nDraggedItems.push(item);
                   }
 
-                  console.log(nDraggedItems);
                   setDraggedItems(nDraggedItems);
                   sectionCondtion.style.backgroundColor = "#fff";
-                } else sectionCondtion.style.backgroundColor = "#fff";
+                } else {
+                  sectionCondtion.style.backgroundColor = "#fff";
+                  if (UICOMPONENTS[data]) {
+                    setDraggedItems((prevItems) => [
+                      ...prevItems,
+                      {
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children1: [],
+                        children2: [],
+                        children: [],
+                      },
+                    ]);
+                  }
+                }
               } else {
                 const divs = uiElement.querySelectorAll(`.divider-child`);
 

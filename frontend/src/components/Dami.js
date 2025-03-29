@@ -75,17 +75,17 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
         element.setAttribute("disabled", true);
       });
 
-
-      cleanDocRef.current.querySelectorAll(".btn-condtion").forEach((element) => {
-        element.remove();
-      });
-
-      cleanDocRef.current.querySelectorAll(".section-condtion .btn-remove-divider-children").forEach(
-        (element) => {
+      cleanDocRef.current
+        .querySelectorAll(".btn-condtion")
+        .forEach((element) => {
           element.remove();
-        }
-      );
+        });
 
+      cleanDocRef.current
+        .querySelectorAll(".section-condtion .btn-remove-divider-children")
+        .forEach((element) => {
+          element.remove();
+        });
     }
   };
 
@@ -104,6 +104,15 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     }
   };
 
+  const verfySectionCond = () => {
+    if (
+      option.sectionConditions !== null &&
+      option.sectionConditions !== undefined
+    ) {
+      
+    }
+  };
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -111,6 +120,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     setTimeout(() => {
       removeBtnsAndLayoutsFromCreateModal();
       makeRemoveReadOnly();
+      verfySectionCond();
     }, 100);
   }, []);
 
