@@ -39,13 +39,10 @@ import {
   DEMANDE_PREVIEW_TEAM_REQUEST,
   DEMANDE_PREVIEW_TEAM_RESET,
   DEMANDE_PREVIEW_TEAM_SUCCESS,
-
-
   DEMANDE_PREVIEW_TEAM_ADMIN_FAIL,
   DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST,
   DEMANDE_PREVIEW_TEAM_ADMIN_RESET,
   DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS,
-
   DEMANDE_PREVIEW_TEAM_DETAILS_FAIL,
   DEMANDE_PREVIEW_TEAM_DETAILS_REQUEST,
   DEMANDE_PREVIEW_TEAM_DETAILS_RESET,
@@ -324,7 +321,7 @@ export const resetGetDemandeTraitementStatus = () => {
   return { type: DEMANDE_TRAITEMENT_STATUS_RESET };
 };
 
-export const approuveTraitement = (id, idTraitement) => {
+export const approuveTraitement = (id, idTraitement, docContent) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_REQUEST });
@@ -340,7 +337,7 @@ export const approuveTraitement = (id, idTraitement) => {
       };
       const { data } = await axios.put(
         `/api/demandes/${id}/approuve/${idTraitement}`,
-        {},
+        { docContent: docContent },
         config
       );
       dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_SUCCESS, payload: data });

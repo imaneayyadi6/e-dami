@@ -838,7 +838,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
               demande.status = "approuve";
             } else {
-              console.log("nextUserId:", nextUserId);
+           
               // envoyer la demande au signataire prochaine pour la traiter :
               demande.traitement.push({
                 utilisateur: new mongoose.Types.ObjectId(nextUserId),
@@ -847,7 +847,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 code: nextCode,
               });
             }
-
+            console.log("req.body.docContent : ", req.body.docContent);
+            if (req.body.docContent) {
+              demande.contenu = req.body.docContent;
+            }
             // sauvgarder le chnagement :
             await demande.save();
 
@@ -881,7 +884,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               //   prodCddmessage,
               //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
               // );
-              
             }
 
             // envoyer le message au signataire :
@@ -901,7 +903,6 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 //   messageSignataire,
                 //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                 // );
-
               }
             }
 
@@ -927,13 +928,12 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
-              
+
                 // sendNotification(
                 //   optionService.chefService,
                 //   message,
                 //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                 // );
-
               }
 
               if (optionDepartement && optionDepartement.chefDeDepartement) {
@@ -942,13 +942,12 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de departement, et votre departement sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
-               
+
                 // sendNotification(
                 //   optionDepartement.chefDeDepartement,
                 //   message,
                 //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                 // );
-
               }
 
               if (optionPdd) {
@@ -957,13 +956,12 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en propriétaire de données de la DAMI ('<i>${demande.option.libelle}</i>')</p>`;
-                
+
                 // sendNotification(
                 //   optionPdd._id,
                 //   message,
                 //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                 // );
-
               }
 
               // Notifier le responsable de service magazin si un demandeur a demander 'DEMANDE D'UN PERIPHERIQUE INFORMATIQUE' || 'DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE' :
@@ -995,21 +993,17 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   );
                   // verfier est ce que l' utilisateur a un interim ou non :
                   if (chefServiceMagasin.interim) {
-
                     // sendNotification(
                     //   chefServiceMagasin.interim,
                     //   message,
                     //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                     // );
-
                   } else {
-
                     // sendNotification(
                     //   chefServiceMagasin._id,
                     //   message,
                     //   `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
                     // );
-
                   }
                 }
               }

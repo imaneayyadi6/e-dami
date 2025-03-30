@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { capitalizeFirstLetter } from "../services";
+import { getCodeFromResp } from "../services/getCodeFromResp";
 
 const Dami = ({ option, showAdmin = false, mini = false }) => {
   const cleanDocRef = useRef(null);
@@ -109,7 +110,17 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
       option.sectionConditions !== null &&
       option.sectionConditions !== undefined
     ) {
-      
+      const sectionCondtions = document.querySelectorAll(".section-condtion");
+      for (const seccon of sectionCondtions) {
+        const code = option.sectionConditions[seccon.getAttribute("id")];
+        if (String(getCodeFromResp(userInfo)) !== String(code)) {
+          const overlay = document.createElement("div");
+          overlay.className = "overlay";
+          seccon.appendChild(overlay);
+        } else {
+          seccon.querySelector(".overlay").remove();
+        }
+      }
     }
   };
 

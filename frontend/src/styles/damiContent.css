@@ -654,8 +654,19 @@
 }
 
 .section-condtion {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  z-index: 10000000000000000;
+  position: relative; /* or 'absolute'/'fixed' depending on your layout */
+  z-index: 100; /* still very high but more reasonable */
   width: 100%;
   height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998; /* Higher than inputs or any other children */
+  background-color: rgba(0, 0, 0, 0.017); 
+  pointer-events: all; /* This is the key to block clicks and typing */
 }
