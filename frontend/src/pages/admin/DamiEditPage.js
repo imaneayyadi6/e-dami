@@ -709,7 +709,6 @@ const DamiEditPage = () => {
   };
 
   // creation de l'option :
-  // creation de l'option :
   const showCreateOptionModalHandler = () => {
     window.scrollTo(-1000000, -100000);
     const lengids = Object.values(sectionsIds).filter(

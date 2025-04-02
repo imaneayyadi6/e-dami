@@ -1,4 +1,4 @@
-export const getCodeFromResp = (userInfo, demandeur) => {
+export const getCodeFromResp = (userInfo, demandeur, option) => {
   let code = "";
   if (userInfo.isChefDeService) {
     code = "cds";
@@ -9,6 +9,22 @@ export const getCodeFromResp = (userInfo, demandeur) => {
   } else if (userInfo.isDirecteur) {
     code = "dir";
   }
+
+  // console.log("option.autreUtilisateur :", option.autreUtilisateur)
+
+  if (option && option.autreUtilisateur) {
+    if (String(option.autreUtilisateur) === String(userInfo.id)) {
+      code = "atr";
+    }
+  }
+
+
+  if (option && option.proprietaireDeDonnees) {
+    if (String(option.proprietaireDeDonnees) === String(userInfo.id)) {
+      code = "pdd";
+    }
+  }
+
 
   if (code === "dir") {
     if (demandeur.direction) {
@@ -26,5 +42,9 @@ export const getCodeFromResp = (userInfo, demandeur) => {
       }
     }
   }
+
+
+
+
   return code;
 };

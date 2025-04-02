@@ -298,7 +298,7 @@ export const createDemande = asyncHandler(async (req, res) => {
         "cdd.hiq.pdd.dir":
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
-      console.log("hello world from createDemande");
+   
       const [code, userID] = await getTypeAppOnCreate(option._id, user._id);
 
       objTraitement.code = code;

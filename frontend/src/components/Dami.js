@@ -106,7 +106,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
   };
 
   const verfySectionCond = () => {
-   
+
     if (
       option.sectionConditions !== null &&
       option.sectionConditions !== undefined
@@ -114,7 +114,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
       const sectionCondtions = document.querySelectorAll(".section-condtion");
       for (const seccon of sectionCondtions) {
         const code = option.sectionConditions[seccon.getAttribute("id")];
-        if (String(getCodeFromResp(userInfo)) !== String(code)) {
+        if (String(getCodeFromResp(userInfo), null, option) !== String(code)) {
           const overlay = document.createElement("div");
           overlay.className = "overlay";
           seccon.appendChild(overlay);
@@ -345,22 +345,20 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           <div className="signataires">
             {vOption.signataires.map((sig) =>
               vOption &&
-              vOption.conditions &&
-              vOption.conditions.findIndex(
-                (c) => String(c.type) === String(sig)
-              ) !== -1 ? (
+                vOption.conditions &&
+                vOption.conditions.findIndex(
+                  (c) => String(c.type) === String(sig)
+                ) !== -1 ? (
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ) &&
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ).checked && (
                   <div className="directeur-lib" key={sig}>
@@ -406,22 +404,20 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           <div className="signataires-ch">
             {vOption.signataires.map((sig) =>
               vOption &&
-              vOption.conditions &&
-              vOption.conditions.findIndex(
-                (c) => String(c.type) === String(sig)
-              ) !== -1 ? (
+                vOption.conditions &&
+                vOption.conditions.findIndex(
+                  (c) => String(c.type) === String(sig)
+                ) !== -1 ? (
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ) &&
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ).checked && (
                   <div className="sig-item" key={sig}>
