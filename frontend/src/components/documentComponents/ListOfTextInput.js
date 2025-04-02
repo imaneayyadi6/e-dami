@@ -18,7 +18,7 @@ const ListOfTextInput = ({
   );
   const [size, setSize] = useState(lineProps ? lineProps.size : "");
   const [block, setBlock] = useState(isBlock);
-  const [nbrLines, setNbrLines] = useState(lineProps ? lineProps.nbrLines : 2);
+  const [nbrLines, setNbrLines] = useState(lineProps ? lineProps.nbrLines : 4);
 
   const txtAreaRef = useRef();
   const popoverRef = useRef();
@@ -91,7 +91,7 @@ const ListOfTextInput = ({
         <Form.Control
           type="number"
           size="sm"
-          min={2}
+          min={4}
           max={10}
           value={nbrLines}
           onChange={(e) => setNbrLines(e.target.value)}
