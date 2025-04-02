@@ -709,9 +709,28 @@ const DamiEditPage = () => {
   };
 
   // creation de l'option :
+  // creation de l'option :
   const showCreateOptionModalHandler = () => {
+    window.scrollTo(-1000000, -100000);
+    const lengids = Object.values(sectionsIds).filter(
+      (v) => String(v) !== ""
+    ).length;
+    const lengsec = docRef.current.querySelectorAll(".section-condtion").length;
+
     if (docRef.current.querySelector("div").innerHTML !== "") {
-      setShowCreateOpModal(true);
+      if (lengsec > 0) {
+        if (Number(lengids) === Number(lengsec)) {
+          setShowCreateOpModal(true);
+        } else {
+          Toast.open({
+            type: "danger",
+            title: "Erreur",
+            message: "Il faut donner des IDs aux sections de conditions.",
+          });
+        }
+      } else {
+        setShowCreateOpModal(true);
+      }
     } else {
       Toast.open({
         type: "danger",
@@ -826,6 +845,9 @@ const DamiEditPage = () => {
         linkSectionConditionSig === undefined ||
         Object.keys(linkSectionConditionSig).length === 0
       ) {
+        setTimeout(() => {
+          window.scrollTo(-1000000, -100000);
+        }, 200);
         Toast.open({
           type: "danger",
           title: "Erreur",
@@ -869,6 +891,8 @@ const DamiEditPage = () => {
           });
         }
       }
+    } else {
+      setActiveStep(5);
     }
   };
 
@@ -3373,11 +3397,11 @@ const DamiEditPage = () => {
                       </ListGroup.Item>
                     ))}
                   </ListGroup>
-                  <Button onClick={putCondLinkSig} className="w-100 mt-1">
-                    suivant
-                  </Button>
                 </>
               )}
+              <Button onClick={putCondLinkSig} className="w-100 mt-1">
+                suivant
+              </Button>
             </div>
           ) : (
             <>

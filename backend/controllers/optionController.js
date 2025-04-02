@@ -126,7 +126,7 @@ export const createOption = asyncHandler(async (req, res) => {
     libelle,
     typeProcessus,
     header: { document, classification, creation, maj },
-    contenu
+    contenu,
   } = req.body;
 
   const sousCategorie = await SousCategorie.findById(req.body.sousCategorie);
@@ -150,7 +150,6 @@ export const createOption = asyncHandler(async (req, res) => {
             signataires: req.body.signataires,
             conditions: req.body.conditions,
             shouldAskAnyTime: req.body.shouldAskAnyTime,
-
           });
           if (req.body.autreResponsableTitre) {
             option.autreResponsableTitre = req.body.autreResponsableTitre;
@@ -194,7 +193,7 @@ export const createOption = asyncHandler(async (req, res) => {
         if (req.body.sectionConditions) {
           option.sectionConditions = req.body.sectionConditions;
         }
-
+        option.createur = req.user.id;
         const createdOption = await option.save();
         res.status(201).json(createdOption);
       }

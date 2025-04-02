@@ -84,7 +84,6 @@ export const login = (email, password) => {
       const config = {
         headers: { "Content-Type": "application/json" },
       };
-      console.log({ email, password });
       const { data } = await axios.post(
         "/api/utilisateurs/login",
         { email, password },

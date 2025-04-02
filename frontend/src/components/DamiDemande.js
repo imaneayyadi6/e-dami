@@ -104,49 +104,43 @@ const DamiDemande = ({ demande }) => {
   };
 
   const verfySectionCond = () => {
+    console.log( demande.option);  
     if (
       demande.option.sectionConditions !== null &&
       demande.option.sectionConditions !== undefined
     ) {
       const sectionCondtions = document.querySelectorAll(".section-condtion");
-
       for (const seccon of sectionCondtions) {
         const code =
           demande.option.sectionConditions[seccon.getAttribute("id")];
         console.log(
-          `${code} is equal ${getCodeFromResp(userInfo)} ${
-            String(getCodeFromResp(userInfo)) === String(code)
+          `${code} is equal ${getCodeFromResp(userInfo, demande.demandeur)} ${
+            String(getCodeFromResp(userInfo, demande.demandeur)) ===
+            String(code)
           } `
         );
-
-        
-        if (String(getCodeFromResp(userInfo)) === String(code)) {
-          seccon.querySelector(".overlay") &&
-            seccon.querySelector(".overlay").remove();
-          if (cleanDocRef && cleanDocRef.current) {
-            cleanDocRef.current
-              .querySelectorAll(".dami-input")
-              .forEach((damiInput) => {
-                damiInput.readOnly = false;
-              });
-            cleanDocRef.current
-              .querySelectorAll(".dami-textarea-line")
-              .forEach((damiInput) => {
-                damiInput.readOnly = false;
-              });
-            cleanDocRef.current
-              .querySelectorAll(".dami-check-box")
-              .forEach((damiInput) => {
-                damiInput.readOnly = false;
-                damiInput.disabled = false;
-              });
-            cleanDocRef.current
-              .querySelectorAll(".dami-radio-button")
-              .forEach((damiInput) => {
-                damiInput.readOnly = false;
-                damiInput.disabled = false;
-              });
-          }
+        if (seccon.querySelector(".overlay")) {
+          seccon.querySelector(".overlay").remove();
+        }
+        if (
+          String(getCodeFromResp(userInfo, demande.demandeur)) === String(code)
+        ) {
+          seccon.querySelectorAll(".dami-input").forEach((damiInput) => {
+            damiInput.readOnly = false;
+          });
+          seccon
+            .querySelectorAll(".dami-textarea-line")
+            .forEach((damiInput) => {
+              damiInput.readOnly = false;
+            });
+          seccon.querySelectorAll(".dami-check-box").forEach((damiInput) => {
+            damiInput.readOnly = false;
+            damiInput.disabled = false;
+          });
+          seccon.querySelectorAll(".dami-radio-button").forEach((damiInput) => {
+            damiInput.readOnly = false;
+            damiInput.disabled = false;
+          });
         } else {
           const overlay = document.createElement("div");
           overlay.className = "overlay";
@@ -163,11 +157,10 @@ const DamiDemande = ({ demande }) => {
     }, 300);
   }, []);
 
-
   useEffect(() => {
     setTimeout(() => {
       verfySectionCond();
-    }, 500);
+    }, 400);
   });
 
   return (

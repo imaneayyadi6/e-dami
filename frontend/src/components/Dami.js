@@ -106,6 +106,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
   };
 
   const verfySectionCond = () => {
+   
     if (
       option.sectionConditions !== null &&
       option.sectionConditions !== undefined
@@ -118,7 +119,9 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           overlay.className = "overlay";
           seccon.appendChild(overlay);
         } else {
-          seccon.querySelector(".overlay").remove();
+          if (seccon.querySelector(".overlay")) {
+            seccon.querySelector(".overlay").remove();
+          }
         }
       }
     }
@@ -131,9 +134,12 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     setTimeout(() => {
       removeBtnsAndLayoutsFromCreateModal();
       makeRemoveReadOnly();
-      verfySectionCond();
     }, 100);
   }, []);
+
+  useEffect(() => {
+    verfySectionCond();
+  }, 100);
 
   const applyEvents = () => {
     console.log("event apply");
@@ -143,7 +149,6 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           `.dami-body  [data-conditionid='${cd.element}']`
         );
         el.addEventListener("click", () => {
-          console.log("hello world");
           setVOption({ ...option, conditions: option.conditions });
         });
       }
