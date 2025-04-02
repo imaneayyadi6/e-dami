@@ -14,8 +14,6 @@ import JwtBlackList from "../models/jwtBlackList.js";
 // @route   POST /api/utilisateurs/login
 // @access  Public
 export const authUser = asyncHandler(async (req, res) => {
-  console.log("#### LOGIN  ####");
-
   const { email, password } = req.body;
   const isNumeric = (value) => !isNaN(parseFloat(value)) && isFinite(value);
 
@@ -44,7 +42,6 @@ export const authUser = asyncHandler(async (req, res) => {
           break;
         }
       }
-
       if (isAdmin) {
         if (utilisateur.isActive) {
           res.status(200).json({
@@ -61,6 +58,11 @@ export const authUser = asyncHandler(async (req, res) => {
             departement: utilisateur.departement,
             roles: utilisateur.roles,
             token: generateToken(utilisateur._id),
+            isChefDeService:utilisateur.isChefDeService,
+            isChefDeDepartement:utilisateur.isChefDeDepartement,
+            isDirecteurAdj:utilisateur.isDirecteurAdj,
+            isDirecteur:utilisateur.isDirecteur,
+
           });
         } else {
           res.status(400);
@@ -83,6 +85,10 @@ export const authUser = asyncHandler(async (req, res) => {
               departement: utilisateur.departement,
               roles: utilisateur.roles,
               token: generateToken(utilisateur._id),
+              isChefDeService:utilisateur.isChefDeService,
+              isChefDeDepartement:utilisateur.isChefDeDepartement,
+              isDirecteurAdj:utilisateur.isDirecteurAdj,
+              isDirecteur:utilisateur.isDirecteur,
             });
           } else {
             res.status(400);

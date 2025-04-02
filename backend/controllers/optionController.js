@@ -126,7 +126,6 @@ export const createOption = asyncHandler(async (req, res) => {
     libelle,
     typeProcessus,
     header: { document, classification, creation, maj },
-    // proprietaireDeDonnees,
     contenu,
   } = req.body;
 
@@ -158,6 +157,11 @@ export const createOption = asyncHandler(async (req, res) => {
           if (req.body.autreUtilisateur) {
             option.autreUtilisateur = req.body.autreUtilisateur;
           }
+
+          if (req.body.sectionConditions) {
+            option.sectionConditions = req.body.sectionConditions;
+          }
+
           const createdOption = await option.save();
           res.status(201).json(createdOption);
         } else {
@@ -177,12 +181,19 @@ export const createOption = asyncHandler(async (req, res) => {
           conditions: req.body.conditions,
           shouldAskAnyTime: req.body.shouldAskAnyTime,
         });
+
         if (req.body.autreResponsableTitre) {
           option.autreResponsableTitre = req.body.autreResponsableTitre;
         }
+
         if (req.body.autreUtilisateur) {
           option.autreUtilisateur = req.body.autreUtilisateur;
         }
+
+        if (req.body.sectionConditions) {
+          option.sectionConditions = req.body.sectionConditions;
+        }
+        option.createur = req.user.id;
         const createdOption = await option.save();
         res.status(201).json(createdOption);
       }
@@ -279,6 +290,10 @@ export const updateOption = asyncHandler(async (req, res) => {
       req.body.autreResponsableTitre || option.autreResponsableTitre;
     option.autreUtilisateur =
       req.body.autreUtilisateur || option.autreUtilisateur;
+
+    option.sectionConditions =
+      req.body.sectionConditions || option.sectionConditions;
+
     if (
       req.body.shouldAskAnyTime !== undefined &&
       req.body.shouldAskAnyTime !== null

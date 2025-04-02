@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { capitalizeFirstLetter } from "../services";
+import { getCodeFromResp } from "../services/getCodeFromResp";
 
 const Dami = ({ option, showAdmin = false, mini = false }) => {
   const cleanDocRef = useRef(null);
@@ -74,6 +75,18 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
       cleanDocRef.current.querySelectorAll(".disabled").forEach((element) => {
         element.setAttribute("disabled", true);
       });
+
+      cleanDocRef.current
+        .querySelectorAll(".btn-condtion")
+        .forEach((element) => {
+          element.remove();
+        });
+
+      cleanDocRef.current
+        .querySelectorAll(".section-condtion .btn-remove-divider-children")
+        .forEach((element) => {
+          element.remove();
+        });
     }
   };
 
@@ -92,6 +105,28 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     }
   };
 
+  const verfySectionCond = () => {
+
+    if (
+      option.sectionConditions !== null &&
+      option.sectionConditions !== undefined
+    ) {
+      const sectionCondtions = document.querySelectorAll(".section-condtion");
+      for (const seccon of sectionCondtions) {
+        const code = option.sectionConditions[seccon.getAttribute("id")];
+        if (String(getCodeFromResp(userInfo), null, option) !== String(code)) {
+          const overlay = document.createElement("div");
+          overlay.className = "overlay";
+          seccon.appendChild(overlay);
+        } else {
+          if (seccon.querySelector(".overlay")) {
+            seccon.querySelector(".overlay").remove();
+          }
+        }
+      }
+    }
+  };
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -102,6 +137,10 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
     }, 100);
   }, []);
 
+  useEffect(() => {
+    verfySectionCond();
+  }, 100);
+
   const applyEvents = () => {
     console.log("event apply");
     if (option.conditions) {
@@ -110,7 +149,6 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           `.dami-body  [data-conditionid='${cd.element}']`
         );
         el.addEventListener("click", () => {
-          console.log("hello world");
           setVOption({ ...option, conditions: option.conditions });
         });
       }
@@ -307,22 +345,20 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           <div className="signataires">
             {vOption.signataires.map((sig) =>
               vOption &&
-              vOption.conditions &&
-              vOption.conditions.findIndex(
-                (c) => String(c.type) === String(sig)
-              ) !== -1 ? (
+                vOption.conditions &&
+                vOption.conditions.findIndex(
+                  (c) => String(c.type) === String(sig)
+                ) !== -1 ? (
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ) &&
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ).checked && (
                   <div className="directeur-lib" key={sig}>
@@ -368,22 +404,20 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
           <div className="signataires-ch">
             {vOption.signataires.map((sig) =>
               vOption &&
-              vOption.conditions &&
-              vOption.conditions.findIndex(
-                (c) => String(c.type) === String(sig)
-              ) !== -1 ? (
+                vOption.conditions &&
+                vOption.conditions.findIndex(
+                  (c) => String(c.type) === String(sig)
+                ) !== -1 ? (
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ) &&
                 document.querySelector(
-                  `.dami-body [data-conditionid='${
-                    vOption.conditions.find(
-                      (c) => String(c.type) === String(sig)
-                    ).element
+                  `.dami-body [data-conditionid='${vOption.conditions.find(
+                    (c) => String(c.type) === String(sig)
+                  ).element
                   }']`
                 ).checked && (
                   <div className="sig-item" key={sig}>

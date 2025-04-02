@@ -70,6 +70,10 @@ const optionSchema = Schema(
       type: Boolean,
       default: false,
     },
+    sectionConditions: {
+      type: Map,
+      of: String
+    },
     conditions: [
       {
         type: {

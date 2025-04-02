@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { capitalizeFirstLetter } from "../services";
+import { getCodeFromResp } from "../services/getCodeFromResp";
 
 const DamiDemande = ({ demande }) => {
   const cleanDocRef = useRef(null);
@@ -102,12 +103,64 @@ const DamiDemande = ({ demande }) => {
     }
   };
 
+  const verfySectionCond = () => {
+
+    if (
+      demande.option.sectionConditions !== null &&
+      demande.option.sectionConditions !== undefined
+    ) {
+      const sectionCondtions = document.querySelectorAll(".section-condtion");
+      for (const seccon of sectionCondtions) {
+        const code =
+          demande.option.sectionConditions[seccon.getAttribute("id")];
+        console.log(
+          `${code} is equal ${getCodeFromResp(userInfo, demande.demandeur, demande.option)} ${String(getCodeFromResp(userInfo, demande.demandeur, demande.option)) ===
+          String(code)
+          } `
+        );
+        if (seccon.querySelector(".overlay")) {
+          seccon.querySelector(".overlay").remove();
+        }
+        if (
+          String(getCodeFromResp(userInfo, demande.demandeur, demande.option)) === String(code)
+        ) {
+          seccon.querySelectorAll(".dami-input").forEach((damiInput) => {
+            damiInput.readOnly = false;
+          });
+          seccon
+            .querySelectorAll(".dami-textarea-line")
+            .forEach((damiInput) => {
+              damiInput.readOnly = false;
+            });
+          seccon.querySelectorAll(".dami-check-box").forEach((damiInput) => {
+            damiInput.readOnly = false;
+            damiInput.disabled = false;
+          });
+          seccon.querySelectorAll(".dami-radio-button").forEach((damiInput) => {
+            damiInput.readOnly = false;
+            damiInput.disabled = false;
+          });
+        } else {
+          const overlay = document.createElement("div");
+          overlay.className = "overlay";
+          seccon.appendChild(overlay);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     setTimeout(() => {
       removeBtnsAndLayoutsFromCreateModal();
       makeRemoveReadOnly();
     }, 300);
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      verfySectionCond();
+    }, 400);
+  });
 
   return (
     <div className={`dami`} id="dami">
@@ -313,26 +366,26 @@ const DamiDemande = ({ demande }) => {
                     value={
                       demande.sig.find((sg) => sg && sg.code === sig)
                         ? capitalizeFirstLetter(
-                            demande.sig.find((sg) => sg && sg.code === sig).nom
-                          )
+                          demande.sig.find((sg) => sg && sg.code === sig).nom
+                        )
                         : demande.traitement.find(
-                            (tr) =>
-                              String(tr.utilisateur) === String(userInfo.id)
-                          ) &&
+                          (tr) =>
+                            String(tr.utilisateur) === String(userInfo.id)
+                        ) &&
                           demande.traitement
                             .find(
                               (tr) =>
                                 String(tr.utilisateur) === String(userInfo.id)
                             )
                             .code.split(".").length > 1
-                        ? demande.traitement.find(
+                          ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr.code
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
                           ) && capitalizeFirstLetter(userInfo.nom)
-                        : demande.traitement.find(
+                          : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr.code === String(sig)
@@ -347,27 +400,27 @@ const DamiDemande = ({ demande }) => {
                     value={
                       demande.sig.find((sg) => sg && sg.code === sig)
                         ? capitalizeFirstLetter(
-                            demande.sig.find((sg) => sg && sg.code === sig)
-                              .prenom
-                          )
+                          demande.sig.find((sg) => sg && sg.code === sig)
+                            .prenom
+                        )
                         : demande.traitement.find(
-                            (tr) =>
-                              String(tr.utilisateur) === String(userInfo.id)
-                          ) &&
+                          (tr) =>
+                            String(tr.utilisateur) === String(userInfo.id)
+                        ) &&
                           demande.traitement
                             .find(
                               (tr) =>
                                 String(tr.utilisateur) === String(userInfo.id)
                             )
                             .code.split(".").length > 1
-                        ? demande.traitement.find(
+                          ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr.code
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
                           ) && capitalizeFirstLetter(userInfo.prenom)
-                        : demande.traitement.find(
+                          : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr.code === String(sig)
@@ -385,16 +438,15 @@ const DamiDemande = ({ demande }) => {
                     <input
                       type="checkbox"
                       className={`dami-check-box mr-1 
-                    ${
-                      demande.traitement.find(
+                    ${demande.traitement.find(
                         (tr) => String(tr.utilisateur) === String(userInfo.id)
                       ) &&
-                      demande.traitement
-                        .find(
-                          (tr) => String(tr.utilisateur) === String(userInfo.id)
-                        )
-                        .code.split(".").length > 1
-                        ? demande.traitement.find(
+                          demande.traitement
+                            .find(
+                              (tr) => String(tr.utilisateur) === String(userInfo.id)
+                            )
+                            .code.split(".").length > 1
+                          ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr &&
@@ -402,58 +454,55 @@ const DamiDemande = ({ demande }) => {
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
                           ) && `chk-app-${userInfo.id}`
-                        : demande.traitement.find(
+                          : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr &&
                               tr.code === String(sig)
                           ) && `chk-app-${userInfo.id}`
-                    }
+                        }
 
-                    ${
-                      demande.sig.find((sg) => sg && sg.code === sig) &&
-                      demande.sig.find((sg) => sg && sg.code === sig).approuve
-                        ? "checked"
-                        : ""
-                    } `}
+                    ${demande.sig.find((sg) => sg && sg.code === sig) &&
+                          demande.sig.find((sg) => sg && sg.code === sig).approuve
+                          ? "checked"
+                          : ""
+                        } `}
                     />
                   </div>
                   <div>
                     <label>Non</label>
                     <input
                       type="checkbox"
-                      className={`dami-check-box mr-1  ${
-                        demande.traitement.find(
-                          (tr) => String(tr.utilisateur) === String(userInfo.id)
-                        ) &&
+                      className={`dami-check-box mr-1  ${demande.traitement.find(
+                        (tr) => String(tr.utilisateur) === String(userInfo.id)
+                      ) &&
                         demande.traitement
                           .find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id)
                           )
                           .code.split(".").length > 1
-                          ? demande.traitement.find(
-                              (tr) =>
-                                String(tr.utilisateur) ===
-                                  String(userInfo.id) &&
-                                tr &&
-                                tr.code
-                                  .split(".")
-                                  .find((cd) => String(cd) === String(sig))
-                            ) && `chk-rfs-${userInfo.id}`
-                          : demande.traitement.find(
-                              (tr) =>
-                                String(tr.utilisateur) ===
-                                  String(userInfo.id) &&
-                                tr &&
-                                tr.code === String(sig)
-                            ) && `chk-rfs-${userInfo.id}`
-                      } ${
-                        demande.sig.find((sg) => sg && sg.code === sig) &&
-                        demande.sig.find((sg) => sg && sg.code === sig).refuse
+                        ? demande.traitement.find(
+                          (tr) =>
+                            String(tr.utilisateur) ===
+                            String(userInfo.id) &&
+                            tr &&
+                            tr.code
+                              .split(".")
+                              .find((cd) => String(cd) === String(sig))
+                        ) && `chk-rfs-${userInfo.id}`
+                        : demande.traitement.find(
+                          (tr) =>
+                            String(tr.utilisateur) ===
+                            String(userInfo.id) &&
+                            tr &&
+                            tr.code === String(sig)
+                        ) && `chk-rfs-${userInfo.id}`
+                        } ${demande.sig.find((sg) => sg && sg.code === sig) &&
+                          demande.sig.find((sg) => sg && sg.code === sig).refuse
                           ? "checked"
                           : ""
-                      } `}
+                        } `}
                     />
                   </div>
                 </div>
@@ -464,24 +513,24 @@ const DamiDemande = ({ demande }) => {
                     className="dami-input"
                     value={
                       demande.sig.find((sg) => sg && sg.code === sig) &&
-                      demande.sig.find((sg) => sg && sg.code === sig)
-                        .dateTraitement
+                        demande.sig.find((sg) => sg && sg.code === sig)
+                          .dateTraitement
                         ? new Date(
-                            demande.sig.find(
-                              (sg) => sg && sg.code === sig
-                            ).dateTraitement
-                          ).toLocaleDateString()
+                          demande.sig.find(
+                            (sg) => sg && sg.code === sig
+                          ).dateTraitement
+                        ).toLocaleDateString()
                         : demande.traitement.find(
-                            (tr) =>
-                              String(tr.utilisateur) === String(userInfo.id)
-                          ) &&
+                          (tr) =>
+                            String(tr.utilisateur) === String(userInfo.id)
+                        ) &&
                           demande.traitement
                             .find(
                               (tr) =>
                                 String(tr.utilisateur) === String(userInfo.id)
                             )
                             .code.split(".").length > 1
-                        ? demande.traitement.find(
+                          ? demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr &&
@@ -489,7 +538,7 @@ const DamiDemande = ({ demande }) => {
                                 .split(".")
                                 .find((cd) => String(cd) === String(sig))
                           ) && new Date().toLocaleDateString()
-                        : demande.traitement.find(
+                          : demande.traitement.find(
                             (tr) =>
                               String(tr.utilisateur) === String(userInfo.id) &&
                               tr &&

@@ -75,14 +75,42 @@ const DemandeDetailsPage = () => {
       title: "Confirmation",
       message: "Êtes vous sûr de vouloir approuver cette demande ?",
       onYes: () => {
-        window.scrollTo(-1000000, -100000);
-        dispatch(approuveTraitement(id, idTraitement));
+        setTimeout(() => {
+          window.scrollTo(-1000000, -100000);
+        }, 200);
+        const damiBody = document.querySelector(".dami-body div");
+        const clone = damiBody.cloneNode(true);
+
+        const originalInputs = damiBody.querySelectorAll("input");
+        const cloneInputs = clone.querySelectorAll("input");
+
+        originalInputs.forEach((input, index) => {
+          const clonedInput = cloneInputs[index];
+
+          if (input.type === "checkbox" || input.type === "radio") {
+            clonedInput.checked = input.checked;
+            // Ajout important : synchroniser l'attribut "checked"
+            if (clonedInput.checked) {
+              clonedInput.setAttribute("checked", "checked");
+            } else {
+              clonedInput.removeAttribute("checked");
+            }
+          } else {
+            clonedInput.value = input.value;
+            clonedInput.setAttribute("value", input.value); // Important !
+          }
+        });
+
+        const contenu = clone.outerHTML;
+        dispatch(approuveTraitement(id, idTraitement, contenu));
       },
     });
   };
 
   const refuseeHandler = () => {
-    window.scrollTo(-1000000, -100000);
+    setTimeout(() => {
+      window.scrollTo(-1000000, -100000);
+    }, 200);
     if (motif !== "") {
       dispatch(refuseTraitement(id, idTraitement, motif));
       setShowRefuseModal(false);

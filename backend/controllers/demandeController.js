@@ -298,7 +298,7 @@ export const createDemande = asyncHandler(async (req, res) => {
         "cdd.hiq.pdd.dir":
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
-      console.log("hello world from createDemande");
+   
       const [code, userID] = await getTypeAppOnCreate(option._id, user._id);
 
       objTraitement.code = code;
@@ -838,7 +838,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
               demande.status = "approuve";
             } else {
-              console.log("nextUserId:", nextUserId);
+           
               // envoyer la demande au signataire prochaine pour la traiter :
               demande.traitement.push({
                 utilisateur: new mongoose.Types.ObjectId(nextUserId),
@@ -847,7 +847,10 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 code: nextCode,
               });
             }
-
+            console.log("req.body.docContent : ", req.body.docContent);
+            if (req.body.docContent) {
+              demande.contenu = req.body.docContent;
+            }
             // sauvgarder le chnagement :
             await demande.save();
 
@@ -925,6 +928,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+
                 sendNotification(
                   optionService.chefService,
                   message,
@@ -938,6 +942,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de departement, et votre departement sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+
                 sendNotification(
                   optionDepartement.chefDeDepartement,
                   message,
@@ -951,6 +956,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                 message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en propriétaire de données de la DAMI ('<i>${demande.option.libelle}</i>')</p>`;
+
                 sendNotification(
                   optionPdd._id,
                   message,
@@ -1179,11 +1185,13 @@ export const refuserDemande = asyncHandler(async (req, res) => {
               messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
               messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif}"`;
               messageDemandeur += "</p>";
+
               sendNotification(
                 demande.demandeur,
                 messageDemandeur,
                 `Votre demande a été refusée`
               );
+
               res.json({ message: "demande refuse!" });
             } else {
               res.status(400);

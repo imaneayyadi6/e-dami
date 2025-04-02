@@ -45,7 +45,7 @@ import {
   fetchServicesByDepartementID,
 } from "../../redux/service/serviceActions";
 import { fetchSousCategories } from "../../redux/sousCategorie/sousCategorieActions";
-import { Toast, cssStringToObject } from "../../services";
+import { Toast, cssStringToObject, getTypeApprobation } from "../../services";
 import {
   createOption,
   fetchOptionByID,
@@ -64,6 +64,7 @@ import {
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
 import axios from "axios";
+import SectionCondtion from "../../components/documentComponents/SectionCondtion";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -73,6 +74,7 @@ const UICOMPONENTS = {
   lsttextinput: <ListOfTextInput />,
   lstcheckboxes: <ListOfCheckBoxes />,
   lstradiobuttons: <ListOfRadiosButtons />,
+  sectionCondtion: <SectionCondtion />,
   line: <Line />,
   divider: <Divider />,
 };
@@ -117,6 +119,7 @@ const DamiEditPage = () => {
     "entête",
     "sous-categorie & service & proprietaire de donnees",
     "signataires",
+    "Afficher une ou plusieurs sections pour un signataire unique",
     "confirmation",
   ]);
 
@@ -137,6 +140,7 @@ const DamiEditPage = () => {
   const [isUpdateForm, setIsUpdateForm] = useState(false);
   const [getUpdatedComponentsLoading, setGetUpdatedComponentsLoading] =
     useState(false);
+
   const [headerInitialValues] = useState({
     libelle: "",
     typeProcessus: "",
@@ -144,8 +148,8 @@ const DamiEditPage = () => {
     classification: "",
     creation: "",
     maj: "",
-   
   });
+
   const [sousCategorieInitialValues] = useState({
     sousCategorie: "",
     departement: "",
@@ -162,6 +166,9 @@ const DamiEditPage = () => {
   const [usersAtr, setUsersAtr] = useState([]);
   const [atrTitle, setAtrTitle] = useState("");
 
+  const [sectionsIds, setSectionsIds] = useState({});
+  const [linkSectionConditionSig, setLinkSectionConditionSig] = useState({});
+
   const docRef = useRef(null);
   const btnRef = useRef(null);
   const viewResultDocRef = useRef(null);
@@ -170,8 +177,6 @@ const DamiEditPage = () => {
   const currentPath = location.pathname;
   const dispatch = useDispatch();
   const [recoveredConditions, setRecoveredConditions] = useState([]);
-
-  // const navigate = useNavigate();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -193,6 +198,7 @@ const DamiEditPage = () => {
   const serviceListByDepartementID = useSelector(
     (state) => state.serviceListByDepartementID
   );
+
   const {
     loading: loadingserviceListByDepartementID,
     error: errorserviceListByDepartementID,
@@ -213,7 +219,7 @@ const DamiEditPage = () => {
     souscategories,
   } = sousCategorieList;
 
-  const [shouldAskAnyTime,setShouldAskAnyTime] = useState(false);
+  const [shouldAskAnyTime, setShouldAskAnyTime] = useState(false);
 
   const directionByServiceID = useSelector(
     (state) => state.directionByServiceID
@@ -233,17 +239,13 @@ const DamiEditPage = () => {
   } = serviceByID;
 
   const departementByID = useSelector((state) => state.departementByID);
-  const {
-    loading: loadingDepartementByID,
-    error: errorDepartementByID,
-    departement,
-  } = departementByID;
+  const { loading: loadingDepartementByID, error: errorDepartementByID } =
+    departementByID;
 
   const optionCreate = useSelector((state) => state.optionCreate);
   const {
     loading: loadingOptionCreate,
     error: errorOptionCreate,
-    // option: createdOption,
     success: successOptionCreate,
   } = optionCreate;
 
@@ -259,17 +261,36 @@ const DamiEditPage = () => {
   const {
     loading: loadingOptionUpdate,
     error: errorOptionUpdate,
-    // option: updatedOption,
     success: successOptionUpdate,
   } = optionUpdate;
 
   const userByDivision = useSelector((state) => state.userByDivision);
-  const {
-    loading: loadingUserByDivision,
-    error: errorUserByDivision,
-    success: successUserByDivision,
-    users,
-  } = userByDivision;
+  const { loading: loadingUserByDivision, users } = userByDivision;
+
+  const setSectionsIdsHandler = (id, value) => {
+    setSectionsIds((prevSectionsIds) => ({
+      ...prevSectionsIds,
+      [id]: value,
+    }));
+
+    console.log(sectionsIds);
+  };
+
+  const setLinkCondSig = (id, value) => {
+    if (value) {
+      setLinkSectionConditionSig((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    } else {
+      setLinkSectionConditionSig((prev) => {
+        const updated = { ...prev };
+        delete updated[id]; // remove the key directly if no value
+        return updated;
+      });
+    }
+    console.log(linkSectionConditionSig);
+  };
 
   const handleDragStart = (event, item) => {
     event.dataTransfer.setData("text/plain", item);
@@ -279,11 +300,12 @@ const DamiEditPage = () => {
     event.preventDefault();
     try {
       const data = event.dataTransfer.getData("text/plain");
-
       if (data) {
-        if (String(data) !== "divider") {
+        if (String(data) !== "divider" && String(data) !== "sectionCondtion") {
           const dividers = draggedItems.filter(
-            (item) => String(item.type) === "divider"
+            (item) =>
+              String(item.type) === "divider" ||
+              String(item.type) === "sectionCondtion"
           );
           const mouseY = event.clientY;
           const mouseX = event.clientX;
@@ -292,66 +314,119 @@ const DamiEditPage = () => {
               const uiElement = document.querySelector(
                 `#comp-ui-${divider.id}`
               );
-              const divs = uiElement.querySelectorAll(`.divider-child`);
 
-              const div1 = divs[0];
-              const div2 = divs[1];
+              const sectionCondtion =
+                uiElement.querySelector(".section-condtion");
 
-              const div1Rect = div1.getBoundingClientRect();
-              const div2Rect = div2.getBoundingClientRect();
+              if (sectionCondtion) {
+                const sectionConditionRec =
+                  sectionCondtion.getBoundingClientRect();
 
-              if (
-                mouseY >= div1Rect.top &&
-                mouseY <= div1Rect.bottom &&
-                mouseX >= div1Rect.left &&
-                mouseX <= div1Rect.right
-              ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
-                  if (String(item.id) === String(divider.id)) {
-                    item.children1.push({
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                    });
+                if (
+                  mouseY >= sectionConditionRec.top &&
+                  mouseY <= sectionConditionRec.bottom &&
+                  mouseX >= sectionConditionRec.left &&
+                  mouseX <= sectionConditionRec.right
+                ) {
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = [];
+
+                  for (let item of draggedItems) {
+                    if (
+                      String(item.id) ===
+                      String(uiElement.id).split("comp-ui-")[1]
+                    ) {
+                      item.children.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                      });
+                    }
+                    nDraggedItems.push(item);
                   }
-                  return item;
-                });
 
-                setDraggedItems(nDraggedItems);
-                div1.style.backgroundColor = "#fff";
-              } else if (
-                mouseY >= div2Rect.top &&
-                mouseY <= div2Rect.bottom &&
-                mouseX >= div2Rect.left &&
-                mouseX <= div2Rect.right
-              ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
-                  if (String(item.id) === String(divider.id)) {
-                    item.children2.push({
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                    });
+                  setDraggedItems(nDraggedItems);
+                  sectionCondtion.style.backgroundColor = "#fff";
+                } else {
+                  sectionCondtion.style.backgroundColor = "#fff";
+                  if (UICOMPONENTS[data]) {
+                    setDraggedItems((prevItems) => [
+                      ...prevItems,
+                      {
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children1: [],
+                        children2: [],
+                        children: [],
+                      },
+                    ]);
                   }
-                  return item;
-                });
-
-                setDraggedItems(nDraggedItems);
-                div2.style.backgroundColor = "#fff";
+                }
               } else {
-                if (UICOMPONENTS[data]) {
-                  setDraggedItems((prevItems) => [
-                    ...prevItems,
-                    {
-                      id: uuidv4(),
-                      component: UICOMPONENTS[data],
-                      type: data,
-                      children1: [],
-                      children2: [],
-                    },
-                  ]);
+                const divs = uiElement.querySelectorAll(`.divider-child`);
+
+                const div1 = divs[0];
+                const div2 = divs[1];
+
+                const div1Rect = div1.getBoundingClientRect();
+                const div2Rect = div2.getBoundingClientRect();
+
+                if (
+                  mouseY >= div1Rect.top &&
+                  mouseY <= div1Rect.bottom &&
+                  mouseX >= div1Rect.left &&
+                  mouseX <= div1Rect.right
+                ) {
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = draggedItems.map((item) => {
+                    if (String(item.id) === String(divider.id)) {
+                      item.children1.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                      });
+                    }
+                    return item;
+                  });
+
+                  setDraggedItems(nDraggedItems);
+                  div1.style.backgroundColor = "#fff";
+                } else if (
+                  mouseY >= div2Rect.top &&
+                  mouseY <= div2Rect.bottom &&
+                  mouseX >= div2Rect.left &&
+                  mouseX <= div2Rect.right
+                ) {
+                  // L'élément a été déposé à l'emplacement du diviseur
+                  let nDraggedItems = draggedItems.map((item) => {
+                    if (String(item.id) === String(divider.id)) {
+                      item.children2.push({
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children: [],
+                      });
+                    }
+                    return item;
+                  });
+
+                  setDraggedItems(nDraggedItems);
+                  div2.style.backgroundColor = "#fff";
+                } else {
+                  if (UICOMPONENTS[data]) {
+                    setDraggedItems((prevItems) => [
+                      ...prevItems,
+                      {
+                        id: uuidv4(),
+                        component: UICOMPONENTS[data],
+                        type: data,
+                        children1: [],
+                        children2: [],
+                        children: [],
+                      },
+                    ]);
+                  }
                 }
               }
             }
@@ -365,6 +440,7 @@ const DamiEditPage = () => {
                   type: data,
                   children1: [],
                   children2: [],
+                  children: [],
                 },
               ]);
             }
@@ -379,6 +455,7 @@ const DamiEditPage = () => {
                 type: data,
                 children1: [],
                 children2: [],
+                children: [],
               },
             ]);
           }
@@ -399,7 +476,9 @@ const DamiEditPage = () => {
 
   const handleDrag = (event) => {
     const dividers = draggedItems.filter(
-      (item) => String(item.type) === "divider"
+      (item) =>
+        String(item.type) === "divider" ||
+        String(item.type) === "sectionCondtion"
     );
 
     const mouseY = event.clientY;
@@ -408,34 +487,53 @@ const DamiEditPage = () => {
     if (dividers.length > 0) {
       for (const divider of dividers) {
         const uiElement = document.querySelector(`#comp-ui-${divider.id}`);
-        const divs = uiElement.querySelectorAll(`.divider-child`);
 
-        const div1 = divs[0];
-        const div2 = divs[1];
+        if (uiElement != null) {
+          const sectionCondtion = uiElement.querySelector(".section-condtion");
+          if (sectionCondtion) {
+            const sectionCondtionRect = sectionCondtion.getBoundingClientRect();
 
-        const div1Rect = div1.getBoundingClientRect();
-        const div2Rect = div2.getBoundingClientRect();
+            if (
+              mouseY >= sectionCondtionRect.top &&
+              mouseY <= sectionCondtionRect.bottom &&
+              mouseX >= sectionCondtionRect.left &&
+              mouseX <= sectionCondtionRect.right
+            ) {
+              sectionCondtion.style.backgroundColor = "#f4f4f4";
+            } else {
+              sectionCondtion.style.backgroundColor = "#fff";
+            }
+          } else {
+            const divs = uiElement.querySelectorAll(`.divider-child`);
 
-        if (
-          mouseY >= div1Rect.top &&
-          mouseY <= div1Rect.bottom &&
-          mouseX >= div1Rect.left &&
-          mouseX <= div1Rect.right
-        ) {
-          div1.style.backgroundColor = "#f4f4f4";
-        } else {
-          div1.style.backgroundColor = "#fff";
-        }
+            const div1 = divs[0];
+            const div2 = divs[1];
 
-        if (
-          mouseY >= div2Rect.top &&
-          mouseY <= div2Rect.bottom &&
-          mouseX >= div2Rect.left &&
-          mouseX <= div2Rect.right
-        ) {
-          div2.style.backgroundColor = "#f4f4f4";
-        } else {
-          div2.style.backgroundColor = "#fff";
+            const div1Rect = div1.getBoundingClientRect();
+            const div2Rect = div2.getBoundingClientRect();
+
+            if (
+              mouseY >= div1Rect.top &&
+              mouseY <= div1Rect.bottom &&
+              mouseX >= div1Rect.left &&
+              mouseX <= div1Rect.right
+            ) {
+              div1.style.backgroundColor = "#f4f4f4";
+            } else {
+              div1.style.backgroundColor = "#fff";
+            }
+
+            if (
+              mouseY >= div2Rect.top &&
+              mouseY <= div2Rect.bottom &&
+              mouseX >= div2Rect.left &&
+              mouseX <= div2Rect.right
+            ) {
+              div2.style.backgroundColor = "#f4f4f4";
+            } else {
+              div2.style.backgroundColor = "#fff";
+            }
+          }
         }
       }
     }
@@ -476,6 +574,15 @@ const DamiEditPage = () => {
       el.querySelectorAll(".btn-add-checkbox-line").forEach((element) => {
         element.remove();
       });
+      el.querySelectorAll(".btn-condtion").forEach((element) => {
+        element.remove();
+      });
+
+      el.querySelectorAll(
+        ".section-condtion .btn-remove-divider-children"
+      ).forEach((element) => {
+        element.remove();
+      });
     } catch (error) {
       Toast.open({
         type: "danger",
@@ -500,6 +607,14 @@ const DamiEditPage = () => {
       (item) => String(item.id) !== String(id)
     );
     setDraggedItems(nItems);
+    const nSectionsIds = sectionsIds;
+    const linkcond = nSectionsIds[id];
+    delete nSectionsIds[id];
+    const nLinkSectionConditionSig = linkSectionConditionSig;
+    delete nLinkSectionConditionSig[linkcond];
+
+    setSectionsIds(nSectionsIds);
+    setLinkSectionConditionSig(nLinkSectionConditionSig);
   };
 
   const onDragEnd = (result) => {
@@ -508,6 +623,36 @@ const DamiEditPage = () => {
     const [reorderedItem] = updatedItems.splice(result.source.index, 1);
     updatedItems.splice(result.destination.index, 0, reorderedItem);
 
+    setDraggedItems(updatedItems);
+  };
+
+  const removeChildHandler = (idScCond, idChild) => {
+    const updatedItems = [];
+
+    for (const item of draggedItems) {
+      if (
+        item.type === "sectionCondtion" &&
+        String(item.id) === String(idScCond)
+      ) {
+        const updatedChildren = item.children.filter(
+          (ch) => String(ch.id) !== String(idChild)
+        );
+
+        updatedItems.push({
+          ...item,
+          children: updatedChildren,
+          component: {
+            ...item.component,
+            props: {
+              ...item.component.props,
+              children: updatedChildren,
+            },
+          },
+        });
+      } else {
+        updatedItems.push(item);
+      }
+    }
     setDraggedItems(updatedItems);
   };
 
@@ -565,8 +710,26 @@ const DamiEditPage = () => {
 
   // creation de l'option :
   const showCreateOptionModalHandler = () => {
+    window.scrollTo(-1000000, -100000);
+    const lengids = Object.values(sectionsIds).filter(
+      (v) => String(v) !== ""
+    ).length;
+    const lengsec = docRef.current.querySelectorAll(".section-condtion").length;
+
     if (docRef.current.querySelector("div").innerHTML !== "") {
-      setShowCreateOpModal(true);
+      if (lengsec > 0) {
+        if (Number(lengids) === Number(lengsec)) {
+          setShowCreateOpModal(true);
+        } else {
+          Toast.open({
+            type: "danger",
+            title: "Erreur",
+            message: "Il faut donner des IDs aux sections de conditions.",
+          });
+        }
+      } else {
+        setShowCreateOpModal(true);
+      }
     } else {
       Toast.open({
         type: "danger",
@@ -673,6 +836,65 @@ const DamiEditPage = () => {
     setHtmlContent(docRef.current.innerHTML);
   };
 
+  const putCondLinkSig = () => {
+    const condSection = document.querySelectorAll(".section-condtion");
+    if (condSection && condSection.length > 0) {
+      if (
+        linkSectionConditionSig === null ||
+        linkSectionConditionSig === undefined ||
+        Object.keys(linkSectionConditionSig).length === 0
+      ) {
+        setTimeout(() => {
+          window.scrollTo(-1000000, -100000);
+        }, 200);
+        Toast.open({
+          type: "danger",
+          title: "Erreur",
+          message: "Les sections doivent être liées par les signataires",
+        });
+      } else {
+        if (
+          Number(Object.keys(linkSectionConditionSig).length) ===
+          Number(condSection.length)
+        ) {
+          let isNotValid = false;
+          const linkCondDrps = document.querySelectorAll(".linkCondDrp");
+          for (const lkc of linkCondDrps) {
+            if (
+              lkc.value === null ||
+              lkc.value === undefined ||
+              lkc.value === ""
+            ) {
+              isNotValid = true;
+            }
+          }
+          if (!isNotValid) {
+            setOption({
+              ...option,
+              sectionConditions: linkSectionConditionSig,
+            });
+
+            setActiveStep(5);
+          } else {
+            Toast.open({
+              type: "danger",
+              title: "Erreur",
+              message: "Les sections doivent être liées par les signataires",
+            });
+          }
+        } else {
+          Toast.open({
+            type: "danger",
+            title: "Erreur",
+            message: "Les sections doivent être liées par les signataires",
+          });
+        }
+      }
+    } else {
+      setActiveStep(5);
+    }
+  };
+
   const sigChangeHandler = (event) => {
     let nbr = 0;
 
@@ -712,13 +934,17 @@ const DamiEditPage = () => {
   };
 
   const addOptionHandler = () => {
-     document.documentElement.scrollTop = 0;
-     dispatch(createOption({...option,shouldAskAnyTime:shouldAskAnyTime}));
+    document.documentElement.scrollTop = 0;
+    dispatch(createOption({ ...option, shouldAskAnyTime: shouldAskAnyTime }));
   };
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
-      dispatch(updateOption(id, {...option,shouldAskAnyTime:shouldAskAnyTime}));
+      document.documentElement.scrollTop = 0;
+      console.log(option);
+      dispatch(
+        updateOption(id, { ...option, shouldAskAnyTime: shouldAskAnyTime })
+      );
     }
   };
 
@@ -729,6 +955,9 @@ const DamiEditPage = () => {
       div.innerHTML = recoveredOption.contenu;
       let nDraggedItems = [];
       let elements = div.querySelectorAll(".comp-ui");
+
+      let cpt = 0;
+
       for (const el of elements) {
         if (el.classList.contains("type-label")) {
           const label = el.querySelector(".dami-label");
@@ -1631,6 +1860,331 @@ const DamiEditPage = () => {
             removeChild2: removeChild2Handler,
           };
           nDraggedItems.push(obj);
+        } else if (el.classList.contains("type-sectionCondtion")) {
+          const elChildren = el.querySelectorAll("div");
+          let children = [];
+
+          for (const elfor of elChildren) {
+            if (elfor.querySelector(".child-type-label")) {
+              const label = elfor.querySelector(".dami-label");
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <Label
+                    block
+                    text={label.innerText}
+                    className={label.className}
+                    style={cssStringToObject(label.getAttribute("style"))}
+                  />
+                ),
+                type: "label",
+              };
+
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-checkboxes")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const checkboxes = elfor.querySelectorAll(
+                ".dami-check-box-container div"
+              );
+              const checkboxItems = [];
+
+              for (const checkbox of checkboxes) {
+                checkboxItems.push({
+                  text: checkbox.querySelector(".dami-label").innerText,
+                  className: checkbox.querySelector(".dami-label").className,
+                  style: checkbox
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                });
+              }
+
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <CheckBox
+                    mainLabelProps={mainLabelProps}
+                    checkboxItems={checkboxItems}
+                  />
+                ),
+                type: "checkboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-textinput")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const textInput = elfor.querySelector(".dami-input");
+
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+              let style = textInput.getAttribute("style");
+              let fontsize = style
+                ? style.split("font-size:")[1].split("px")[0]
+                : 12;
+              const textInputProp = {
+                type: textInput.getAttribute("type"),
+                block: textInput.classList.contains("block"),
+                placeholder: textInput.getAttribute("placeholder"),
+
+                size: Number(fontsize),
+                min: textInput.getAttribute("min"),
+                max: textInput.getAttribute("max"),
+                value: textInput.value,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <TextInput
+                    mainLabelProps={mainLabelProps}
+                    textInputProp={textInputProp}
+                  />
+                ),
+                type: "textinput",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-radiobuttons")) {
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const radiobuttons = elfor.querySelectorAll(
+                ".dami-radio-button-container div"
+              );
+
+              const radioButtonItems = [];
+
+              for (const radiobutton of radiobuttons) {
+                radioButtonItems.push({
+                  text: radiobutton.querySelector(".dami-label").innerText,
+                  className: radiobutton.querySelector(".dami-label").className,
+                  style: radiobutton
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                });
+              }
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <RadioButtons
+                    mainLabelProps={mainLabelProps}
+                    radioButtonItems={radioButtonItems}
+                  />
+                ),
+                type: "checkboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lsttextinput")) {
+              const lstinputs = elfor.querySelector(".lst-of-text-input");
+              const firstLine = lstinputs.querySelector(".dami-textarea-line");
+              const mainLabel = elfor.querySelector(".dami-label:first-child");
+              const mainLabelProps = {
+                className: mainLabel.className,
+                style: mainLabel.getAttribute("style"),
+                text: mainLabel.innerText,
+              };
+
+              const style = firstLine.getAttribute("style");
+              const size = style
+                ? style.split("font-size:")[1].split("px")[0]
+                : 12;
+              const placeholder = firstLine.getAttribute("placeholder");
+
+              const lineProps = {
+                nbrLines: lstinputs.querySelectorAll(".dami-textarea-line")
+                  .length,
+                size: Number(size),
+                placeholder: placeholder ? firstLine.placeholder : "",
+              };
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfTextInput
+                    mainLabelProps={mainLabelProps}
+                    isBlock={lstinputs.classList.contains("block")}
+                    lineProps={lineProps}
+                  />
+                ),
+                type: "lsttextinput",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lstcheckboxes")) {
+              const header = elfor.querySelector(".lst-check-boxes-header");
+              const mainLabel = header.querySelector(".dami-label");
+              const headerElements = header.querySelectorAll("td div");
+              const body = elfor.querySelector("tbody");
+              const lines = body.querySelectorAll("tr");
+
+              const filteredlines = Array.from(lines).filter((row) => {
+                return !row.querySelector(".btn-add-checkbox-line");
+              });
+
+              const headerItems = [];
+              const bodyItems = [];
+
+              for (const item of headerElements) {
+                headerItems.push({
+                  className: item.querySelector(".dami-label").className,
+                  style: item
+                    .querySelector(".dami-label")
+                    .getAttribute("style"),
+                  text: item.querySelector(".dami-label").innerText,
+                });
+              }
+
+              for (const item of filteredlines) {
+                const lineLabel = item.querySelector("td .dami-label");
+                const chks = item.querySelectorAll(".dami-check-box");
+
+                let disableds = [];
+
+                for (const item of chks) {
+                  disableds.push(item.classList.contains("disabled"));
+                }
+
+                bodyItems.push({
+                  className: lineLabel && lineLabel.className,
+                  style: lineLabel && lineLabel.getAttribute("style"),
+                  text: lineLabel && lineLabel.innerText,
+                  isSection: item.classList.contains("line-section"),
+                  disableds: disableds,
+                });
+              }
+
+              const headerProps = {
+                mainLabelProps: {
+                  className: mainLabel.className,
+                  style: mainLabel.getAttribute("style"),
+                  text: mainLabel.innerText,
+                },
+                headerItems: headerItems,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfCheckBoxes
+                    headerProps={headerProps}
+                    bodyItems={bodyItems}
+                  />
+                ),
+                type: "lstcheckboxes",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-lstradiobuttons")) {
+              const header = elfor.querySelector(".lst-check-boxes-header");
+              const mainLabel = header.querySelector(
+                "td[colspan='100'] .dami-label"
+              );
+              const headerElements = header.querySelectorAll(
+                "td:not([colspan]) .dami-label"
+              );
+              const body = elfor.querySelector("tbody");
+              const lines = body.querySelectorAll("tr");
+
+              const filteredlines = Array.from(lines).filter((row) => {
+                return !row.querySelector(".btn-add-checkbox-line");
+              });
+
+              const headerItems = [];
+              const bodyItems = [];
+
+              for (const item of headerElements) {
+                headerItems.push({
+                  className: item.className,
+                  style: item.getAttribute("style"),
+                  text: item.innerText,
+                });
+              }
+
+              for (const item of filteredlines) {
+                const lineLabel = item.querySelector("td .dami-label");
+                const chks = item.querySelectorAll(".dami-radio-button");
+                let disableds = [];
+
+                for (const item of chks) {
+                  disableds.push(item.classList.contains("disabled"));
+                }
+                bodyItems.push({
+                  className: lineLabel && lineLabel.className,
+                  style: lineLabel && lineLabel.getAttribute("style"),
+                  text: lineLabel && lineLabel.innerText,
+                  isSection: item.classList.contains("line-section"),
+                  disableds: disableds,
+                });
+              }
+
+              const headerProps = {
+                mainLabelProps: {
+                  className: mainLabel.className,
+                  style: mainLabel.getAttribute("style"),
+                  text: mainLabel.innerText,
+                },
+                headerItems: headerItems,
+              };
+
+              let obj = {
+                id: uuidv4(),
+                component: (
+                  <ListOfRadiosButtons
+                    headerProps={headerProps}
+                    bodyItems={bodyItems}
+                  />
+                ),
+                type: "lstradiobuttons",
+              };
+              children.push(obj);
+            } else if (elfor.querySelector(".child-type-line")) {
+              let obj = {
+                id: uuidv4(),
+                component: <Line />,
+                type: "line",
+              };
+              children.push(obj);
+            }
+          }
+
+          const idSection = uuidv4();
+          let obj = {
+            id: idSection,
+            component: (
+              <SectionCondtion
+                idSecEx={Object.keys(recoveredOption.sectionConditions)[cpt]}
+              />
+            ),
+            type: "sectionCondtion",
+            children: children,
+            removeChild: removeChildHandler,
+          };
+          const sectionValueCond = Object.keys(
+            recoveredOption.sectionConditions
+          )[cpt];
+          const secLinkValueCond = Object.values(
+            recoveredOption.sectionConditions
+          )[cpt];
+
+          setSectionsIds((prev) => ({
+            ...prev,
+            [idSection]: sectionValueCond,
+          }));
+          setLinkSectionConditionSig((prev) => ({
+            ...prev,
+            [sectionValueCond]: secLinkValueCond,
+          }));
+          nDraggedItems.push(obj);
+
+          cpt++;
         }
       }
 
@@ -1871,8 +2425,12 @@ const DamiEditPage = () => {
         ...recoveredOption,
         conditions: recoveredOption.conditions,
       });
-     
-      setAtrTitle(recoveredOption.autreResponsableTitre ? recoveredOption.autreResponsableTitre : "")
+
+      setAtrTitle(
+        recoveredOption.autreResponsableTitre
+          ? recoveredOption.autreResponsableTitre
+          : ""
+      );
       setShouldAskAnyTime(recoveredOption.shouldAskAnyTime);
       setTimeout(() => {
         sousCategorieForm.setValues({
@@ -1889,9 +2447,12 @@ const DamiEditPage = () => {
           proprietaireDeDonnees: recoveredOption.proprietaireDeDonnees
             ? recoveredOption.proprietaireDeDonnees._id
             : "",
-            typeAtr: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur.direction : '',
-            autreUtilisateur: recoveredOption.autreUtilisateur ? recoveredOption.autreUtilisateur._id : '' 
-            
+          typeAtr: recoveredOption.autreUtilisateur
+            ? recoveredOption.autreUtilisateur.direction
+            : "",
+          autreUtilisateur: recoveredOption.autreUtilisateur
+            ? recoveredOption.autreUtilisateur._id
+            : "",
         });
         setRecoveredConditions(recoveredOption.conditions);
       }, 1000);
@@ -1925,6 +2486,7 @@ const DamiEditPage = () => {
 
   useEffect(() => {
     console.log("##### [use effect from DAMI EDIT PAGE] #####");
+
     if (!callOptionByIDOnce) {
       if (id) {
         if (
@@ -1999,8 +2561,6 @@ const DamiEditPage = () => {
       dispatch(fetchUsersByDivision(typePdd, sousCategorieForm.values.typePdd));
     }
   }, [sousCategorieForm.values.typePdd]);
-
- 
 
   useEffect(() => {
     if (userInfo && sousCategorieForm.values.typeAtr) {
@@ -2260,8 +2820,6 @@ const DamiEditPage = () => {
                   {headerForm.errors.maj}
                 </small>
               )}
-
-
               <Button variant="dark" className="w-100 mt-3" type="submit">
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
@@ -2469,7 +3027,8 @@ const DamiEditPage = () => {
                   <option value="">
                     ----- choisire un responsable (autre signataire) -----
                   </option>
-                  {usersAtr && Array.from(usersAtr).length > 0 &&
+                  {usersAtr &&
+                    Array.from(usersAtr).length > 0 &&
                     Array.from(usersAtr).map((user) => (
                       <option value={user._id}>
                         {user.prenom} {user.nom}
@@ -2794,6 +3353,55 @@ const DamiEditPage = () => {
                 continue <i className="fas fa-arrow-right"></i>
               </Button>
             </>
+          ) : activeStep === 3 ? (
+            <div style={{ minHeight: "200px" }}>
+              {sectionsIds === null ||
+              sectionsIds === undefined ||
+              Object.keys(sectionsIds).length === 0 ? (
+                <>
+                  <Message type="warning">
+                    Vous n'avez glissé aucune section de condition.
+                  </Message>
+                </>
+              ) : (
+                <>
+                  <h6>les id's des sections :</h6>
+                  <ListGroup>
+                    {Object.values(sectionsIds).map((valSec) => (
+                      <ListGroup.Item>
+                        <Row>
+                          <Col>
+                            <h4 className="mt-2">{valSec}</h4>
+                          </Col>
+                          <Col>
+                            <Form.Select
+                              className="linkCondDrp"
+                              id={valSec}
+                              onChange={(e) =>
+                                setLinkCondSig(valSec, e.target.value)
+                              }
+                              value={linkSectionConditionSig[valSec]}
+                            >
+                              <option value={""}>
+                                -- veuillez selectionner un signataire --
+                              </option>
+                              {option.signataires.map((valSig) => (
+                                <option value={valSig}>
+                                  {getTypeApprobation(valSig)}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </>
+              )}
+              <Button onClick={putCondLinkSig} className="w-100 mt-1">
+                suivant
+              </Button>
+            </div>
           ) : (
             <>
               {loadingOptionCreate && <Loader />}
@@ -2803,24 +3411,22 @@ const DamiEditPage = () => {
                 quelque chose à changer, retournez et modifiez avant de
                 confirmer
               </Message>
-             
+
               <Row>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
                 <Col xl={8} lg={12} md={12} sm={12}>
-               
-                <div className="d-block">
-                  <Form.Check // prettier-ignore
-                    type="switch"
-                    id="custom-switch"
-                    label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
-                    value={shouldAskAnyTime}
-                    checked={shouldAskAnyTime}
-                    onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
-                  />
-                 
-                </div>  
-                <br/>
-             
+                  <div className="d-block">
+                    <Form.Check // prettier-ignore
+                      type="switch"
+                      id="custom-switch"
+                      label="La DAMI peut-elle être demandée plusieurs fois par un seul demandeur ?"
+                      value={shouldAskAnyTime}
+                      checked={shouldAskAnyTime}
+                      onChange={() => setShouldAskAnyTime(!shouldAskAnyTime)}
+                    />
+                  </div>
+                  <br />
+
                   <Dami option={option} showAdmin />
                 </Col>
                 <Col xl={2} lg={12} md={12} sm={12}></Col>
@@ -2906,11 +3512,14 @@ const DamiEditPage = () => {
                             >
                               {React.createElement(item.component.type, {
                                 ...item.component.props,
+                                children: item.children,
                                 children1: item.children1,
                                 children2: item.children2,
                                 id: item.id,
+                                removeChild: removeChildHandler,
                                 removeChild1: removeChild1Handler,
                                 removeChild2: removeChild2Handler,
+                                changeSectionsIds: setSectionsIdsHandler,
                               })}
 
                               <span
@@ -3013,6 +3622,14 @@ const DamiEditPage = () => {
 
           <Card className="mt-2">
             <ListGroup>
+              <ListGroup.Item
+                className="cursor-pointer crt-dami-com-item"
+                draggable
+                onDrag={handleDrag}
+                onDragStart={(e) => handleDragStart(e, "sectionCondtion")}
+              >
+                Section Condtion
+              </ListGroup.Item>
               <ListGroup.Item
                 className="cursor-pointer crt-dami-com-item"
                 draggable
