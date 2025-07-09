@@ -367,7 +367,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                       <span>
                         {option &&
                           vOption.dirLibelle &&
-                          vOption.dirLibelle.toLowerCase()}
+                          vOption.dirLibelle.toLowerCase()} 
                       </span>
                     )}
                     {sig === "atr" && (

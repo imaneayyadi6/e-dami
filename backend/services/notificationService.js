@@ -46,9 +46,9 @@ export const sendNotification = async (
         "logs",
         "e-dami-notification-log.txt"
       );
-      const dataToWrite = `[NOTIFICATION SENT] : ${new Date().toLocaleString()} :: NOTIFICATION SENT : [${JSON.stringify(
-        mailOptions
-      )}] \n`;
+      const dataToWrite = `[NOTIFICATION SENT] : ${new Date().toLocaleString()} SERVER :: [${
+        process.env.ZIMBRA_ADDRESS
+      }] ::  [${JSON.stringify(mailOptions)}] \n`;
       fs.appendFileSync(logFilePath, dataToWrite, (err) => {
         if (err) throw err;
         console.log("Data has been backed up successfully !");

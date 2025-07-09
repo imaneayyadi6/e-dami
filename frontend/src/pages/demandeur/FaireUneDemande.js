@@ -355,22 +355,24 @@ const FaireUneDemande = () => {
 
       <Card className="mt-2">
         <Card.Body>
-          <label>nom option (dami)</label>
-          <div className="d-flex align-items-center">
-            <Form.Control
-              placeholder="veuillez saisire le nom de l'option (dami) ..."
-              value={libelle}
-              onChange={(e) => setLibelle(e.target.value)}
-            />
-            <Button
-              onClick={() => {
-                getOptionsFilterHandler(1, sousCategorie, libelle);
-              }}
-              variant="dark"
-            >
-              <i className="fas fa-search"></i>
-            </Button>
-          </div>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              getOptionsFilterHandler(1, sousCategorie, libelle);
+            }}
+          >
+            <label>nom option (dami)</label>
+            <div className="d-flex align-items-center">
+              <Form.Control
+                placeholder="veuillez saisire le nom de l'option (dami) ..."
+                value={libelle}
+                onChange={(e) => setLibelle(e.target.value)}
+              />
+              <Button type="submit" variant="dark">
+                <i className="fas fa-search"></i>
+              </Button>
+            </div>
+          </Form>
         </Card.Body>
       </Card>
 

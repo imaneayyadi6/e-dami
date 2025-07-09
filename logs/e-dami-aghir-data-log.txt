@@ -296,3 +296,233 @@
 [DATA INSERT] : Tue Apr 01 2025 12:01:55 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
 [DATA INSERT] : Wed Apr 02 2025 00:01:56 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
 [DATA INSERT] : Wed Apr 02 2025 12:01:56 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 03 2025 00:01:55 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 03 2025 00:02:04 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Thu Apr 03 2025 12:00:08 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1440 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu Apr 03 2025 12:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[ERROR] : Fri Apr 04 2025 00:00:25 GMT+0000 (temps universel coordonné) :: VersionError: No matching document found for id "65df192ffc882c17ca28057c" version 1213 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Fri Apr 04 2025 00:02:01 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 04 2025 12:02:07 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 05 2025 00:01:58 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 05 2025 12:01:57 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 06 2025 00:01:57 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 06 2025 12:01:58 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 07 2025 00:01:57 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 07 2025 12:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 08 2025 00:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 08 2025 12:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 09 2025 00:01:58 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 09 2025 12:02:02 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 09 2025 15:05:12 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 10 2025 00:01:59 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 10 2025 12:01:55 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 10 2025 14:58:13 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 11 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 11 2025 00:02:00 GMT+0000 (temps universel coordonné) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 11 2025 10:56:28 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 11 2025 12:02:11 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 12 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 12 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 13 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 13 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 14 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 14 2025 12:02:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 15 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 15 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 15 2025 12:08:48 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 16 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 16 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 17 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 17 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 18 2025 00:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 18 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 19 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 19 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 20 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 20 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 21 2025 00:02:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 21 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 21 2025 12:18:48 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 23 2025 10:34:33 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 23 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 24 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Apr 24 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 25 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Apr 25 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 26 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Apr 26 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 27 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Apr 27 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 28 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Apr 28 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 29 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Apr 29 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 30 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 30 2025 12:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Apr 30 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 01 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 01 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 02 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 02 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 02 2025 15:12:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 03 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 03 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 04 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 04 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 05 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 05 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 06 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 06 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 07 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 07 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 08 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 08 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 09 2025 00:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 09 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 10 2025 00:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 10 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 11 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 11 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 12 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 12 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 13 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 13 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 14 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 14 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 15 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 15 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 16 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 16 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 17 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 17 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 18 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 18 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 19 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 19 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 20 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 20 2025 12:02:13 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 21 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 21 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 22 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 22 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 23 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 23 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 24 2025 00:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 24 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 25 2025 00:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun May 25 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 26 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Mon May 26 2025 12:00:16 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec86" version 1554 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon May 26 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon May 26 2025 12:02:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 27 2025 00:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue May 27 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed May 28 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Wed May 28 2025 12:00:12 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1984fc882c17ca281124" version 1330 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Wed May 28 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Thu May 29 2025 00:00:11 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1568 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu May 29 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 29 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Thu May 29 2025 12:00:14 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df187afc882c17ca27ed1a" version 1556 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Thu May 29 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu May 29 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 00:02:50 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 00:02:50 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 00:02:51 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 12:02:49 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 12:02:50 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri May 30 2025 12:02:54 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sat May 31 2025 00:00:09 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1579 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat May 31 2025 00:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 31 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sat May 31 2025 12:00:12 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec8e" version 1582 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sat May 31 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat May 31 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sun Jun 01 2025 00:00:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec7e" version 1570 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Jun 01 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 01 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Sun Jun 01 2025 12:00:14 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec86" version 1579 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Sun Jun 01 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 01 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 02 2025 00:02:50 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 02 2025 00:02:51 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 02 2025 00:02:52 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Mon Jun 02 2025 12:00:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1876fc882c17ca27ec76" version 1580 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Mon Jun 02 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 02 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 03 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 03 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 04 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 04 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 05 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 05 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 06 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 06 2025 12:02:21 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 07 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 07 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 08 2025 00:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 08 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 09 2025 00:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 09 2025 12:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 10 2025 00:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 10 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 11 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 11 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 12 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 12 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 13 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 13 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 14 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 14 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 15 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 15 2025 12:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 16 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 16 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 17 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 17 2025 12:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 18 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 18 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 19 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 19 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 20 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 20 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 21 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 21 2025 12:01:56 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 22 2025 00:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 22 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 23 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 23 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 24 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jun 24 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 25 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jun 25 2025 12:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 26 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jun 26 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 27 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jun 27 2025 12:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 28 2025 00:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jun 28 2025 12:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 29 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jun 29 2025 12:01:57 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 30 2025 00:01:59 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jun 30 2025 12:02:12 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jul 01 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jul 01 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jul 02 2025 00:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jul 02 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jul 03 2025 00:02:06 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Thu Jul 03 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jul 04 2025 00:02:07 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Fri Jul 04 2025 12:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jul 05 2025 00:02:02 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sat Jul 05 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jul 06 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Sun Jul 06 2025 12:02:00 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jul 07 2025 00:02:03 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Mon Jul 07 2025 12:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jul 08 2025 00:02:04 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Tue Jul 08 2025 12:02:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jul 09 2025 00:01:58 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[DATA INSERT] : Wed Jul 09 2025 00:02:01 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 
+[ERROR] : Wed Jul 09 2025 12:00:10 GMT+0100 (heure normale d’Afrique de l’Ouest) :: VersionError: No matching document found for id "65df1875fc882c17ca27ec66" version 1662 modifiedPaths "roles, updatedAt" 
+[DATA INSERT] : Wed Jul 09 2025 12:02:05 GMT+0100 (heure normale d’Afrique de l’Ouest) :: Data Inserted succcessfully 

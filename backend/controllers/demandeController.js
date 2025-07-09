@@ -99,7 +99,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   );
 
   traitements.sort((a, b) => {
-    return new Date(a.dateEnvoi) - new Date(b.dateEnvoi);
+    return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
   });
 
   if (filters.status)
@@ -298,23 +298,27 @@ export const createDemande = asyncHandler(async (req, res) => {
         "cdd.hiq.pdd.dir":
           " veuillez la traiter en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
-   
-      const [code, userID] = await getTypeAppOnCreate(option._id, user._id);
+
+      const [code, userID, isInterim] = await getTypeAppOnCreate(
+        option._id,
+        user._id
+      );
 
       objTraitement.code = code;
       objTraitement.utilisateur = userID;
+      objTraitement.interim = isInterim;
 
       demandeObj.traitement = [objTraitement];
 
       const demande = new Demande(demandeObj);
       await demande.save();
       await demande.populate("demandeur");
-
+      const isInterimtext = isInterim ? "(interim)":"";
       // message pour que le signataires va recevoire :
       let messageContent = `<p> Une <a style='font-weight:bold' `;
       messageContent += `href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a>`;
       messageContent += ` a été faite par <strong style='font-weight:bold'>${user.prenom.toLowerCase()}</strong> <strong style='font-weight:bold'>${user.nom.toLowerCase()}</strong>, `;
-      messageContent += filterMessage[code] + "</p>";
+      messageContent += filterMessage[code] + " " + isInterimtext + "</p>";
 
       sendNotification(
         userID,
@@ -796,7 +800,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
         "cdd.hiq.pdd.dir":
           " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
-
+      let sigInterim = false;
       // recuperer le traitement :
       let traitement = demande.traitement.find(
         (tr) => String(tr._id) === String(req.params.idTraitement)
@@ -810,12 +814,13 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               if (String(tr._id) === String(req.params.idTraitement)) {
                 tr.status = "approuve";
                 tr.dateTraitement = new Date();
+                if (tr.interim) sigInterim = true;
                 break;
               }
             }
 
             // recuperer le type d'approubation et le signataire qui va signier
-            const [nextCode, nextUserId] = await getNextTypeAppOnApp(
+            const [nextCode, nextUserId, isInterim] = await getNextTypeAppOnApp(
               demande.option._id,
               demande._id,
               traitement.code
@@ -829,7 +834,9 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>${getCv(
               nextSignataire.civilite
             )}.</b>`;
-            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom.toLowerCase()} ${nextSignataire.nom.toLowerCase()}</b> `;
+            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom.toLowerCase()} ${nextSignataire.nom.toLowerCase()}${
+              sigInterim ? " (interim)" : ""
+            }</b> `;
             messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
 
             // verfier est ce que la demande a ete fini le traitement :
@@ -838,16 +845,15 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
               demande.status = "approuve";
             } else {
-           
               // envoyer la demande au signataire prochaine pour la traiter :
               demande.traitement.push({
                 utilisateur: new mongoose.Types.ObjectId(nextUserId),
                 dateEnvoi: new Date(),
                 status: "en cours",
                 code: nextCode,
+                interim: isInterim,
               });
             }
-            console.log("req.body.docContent : ", req.body.docContent);
             if (req.body.docContent) {
               demande.contenu = req.body.docContent;
             }
@@ -896,7 +902,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 let messageSignataire = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${traitementItem._id}">demande</a>`;
                 messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom.toLowerCase()}</b> <b style='font-weight:bold'>${demande.demandeur.nom.toLowerCase()}</b>, ${
                   signataireFilterMessage[nextCode]
-                }</p>`;
+                } ${isInterim ? "(interim)" : ""}</p>`;
 
                 sendNotification(
                   nextUserId,
@@ -1086,6 +1092,8 @@ export const refuserDemande = asyncHandler(async (req, res) => {
       const traitement = demande.traitement.find(
         (tr) => String(tr._id) === String(req.params.idTraitement)
       );
+      let interim = false;
+
       if (traitement.status === "en cours") {
         if (traitement) {
           if (String(traitement.utilisateur) === String(req.user.id)) {
@@ -1095,6 +1103,11 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                   tr.motifRefus = req.body.motif;
                   tr.status = "refuse";
                   tr.dateTraitement = new Date();
+
+                  if (tr.interim) {
+                    interim = true;
+                  }
+
                   break;
                 }
               }
@@ -1181,7 +1194,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
               messageDemandeur += ` a été refuseée par <b style='font-weight:bold'>${getCv(
                 signataireUser.civilite
               )}.</b>`;
-              messageDemandeur += ` <b style='font-weight:bold'>${signataireUser.prenom.toLowerCase()} ${signataireUser.nom.toLowerCase()}</b> `;
+              messageDemandeur += ` <b style='font-weight:bold'>${signataireUser.prenom.toLowerCase()} ${signataireUser.nom.toLowerCase()}${
+                interim ? " (interim)" : ""
+              }</b> `;
               messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
               messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif}"`;
               messageDemandeur += "</p>";

@@ -19,6 +19,10 @@ const STATUS = {
   refuse: "danger",
 };
 
+const getCv = (gender) => {
+  return gender === "M" ? "Mr. " : gender === "F" ? "Mme. " : "(civilite introuvable) "
+}
+
 const DemandesPreviewDetailsPage = () => {
   const [callOnce, setCallOnce] = useState(false);
   const [showTimeLine, setShowTimeLine] = useState(false);
@@ -136,16 +140,28 @@ const DemandesPreviewDetailsPage = () => {
                             >
                               {tr.status === "approuve" && (
                                 <p className="w-100">
-                                  la demande a ete approuver par M.
+                                  la demande a ete approuver par {getCv(tr.utilisateur.civilite)}
                                   {tr.utilisateur.prenom.toLowerCase() +
                                     " " +
                                     tr.utilisateur.nom.toLowerCase()}{" "}
-                                  en tant que{" "}
-                                  <span
-                                    dangerouslySetInnerHTML={{
-                                      __html: getTypeApprobation(tr.code),
-                                    }}
-                                  ></span>
+                                  {tr.interim && <span> (interim)</span>} en
+                                  tant que{" "}
+                                  {tr.code !== "atr" && (
+                                    <span
+                                      dangerouslySetInnerHTML={{
+                                        __html: getTypeApprobation(tr.code),
+                                      }}
+                                    ></span>
+                                  )}
+                                  {tr.code === "atr" && (
+                                    <span>
+                                      (
+                                      {String(
+                                        demande.option.autreResponsableTitre
+                                      ).toLowerCase()}
+                                      )
+                                    </span>
+                                  )}
                                   {Number(index) === 0 && (
                                     <span>
                                       , et pour cela, elle a été finalisée et
@@ -156,16 +172,28 @@ const DemandesPreviewDetailsPage = () => {
                               )}
                               {tr.status === "refuse" && (
                                 <p className="w-100">
-                                  la demande a ete refusee par M.
+                                  la demande a ete refusee par {getCv(tr.utilisateur.civilite)}
                                   {tr.utilisateur.prenom.toLowerCase() +
                                     " " +
                                     tr.utilisateur.nom.toLowerCase()}{" "}
-                                  en tant que{" "}
-                                  <span
-                                    dangerouslySetInnerHTML={{
-                                      __html: getTypeApprobation(tr.code),
-                                    }}
-                                  ></span>
+                                  {tr.interim && <span> (interim)</span>} en
+                                  tant que{" "}
+                                  {tr.code !== "atr" && (
+                                    <span
+                                      dangerouslySetInnerHTML={{
+                                        __html: getTypeApprobation(tr.code),
+                                      }}
+                                    ></span>
+                                  )}
+                                  {tr.code === "atr" && (
+                                    <span>
+                                      (
+                                      {String(
+                                        demande.option.autreResponsableTitre
+                                      ).toLowerCase()}
+                                      )
+                                    </span>
+                                  )}
                                   . <br />{" "}
                                   <span style={{ fontWeight: "bold" }}>
                                     Motif de refus :
@@ -193,16 +221,28 @@ const DemandesPreviewDetailsPage = () => {
                           <span className="timline-item-line"></span>
                           <Alert variant={"warning"}>
                             <p className="w-100">
-                              la demande a ete envoyer M.
+                              la demande a ete envoyé  a {getCv(tr.utilisateur.civilite)}
                               {tr.utilisateur.prenom.toLowerCase() +
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
-                              pour la traiter en tant que{" "}
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: getTypeApprobation(tr.code),
-                                }}
-                              ></span>
+                              {tr.interim && <span> (interim)</span>} pour la
+                              traiter en tant que{" "}
+                              {tr.code !== "atr" && (
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: getTypeApprobation(tr.code),
+                                  }}
+                                ></span>
+                              )}
+                              {tr.code === "atr" && (
+                                <span>
+                                  (
+                                  {String(
+                                    demande.option.autreResponsableTitre
+                                  ).toLowerCase()}
+                                  )
+                                </span>
+                              )}
                             </p>
 
                             <div className="d-flex justify-content-end">
@@ -237,16 +277,28 @@ const DemandesPreviewDetailsPage = () => {
                         >
                           {tr.status === "approuve" && (
                             <p className="w-100">
-                              la demande a ete approuver par M.
+                              la demande a ete approuver par {getCv(tr.utilisateur.civilite)}
                               {tr.utilisateur.prenom.toLowerCase() +
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
-                              en tant que{" "}
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: getTypeApprobation(tr.code),
-                                }}
-                              ></span>
+                              {tr.interim && <span> (interim)</span>} en tant
+                              que{" "}
+                              {tr.code !== "atr" && (
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: getTypeApprobation(tr.code),
+                                  }}
+                                ></span>
+                              )}
+                              {tr.code === "atr" && (
+                                <span>
+                                  (
+                                  {String(
+                                    demande.option.autreResponsableTitre
+                                  ).toLowerCase()}
+                                  )
+                                </span>
+                              )}
                               {Number(index) === 0 && (
                                 <span>
                                   , et pour cela, elle a été finalisée et
@@ -257,16 +309,28 @@ const DemandesPreviewDetailsPage = () => {
                           )}
                           {tr.status === "refuse" && (
                             <p className="w-100">
-                              la demande a ete refusee par M.
+                              la demande a ete refusee par {getCv(tr.utilisateur.civilite)}
                               {tr.utilisateur.prenom.toLowerCase() +
                                 " " +
                                 tr.utilisateur.nom.toLowerCase()}{" "}
-                              en tant que{" "}
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: getTypeApprobation(tr.code),
-                                }}
-                              ></span>
+                              {tr.interim && <span> (interim)</span>} en tant
+                              que{" "}
+                              {tr.code !== "atr" && (
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: getTypeApprobation(tr.code),
+                                  }}
+                                ></span>
+                              )}
+                              {tr.code === "atr" && (
+                                <span>
+                                  (
+                                  {String(
+                                    demande.option.autreResponsableTitre
+                                  ).toLowerCase()}
+                                  )
+                                </span>
+                              )}
                               . <br />{" "}
                               <span style={{ fontWeight: "bold" }}>
                                 Motif de refus :
@@ -290,16 +354,28 @@ const DemandesPreviewDetailsPage = () => {
                       <span className="timline-item-line"></span>
                       <Alert variant={"warning"}>
                         <p className="w-100">
-                          la demande a ete envoyer M.
+                          la demande a ete envoyer a {getCv(tr.utilisateur.civilite)}
                           {tr.utilisateur.prenom.toLowerCase() +
                             " " +
                             tr.utilisateur.nom.toLowerCase()}{" "}
-                          pour la traiter en tant que{" "}
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: getTypeApprobation(tr.code),
-                            }}
-                          ></span>
+                          {tr.interim && <span> (interim)</span>} pour la
+                          traiter en tant que{" "}
+                          {tr.code !== "atr" && (
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: getTypeApprobation(tr.code),
+                              }}
+                            ></span>
+                          )}
+                          {tr.code === "atr" && (
+                            <span>
+                              (
+                              {String(
+                                demande.option.autreResponsableTitre
+                              ).toLowerCase()}
+                              )
+                            </span>
+                          )}
                         </p>
 
                         <div className="d-flex justify-content-end">

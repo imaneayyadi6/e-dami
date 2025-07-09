@@ -27,7 +27,7 @@ export const getCodeFromResp = (userInfo, demandeur, option) => {
 
 
   if (code === "dir") {
-    if (demandeur.direction) {
+    if (demandeur && demandeur.direction) {
       if (typeof demandeur.direction === "object") {
         if (
           demandeur.direction._id &&

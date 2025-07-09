@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const Schema = mongoose.Schema;
 const demandeSchema = Schema({
@@ -52,6 +53,10 @@ const demandeSchema = Schema({
       },
       motifRefus: {
         type: String,
+      },
+      interim: {
+        type: Boolean,
+        default: false,
       },
     },
   ],

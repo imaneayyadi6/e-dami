@@ -16,11 +16,13 @@ const getDirecteurHiarchique = async (demandeurId) => {
   let dirHiqID = null;
   let findDirHiq = false;
   const demandeurDirection = await Direction.findById(demandeur.direction);
+
   if (demandeur && demandeur.direction) {
     if (demandeurDirection && demandeurDirection.directeur) {
       const demandeurDirecteur = await Utilisateur.findById(
         demandeurDirection.directeur
       );
+
       if (demandeurDirecteur) {
         if (
           Number(demandeurDirecteur.matricule) ===
@@ -52,7 +54,7 @@ const getDirecteurHiarchique = async (demandeurId) => {
     ) {
       const dirAdjIds = demandeurDirection.directeursAdjoints;
       for (const dirAdjId of dirAdjIds) {
-        console.log("dirAdjId : ",dirAdjId);
+        console.log("dirAdjId : ", dirAdjId);
         const directeurAdjoint = await Utilisateur.findById(dirAdjId);
         if (directeurAdjoint && directeurAdjoint.matricule) {
           if (
@@ -84,6 +86,11 @@ const getDirecteurHiarchique = async (demandeurId) => {
       dirHiqID = demandeurDirection.directeur;
     }
   }
+
+  if (dirHiqID === null && demandeur.isDirecteurAdj) {
+    dirHiqID = demandeur._id;
+  }
+
   console.log("dirHiqID : ", dirHiqID);
   return dirHiqID;
 };
@@ -108,15 +115,20 @@ const getCode = async (demandeurId, option) => {
 
   const optionDirection = await Direction.findById(option.service.direction);
 
-  const dirHiqId = await getDirecteurHiarchique(demandeurId);
-
   if (option.signataires.length > 0) {
     for (let cd of option.signataires) {
       switch (cd) {
         case "cds":
           code = "cds";
-          if (demandeurService && demandeurService.chefService)
+          if (demandeurService && demandeurService.chefService) {
             userId = demandeurService.chefService;
+          } else if (
+            demandeurDepartement &&
+            demandeurDepartement.chefDeDepartement
+          ) {
+            code = "cds";
+            userId = demandeurDepartement.chefDeDepartement;
+          }
           break;
         case "cdd":
           if (!userId) {
@@ -191,7 +203,7 @@ const getCode = async (demandeurId, option) => {
 export const getTypeAppOnCreate = async (optionId, userId) => {
   const option = await Option.findById(optionId).populate("service");
   const user = await Utilisateur.findById(userId);
-
+  let isInterim = false;
   if (!option) {
     throw new Error("Option introuvable !");
   }
@@ -205,9 +217,10 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
   const userInterim = await Utilisateur.findById(userID);
   if (userInterim && userInterim.interim) {
     userID = userInterim.interim;
+    isInterim = true;
   }
 
-  return [code, String(userID)];
+  return [code, String(userID), isInterim];
 };
 
 export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
@@ -218,8 +231,8 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     },
   });
   const demande = await Demande.findById(demandeId).populate("demandeur");
-
   const utilisateur = await Utilisateur.findById(demande.demandeur._id);
+  let isInterim = false;
 
   if (!option) throw new Error("option introuvable !");
 
@@ -519,18 +532,17 @@ export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {
     }
   }
 
-  console.log("nextUserId : ", nextUserId);
-
   if (nextUserId) {
     const userInterim = await Utilisateur.findById(nextUserId);
     if (userInterim && userInterim.interim) {
       nextUserId = String(userInterim.interim);
+      isInterim = true;
     }
   } else {
     if (nextCode != "fini") {
-      throw new Error("next utilisateur introuvable !");
+      throw new Error("utilisateur suivant non trouvé !");
     }
   }
 
-  return [nextCode, String(nextUserId)];
+  return [nextCode, String(nextUserId), isInterim];
 };
