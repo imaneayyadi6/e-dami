@@ -22,6 +22,8 @@ export const generateImage = asyncHandler(async (req, res) => {
     // Set a larger viewport size for better screenshot quality
     await page.setViewport({ width: 1200, height: 1200 });
 
+    // Get server URL from environment variables with fallback
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
 
     // Set the HTML content with the base URL
     await page.setContent(`
@@ -29,13 +31,13 @@ export const generateImage = asyncHandler(async (req, res) => {
             <head>
                 <link   
                  rel="stylesheet"
-                 href="http://localhost:5000/uploads/index.css">
+                 href="${serverUrl}/uploads/index.css">
                  <link   
                   rel="stylesheet"
-                  href="http://localhost:5000/uploads/damiContent.css">
+                  href="${serverUrl}/uploads/damiContent.css">
                   <link   
                   rel="stylesheet"
-                  href="http://localhost:5000/uploads/bootstrap.min.css">
+                  href="${serverUrl}/uploads/bootstrap.min.css">
             </head>
             <body>
                 ${html}
@@ -64,7 +66,7 @@ export const generateImage = asyncHandler(async (req, res) => {
     fs.writeFileSync(imagePath, screenshotBuffer);
 
     // Send the URL of the saved image as a response
-    const imageUrl = `http://localhost:5000/${imagePath}`; // Update with your server's URL
+    const imageUrl = `${serverUrl}/${imagePath}`;
     res.json({ imageUrl });
 });
 
