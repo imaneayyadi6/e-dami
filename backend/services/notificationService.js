@@ -28,7 +28,7 @@ export const sendNotification = async (
       await notification.save();
 
       io.emit("notification", notification);
-
+      /*
       let mailOptions = {
         from: '"e-dami" <e-dami@snrt.com>',
         to: utilisateur.email,
@@ -38,7 +38,8 @@ export const sendNotification = async (
       };
       // send email :
       sendMail(mailOptions);
-
+      */
+     
       // Define the uploads as static folder :
       const __dirname = path.resolve();
       const logFilePath = path.join(

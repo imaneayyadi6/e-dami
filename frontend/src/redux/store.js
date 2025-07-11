@@ -107,7 +107,7 @@ import {
   notificationToatsListReducer,
   notificationsNotSeenCountReducer,
 } from "./notification/notificationReducers";
-import { imageGenerateReducer } from "./generate/generateReducers";
+import { imageGenerateReducer, excelGenerateReducer } from "./generate/generateReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -220,6 +220,7 @@ const reducer = combineReducers({
   notificationOnceToastMakeItSeen: notificationOnceToastMakeItSeenReducer,
   // generate :
   imageGenerate: imageGenerateReducer,
+  excelGenerate: excelGenerateReducer,
 });
 
 const store = configureStore({

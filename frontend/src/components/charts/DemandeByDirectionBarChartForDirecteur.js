@@ -32,9 +32,52 @@ const DemandeByDirectionBarChartForDirecteur = () => {
   };
 
   const resetFiltreHandler = () => {
-    setStartDate(null);
-    setEndDate(null);
+    setStartDate("");
+    setEndDate("");
     dispatch(fetchChartBarDemandeSignataire());
+  };
+
+  const quickFilterHandler = (period) => {
+    const today = new Date();
+    let startDate, endDate;
+    
+    console.log("🔍 DemandeByDirectionBarChart - Filter period:", period);
+    console.log("🔍 Today:", today);
+    
+    switch(period) {
+      case 'last_year':
+        startDate = new Date(today.getFullYear() - 1, today.getMonth(), 1); // Same month last year
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month this year
+        break;
+      case '6_months':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 6, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month
+        break;
+      case '3_months':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month
+        break;
+      case '90_days':
+      default:
+        endDate = new Date();
+        startDate = new Date(endDate.getTime() - (90 * 24 * 60 * 60 * 1000)); // 90 days in milliseconds
+        break;
+    }
+    
+    console.log("🔍 Calculated dates:", { startDate, endDate });
+    
+    const formatDate = (date) => {
+      return date.toISOString().split('T')[0];
+    };
+    
+    const startDateStr = formatDate(startDate);
+    const endDateStr = formatDate(endDate);
+    
+    console.log("🔍 Formatted dates:", { startDateStr, endDateStr });
+    
+    setStartDate(startDateStr);
+    setEndDate(endDateStr);
+    dispatch(fetchChartBarDemandeSignataire(startDateStr, endDateStr));
   };
 
   useEffect(() => {
@@ -43,72 +86,91 @@ const DemandeByDirectionBarChartForDirecteur = () => {
       setCallOnce(true);
     }
     if (successchartGetBarDemandesSignataire && data) {
-      if (!chartOnce) {
-        if (directionChartRef.current) {
-          if (directionChartRef.current.chart) {
-            directionChartRef.current.chart.destroy();
-          }
-
-          let labels = data.labels.map((label) => {
-            if (label.length > 25) {
-              return label.substring(0, 25) + "...";
-            } else {
-              return label;
-            }
-          });
-
-          const directionData = {
-            labels: labels,
-            datasets: [
-              {
-                label: "en cours",
-                backgroundColor: "rgba(255, 165, 0, 0.2)",
-                borderColor: "rgba(255, 165, 0, 1)",
-                borderWidth: 1,
-                data: data.demandeEnCours,
-              },
-              {
-                label: "Approuvée",
-                backgroundColor: "rgba(0, 128, 0, 0.2)", // Green
-                borderColor: "rgba(0, 128, 0, 1)",
-                borderWidth: 1,
-                data: data.demandeApprouver,
-              },
-              {
-                label: "refusée",
-                backgroundColor: "rgba(255, 0, 0, 0.2)", // Red
-                borderColor: "rgba(255, 0, 0, 1)",
-                borderWidth: 1,
-                data: data.demandeRefuse,
-              },
-            ],
-          };
-
-          const directionOptions = {
-            indexAxis: "x",
-            scales: {
-              x: {
-                stacked: true,
-              },
-              y: {
-                stacked: true,
-              },
-            },
-          };
-
-          const ctx = directionChartRef.current.getContext("2d");
-          directionChartRef.current.chart = new Chart(ctx, {
-            type: "bar",
-            data: directionData,
-            options: directionOptions,
-          });
+      console.log("🔍 Debug - Data received:", data);
+      console.log("🔍 Debug - Labels:", data.labels);
+      console.log("🔍 Debug - Data counts:", {
+        enCours: data.demandeEnCours,
+        refuse: data.demandeRefuse,
+        approuve: data.demandeApprouver
+      });
+      console.log("🔍 Debug - Labels type:", typeof data.labels, Array.isArray(data.labels));
+      console.log("🔍 Debug - EnCours type:", typeof data.demandeEnCours, Array.isArray(data.demandeEnCours));
+      console.log("🔍 Debug - Data validity checks:");
+      console.log("  - Labels exist:", !!data.labels);
+      console.log("  - Labels length:", data.labels ? data.labels.length : 'undefined');
+      console.log("  - EnCours exists:", !!data.demandeEnCours);
+      console.log("  - EnCours length:", data.demandeEnCours ? data.demandeEnCours.length : 'undefined');
+      console.log("  - Refuse exists:", !!data.demandeRefuse);
+      console.log("  - Refuse length:", data.demandeRefuse ? data.demandeRefuse.length : 'undefined');
+      console.log("  - Approuve exists:", !!data.demandeApprouver);
+      console.log("  - Approuve length:", data.demandeApprouver ? data.demandeApprouver.length : 'undefined');
+      
+      if (directionChartRef.current) {
+        // Always destroy existing chart before creating new one
+        if (directionChartRef.current.chart) {
+          directionChartRef.current.chart.destroy();
         }
+
+        let labels = data.labels.map((label) => {
+          if (label.length > 25) {
+            return label.substring(0, 25) + "...";
+          } else {
+            return label;
+          }
+        });
+
+        const directionData = {
+          labels: labels,
+          datasets: [
+            {
+              label: "en cours",
+              backgroundColor: "rgba(255, 165, 0, 0.2)",
+              borderColor: "rgba(255, 165, 0, 1)",
+              borderWidth: 1,
+              data: data.demandeEnCours,
+            },
+            {
+              label: "Approuvée",
+              backgroundColor: "rgba(0, 128, 0, 0.2)", // Green
+              borderColor: "rgba(0, 128, 0, 1)",
+              borderWidth: 1,
+              data: data.demandeApprouver,
+            },
+            {
+              label: "refusée",
+              backgroundColor: "rgba(255, 0, 0, 0.2)", // Red
+              borderColor: "rgba(255, 0, 0, 1)",
+              borderWidth: 1,
+              data: data.demandeRefuse,
+            },
+          ],
+        };
+
+        const directionOptions = {
+          indexAxis: "x",
+          scales: {
+            x: {
+              stacked: true,
+            },
+            y: {
+              stacked: true,
+            },
+          },
+        };
+
+        const ctx = directionChartRef.current.getContext("2d");
+        directionChartRef.current.chart = new Chart(ctx, {
+          type: "bar",
+          data: directionData,
+          options: directionOptions,
+        });
+        setChartOnce(true);
       }
     }
     return () => {
       setChartOnce(false);
     };
-  }, [successchartGetBarDemandesSignataire, callOnce, chartOnce, data]);
+  }, [successchartGetBarDemandesSignataire, callOnce, data]);
 
   return (
     <>
@@ -125,36 +187,60 @@ const DemandeByDirectionBarChartForDirecteur = () => {
           </div>
           <Card.Body>
             <div>
-              <div className="d-flex justify-content-between align-items-center">
-                <Form.Control
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="mx-1"
-                />
-                <Form.Control
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="mx-1"
-                />
+              {/* Quick Filter Buttons */}
+              <div className="mt-2">
+                <div className="row">
+                  <div className="col-6 col-md-3 mb-1">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => quickFilterHandler('90_days')}
+                    >
+                      90 derniers jours
+                    </Button>
+                  </div>
+                  <div className="col-6 col-md-3 mb-1">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => quickFilterHandler('3_months')}
+                    >
+                      3 derniers mois
+                    </Button>
+                  </div>
+                  <div className="col-6 col-md-3 mb-1">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => quickFilterHandler('6_months')}
+                    >
+                      6 derniers mois
+                    </Button>
+                  </div>
+                  <div className="col-6 col-md-3 mb-1">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => quickFilterHandler('last_year')}
+                    >
+                      Dernière année
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <Button
-                variant="dark"
-                size="sm"
-                className="mt-1 w-100"
-                onClick={filterHandler}
-              >
-                <i className="fa-solid fa-filter"></i> filtrer
-              </Button>
+              
               <Button
                 variant="light"
                 size="sm"
-                className="mt-1 w-100"
+                className="mt-2 w-100"
                 onClick={resetFiltreHandler}
               >
                 <i className="fa-solid fa-filter-circle-xmark"></i>{" "}
-                réinitialiser le filtre
+                Vue par défaut (5 derniers mois)
               </Button>
             </div>
             <hr />

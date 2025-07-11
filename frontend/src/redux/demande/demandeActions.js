@@ -156,7 +156,7 @@ export const resetGetDemandesPreviewTeam = () => {
   return { type: DEMANDE_PREVIEW_TEAM_RESET };
 };
 
-export const getDemandesPreviewTeamAll = () => {
+export const getDemandesPreviewTeamAll = (query = { page: 1, limit: 10 }) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_REQUEST });
@@ -171,8 +171,12 @@ export const getDemandesPreviewTeamAll = () => {
         },
       };
 
+      let objFilter = Object.entries(query)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
       const { data } = await axios.get(
-        `/api/demandes/for/preview/team/all`,
+        `/api/demandes/for/preview/team/all?${objFilter}`,
         config
       );
       dispatch({ type: DEMANDE_PREVIEW_TEAM_ADMIN_SUCCESS, payload: data });

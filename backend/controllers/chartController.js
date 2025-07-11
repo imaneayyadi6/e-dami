@@ -7,11 +7,24 @@ import mongoose from "mongoose";
 // @route   GET /api/charts/users
 // @access  private
 export const chartGetUsers = asyncHandler(async (req, res) => {
-  let result = null;
+  const monthNames = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+  ];
+
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
-    result = await Utilisateur.aggregate([
+    
+    // Fix timezone issues by setting explicit times
+    startDate.setHours(0, 0, 0, 0); // Start of day
+    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    console.log("🔍 Using date range:", { startDate, endDate });
+    console.log("🔍 StartDate ISO:", startDate.toISOString());
+    console.log("🔍 EndDate ISO:", endDate.toISOString());
+    
+    const result = await Utilisateur.aggregate([
       {
         $match: {
           createdAt: {
@@ -22,32 +35,98 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$createdAt" } },
+          _id: { 
             year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
     ]);
+
+    // Generate all months in the range in correct chronological order
+    const allMonthsInRange = [];
+    let currentYear = startDate.getFullYear();
+    let currentMonth = startDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const finalResult = allMonthsInRange.map(monthInfo => {
+      const existingData = result.find(item => 
+        item.monthName === monthInfo.monthKey && item.year === monthInfo.year
+      );
+      return {
+        month: monthInfo.monthDisplay,
+        count: existingData ? existingData.count : 0
+      };
+    });
+
+    res.json(finalResult);
   } else {
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
-    result = await Utilisateur.aggregate([
+    
+    const result = await Utilisateur.aggregate([
       {
         $match: {
           createdAt: { $gte: fiveMonthsAgo },
@@ -55,41 +134,119 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$createdAt" } },
+          _id: { 
             year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
     ]);
+
+    // Generate all months for the last 5 months in correct chronological order
+    const currentDate = new Date();
+    const allMonthsInRange = [];
+    let currentYear = fiveMonthsAgo.getFullYear();
+    let currentMonth = fiveMonthsAgo.getMonth();
+    const endYear = currentDate.getFullYear();
+    const endMonth = currentDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const finalResult = allMonthsInRange.map(monthInfo => {
+      const existingData = result.find(item => 
+        item.monthName === monthInfo.monthKey && item.year === monthInfo.year
+      );
+      return {
+        month: monthInfo.monthDisplay,
+        count: existingData ? existingData.count : 0
+      };
+    });
+
+    res.json(finalResult);
   }
-  res.json(result);
 });
 
 // @desc    recuperer option&dami par moi
 // @route   GET /api/charts/options
 // @access  private
 export const chartGetOptions = asyncHandler(async (req, res) => {
-  let result = null;
+  const monthNames = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+  ];
+
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
-    result = await Option.aggregate([
+    
+    // Fix timezone issues by setting explicit times
+    startDate.setHours(0, 0, 0, 0); // Start of day
+    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    console.log("🔍 Using date range:", { startDate, endDate });
+    console.log("🔍 StartDate ISO:", startDate.toISOString());
+    console.log("🔍 EndDate ISO:", endDate.toISOString());
+    
+    const result = await Option.aggregate([
       {
         $match: {
           createdAt: {
@@ -100,32 +257,98 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$createdAt" } },
+          _id: { 
             year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
     ]);
+
+    // Generate all months in the range in correct chronological order
+    const allMonthsInRange = [];
+    let currentYear = startDate.getFullYear();
+    let currentMonth = startDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const finalResult = allMonthsInRange.map(monthInfo => {
+      const existingData = result.find(item => 
+        item.monthName === monthInfo.monthKey && item.year === monthInfo.year
+      );
+      return {
+        month: monthInfo.monthDisplay,
+        count: existingData ? existingData.count : 0
+      };
+    });
+
+    res.json(finalResult);
   } else {
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
-    result = await Option.aggregate([
+    
+    const result = await Option.aggregate([
       {
         $match: {
           createdAt: { $gte: fiveMonthsAgo },
@@ -133,30 +356,95 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$createdAt" } },
+          _id: { 
             year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
     ]);
+
+    // Generate all months for the last 5 months in correct chronological order
+    const currentDate = new Date();
+    const allMonthsInRange = [];
+    let currentYear = fiveMonthsAgo.getFullYear();
+    let currentMonth = fiveMonthsAgo.getMonth();
+    const endYear = currentDate.getFullYear();
+    const endMonth = currentDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const finalResult = allMonthsInRange.map(monthInfo => {
+      const existingData = result.find(item => 
+        item.monthName === monthInfo.monthKey && item.year === monthInfo.year
+      );
+      return {
+        month: monthInfo.monthDisplay,
+        count: existingData ? existingData.count : 0
+      };
+    });
+
+    res.json(finalResult);
   }
-  res.json(result);
 });
 
 // @desc    recuperer le nombre d'options pour chaque sous-categorie
@@ -227,11 +515,49 @@ export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
 // @route   GET /api/charts/lines/demandes
 // @access  private
 export const chartLineGetDemandes = asyncHandler(async (req, res) => {
-  let result = null;
+  const monthNames = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+  ];
+
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
-    result = await Demande.aggregate([
+    
+    // Fix timezone issues by setting explicit times
+    startDate.setHours(0, 0, 0, 0); // Start of day
+    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    console.log("🔍 Using date range:", { startDate, endDate });
+    console.log("🔍 StartDate ISO:", startDate.toISOString());
+    console.log("🔍 EndDate ISO:", endDate.toISOString());
+    
+    // Let's check what documents exist in the date range WITHOUT user filtering first
+    const totalDocsInRange = await Demande.countDocuments({
+      dateDemande: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+    console.log("🔍 Total documents in date range (all users):", totalDocsInRange);
+    
+    // Now check documents for this specific user
+    const userDocsInRange = await Demande.countDocuments({
+      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+      dateDemande: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+    console.log("🔍 User documents in date range:", userDocsInRange);
+    
+    // Let's see some sample documents for this user (any date)
+    const sampleUserDocs = await Demande.find({
+      "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+    }).limit(3).select('dateDemande traitement').sort({ dateDemande: -1 });
+    console.log("🔍 Sample user documents (recent):", JSON.stringify(sampleUserDocs, null, 2));
+
+    const aggregatePipeline = [
       {
         $match: {
           dateDemande: {
@@ -242,32 +568,120 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$dateDemande" } },
+          _id: { 
             year: { $year: "$dateDemande" },
+            month: { $month: "$dateDemande" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
-    ]);
+    ];
+
+    // Use the aggregate method to apply the pipeline to your model
+    const result = await Demande.aggregate(aggregatePipeline);
+    
+    console.log("🔍 Raw aggregation result:", result);
+    console.log("🔍 Result length:", result.length);
+
+    // Generate all months in the range in correct chronological order
+    const allMonthsInRange = [];
+    let currentYear = startDate.getFullYear();
+    let currentMonth = startDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const formattedResult = {};
+    allMonthsInRange.forEach(monthInfo => {
+      formattedResult[monthInfo.monthDisplay] = {
+        "en cours": 0,
+        "refuse": 0,
+        "approuve": 0
+      };
+    });
+
+    // Fill with actual data
+    result.forEach((item) => {
+      const statusCounts = {};
+      item.statusCounts.forEach((statusItem) => {
+        statusCounts[statusItem.status] = Number(statusItem.count);
+      });
+      
+      // Find the correct month display name from our generated range
+      const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
+      if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
+        formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
+      }
+    });
+    
+    console.log("🔍 Final formattedResult:", formattedResult);
+    console.log("🔍 Final result keys:", Object.keys(formattedResult));
+    
+    res.json(formattedResult);
   } else {
     const fiveMonthsAgo = new Date();
     fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
-    result = await Demande.aggregate([
+    
+    const result = await Demande.aggregate([
       {
         $match: {
           dateDemande: { $gte: fiveMonthsAgo },
@@ -275,30 +689,95 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: {
-            month: { $dateToString: { format: "%B", date: "$dateDemande" } },
+          _id: { 
             year: { $year: "$dateDemande" },
+            month: { $month: "$dateDemande" }
           },
           count: { $sum: 1 },
         },
       },
       {
-        $project: {
-          month: "$_id.month",
-          _id: 0,
+        $sort: { "_id.year": 1, "_id.month": 1 },
+      },
+      {
+        $addFields: {
+          monthName: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
+              ],
+              default: "Unknown",
+            },
+          },
           year: "$_id.year",
-          count: 1,
+          monthIndex: "$_id.month"
         },
       },
       {
-        $sort: {
+        $project: {
+          _id: 0,
+          monthName: 1,
           year: 1,
-          month: 1,
+          monthIndex: 1,
+          count: 1,
         },
       },
     ]);
+
+    // Generate all months for the last 5 months in correct chronological order
+    const currentDate = new Date();
+    const allMonthsInRange = [];
+    let currentYear = fiveMonthsAgo.getFullYear();
+    let currentMonth = fiveMonthsAgo.getMonth();
+    const endYear = currentDate.getFullYear();
+    const endMonth = currentDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
+    const finalResult = allMonthsInRange.map(monthInfo => {
+      const existingData = result.find(item => 
+        item.monthName === monthInfo.monthKey && item.year === monthInfo.year
+      );
+      return {
+        month: monthInfo.monthDisplay,
+        count: existingData ? existingData.count : 0
+      };
+    });
+
+    res.json(finalResult);
   }
-  res.json(result);
 });
 
 // @desc    Recuperer les demandes 'bars'
@@ -404,9 +883,19 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
 // @route   GET /api/charts/lines/demandes/signataire
 // @access  private
 export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
+  console.log("🔍 chartLinesSignataireDemandes called with:");
+  console.log("  - query:", req.query);
+  console.log("  - user.id:", req.user.id);
+  
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
+    
+    // Fix timezone issues by setting explicit times
+    startDate.setHours(0, 0, 0, 0); // Start of day
+    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    console.log("🔍 Using date range:", { startDate, endDate });
 
     const aggregatePipeline = [
       {
@@ -420,6 +909,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       },
       {
         $project: {
+          year: { $year: "$dateDemande" },
           month: { $month: "$dateDemande" },
           traitement: "$traitement",
         },
@@ -428,17 +918,23 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         $unwind: "$traitement",
       },
       {
+        $match: {
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
         $group: {
           _id: {
+            year: "$year",
             month: "$month",
-            status: "$traitement",
+            status: "$traitement.status",
           },
           count: { $sum: 1 },
         },
       },
       {
         $group: {
-          _id: "$_id.month",
+          _id: { year: "$_id.year", month: "$_id.month" },
           statusCounts: {
             $push: {
               status: "$_id.status",
@@ -448,54 +944,112 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         },
       },
       {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+      {
         $addFields: {
           monthString: {
             $switch: {
               branches: [
-                { case: { $eq: ["$_id", 1] }, then: "Janvier" },
-                { case: { $eq: ["$_id", 2] }, then: "Février" },
-                { case: { $eq: ["$_id", 3] }, then: "Mars" },
-                { case: { $eq: ["$_id", 4] }, then: "Avril" },
-                { case: { $eq: ["$_id", 5] }, then: "Mai" },
-                { case: { $eq: ["$_id", 6] }, then: "Juin" },
-                { case: { $eq: ["$_id", 7] }, then: "Juillet" },
-                { case: { $eq: ["$_id", 8] }, then: "Août" },
-                { case: { $eq: ["$_id", 9] }, then: "Septembre" },
-                { case: { $eq: ["$_id", 10] }, then: "Octobre" },
-                { case: { $eq: ["$_id", 11] }, then: "Novembre" },
-                { case: { $eq: ["$_id", 12] }, then: "Décembre" },
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
               ],
               default: "Unknown",
             },
           },
+          year: "$_id.year",
         },
       },
       {
         $project: {
           _id: 0,
           month: "$monthString",
+          year: 1,
           statusCounts: 1,
-        },
-      },
-      {
-        $sort: {
-          month: 1,
         },
       },
     ];
 
     // Use the aggregate method to apply the pipeline to your model
     const result = await Demande.aggregate(aggregatePipeline);
+    
+    console.log("🔍 Raw aggregation result:", result);
+    console.log("🔍 Result length:", result.length);
 
+    // Generate all months in the range in correct chronological order
+    const monthNames = [
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
+
+    const allMonthsInRange = [];
+    let currentYear = startDate.getFullYear();
+    let currentMonth = startDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+
+    // Initialize result with all months in correct chronological order
     const formattedResult = {};
+    allMonthsInRange.forEach(monthInfo => {
+      formattedResult[monthInfo.monthDisplay] = {
+        "en cours": 0,
+        "refuse": 0,
+        "approuve": 0
+      };
+    });
+
+    // Fill with actual data
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
-        if (String(statusItem.status.utilisateur) === String(req.user.id))
-          statusCounts[statusItem.status.status] = Number(statusItem.count);
+        statusCounts[statusItem.status] = Number(statusItem.count);
       });
-      formattedResult[item.month] = statusCounts;
+      
+      // Find the correct month display name from our generated range
+      const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
+      if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
+        formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
+      }
     });
+    
+    console.log("🔍 Final formattedResult:", formattedResult);
+    console.log("🔍 Final result keys:", Object.keys(formattedResult));
+    
     res.json(formattedResult);
   } else {
     const aggregatePipeline = [
@@ -503,12 +1057,13 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         $match: {
           "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
           dateDemande: {
-            $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)),
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 4)),
           },
         },
       },
       {
         $project: {
+          year: { $year: "$dateDemande" },
           month: { $month: "$dateDemande" },
           traitement: "$traitement",
         },
@@ -517,17 +1072,23 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         $unwind: "$traitement",
       },
       {
+        $match: {
+          "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
         $group: {
           _id: {
+            year: "$year",
             month: "$month",
-            status: "$traitement",
+            status: "$traitement.status",
           },
           count: { $sum: 1 },
         },
       },
       {
         $group: {
-          _id: "$_id.month",
+          _id: { year: "$_id.year", month: "$_id.month" },
           statusCounts: {
             $push: {
               status: "$_id.status",
@@ -537,53 +1098,115 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
         },
       },
       {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+      {
         $addFields: {
           monthString: {
             $switch: {
               branches: [
-                { case: { $eq: ["$_id", 1] }, then: "Janvier" },
-                { case: { $eq: ["$_id", 2] }, then: "Février" },
-                { case: { $eq: ["$_id", 3] }, then: "Mars" },
-                { case: { $eq: ["$_id", 4] }, then: "Avril" },
-                { case: { $eq: ["$_id", 5] }, then: "Mai" },
-                { case: { $eq: ["$_id", 6] }, then: "Juin" },
-                { case: { $eq: ["$_id", 7] }, then: "Juillet" },
-                { case: { $eq: ["$_id", 8] }, then: "Août" },
-                { case: { $eq: ["$_id", 9] }, then: "Septembre" },
-                { case: { $eq: ["$_id", 10] }, then: "Octobre" },
-                { case: { $eq: ["$_id", 11] }, then: "Novembre" },
-                { case: { $eq: ["$_id", 12] }, then: "Décembre" },
+                { case: { $eq: ["$_id.month", 1] }, then: "Janvier" },
+                { case: { $eq: ["$_id.month", 2] }, then: "Février" },
+                { case: { $eq: ["$_id.month", 3] }, then: "Mars" },
+                { case: { $eq: ["$_id.month", 4] }, then: "Avril" },
+                { case: { $eq: ["$_id.month", 5] }, then: "Mai" },
+                { case: { $eq: ["$_id.month", 6] }, then: "Juin" },
+                { case: { $eq: ["$_id.month", 7] }, then: "Juillet" },
+                { case: { $eq: ["$_id.month", 8] }, then: "Août" },
+                { case: { $eq: ["$_id.month", 9] }, then: "Septembre" },
+                { case: { $eq: ["$_id.month", 10] }, then: "Octobre" },
+                { case: { $eq: ["$_id.month", 11] }, then: "Novembre" },
+                { case: { $eq: ["$_id.month", 12] }, then: "Décembre" },
               ],
               default: "Unknown",
             },
           },
+          year: "$_id.year",
         },
       },
       {
         $project: {
           _id: 0,
           month: "$monthString",
+          year: 1,
           statusCounts: 1,
-        },
-      },
-      {
-        $sort: {
-          month: 1,
         },
       },
     ];
 
     // Use the aggregate method to apply the pipeline to your model
     const result = await Demande.aggregate(aggregatePipeline);
+    
+    console.log("🔍 Raw aggregation result:", result);
+    console.log("🔍 Result length:", result.length);
+
+    // Generate all months for the last 4 months in correct chronological order
+    const monthNames = [
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
+    
+    const currentDate = new Date();
+    const fourMonthsAgo = new Date(new Date().setMonth(new Date().getMonth() - 4));
+    
+    const allMonthsInRange = [];
+    let currentYear = fourMonthsAgo.getFullYear();
+    let currentMonth = fourMonthsAgo.getMonth();
+    const endYear = currentDate.getFullYear();
+    const endMonth = currentDate.getMonth();
+    const currentYearRef = new Date().getFullYear();
+    
+    while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+      const monthName = monthNames[currentMonth];
+      // Include year in display if different from current year or if span crosses years
+      const monthDisplay = (currentYear !== currentYearRef || fourMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
+        ? `${monthName} ${currentYear}` 
+        : monthName;
+      
+      allMonthsInRange.push({
+        monthKey: monthName,
+        monthDisplay: monthDisplay,
+        year: currentYear,
+        monthIndex: currentMonth
+      });
+      
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+    
+    // Initialize result with all months in correct chronological order
     const formattedResult = {};
+    allMonthsInRange.forEach(monthInfo => {
+      formattedResult[monthInfo.monthDisplay] = {
+        "en cours": 0,
+        "refuse": 0,
+        "approuve": 0
+      };
+    });
+    
+    // Fill with actual data
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
-        if (String(statusItem.status.utilisateur) === String(req.user.id))
-          statusCounts[statusItem.status.status] = Number(statusItem.count);
+        statusCounts[statusItem.status] = Number(statusItem.count);
       });
-      formattedResult[item.month] = statusCounts;
+      
+      // Find the correct month display name from our generated range
+      const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
+      if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
+        formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
+      }
     });
+    
+    console.log("🔍 Final formattedResult (else branch):", formattedResult);
+    console.log("🔍 Final result keys (else branch):", Object.keys(formattedResult));
+    
     res.json(formattedResult);
   }
 });
@@ -595,97 +1218,61 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
+    
+    // Fix timezone issues by setting explicit times
+    startDate.setHours(0, 0, 0, 0); // Start of day
+    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    console.log("🔍 Debug chartBarGetSignatairesDemandes - Filtering with dates:");
+    console.log("startDate:", startDate);
+    console.log("endDate:", endDate);
+    console.log("startDate ISO:", startDate.toISOString());
+    console.log("endDate ISO:", endDate.toISOString());
+    console.log("userId:", req.user.id);
 
-    const demandes = await Demande.aggregate([
-      {
-        $match: {
+    // Use same approach as else branch - simpler and more reliable
+    let demandes = JSON.parse(
+      JSON.stringify(
+        await Demande.find({
           "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
           dateDemande: {
             $gte: startDate,
             $lte: endDate,
           },
-        },
-      },
-      {
-        $lookup: {
-          from: "options",
-          localField: "option",
-          foreignField: "_id",
-          as: "option",
-        },
-      },
-      {
-        $unwind: "$option",
-      },
-      {
-        $lookup: {
-          from: "services",
-          localField: "option.service",
-          foreignField: "_id",
-          as: "option.service",
-        },
-      },
-      {
-        $unwind: "$option.service",
-      },
-      {
-        $lookup: {
-          from: "directions",
-          localField: "option.service.direction",
-          foreignField: "_id",
-          as: "option.service.direction",
-        },
-      },
-      {
-        $unwind: "$option.service.direction",
-      },
-      {
-        $lookup: {
-          from: "demandeurs",
-          localField: "demandeur",
-          foreignField: "_id",
-          as: "demandeur",
-        },
-      },
-      {
-        $unwind: "$demandeur",
-      },
-      {
-        $lookup: {
-          from: "directions",
-          localField: "demandeur.direction",
-          foreignField: "_id",
-          as: "demandeur.direction",
-        },
-      },
-      {
-        $unwind: "$demandeur.direction",
-      },
-      {
-        $project: {
-          dateDemande: 1,
-          traitement: {
-            $filter: {
-              input: "$traitement",
-              as: "tr",
-              cond: {
-                $eq: [
-                  "$$tr.utilisateur",
-                  new mongoose.Types.ObjectId(req.user.id),
-                ],
+        })
+          .populate({
+            path: "option",
+            populate: {
+              path: "service",
+              populate: {
+                path: "direction",
               },
             },
-          },
-          option: 1,
-          demandeur: 1,
-        },
-      },
-    ]);
+          })
+          .populate({
+            path: "demandeur",
+            populate: {
+              path: "direction",
+            },
+          })
+      )
+    );
 
-    const ndemandes = demandes.map((demande) => {
-      demande.traitement = demande.traitement || [];
-      return demande;
-    });
+    console.log("🔍 Debug - Raw demandes from find:", demandes.length);
+    console.log("🔍 Debug - First few demandes:", demandes.slice(0, 2));
+
+    let ndemandes = [];
+
+    for (let demande of demandes) {
+      let ntraitement = demande.traitement.filter(
+        (tr) => String(tr.utilisateur) === String(req.user.id)
+      );
+      demande.traitement = ntraitement;
+      ndemandes.push(demande);
+    }
+    
+    console.log("🔍 Debug - Processed ndemandes:", ndemandes.length);
+    console.log("🔍 Debug - Demandes with traitement:", ndemandes.filter(d => d.traitement && d.traitement.length > 0).length);
 
     const stats = {
       labels: getUniqueDirectionLabels(ndemandes),
@@ -694,6 +1281,7 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
       demandeApprouver: getDirectionStats(ndemandes, "approuve"),
     };
 
+    console.log("🔍 Debug - Final stats:", stats);
     res.json(stats);
   } else {
     const fiveMonthsAgo = new Date();
@@ -759,9 +1347,15 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
       directionStats[label] = 0;
     });
 
-    const filteredDemandes = demandes.filter(
-      (demande) => demande.status === status
-    );
+    const filteredDemandes = demandes.filter((demande) => {
+      // Check if demande has traitement and get the status from the traitement
+      if (demande.traitement && demande.traitement.length > 0) {
+        // Get the last traitement status for this user
+        const lastTraitement = demande.traitement[demande.traitement.length - 1];
+        return lastTraitement.status === status;
+      }
+      return false;
+    });
 
     filteredDemandes.forEach((demande) => {
       if (demande && demande.demandeur && demande.demandeur.direction) {
@@ -773,3 +1367,7 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
     return uniqueLabels.map((label) => directionStats[label]);
   }
 });
+
+
+
+

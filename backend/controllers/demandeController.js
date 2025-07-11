@@ -1980,7 +1980,10 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/for/preview/team/all
 // @access  private
 export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
-  let demandes = await Demande.aggregate([
+  const { page = 1, limit = 10, demandeur, option, status, fonction, dateDemande, dateEnvoiTraitement } = req.query;
+
+  // Build the aggregation pipeline
+  let pipeline = [
     {
       $lookup: {
         from: "utilisateurs",
@@ -1992,7 +1995,6 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
     {
       $unwind: "$demandeur",
     },
-
     {
       $lookup: {
         from: "options",
@@ -2004,33 +2006,222 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
     {
       $unwind: "$option",
     },
-    {
-      $sort: {
-        dateDemande: -1,
-      },
+  ];
+
+  // Build match conditions
+  let matchConditions = {
+    "demandeur._id": {
+      $ne: new mongoose.Types.ObjectId(req.user.id),
     },
+  };
 
-    {
-      $match: {
-        "demandeur._id": {
-          $ne: new mongoose.Types.ObjectId(req.user.id),
-        },
-      },
+  // Add filters
+  if (demandeur) {
+    matchConditions.$or = [
+      { "demandeur.nom": { $regex: demandeur, $options: "i" } },
+      { "demandeur.prenom": { $regex: demandeur, $options: "i" } },
+    ];
+  }
+
+  if (option) {
+    matchConditions["option._id"] = new mongoose.Types.ObjectId(option);
+  }
+
+  if (status) {
+    matchConditions.status = status;
+  }
+
+  if (fonction) {
+    matchConditions["demandeur.fonction"] = { $regex: fonction, $options: "i" };
+  }
+
+  if (dateDemande) {
+    const dateDemandeStart = new Date(dateDemande);
+    const dateDemandeEnd = new Date(dateDemande);
+    dateDemandeStart.setHours(0, 0, 0, 0);
+    dateDemandeEnd.setHours(23, 59, 59, 999);
+    
+    matchConditions["dateDemande"] = {
+      $gte: dateDemandeStart,
+      $lte: dateDemandeEnd
+    };
+  }
+
+  if (dateEnvoiTraitement) {
+    const dateEnvoiStart = new Date(dateEnvoiTraitement);
+    const dateEnvoiEnd = new Date(dateEnvoiTraitement);
+    dateEnvoiStart.setHours(0, 0, 0, 0);
+    dateEnvoiEnd.setHours(23, 59, 59, 999);
+    
+    matchConditions["traitement.dateEnvoi"] = {
+      $gte: dateEnvoiStart,
+      $lte: dateEnvoiEnd
+    };
+  }
+
+  // Add match stage
+  pipeline.push({ $match: matchConditions });
+
+  // Add sort stage
+  pipeline.push({
+    $sort: {
+      dateDemande: -1,
     },
-  ]);
+  });
 
-  // const { page = 1, limit = 50, demandeur, option, status } = req.query;
-  // const searchQuery = {};
+  // Get total count for pagination
+  const totalPipeline = [...pipeline, { $count: "total" }];
+  const totalResult = await Demande.aggregate(totalPipeline);
+  const total = totalResult.length > 0 ? totalResult[0].total : 0;
 
-  // if (demandeur) searchQuery.demandeur = { $regex: demandeur, $options: "i" };
-  // if (option) searchQuery.option = { $regex: option, $options: "i" };
-  // if (status) searchQuery.status = status;
+  // Add pagination stages
+  pipeline.push(
+    { $skip: (page - 1) * parseInt(limit) },
+    { $limit: parseInt(limit) }
+  );
 
-  // const demandes = await Demande.find(searchQuery)
-  //   .populate("option")
-  //   .populate("demandeur")
-  //   .skip((page - 1) * limit)
-  //   .limit(Number(limit));
+  // Execute the aggregation
+  let demandes = await Demande.aggregate(pipeline);
 
-  res.json(demandes);
+  // Populate traitement.utilisateur for each demande to get signataires names
+  demandes = await Promise.all(
+    demandes.map(async (demande) => {
+      const populatedDemande = await Demande.findById(demande._id)
+        .populate("traitement.utilisateur", "nom prenom direction")
+        .populate("option", "autreResponsableTitre")
+        .lean();
+      
+              // Function to get title based on signature code
+        const getSignataireTitle = async (code, option, utilisateur) => {
+          // Handle combined codes like "cds.cdd"
+          if (code && code.includes('.')) {
+            const codes = code.split('.');
+            const titles = [];
+            
+            for (const singleCode of codes) {
+              switch (singleCode.toLowerCase().trim()) {
+                case "cds":
+                  titles.push("Chef de Service");
+                  break;
+                case "cdd":
+                  titles.push("Chef de Département");
+                  break;
+                case "dir":
+                  if (utilisateur && utilisateur.direction) {
+                    try {
+                      const direction = await Direction.findById(utilisateur.direction);
+                      titles.push(direction ? `Directeur de ${direction.libelle}` : "Directeur Hiérarchique");
+                    } catch (error) {
+                      titles.push("Directeur Hiérarchique");
+                    }
+                  } else {
+                    titles.push("Directeur Hiérarchique");
+                  }
+                  break;
+                case "pdd":
+                  titles.push("Propriétaire de Données");
+                  break;
+                case "atr":
+                  titles.push(option?.autreResponsableTitre || "Autre Responsable");
+                  break;
+                case "hiq":
+                  titles.push("Directeur Hiérarchique");
+                  break;
+                case "dg":
+                  titles.push("Directeur Général");
+                  break;
+                case "pdg":
+                  titles.push("Président Directeur Général");
+                  break;
+                default:
+                  // Handle unknown codes in combinations
+                  break;
+              }
+            }
+            
+            return titles.length > 0 ? titles.join(" et ") : "Signataire";
+          }
+          
+          // Handle single codes
+          if (!code) return "Signataire";
+          
+          const cleanCode = code.toLowerCase().trim();
+          
+          switch (cleanCode) {
+            case "cds":
+              return "Chef de Service";
+            case "cdd":
+              return "Chef de Département";
+            case "dir":
+              if (utilisateur && utilisateur.direction) {
+                try {
+                  const direction = await Direction.findById(utilisateur.direction);
+                  return direction ? `Directeur de ${direction.libelle}` : "Directeur Hiérarchique";
+                } catch (error) {
+                  return "Directeur Hiérarchique";
+                }
+              }
+              return "Directeur Hiérarchique";
+            case "pdd":
+              return "Propriétaire de Données";
+            case "atr":
+              return option?.autreResponsableTitre || "Autre Responsable";
+            case "dg":
+              return "Directeur Général";
+            case "pdg":
+              return "Président Directeur Général";
+                            case "hiq":
+                  return "Directeur Hiérarchique";
+            case "":
+            case null:
+            case undefined:
+              return "Signataire";
+            default:
+              // Log unknown codes for debugging
+              console.warn(`Code de signature inconnu: ${code}`);
+              return `Signataire (${code})`;
+          }
+        };
+      
+      // Extract signataires with titles
+      const signataires = await Promise.all(
+        populatedDemande.traitement.map(async (traitement) => {
+          console.log(`🔍 Processing signature code: "${traitement.code}" for user: ${traitement.utilisateur.nom} ${traitement.utilisateur.prenom}`);
+          const titre = await getSignataireTitle(traitement.code, populatedDemande.option, traitement.utilisateur);
+          console.log(`✅ Generated title: "${titre}"`);
+          
+          return {
+            nom: traitement.utilisateur.nom,
+            prenom: traitement.utilisateur.prenom,
+            code: traitement.code,
+            status: traitement.status,
+            titre: titre
+          };
+        })
+      );
+      
+      return {
+        ...demande,
+        signataires,
+        traitement: populatedDemande.traitement
+      };
+    })
+  );
+
+  // Calculate pagination metadata
+  const totalPages = Math.ceil(total / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  res.json({
+    demandes,
+    pagination: {
+      currentPage: parseInt(page),
+      totalPages,
+      totalItems: total,
+      itemsPerPage: parseInt(limit),
+      hasNextPage,
+      hasPrevPage,
+    },
+  });
 });

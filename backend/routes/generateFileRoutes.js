@@ -1,6 +1,7 @@
 import express from "express";
 import {
-  generateImage
+  generateImage,
+  generateExcel
 } from "../controllers/generateFileController.js";
 import { protect } from "../middlewares/authMidlleware.js";
 
@@ -10,6 +11,8 @@ router
   .route("/image")
   .post(protect, generateImage)
 
-
+router
+  .route("/excel")
+  .post(protect, generateExcel)
 
 export default router;

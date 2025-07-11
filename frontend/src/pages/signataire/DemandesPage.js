@@ -5,13 +5,15 @@ import {
   getDemandesToHandle,
   resetGetDemandesToHandle,
 } from "../../redux/demande/demandeActions";
+import { generateExcel } from "../../redux/generate/generateActions";
 import { Message, TableLoading, WarningMessage } from "../../components";
 import { Button, Card, Form } from "react-bootstrap";
 import moment from "moment";
 import { getTypeApprobation } from "../../services";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DemandesPage = () => {
+  const navigate = useNavigate();
   const [callOnce, setCallOnce] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,6 +47,18 @@ const DemandesPage = () => {
     success: successDemandesToHandle,
     data,
   } = demandesToHandle;
+
+    const userLogin = useSelector((state) => state.userLogin);
+  const {
+    userInfo
+  } = userLogin;  
+
+  const excelGenerate = useSelector((state) => state.excelGenerate);
+  const {
+    loading: loadingExcelGenerate,
+    error: errorExcelGenerate,
+    success: successExcelGenerate,
+  } = excelGenerate;
 
   const demandeToHandleFilter = useSelector(
     (state) => state.demandeToHandleFilter
@@ -96,9 +110,8 @@ const DemandesPage = () => {
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`${
-              i === currentPage ? "active" : ""
-            } btn btn-sm btn-light`}
+            className={`${i === currentPage ? "active" : ""
+              } btn btn-sm btn-light`}
           >
             {i}
           </button>
@@ -142,6 +155,20 @@ const DemandesPage = () => {
     setDateDemande(null);
     dispatch(getDemandesToHandle());
   };
+  
+  const excelHandler = () => {
+    // Collect current filter parameters
+    let filters = {};
+    if (option !== null) filters.option = option;
+    if (demandeur !== null) filters.demandeur = demandeur;
+    if (typeApp !== null) filters.typeApp = typeApp;
+    if (status !== null) filters.status = status;
+    if (dateEnvoi !== null) filters.dateEnvoi = dateEnvoi;
+    if (dateDemande !== null) filters.dateDemande = dateDemande;
+
+    // Dispatch the Excel generation action with filters
+    dispatch(generateExcel(filters));
+  };
 
   useEffect(() => {
     if (!callOnce) {
@@ -171,21 +198,52 @@ const DemandesPage = () => {
           {errorDemandesToHandleFilter}
         </Message>
       )}
+      {errorExcelGenerate && (
+        <Message itWillBeHidden type="danger">
+          {errorExcelGenerate}
+        </Message>
+      )}
+      {successExcelGenerate && (
+        <Message itWillBeHidden type="success">
+          Excel généré et téléchargé avec succès !
+        </Message>
+      )}
       <Card className="h-100">
         <Card.Body>
           {loadingDemandesToHandle && <TableLoading />}
 
           <>
             {!loadingDemandesToHandle && successDemandesToHandleFilter && (
-              <>
-                <Button variant="dark" onClick={filterHnadler}>
-                  <i className="fa-solid fa-filter"></i> filtrer
-                </Button>
-                <Button variant="light" onClick={resetFilterHandler}>
-                  <i className="fa-solid fa-filter-circle-xmark"></i> annuler le
-                  filter
-                </Button>
-              </>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <Button variant="dark" onClick={filterHnadler}>
+                    <i className="fa-solid fa-filter"></i> filtrer
+                  </Button>
+                  <Button variant="light" onClick={resetFilterHandler}>
+                    <i className="fa-solid fa-filter-circle-xmark"></i> annuler le
+                    filter
+                  </Button>
+                </div>
+                {userInfo && userInfo.service && userInfo.service.libelle && String(userInfo.service.libelle).toUpperCase() === "SERVICE MAINTENANCE ASSISTANCE ET FORMATION" && (
+                  <div>
+                    <Button 
+                      variant="success" 
+                      onClick={excelHandler}
+                      disabled={loadingExcelGenerate}
+                    >
+                      {loadingExcelGenerate ? (
+                        <>
+                          <i className="fa-solid fa-spinner fa-spin"></i> Génération...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-file-excel"></i> extraction excel
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </div>
             )}
 
             <hr />
@@ -304,65 +362,65 @@ const DemandesPage = () => {
 
                 <tbody>
                   {successDemandesToHandleFilter &&
-                  data &&
-                  data.traitements.length > 0
+                    data &&
+                    data.traitements.length > 0
                     ? data.traitements.map((traitement) => (
-                        <tr>
-                          <td>
-                            <small className="inline-text">
-                              {traitement.demandeur}
-                            </small>
-                          </td>
-                          <td>
-                            <small className="inline-text">
-                              {moment(traitement.dateDemande).format(
-                                "DD-MM-YYYY, h:mm"
-                              )}
-                            </small>
-                          </td>
-                          <td>
-                            <small className="inline-text">
-                              {moment(traitement.dateEnvoi).format(
-                                "DD-MM-YYYY, h:mm"
-                              )}
-                            </small>
-                          </td>
-                          <td>
-                            <small className="inline-text">
-                              {String(traitement.option).toLowerCase()}
-                            </small>
-                          </td>
+                      <tr>
+                        <td>
+                          <small className="inline-text">
+                            {String(traitement.demandeur).toLowerCase()}
+                          </small>
+                        </td>
+                        <td>
+                          <small className="inline-text">
+                            {moment(traitement.dateDemande).format(
+                              "DD-MM-YYYY, h:mm"
+                            )}
+                          </small>
+                        </td>
+                        <td>
+                          <small className="inline-text">
+                            {moment(traitement.dateEnvoi).format(
+                              "DD-MM-YYYY, h:mm"
+                            )}
+                          </small>
+                        </td>
+                        <td>
+                          <small className="inline-text">
+                            {String(traitement.option).toLowerCase()}
+                          </small>
+                        </td>
 
-                          <td>
-                            <small
-                              className={`table-text-status-${String(
-                                traitement.status
-                              ).replace(/\s/g, "")}`}
-                            >
-                              {traitement.status}
-                            </small>
-                          </td>
-                          <td>
-                            <Link
-                              className="btn btn-sm btn-light"
-                              to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}
-                            >
-                              traiter
-                            </Link>
-                          </td>
-                        </tr>
-                      ))
+                        <td>
+                          <small
+                            className={`table-text-status-${String(
+                              traitement.status
+                            ).replace(/\s/g, "")}`}
+                          >
+                            {traitement.status}
+                          </small>
+                        </td>
+                        <td>
+                          <Link
+                            className="btn btn-sm btn-light"
+                            to={`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`}
+                          >
+                            traiter
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
                     : successDemandesToHandle && (
-                        <tr>
-                          <td colSpan={1000}>
-                            <div className="d-flex justify-content-center py-5">
-                              <WarningMessage
-                                message={"Aucune demande trouvée"}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td colSpan={1000}>
+                          <div className="d-flex justify-content-center py-5">
+                            <WarningMessage
+                              message={"Aucune demande trouvée"}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
               {successDemandesToHandleFilter && data && (

@@ -65,6 +65,8 @@ const Table = ({
   dropdownFilters,
   showDetailsRowSpecificData,
   showDetailsLink,
+  disableFilters = false,
+  disablePagination = false,
 }) => {
   const [callOnce, setCallOnce] = useState(false);
 
@@ -74,38 +76,52 @@ const Table = ({
   );
   const filteredData = useMemo(() => data, []);
 
+  const tableConfig = {
+    columns: filteredColumns,
+    data: filteredData,
+  };
+
+  // Conditionally add pagination only if not disabled
+  const tableHooks = [useFilters];
+  if (!disablePagination) {
+    tableHooks.push(usePagination);
+  }
+
+  const tableInstance = useTable(tableConfig, ...tableHooks);
+  
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     page,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
+    rows,
     prepareRow,
-    pageOptions,
-    gotoPage,
-    pageCount,
-    setPageSize,
     state,
-  } = useTable(
-    {
-      columns: filteredColumns,
-      data: filteredData,
-    },
-    useFilters,
-    usePagination
-  );
+  } = tableInstance;
 
-  const { pageIndex } = state;
+  // Only destructure pagination props if pagination is enabled
+  const {
+    nextPage = () => {},
+    previousPage = () => {},
+    canNextPage = false,
+    canPreviousPage = false,
+    pageOptions = [],
+    gotoPage = () => {},
+    pageCount = 0,
+    setPageSize = () => {},
+  } = disablePagination ? {} : tableInstance;
+
+  // Use all rows when pagination is disabled, otherwise use page
+  const rowsToDisplay = disablePagination ? rows : page;
+
+  const { pageIndex } = state || {};
 
   useEffect(() => {
-    if (!callOnce) {
+    if (!callOnce && !disablePagination) {
       setPageSize(7);
       setCallOnce(true);
     }
-  }, [callOnce]);
+  }, [callOnce, disablePagination]);
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props} className="bg-warning">
@@ -204,7 +220,7 @@ const Table = ({
                   <th {...column.getHeaderProps()}>
                     <div className="d-flex flex-column justify-content-center inline-text">
                       <small>{column.render("Header")}</small>
-                      {column.filter ? (
+                      {!disableFilters && column.filter ? (
                         <div>
                           {dropdownFilters &&
                           dropdownFilters.includes(column.filter) ? (
@@ -217,7 +233,7 @@ const Table = ({
                           )}
                         </div>
                       ) : (
-                        <div style={{ marginBottom: "32px" }}></div>
+                        <div style={{ marginBottom: disableFilters ? "0px" : "32px" }}></div>
                       )}
                     </div>
                   </th>
@@ -227,7 +243,7 @@ const Table = ({
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {rowsToDisplay.map((row) => {
               prepareRow(row);
               const rowId = row.original._id;
               const isDeleted = row.original.isDeleted;
@@ -261,6 +277,8 @@ const Table = ({
                             </td>
                           );
                         }
+
+
                         return (
                           <td
                             {...cell.getCellProps()}
@@ -268,7 +286,17 @@ const Table = ({
                               row.original.notSavedYet && "text-warning"
                             }`}
                           >
-                            <small>{cell.render("Cell")}</small>
+                            <small
+                              className={`${
+                                columnName === "Status" || columnName === "status"
+                                  ? `table-text-status-${String(
+                                      cell.value
+                                    ).replace(/\s/g, "")}`
+                                  : ""
+                              }`}
+                            >
+                              {cell.render("Cell")}
+                            </small>
                           </td>
                         );
                       })}
@@ -369,26 +397,28 @@ const Table = ({
                           </td>
                         );
                       }
-                      return (
-                        <td
-                          {...cell.getCellProps()}
-                          className={`column-text ${
-                            row.original.notSavedYet && "text-warning"
-                          }`}
-                        >
-                          <small
-                            className={`${
-                              columnName === "status"
-                                ? `table-text-status-${String(
-                                    cell.value
-                                  ).replace(/\s/g, "")}`
-                                : ""
+
+
+                                              return (
+                          <td
+                            {...cell.getCellProps()}
+                            className={`column-text ${
+                              row.original.notSavedYet && "text-warning"
                             }`}
                           >
-                            {cell.render("Cell")}
-                          </small>
-                        </td>
-                      );
+                            <small
+                              className={`${
+                                columnName === "Status" || columnName === "status"
+                                  ? `table-text-status-${String(
+                                      cell.value
+                                    ).replace(/\s/g, "")}`
+                                  : ""
+                              }`}
+                            >
+                              {cell.render("Cell")}
+                            </small>
+                          </td>
+                        );
                     })}
 
                     <td>
@@ -462,18 +492,22 @@ const Table = ({
           </tbody>
         </table>
       </div>
-      <hr />
-      <div className="d-flex justify-content-center mt-2">
-        <div className="d-flex align-items-center">
-          <small>
-            Page{" "}
-            <span style={{ fontWeight: "bold" }}>
-              {pageIndex + 1} de {pageOptions.length}
-            </span>
-          </small>
-          <div>{renderPaginationButtons()} </div>
-        </div>
-      </div>
+      {!disablePagination && (
+        <>
+          <hr />
+          <div className="d-flex justify-content-center mt-2">
+            <div className="d-flex align-items-center">
+              <small>
+                Page{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {pageIndex + 1} de {pageOptions.length}
+                </span>
+              </small>
+              <div>{renderPaginationButtons()} </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };
