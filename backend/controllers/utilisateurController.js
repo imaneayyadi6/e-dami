@@ -264,6 +264,8 @@ export const createUser = asyncHandler(async (req, res) => {
     roles,
     service: serviceID,
     direction: directionID,
+    departement: departementID,
+    interim: interimID,
     isChefDeService,
     isDirecteur,
   } = req.body;
@@ -296,6 +298,29 @@ export const createUser = asyncHandler(async (req, res) => {
         };
 
         let service = null;
+        let departement = null;
+        let interim = null;
+        
+        if (departementID) {
+          departement = await Departement.findById(departementID);
+          if (departement) {
+            obj.departement = departement._id;
+          } else {
+            res.status(404);
+            throw new Error("departement introuvable !");
+          }
+        }
+        
+        if (interimID) {
+          interim = await Utilisateur.findById(interimID);
+          if (interim) {
+            obj.interim = interim._id;
+          } else {
+            res.status(404);
+            throw new Error("utilisateur interim introuvable !");
+          }
+        }
+        
         if (serviceID) {
           service = await Service.findById(serviceID);
           if (service) {
@@ -361,6 +386,8 @@ export const getUsers = asyncHandler(async (req, res) => {
     .populate("roles.role")
     .populate("direction")
     .populate("service")
+    .populate("departement")
+    .populate("interim")
     .select("-password");
   res.json(users);
 });
@@ -373,6 +400,8 @@ export const getUserByID = asyncHandler(async (req, res) => {
     .populate("roles.role")
     .populate("direction")
     .populate("service")
+    .populate("departement")
+    .populate("interim")
     .select("-password");
   if (user) res.json(user);
   else {
@@ -431,7 +460,9 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
     gsm,
     roles,
     direction: directionID,
+    departement: departementID,
     service: serviceID,
+    interim: interimID,
     isChefDeService,
     isDirecteur,
   } = req.body;
@@ -471,6 +502,26 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
       } else {
         res.status(404);
         throw new Error("direction introuvable !");
+      }
+    }
+
+    if (departementID && String(departementID) !== String(utilisateur.departement)) {
+      let departement = await Departement.findById(departementID);
+      if (departement) {
+        utilisateur.departement = departement._id;
+      } else {
+        res.status(404);
+        throw new Error("departement introuvable !");
+      }
+    }
+
+    if (interimID && String(interimID) !== String(utilisateur.interim)) {
+      let interim = await Utilisateur.findById(interimID);
+      if (interim) {
+        utilisateur.interim = interim._id;
+      } else {
+        res.status(404);
+        throw new Error("utilisateur interim introuvable !");
       }
     }
 
@@ -530,6 +581,8 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
     await updatedUser.populate("roles.role");
     await updatedUser.populate("service");
     await updatedUser.populate("direction");
+    await updatedUser.populate("departement");
+    await updatedUser.populate("interim");
 
     res.json(updatedUser);
   } else {
@@ -611,56 +664,6 @@ export const getInterimUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier l'interim
-// @route   PUT /api/utilisateurs/interim/:matricule
-// @access  private
-export const putInterimUser = asyncHandler(async (req, res) => {
-  const heIsInterim = await Utilisateur.findOne({
-    interim: req.user.id,
-  });
-
-  if (!heIsInterim) {
-    const interimUtilisateur = await Utilisateur.findOne({
-      matricule: Number(req.params.matricule),
-    });
-    if (interimUtilisateur) {
-      const loggedUtilisateur = await Utilisateur.findById(req.user.id);
-      if (!loggedUtilisateur.interim || loggedUtilisateur.interim === "") {
-        const checkInterim = await Utilisateur.findOne({
-          interim: interimUtilisateur._id,
-        });
-
-        if (checkInterim) {
-          res.status(400);
-          throw new Error("Utilisateur déjà défini comme interim !");
-        } else {
-          const signataireRole = await Role.findOne({ code: "sig" });
-          const findIndexSigRole = interimUtilisateur.roles.findIndex(
-            (r) => String(r.role) === String(signataireRole._id)
-          );
-          if (findIndexSigRole === -1) {
-            interimUtilisateur.roles.push({ role: signataireRole._id });
-          }
-          loggedUtilisateur.interim = interimUtilisateur._id;
-          await loggedUtilisateur.save();
-          await interimUtilisateur.save();
-
-          res.json({ message: "Interim défini avec succès" });
-        }
-      } else {
-        res.status(400);
-        throw new Error("Vous avez déjà défini un interim !");
-      }
-    } else {
-      res.status(404);
-      throw new Error("utilisateur interim introuvable !");
-    }
-  } else {
-    res.status(400);
-    throw new Error("Vous etes déjà défini comme un interim !");
-  }
-});
-
 // @desc    Supprimer l'interim
 // @route   DELETE /api/utilisateurs/interim/
 // @access  private
@@ -678,7 +681,7 @@ export const removeInterimUser = asyncHandler(async (req, res) => {
         !interimUtilisateur.isChefDeService &&
         !interimUtilisateur.isChefDeDepartement &&
         !interimUtilisateur.isDirecteur &&
-        !interimUtilisateur.isDirecteurAdjoint
+        !interimUtilisateur.isDirecteurAdj
       ) {
         interimUtilisateur.roles = interimUtilisateur.roles.filter(
           (role) => String(role.role) !== String(signataireRole._id)
@@ -696,4 +699,127 @@ export const removeInterimUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Vous n'avez pas défini un interim !");
   }
+});
+
+// @desc    Modifier l'interim d'un utilisateur spécifique (pour admin)
+// @route   PUT /api/utilisateurs/:id/interim/:matricule
+// @access  private
+export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
+  console.log("putInterimUserForAdmin called with:", { userId: req.params.id, matricule: req.params.matricule });
+  
+  const targetUtilisateur = await Utilisateur.findById(req.params.id);
+  if (!targetUtilisateur) {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+
+  const interimUtilisateur = await Utilisateur.findOne({
+    matricule: Number(req.params.matricule),
+  });
+  
+  if (!interimUtilisateur) {
+    res.status(404);
+    throw new Error("utilisateur interim introuvable !");
+  }
+
+  console.log("Target user:", { id: targetUtilisateur._id, nom: targetUtilisateur.nom, interim: targetUtilisateur.interim });
+  console.log("Interim user:", { id: interimUtilisateur._id, nom: interimUtilisateur.nom, matricule: interimUtilisateur.matricule });
+
+  // Vérifier que l'utilisateur sélectionné comme intérim n'est pas déjà défini comme intérim pour quelqu'un d'autre
+  const checkInterim = await Utilisateur.findOne({
+    interim: interimUtilisateur._id,
+  });
+
+  console.log("Check interim result:", checkInterim ? { id: checkInterim._id, nom: checkInterim.nom } : "null");
+
+  if (checkInterim && String(checkInterim._id) !== String(targetUtilisateur._id)) {
+    console.log("Error: User already defined as interim for someone else");
+    console.log("CheckInterim ID:", checkInterim._id);
+    console.log("TargetUtilisateur ID:", targetUtilisateur._id);
+    res.status(400);
+    throw new Error("Utilisateur déjà défini comme interim pour quelqu'un d'autre !");
+  }
+
+  // Vérifier aussi que l'utilisateur interim n'est pas lui-même l'utilisateur cible
+  if (String(interimUtilisateur._id) === String(targetUtilisateur._id)) {
+    console.log("Error: Cannot set user as their own interim");
+    res.status(400);
+    throw new Error("Un utilisateur ne peut pas être son propre intérim !");
+  }
+
+  // Si l'utilisateur sélectionné comme intérim a déjà un intérim différent, on le supprime d'abord
+  if (interimUtilisateur.interim && String(interimUtilisateur.interim) !== String(targetUtilisateur._id)) {
+    console.log("Interim user has different interim, removing it first");
+    const oldInterim = await Utilisateur.findById(interimUtilisateur.interim);
+    if (oldInterim) {
+      const signataireRole = await Role.findOne({ code: "sig" });
+      // Retirer le rôle signataire de l'ancien intérim si nécessaire
+      if (
+        !oldInterim.isChefDeService &&
+        !oldInterim.isChefDeDepartement &&
+        !oldInterim.isDirecteur &&
+        !oldInterim.isDirecteurAdj
+      ) {
+        oldInterim.roles = oldInterim.roles.filter(
+          (role) => String(role.role) !== String(signataireRole._id)
+        );
+        await oldInterim.save();
+      }
+    }
+  }
+
+  // Ajouter le rôle signataire si nécessaire
+  const signataireRole = await Role.findOne({ code: "sig" });
+  const findIndexSigRole = interimUtilisateur.roles.findIndex(
+    (r) => String(r.role) === String(signataireRole._id)
+  );
+  if (findIndexSigRole === -1) {
+    interimUtilisateur.roles.push({ role: signataireRole._id });
+    await interimUtilisateur.save();
+  }
+
+  // Définir l'intérim : l'utilisateur sélectionné aura l'utilisateur cible comme intérim
+  interimUtilisateur.interim = targetUtilisateur._id;
+  await interimUtilisateur.save();
+
+  res.json({ message: "Interim défini avec succès" });
+});
+
+// @desc    Supprimer l'interim d'un utilisateur spécifique (pour admin)
+// @route   DELETE /api/utilisateurs/:id/interim
+// @access  private
+export const removeInterimUserForAdmin = asyncHandler(async (req, res) => {
+  const targetUtilisateur = await Utilisateur.findById(req.params.id);
+  if (!targetUtilisateur) {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+
+  // Chercher l'utilisateur qui a cet utilisateur comme intérim
+  const interimUtilisateur = await Utilisateur.findOne({
+    interim: targetUtilisateur._id,
+  });
+
+  if (!interimUtilisateur) {
+    res.status(404);
+    throw new Error("Aucun intérim trouvé pour cet utilisateur !");
+  }
+
+  const signataireRole = await Role.findOne({ code: "sig" });
+  interimUtilisateur.interim = null;
+
+  // Retirer le rôle signataire si l'utilisateur n'est pas responsable
+  if (
+    !interimUtilisateur.isChefDeService &&
+    !interimUtilisateur.isChefDeDepartement &&
+    !interimUtilisateur.isDirecteur &&
+    !interimUtilisateur.isDirecteurAdj
+  ) {
+    interimUtilisateur.roles = interimUtilisateur.roles.filter(
+      (role) => String(role.role) !== String(signataireRole._id)
+    );
+  }
+  
+  await interimUtilisateur.save();
+  res.json({ message: "Intérim supprimé avec succès !" });
 });

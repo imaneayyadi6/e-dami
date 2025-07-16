@@ -9,9 +9,11 @@ import {
   resetUpdateUserPassword,
   updateUser,
   updateUserPassword,
+  fetchUsers,
 } from "../../redux/user/userActions";
 import { Loader, Message, WarningMessage } from "../../components";
 import { fetchServicesByDirectionID } from "../../redux/service/serviceActions";
+import { fetchDepartementsByDirectionID } from "../../redux/departement/departementActions";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Toast } from "../../services";
@@ -32,6 +34,8 @@ const validationSchema = Yup.object({
   fonction: Yup.string(),
   gsm: Yup.string().matches(/^\+\d{1,4}-\d{1,14}$/, "gsm invalid !!"),
   direction: Yup.string(),
+  departement: Yup.string(),
+  interim: Yup.string(),
   //service: Yup.string(),
   isChefDeService: Yup.boolean(),
   isDirecteur: Yup.boolean(),
@@ -53,6 +57,7 @@ const UtilisateurUpdatePage = () => {
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const userByID = useSelector(state => state.userByID);
@@ -71,6 +76,8 @@ const UtilisateurUpdatePage = () => {
     fonction: "",
     gsm: "",
     direction: "",
+    departement: "",
+    interim: "",
     service: "",
     isChefDeService: false,
     isDirecteur: false,
@@ -104,6 +111,15 @@ const UtilisateurUpdatePage = () => {
     services,
   } = serviceListByDirectionID;
 
+  const departementListByDirectionID = useSelector(
+    state => state.departementListByDirectionID
+  );
+  const {
+    loading: loadingDepartementListByDirectionID,
+    error: errorDepartementListByDirectionID,
+    departements,
+  } = departementListByDirectionID;
+
   const directionList = useSelector(state => state.directionList);
   const {
     loading: loadingDirectionList,
@@ -112,9 +128,27 @@ const UtilisateurUpdatePage = () => {
     directions,
   } = directionList;
 
+  const userList = useSelector(state => state.userList);
+  const {
+    loading: loadingUserList,
+    error: errorUserList,
+    users,
+  } = userList;
+
+
+
+
+
   const getServicesHandler = event => {
     dispatch(fetchServicesByDirectionID(event.target.value));
+    dispatch(fetchDepartementsByDirectionID(event.target.value));
   };
+
+
+
+
+
+
 
   const form = useFormik({
     initialValues,
@@ -139,6 +173,8 @@ const UtilisateurUpdatePage = () => {
         fonction,
         gsm,
         direction,
+        departement,
+        interim,
         service,
         isChefDeService,
         isDirecteur,
@@ -169,6 +205,8 @@ const UtilisateurUpdatePage = () => {
           fonction,
           gsm,
           direction,
+          departement,
+          interim,
           isChefDeService,
           isDirecteur,
           roles,
@@ -208,12 +246,20 @@ const UtilisateurUpdatePage = () => {
       dispatch(resetFetchUserByID());
       dispatch(resetUpdateUser());
       dispatch(fetchDirections());
+      dispatch(fetchUsers());
       dispatch(fetchUserByID(id));
       setCallOnce(true);
     }
 
     if (!loadingUserUpdate && successUserByID && recoveredUser) {
       if (!errorUserUpdate) {
+        // D'abord charger les départements et services si l'utilisateur a une direction
+        if (recoveredUser && recoveredUser.direction) {
+          dispatch(fetchServicesByDirectionID(recoveredUser.direction._id));
+          dispatch(fetchDepartementsByDirectionID(recoveredUser.direction._id));
+        }
+        
+        // Ensuite mettre à jour le formulaire (sans le département pour l'instant)
         form.setValues({
           matricule: recoveredUser ? recoveredUser.matricule : "",
           email: recoveredUser ? recoveredUser.email : "",
@@ -223,6 +269,10 @@ const UtilisateurUpdatePage = () => {
           gsm: recoveredUser ? recoveredUser.gsm : "",
           direction: recoveredUser
             ? recoveredUser.direction && recoveredUser.direction._id
+            : "",
+          departement: "", // On ne définit pas le département ici
+          interim: recoveredUser
+            ? recoveredUser.interim && recoveredUser.interim._id
             : "",
           service: recoveredUser
             ? recoveredUser.service && recoveredUser.service._id
@@ -250,9 +300,6 @@ const UtilisateurUpdatePage = () => {
               ? true
               : false,
         });
-        if (recoveredUser && recoveredUser.direction) {
-          dispatch(fetchServicesByDirectionID(recoveredUser.direction._id));
-        }
       }
     }
     if (successUserUpdate && updatedUser) {
@@ -266,6 +313,12 @@ const UtilisateurUpdatePage = () => {
           gsm: updatedUser ? updatedUser.gsm : "",
           direction: updatedUser
             ? updatedUser.direction && updatedUser.direction._id
+            : "",
+          departement: updatedUser
+            ? updatedUser.departement && updatedUser.departement._id
+            : "",
+          interim: updatedUser
+            ? updatedUser.interim && updatedUser.interim._id
             : "",
           service: updatedUser
             ? updatedUser.service && updatedUser.service._id
@@ -309,16 +362,31 @@ const UtilisateurUpdatePage = () => {
       changePasswordForm.resetForm();
       dispatch(resetUpdateUserPassword());
     }
+
+
   }, [
     callOnce,
     successUserByID,
-    recoveredUser,
     successUserUpdate,
     updatedUser,
     errorUserUpdate,
     loadingUserUpdate,
     successUserUpdatePassword,
+    recoveredUser,
   ]);
+
+  // Effet pour mettre à jour le formulaire quand les départements sont chargés
+  useEffect(() => {
+    if (recoveredUser && !loadingDepartementListByDirectionID && departements.length > 0) {
+      // Mettre à jour le département une fois que les départements sont chargés
+      if (recoveredUser.departement) {
+        form.setFieldValue('departement', recoveredUser.departement._id);
+      }
+    }
+  }, [recoveredUser, loadingDepartementListByDirectionID, departements, form]);
+
+
+
   return (
     <>
       <div className='d-flex justify-content-between align-items-center'>
@@ -342,6 +410,11 @@ const UtilisateurUpdatePage = () => {
           {errorServiceListByDirectionID}
         </Message>
       )}
+      {errorDepartementListByDirectionID && (
+        <Message type='danger' itWillBeHidden>
+          {errorDepartementListByDirectionID}
+        </Message>
+      )}
       {errorUserUpdate && (
         <Message type='danger' itWillBeHidden>
           {errorUserUpdate}
@@ -352,8 +425,9 @@ const UtilisateurUpdatePage = () => {
           {errorUserUpdatePassword}
         </Message>
       )}
+
       {message && <Message type='danger'>{message}</Message>}
-      {loadingUserUpdate || (loadingUserUpdatePassword && <Loader />)}
+      {(loadingUserUpdate || loadingUserUpdatePassword) && <Loader />}
       {errorDirectionList && (
         <Message type='danger' itWillBeHidden>
           {errorDirectionList}
@@ -509,6 +583,37 @@ const UtilisateurUpdatePage = () => {
                       )}
                     </div>
                   </Col>
+                  <Col xl={12} lg={12} md={12} sm={12}>
+                    <div>
+                      <label>Département :</label>
+                      <Form.Select
+                        disabled={
+                          loadingDepartementListByDirectionID ||
+                          !form.values.direction
+                        }
+                        name='departement'
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                        value={form.values.departement}>
+                        <option value=''>
+                          ---- veuillez selectionner un département ----
+                        </option>
+                        {departements.length > 0 &&
+                          departements.map(departement => (
+                            <option key={departement._id} value={departement._id}>
+                              {departement.libelle}
+                            </option>
+                          ))}
+                      </Form.Select>
+                      {form.touched.departement && form.errors.departement && (
+                        <small className='text-danger d-block'>
+                          {form.errors.departement}
+                        </small>
+                      )}
+                    </div>
+                  </Col>
+
+
                   {!form.values.isDirecteur && (
                     <Col xl={12} lg={12} md={12} sm={12}>
                       <div>
@@ -558,6 +663,8 @@ const UtilisateurUpdatePage = () => {
                           fonction: form.values.fonction,
                           gsm: form.values.gsm,
                           direction: form.values.direction,
+                          departement: form.values.departement,
+                          interim: form.values.interim,
                           service: form.values.service,
                           demandeur: form.values.demandeur,
                           createur: form.values.createur,
@@ -586,6 +693,8 @@ const UtilisateurUpdatePage = () => {
                               fonction: form.values.fonction,
                               gsm: form.values.gsm,
                               direction: form.values.direction,
+                              departement: form.values.departement,
+                              interim: form.values.interim,
                               service: form.values.service,
                               demandeur: form.values.demandeur,
                               createur: form.values.createur,
@@ -621,6 +730,8 @@ const UtilisateurUpdatePage = () => {
                               fonction: form.values.fonction,
                               gsm: form.values.gsm,
                               direction: form.values.direction,
+                              departement: form.values.departement,
+                              interim: form.values.interim,
                               service: form.values.service,
                               demandeur: form.values.demandeur,
                               createur: form.values.createur,
@@ -733,6 +844,8 @@ const UtilisateurUpdatePage = () => {
                     {form.errors["atLeastOneChecked"]}
                   </small>
                 )}
+
+
 
                 <Button className='w-100 mt-3' type='submit' variant='dark'>
                   <i className='fa-solid fa-user-pen'></i> modifier

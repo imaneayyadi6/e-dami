@@ -64,7 +64,8 @@ const MesDemandesPage = () => {
                 "option",
                 "status",
               ]}
-              showDetailsRow={(id) => {
+              showDetailsLink="/details-demande"
+              rowClick={(id) => {
                 navigate(`/details-demande/${id}`)
               }}
             />

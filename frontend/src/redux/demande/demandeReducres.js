@@ -81,17 +81,23 @@ export const demandeToHandleReducer = (state = { demandes: [] }, action) => {
   }
 };
 
-export const demandePreviewTeamReducer = (state = { demandes: [] }, action) => {
+export const demandePreviewTeamReducer = (state = { demandes: [], pagination: {}, teamOptions: [] }, action) => {
   const { type, payload } = action;
   switch (type) {
     case DEMANDE_PREVIEW_TEAM_REQUEST:
-      return { loading: true, demandes: [] };
+      return { ...state, loading: true, demandes: [] };
     case DEMANDE_PREVIEW_TEAM_SUCCESS:
-      return { loading: false, success: true, demandes: payload };
+      return { 
+        loading: false, 
+        success: true, 
+        demandes: payload.demandes || payload, 
+        pagination: payload.pagination || {},
+        teamOptions: payload.teamOptions || []
+      };
     case DEMANDE_PREVIEW_TEAM_FAIL:
-      return { loading: false, error: payload, demandes: [] };
+      return { loading: false, error: payload, demandes: [], pagination: {}, teamOptions: [] };
     case DEMANDE_PREVIEW_TEAM_RESET:
-      return { demandes: [] };
+      return { demandes: [], pagination: {}, teamOptions: [] };
     default:
       return state;
   }

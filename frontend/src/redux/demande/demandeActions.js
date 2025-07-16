@@ -122,7 +122,7 @@ export const resetGetDemandesToHandle = () => {
   return { type: DEMANDE_TOHANDLE_LIST_RESET };
 };
 
-export const getDemandesPreviewTeam = () => {
+export const getDemandesPreviewTeam = (query = { page: 1, limit: 10 }) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_PREVIEW_TEAM_REQUEST });
@@ -137,8 +137,12 @@ export const getDemandesPreviewTeam = () => {
         },
       };
 
+      let objFilter = Object.entries(query)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
       const { data } = await axios.get(
-        `/api/demandes/for/preview/team`,
+        `/api/demandes/for/preview/team?${objFilter}`,
         config
       );
       dispatch({ type: DEMANDE_PREVIEW_TEAM_SUCCESS, payload: data });
@@ -325,7 +329,7 @@ export const resetGetDemandeTraitementStatus = () => {
   return { type: DEMANDE_TRAITEMENT_STATUS_RESET };
 };
 
-export const approuveTraitement = (id, idTraitement, docContent) => {
+export const approuveTraitement = (id, idTraitement, docContent, motifValidation) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_REQUEST });
@@ -339,9 +343,11 @@ export const approuveTraitement = (id, idTraitement, docContent) => {
           authorization: `Bearer ${userInfo.token}`,
         },
       };
+      const body = { docContent };
+      if (motifValidation !== undefined) body.motifValidation = motifValidation;
       const { data } = await axios.put(
         `/api/demandes/${id}/approuve/${idTraitement}`,
-        { docContent: docContent },
+        body,
         config
       );
       dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_SUCCESS, payload: data });
@@ -359,7 +365,7 @@ export const resetApprouveTraitement = () => {
   return { type: DEMANDE_APPROUVE_TRAITEMENT_RESET };
 };
 
-export const refuseTraitement = (id, idTraitement, motif) => {
+export const refuseTraitement = (id, idTraitement, formData) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_REQUEST });
@@ -369,13 +375,12 @@ export const refuseTraitement = (id, idTraitement, motif) => {
 
       const config = {
         headers: {
-          "Content-Type": "application/json",
           authorization: `Bearer ${userInfo.token}`,
         },
       };
       const { data } = await axios.put(
         `/api/demandes/${id}/refuse/${idTraitement}`,
-        { motif },
+        formData,
         config
       );
       dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_SUCCESS, payload: data });

@@ -664,3 +664,68 @@ export const deleteUserIntrim = () => {
 export const resetDeleteUserIntrim = () => {
   return { type: USER_DELETE_INTERIM_RESET };
 };
+
+// Nouvelles actions pour la gestion des intérims par admin
+export const putUserIntrimForAdmin = (userId, matricule) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_PUT_INTERIM_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/utilisateurs/${userId}/interim/${matricule}`,
+        {},
+        config
+      );
+
+      dispatch({
+        type: USER_PUT_INTERIM_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_PUT_INTERIM_FAIL, payload: err });
+    }
+  };
+};
+
+export const deleteUserIntrimForAdmin = (userId) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_DELETE_INTERIM_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.delete(`/api/utilisateurs/${userId}/interim`, config);
+
+      dispatch({
+        type: USER_DELETE_INTERIM_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: USER_DELETE_INTERIM_FAIL, payload: err });
+    }
+  };
+};

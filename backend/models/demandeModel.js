@@ -54,9 +54,15 @@ const demandeSchema = Schema({
       motifRefus: {
         type: String,
       },
+      fichierMotifRefus: {
+        type: String,
+      },
       interim: {
         type: Boolean,
         default: false,
+      },
+      motifValidation: {
+        type: String,
       },
     },
   ],

@@ -7,7 +7,7 @@ import {
 } from "../../redux/demande/demandeActions";
 import { generateExcel } from "../../redux/generate/generateActions";
 import { Message, TableLoading, WarningMessage } from "../../components";
-import { Button, Card, Form } from "react-bootstrap";
+import { Button, Card, Form, OverlayTrigger, Popover } from "react-bootstrap";
 import moment from "moment";
 import { getTypeApprobation } from "../../services";
 import { Link, useNavigate } from "react-router-dom";
@@ -155,6 +155,49 @@ const DemandesPage = () => {
     setDateDemande(null);
     dispatch(getDemandesToHandle());
   };
+
+  // Fonction pour tronquer le texte
+  const truncateText = (text, maxLength = 50) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  // Fonction pour obtenir le type de signature
+  const getSignatureType = (traitement) => {
+    const getSignatureTypeForCode = (code) => {
+      switch (code) {
+        case 'cds':
+          return "chef de service";
+        case 'cdd':
+          return "chef de département";
+        case 'hiq':
+          return "directeur hiérarchique";
+        case 'pdd':
+          return "propriétaire de données";
+        case 'atr':
+          // Vérifier si option est un objet ou une string
+          if (typeof traitement.option === 'object' && traitement.option !== null) {
+            return (traitement.option.autreResponsableTitre || "titre non défini").toLowerCase();
+          } else {
+            return "titre non défini (option non trouvée)";
+          }
+        case 'dir':
+          return "directeur de l'entité";
+        default:
+          return "type de signature non défini";
+      }
+    };
+
+    // Vérifier si le code contient des points (codes multiples)
+    if (traitement.code.includes('.')) {
+      const codes = traitement.code.split('.');
+      const signatureTypes = codes.map(code => getSignatureTypeForCode(code));
+      return `en tant que ${signatureTypes.join(' et ')}`;
+    } else {
+      // Code simple
+      return `en tant que ${getSignatureTypeForCode(traitement.code)}`;
+    }
+  };
   
   const excelHandler = () => {
     // Collect current filter parameters
@@ -224,7 +267,7 @@ const DemandesPage = () => {
                     filter
                   </Button>
                 </div>
-                {userInfo && userInfo.service && userInfo.service.libelle && String(userInfo.service.libelle).toUpperCase() === "SERVICE MAINTENANCE ASSISTANCE ET FORMATION" && (
+                {userInfo && userInfo.service && userInfo.service.libelle && (String(userInfo.service.libelle).toUpperCase() === "SERVICE MAINTENANCE ASSISTANCE ET FORMATION" || String(userInfo.service.libelle).toUpperCase() === "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT") && (
                   <div>
                     <Button 
                       variant="success" 
@@ -351,6 +394,11 @@ const DemandesPage = () => {
                           </div>
                         </div>
                       </th>
+                      <th style={{ width: "200px" }}>
+                        <div className="d-flex flex-column justify-content-center inline-text">
+                          <small>type de signature</small>
+                        </div>
+                      </th>
                       <th>
                         <div className="d-flex flex-column justify-content-center inline-text">
                           <small>traiter</small>
@@ -365,7 +413,13 @@ const DemandesPage = () => {
                     data &&
                     data.traitements.length > 0
                     ? data.traitements.map((traitement) => (
-                      <tr>
+                      <tr 
+                        key={traitement.idTraitement}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate(`/details-demande/${traitement.idDemande}/traitement/${traitement.idTraitement}`)}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f8f9fa"}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ""}
+                      >
                         <td>
                           <small className="inline-text">
                             {String(traitement.demandeur).toLowerCase()}
@@ -387,7 +441,7 @@ const DemandesPage = () => {
                         </td>
                         <td>
                           <small className="inline-text">
-                            {String(traitement.option).toLowerCase()}
+                            {String(traitement.option?.libelle || traitement.option).toLowerCase()}
                           </small>
                         </td>
 
@@ -399,6 +453,33 @@ const DemandesPage = () => {
                           >
                             {traitement.status}
                           </small>
+                        </td>
+                        <td>
+                          {(() => {
+                            const signatureType = getSignatureType(traitement);
+                            const truncatedText = truncateText(signatureType, 40);
+                            
+                            return (
+                              <OverlayTrigger
+                                trigger="hover"
+                                placement="top"
+                                overlay={
+                                  <Popover 
+                                    id={`popover-${traitement.idTraitement}`}
+                                    style={{ backgroundColor: 'black', color: 'white' }}
+                                  >
+                                    <Popover.Body style={{ backgroundColor: 'black', color: 'white' }}>
+                                      {signatureType}
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <small className="inline-text" style={{ fontSize: "14px" }}>
+                                  {truncatedText}
+                                </small>
+                              </OverlayTrigger>
+                            );
+                          })()}
                         </td>
                         <td>
                           <Link

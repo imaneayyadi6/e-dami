@@ -13,10 +13,25 @@ import {
   getTypeAppOnCreate,
 } from "../services/getTypeApp.js";
 import { createItopTicket } from "../services/createItopTicketService.js";
+import fs from "fs";
+import path from "path";
 
 const getCv = (cv) => {
   if (cv === "F") return "Mme";
   else return "Mr";
+};
+
+// Fonction pour vérifier si l'utilisateur appartient aux services autorisés pour l'upload de fichiers
+const isUserFromAuthorizedService = async (userId) => {
+  const user = await Utilisateur.findById(userId).populate("service");
+  if (!user || !user.service) return false;
+  
+  const authorizedServices = [
+    "SERVICE MAINTENANCE ASSISTANCE ET FORMATION",
+    "SERVICE MAGAZIN A LA DIRECTION D'EQUIPEMENT"
+  ];
+  
+  return authorizedServices.includes(user.service.libelle);
 };
 
 // @desc    Recuperer les demandes de demandeur
@@ -64,8 +79,33 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
   let demandes = JSON.parse(
     JSON.stringify(
       await Demande.find(userFilter)
-        .populate("option")
-        .populate("demandeur")
+        .populate({
+          path: "option",
+          select: "libelle autreResponsableTitre",
+          populate: [
+            {
+              path: "service",
+              populate: {
+                path: "direction",
+                select: "libelle"
+              }
+            },
+            {
+              path: "departement",
+              populate: {
+                path: "direction",
+                select: "libelle"
+              }
+            }
+          ]
+        })
+        .populate({
+          path: "demandeur",
+          populate: {
+            path: "direction",
+            select: "libelle"
+          }
+        })
         .sort({ "traitement.dateEnvoi": -1 })
         .limit(parseInt(limit))
         .skip((parseInt(page) - 1) * parseInt(limit))
@@ -73,6 +113,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     )
   );
 
+  // Get current user with populated direction information
+  const currentUser = await Utilisateur.findById(req.user.id).populate('direction');
+  
   let traitements = demandes.flatMap((demande) =>
     demande.traitement
       .filter((tr) => String(tr.utilisateur) === String(req.user.id))
@@ -90,7 +133,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
                 demande &&
                 demande.demandeur &&
                 `${demande.demandeur.prenom} ${demande.demandeur.nom}`,
-              option: demande.option.libelle,
+              demandeurObj: demande.demandeur, // Include full demandeur object with direction
+              option: demande.option,
+              directeur: currentUser, // Include current user (director) information with populated direction
             });
           }
         }
@@ -249,7 +294,7 @@ export const createDemande = asyncHandler(async (req, res) => {
          les cas possibles pour un autre utilisateur ===>  :
                     - il peut etre juste un autre utilisateur .
          */
-        atr: ` veuillez la traiter en tant que ${option.autreResponsableTitre}`,
+        atr: ` veuillez la traiter en tant que '${option.autreResponsableTitre.toLowerCase()}'`,
         /*
          les cas possibles pour un directeur ===>  :
                   - il peut etre juste un directeur hiarchique .
@@ -670,7 +715,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
          les cas possibles pour un autre utilisateur ===>  :
                     - il peut etre juste un autre utilisateur .
          */
-        atr: ` en tant que ${demande.option.autreResponsableTitre}`,
+        atr: ` en tant que '${demande.option.autreResponsableTitre.toLowerCase()}'`,
         /*
          les cas possibles pour un chef de departement ===>  :
                   - il peut etre juste un chef de departement .
@@ -742,7 +787,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
          les cas possibles pour un autre utilisateur ===>  :
                     - il peut etre juste un autre utilisateur .
          */
-        atr: ` veuillez l'approuvez ou la refusez en tant que ${demande.option.autreResponsableTitre}`,
+        atr: ` veuillez l'approuvez ou la refusez en tant que '${demande.option.autreResponsableTitre.toLowerCase()}'`,
         /*
          les cas possibles pour un chef de departement ===>  :
                   - il peut etre juste un chef de departement .
@@ -839,6 +884,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
             }</b> `;
             messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
 
+            // Ajouter le motif de validation si disponible
+            if (req.body.motifValidation && req.body.motifValidation.trim() !== "") {
+              messageDemandeur += `<br><b style='font-weight:bold'>Motif de validation : </b> "${req.body.motifValidation}"`;
+            }
+
             // verfier est ce que la demande a ete fini le traitement :
             if (nextCode === "fini") {
               messageDemandeur +=
@@ -879,7 +929,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               prodCddmessage += ` par <b style='font-weight:bold'>${getCv(
                 demande.demandeur.civilite
               )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-              prodCddmessage += ` a été approuvée par son chef de service.  DAMI : ('<i>${demande.option.libelle}</i>')</p>`;
+              prodCddmessage += ` a été approuvée par son chef de service.  DAMI : ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
 
               const prodService = await Service.findById(
                 demande.option.service._id
@@ -933,7 +983,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 message += ` par <b style='font-weight:bold'>${getCv(
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de service, et votre service sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
 
                 sendNotification(
                   optionService.chefService,
@@ -947,7 +997,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 message += ` par <b style='font-weight:bold'>${getCv(
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de departement, et votre departement sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle}</i>')</p>`;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en tant que chef de departement, et votre departement sera celui qui va traiter la DAMI. ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
 
                 sendNotification(
                   optionDepartement.chefDeDepartement,
@@ -961,7 +1011,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 message += ` par <b style='font-weight:bold'>${getCv(
                   demande.demandeur.civilite
                 )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en propriétaire de données de la DAMI ('<i>${demande.option.libelle}</i>')</p>`;
+                message += ` a été approuvée par ses supérieurs et tous les signataires possibles. Veuillez traiter cette demande en propriétaire de données de la DAMI ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
 
                 sendNotification(
                   optionPdd._id,
@@ -992,7 +1042,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                   message += ` par <b style='font-weight:bold'>${getCv(
                     demande.demandeur.civilite
                   )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-                  message += ` a été approuvée par ses supérieurs et tous les signataires possibles.  DAMI : ('<i>${demande.option.libelle}</i>')</p>`;
+                  message += ` a été approuvée par ses supérieurs et tous les signataires possibles.  DAMI : ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
                   // recuperer le chef de service de magasin :
                   const chefServiceMagasin = await Utilisateur.findById(
                     serviceMagasin.chefService._id
@@ -1082,7 +1132,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Approuver un traitemen de demande
+// @desc    Refuser un traitement de demande
 // @route   PUT /api/demandes/:id/refuse/:idTraitement
 // @access  private
 export const refuserDemande = asyncHandler(async (req, res) => {
@@ -1098,11 +1148,25 @@ export const refuserDemande = asyncHandler(async (req, res) => {
         if (traitement) {
           if (String(traitement.utilisateur) === String(req.user.id)) {
             if (traitement.status === "en cours") {
+              // Vérifier si l'utilisateur peut uploader des fichiers
+              const canUploadFile = await isUserFromAuthorizedService(req.user.id);
+              let fichierMotifRefus = null;
+
+              // Si l'utilisateur peut uploader des fichiers et qu'un fichier est fourni
+              if (canUploadFile && req.file) {
+                fichierMotifRefus = req.file.path;
+              }
+
               for (let tr of demande.traitement) {
                 if (String(tr._id) === String(req.params.idTraitement)) {
                   tr.motifRefus = req.body.motif;
                   tr.status = "refuse";
                   tr.dateTraitement = new Date();
+                  
+                  // Ajouter le fichier si disponible
+                  if (fichierMotifRefus) {
+                    tr.fichierMotifRefus = fichierMotifRefus;
+                  }
 
                   if (tr.interim) {
                     interim = true;
@@ -1199,6 +1263,15 @@ export const refuserDemande = asyncHandler(async (req, res) => {
               }</b> `;
               messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
               messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif}"`;
+              
+              // Ajouter l'information sur le fichier joint si disponible
+              if (fichierMotifRefus) {
+                const serverUrl = process.env.NODE_ENV === "production" 
+                  ? process.env.SERVER_URL || "https://e-dami.snrt.ma"
+                  : "http://localhost:4000";
+                messageDemandeur += `<br><b style='font-weight:bold'>Fichier joint : </b> <a href="${serverUrl}/${fichierMotifRefus}" target="_blank">Voir le fichier</a>`;
+              }
+              
               messageDemandeur += "</p>";
 
               sendNotification(
@@ -1481,144 +1554,306 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
 // @route   GET /api/demandes/for/preview/team
 // @access  private
 export const getDemandesForPreview = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 20, ...filters } = req.query;
+  const { page = 1, limit = 10, demandeur, option, status, fonction, dateDemande, dateEnvoiTraitement } = req.query;
   let utilisateur = await Utilisateur.findById(req.user.id);
-  if (utilisateur) {
-    if (utilisateur.isDirecteur || utilisateur.isDirecteurAdj) {
-      let demandes = await Demande.aggregate([
-        {
-          $lookup: {
-            from: "utilisateurs",
-            localField: "demandeur",
-            foreignField: "_id",
-            as: "demandeur",
-          },
-        },
-        {
-          $unwind: "$demandeur",
-        },
-
-        {
-          $lookup: {
-            from: "options",
-            localField: "option",
-            foreignField: "_id",
-            as: "option",
-          },
-        },
-        {
-          $unwind: "$option",
-        },
-        {
-          $sort: {
-            dateDemande: -1,
-          },
-        },
-
-        {
-          $match: {
-            "demandeur.direction": new mongoose.Types.ObjectId(
-              utilisateur.direction
-            ),
-            "demandeur._id": {
-              $ne: new mongoose.Types.ObjectId(utilisateur._id),
-            },
-          },
-        },
-      ]);
-      res.json(demandes);
-    } else if (utilisateur.isChefDeDepartement) {
-      let demandes = await Demande.aggregate([
-        {
-          $lookup: {
-            from: "utilisateurs",
-            localField: "demandeur",
-            foreignField: "_id",
-            as: "demandeur",
-          },
-        },
-        {
-          $unwind: "$demandeur",
-        },
-
-        {
-          $lookup: {
-            from: "options",
-            localField: "option",
-            foreignField: "_id",
-            as: "option",
-          },
-        },
-        {
-          $unwind: "$option",
-        },
-        {
-          $sort: {
-            dateDemande: -1,
-          },
-        },
-        {
-          $match: {
-            "demandeur.departement": new mongoose.Types.ObjectId(
-              utilisateur.departement
-            ),
-            "demandeur._id": {
-              $ne: new mongoose.Types.ObjectId(utilisateur._id),
-            },
-          },
-        },
-      ]);
-      res.json(demandes);
-    } else if (utilisateur.isChefDeService) {
-      let demandes = await Demande.aggregate([
-        {
-          $lookup: {
-            from: "utilisateurs",
-            localField: "demandeur",
-            foreignField: "_id",
-            as: "demandeur",
-          },
-        },
-        {
-          $unwind: "$demandeur",
-        },
-
-        {
-          $lookup: {
-            from: "options",
-            localField: "option",
-            foreignField: "_id",
-            as: "option",
-          },
-        },
-        {
-          $unwind: "$option",
-        },
-        {
-          $sort: {
-            dateDemande: -1,
-          },
-        },
-        {
-          $match: {
-            "demandeur.service": new mongoose.Types.ObjectId(
-              utilisateur.service
-            ),
-            "demandeur._id": {
-              $ne: new mongoose.Types.ObjectId(utilisateur._id),
-            },
-          },
-        },
-      ]);
-      res.json(demandes);
-    } else {
-      res.status(400);
-      throw new Error("vous n'a avez pas le droit de voire les demandes !");
-    }
-  } else {
+  
+  if (!utilisateur) {
     res.status(404);
     throw new Error("utilisateur introuvable !");
   }
+
+  // Build the aggregation pipeline
+  let pipeline = [
+    {
+      $lookup: {
+        from: "utilisateurs",
+        localField: "demandeur",
+        foreignField: "_id",
+        as: "demandeur",
+      },
+    },
+    {
+      $unwind: "$demandeur",
+    },
+    {
+      $lookup: {
+        from: "options",
+        localField: "option",
+        foreignField: "_id",
+        as: "option",
+      },
+    },
+    {
+      $unwind: "$option",
+    },
+  ];
+
+  // Build match conditions based on user role
+  let matchConditions = {
+    "demandeur._id": {
+      $ne: new mongoose.Types.ObjectId(utilisateur._id),
+    },
+  };
+
+  // Add role-specific filters
+  if (utilisateur.isDirecteur || utilisateur.isDirecteurAdj) {
+    matchConditions["demandeur.direction"] = new mongoose.Types.ObjectId(utilisateur.direction);
+  } else if (utilisateur.isChefDeDepartement) {
+    matchConditions["demandeur.departement"] = new mongoose.Types.ObjectId(utilisateur.departement);
+  } else if (utilisateur.isChefDeService) {
+    matchConditions["demandeur.service"] = new mongoose.Types.ObjectId(utilisateur.service);
+  } else {
+    res.status(400);
+    throw new Error("vous n'avez pas le droit de voir les demandes !");
+  }
+
+  // Add filters
+  if (demandeur) {
+    matchConditions.$or = [
+      { "demandeur.nom": { $regex: demandeur, $options: "i" } },
+      { "demandeur.prenom": { $regex: demandeur, $options: "i" } },
+    ];
+  }
+
+  if (option) {
+    matchConditions["option._id"] = new mongoose.Types.ObjectId(option);
+  }
+
+  if (status) {
+    matchConditions.status = status;
+  }
+
+  if (fonction) {
+    matchConditions["demandeur.fonction"] = { $regex: fonction, $options: "i" };
+  }
+
+  if (dateDemande) {
+    const dateDemandeStart = new Date(dateDemande);
+    const dateDemandeEnd = new Date(dateDemande);
+    dateDemandeStart.setHours(0, 0, 0, 0);
+    dateDemandeEnd.setHours(23, 59, 59, 999);
+    
+    matchConditions["dateDemande"] = {
+      $gte: dateDemandeStart,
+      $lte: dateDemandeEnd
+    };
+  }
+
+  if (dateEnvoiTraitement) {
+    const dateEnvoiStart = new Date(dateEnvoiTraitement);
+    const dateEnvoiEnd = new Date(dateEnvoiTraitement);
+    dateEnvoiStart.setHours(0, 0, 0, 0);
+    dateEnvoiEnd.setHours(23, 59, 59, 999);
+    
+    matchConditions["traitement.dateEnvoi"] = {
+      $gte: dateEnvoiStart,
+      $lte: dateEnvoiEnd
+    };
+  }
+
+  // Add match stage
+  pipeline.push({ $match: matchConditions });
+
+  // Add sort stage
+  pipeline.push({
+    $sort: {
+      dateDemande: -1,
+    },
+  });
+
+  // Get total count for pagination
+  const totalPipeline = [...pipeline, { $count: "total" }];
+  const totalResult = await Demande.aggregate(totalPipeline);
+  const total = totalResult.length > 0 ? totalResult[0].total : 0;
+
+  // Add pagination stages
+  pipeline.push(
+    { $skip: (page - 1) * parseInt(limit) },
+    { $limit: parseInt(limit) }
+  );
+
+  // Execute the aggregation
+  let demandes = await Demande.aggregate(pipeline);
+
+  // Get unique options used in team demands for dropdown
+  const optionsPipeline = [
+    {
+      $lookup: {
+        from: "utilisateurs",
+        localField: "demandeur",
+        foreignField: "_id",
+        as: "demandeur",
+      },
+    },
+    {
+      $unwind: "$demandeur",
+    },
+    {
+      $match: {
+        "demandeur._id": {
+          $ne: new mongoose.Types.ObjectId(utilisateur._id),
+        },
+        ...(utilisateur.isDirecteur || utilisateur.isDirecteurAdj
+          ? { "demandeur.direction": new mongoose.Types.ObjectId(utilisateur.direction) }
+          : utilisateur.isChefDeDepartement
+          ? { "demandeur.departement": new mongoose.Types.ObjectId(utilisateur.departement) }
+          : { "demandeur.service": new mongoose.Types.ObjectId(utilisateur.service) }
+        ),
+      },
+    },
+    {
+      $group: {
+        _id: "$option",
+      },
+    },
+  ];
+
+  const uniqueOptions = await Demande.aggregate(optionsPipeline);
+  const optionIds = uniqueOptions.map(opt => opt._id);
+  const teamOptions = await Option.find({ _id: { $in: optionIds } }).select('_id libelle');
+
+  // Populate traitement.utilisateur for each demande to get signataires names
+  demandes = await Promise.all(
+    demandes.map(async (demande) => {
+      const populatedDemande = await Demande.findById(demande._id)
+        .populate("traitement.utilisateur", "nom prenom direction")
+        .populate("option", "autreResponsableTitre")
+        .lean();
+      
+      // Function to get title based on signature code
+      const getSignataireTitle = async (code, option, utilisateur) => {
+        // Handle combined codes like "cds.cdd"
+        if (code && code.includes('.')) {
+          const codes = code.split('.');
+          const titles = [];
+          
+          for (const singleCode of codes) {
+            switch (singleCode.toLowerCase().trim()) {
+              case "cds":
+                titles.push("Chef de Service");
+                break;
+              case "cdd":
+                titles.push("Chef de Département");
+                break;
+              case "dir":
+                if (utilisateur && utilisateur.direction) {
+                  try {
+                    const direction = await Direction.findById(utilisateur.direction);
+                    titles.push(direction ? `Directeur de ${direction.libelle}` : "Directeur Hiérarchique");
+                  } catch (error) {
+                    titles.push("Directeur Hiérarchique");
+                  }
+                } else {
+                  titles.push("Directeur Hiérarchique");
+                }
+                break;
+              case "pdd":
+                titles.push("Propriétaire de Données");
+                break;
+              case "atr":
+                titles.push(option?.autreResponsableTitre || "Autre Responsable");
+                break;
+              case "hiq":
+                titles.push("Directeur Hiérarchique");
+                break;
+              case "dg":
+                titles.push("Directeur Général");
+                break;
+              case "pdg":
+                titles.push("Président Directeur Général");
+                break;
+              default:
+                // Handle unknown codes in combinations
+                break;
+            }
+          }
+          
+          return titles.length > 0 ? titles.join(" et ") : "Signataire";
+        }
+        
+        // Handle single codes
+        if (!code) return "Signataire";
+        
+        const cleanCode = code.toLowerCase().trim();
+        
+        switch (cleanCode) {
+          case "cds":
+            return "Chef de Service";
+          case "cdd":
+            return "Chef de Département";
+          case "dir":
+            if (utilisateur && utilisateur.direction) {
+              try {
+                const direction = await Direction.findById(utilisateur.direction);
+                return direction ? `Directeur de ${direction.libelle}` : "Directeur Hiérarchique";
+              } catch (error) {
+                return "Directeur Hiérarchique";
+              }
+            }
+            return "Directeur Hiérarchique";
+          case "pdd":
+            return "Propriétaire de Données";
+          case "atr":
+            return option?.autreResponsableTitre || "Autre Responsable";
+          case "dg":
+            return "Directeur Général";
+          case "pdg":
+            return "Président Directeur Général";
+          case "hiq":
+            return "Directeur Hiérarchique";
+          case "":
+          case null:
+          case undefined:
+            return "Signataire";
+          default:
+            // Log unknown codes for debugging
+            console.warn(`Code de signature inconnu: ${code}`);
+            return `Signataire (${code})`;
+        }
+      };
+    
+      // Extract signataires with titles
+      const signataires = await Promise.all(
+        populatedDemande.traitement.map(async (traitement) => {
+          console.log(`🔍 Processing signature code: "${traitement.code}" for user: ${traitement.utilisateur.nom} ${traitement.utilisateur.prenom}`);
+          const titre = await getSignataireTitle(traitement.code, populatedDemande.option, traitement.utilisateur);
+          console.log(`✅ Generated title: "${titre}"`);
+          
+          return {
+            nom: traitement.utilisateur.nom,
+            prenom: traitement.utilisateur.prenom,
+            code: traitement.code,
+            status: traitement.status,
+            titre: titre
+          };
+        })
+      );
+      
+      return {
+        ...demande,
+        signataires,
+        traitement: populatedDemande.traitement
+      };
+    })
+  );
+
+  // Calculate pagination metadata
+  const totalPages = Math.ceil(total / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  res.json({
+    demandes,
+    pagination: {
+      currentPage: parseInt(page),
+      totalPages,
+      totalItems: total,
+      itemsPerPage: parseInt(limit),
+      hasNextPage,
+      hasPrevPage,
+    },
+    teamOptions, // Options utilisées dans l'équipe
+  });
 });
 
 // @desc    Recuperer details demande pour appercu de superieur

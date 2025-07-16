@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { createUser, resetCreateUser } from "../../redux/user/userActions";
 import { Loader, Message } from "../../components";
 import { fetchServicesByDirectionID } from "../../redux/service/serviceActions";
+import { fetchDepartementsByDirectionID } from "../../redux/departement/departementActions";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Toast } from "../../services";
@@ -27,6 +28,8 @@ const validationSchema = Yup.object({
   fonction: Yup.string(),
   gsm: Yup.string().matches(/^\+\d{1,4}-\d{1,14}$/, "gsm invalid !!"),
   direction: Yup.string(),
+  departement: Yup.string(),
+
   //service: Yup.string(),
   isChefDeService: Yup.boolean(),
   isDirecteur: Yup.boolean(),
@@ -52,6 +55,8 @@ const UtilisateurCreatePage = () => {
     fonction: "",
     gsm: "",
     direction: "",
+    departement: "",
+
     service: "",
     isChefDeService: false,
     isDirecteur: false,
@@ -72,6 +77,15 @@ const UtilisateurCreatePage = () => {
     services,
   } = serviceListByDirectionID;
 
+  const departementListByDirectionID = useSelector(
+    (state) => state.departementListByDirectionID
+  );
+  const {
+    loading: loadingDepartementListByDirectionID,
+    error: errorDepartementListByDirectionID,
+    departements,
+  } = departementListByDirectionID;
+
   const userCreate = useSelector((state) => state.userCreate);
   const {
     loading: loadingUserCreate,
@@ -88,8 +102,11 @@ const UtilisateurCreatePage = () => {
     directions,
   } = directionList;
 
+
+
   const getServicesHandler = (event) => {
     dispatch(fetchServicesByDirectionID(event.target.value));
+    dispatch(fetchDepartementsByDirectionID(event.target.value));
   };
 
   const form = useFormik({
@@ -112,6 +129,7 @@ const UtilisateurCreatePage = () => {
         gsm,
         service,
         direction,
+        departement,
         isChefDeService,
         isDirecteur,
         demandeur,
@@ -141,6 +159,7 @@ const UtilisateurCreatePage = () => {
           fonction,
           gsm,
           direction,
+          departement,
           isChefDeService,
           isDirecteur,
           roles,
@@ -198,6 +217,11 @@ const UtilisateurCreatePage = () => {
       {errorServiceListByDirectionID && (
         <Message type="danger" itWillBeHidden>
           {errorServiceListByDirectionID}
+        </Message>
+      )}
+      {errorDepartementListByDirectionID && (
+        <Message type="danger" itWillBeHidden>
+          {errorDepartementListByDirectionID}
         </Message>
       )}
       {errorUserCreate && (
@@ -362,6 +386,37 @@ const UtilisateurCreatePage = () => {
                   )}
                 </div>
               </Col>
+              <Col xl={12} lg={12} md={12} sm={12}>
+                <div>
+                  <label>Département :</label>
+                  <Form.Select
+                    disabled={
+                      loadingDepartementListByDirectionID ||
+                      !form.values.direction
+                    }
+                    name="departement"
+                    onChange={form.handleChange}
+                    onBlur={form.handleBlur}
+                    value={form.values.departement}
+                  >
+                    <option value="">
+                      ---- veuillez selectionner un département ----
+                    </option>
+                    {departements.length > 0 &&
+                      departements.map((departement) => (
+                        <option key={departement._id} value={departement._id}>
+                          {departement.libelle}
+                        </option>
+                      ))}
+                  </Form.Select>
+                  {form.touched.departement && form.errors.departement && (
+                    <small className="text-danger d-block">
+                      {form.errors.departement}
+                    </small>
+                  )}
+                </div>
+              </Col>
+
               {!form.values.isDirecteur && (
                 <Col xl={12} lg={12} md={12} sm={12}>
                   <div>
@@ -412,6 +467,7 @@ const UtilisateurCreatePage = () => {
                       fonction: form.values.fonction,
                       gsm: form.values.gsm,
                       direction: form.values.direction,
+                      departement: form.values.departement,
                       service: form.values.service,
                       demandeur: form.values.demandeur,
                       createur: form.values.createur,
@@ -442,6 +498,7 @@ const UtilisateurCreatePage = () => {
                           fonction: form.values.fonction,
                           gsm: form.values.gsm,
                           direction: form.values.direction,
+                          departement: form.values.departement,
                           service: form.values.service,
                           demandeur: form.values.demandeur,
                           createur: form.values.createur,
@@ -477,6 +534,7 @@ const UtilisateurCreatePage = () => {
                           fonction: form.values.fonction,
                           gsm: form.values.gsm,
                           direction: form.values.direction,
+                          departement: form.values.departement,
                           service: form.values.service,
                           demandeur: form.values.demandeur,
                           createur: form.values.createur,

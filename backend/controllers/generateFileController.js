@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import fs from "fs";
 import ExcelJS from "exceljs";
 import Demande from "../models/demandeModel.js";
+import Utilisateur from "../models/utilisateurModel.js";
 import moment from "moment";
 import mongoose from "mongoose";
 
@@ -158,25 +159,34 @@ export const generateExcel = asyncHandler(async (req, res) => {
                     dateDemande: 1,
                     dateEnvoi: "$traitement.dateEnvoi",
                     status: "$traitement.status",
+                    motifRefus: "$traitement.motifRefus",
                     serviceSignataireLibelle: { $arrayElemAt: ["$serviceSignataire.libelle", 0] }
                 }
             },
             { $sort: { dateDemande: -1 } }
         ]);
 
-        // Filter and group to get only one line per demande for the target service
+        // Get user's service information and populate it
+        const userWithService = await Utilisateur.findById(user._id).populate('service');
+        const userServiceLibelle = userWithService.service ? userWithService.service.libelle : null;
+        
+        console.log('User service:', userServiceLibelle);
+        
+        // Filter and group to get only one line per demande for the user's service
         const demandesMap = new Map();
         
         allTraitements.forEach(traitement => {
             const serviceLibelle = traitement.serviceSignataireLibelle;
             
-            // Check if this treatment is for "SERVICE MAINTENANCE ASSISTANCE ET FORMATION"
-            if (serviceLibelle && 
-                serviceLibelle.toUpperCase().includes("SERVICE MAINTENANCE ASSISTANCE ET FORMATION")) {
+            if (serviceLibelle && userServiceLibelle) {
+                const serviceUpper = serviceLibelle.toUpperCase();
+                const userServiceUpper = userServiceLibelle.toUpperCase();
                 
-                // Only keep one treatment per demande (the first one found)
-                if (!demandesMap.has(traitement.idDemande.toString())) {
-                    demandesMap.set(traitement.idDemande.toString(), traitement);
+                // Only include treatments that match the user's service exactly
+                if (serviceUpper.includes(userServiceUpper) || userServiceUpper.includes(serviceUpper)) {
+                    if (!demandesMap.has(traitement.idDemande.toString())) {
+                        demandesMap.set(traitement.idDemande.toString(), traitement);
+                    }
                 }
             }
         });
@@ -195,7 +205,9 @@ export const generateExcel = asyncHandler(async (req, res) => {
             { header: 'Option', key: 'option', width: 30 },
             { header: 'Date Demande', key: 'dateDemande', width: 20 },
             { header: 'Date Envoi', key: 'dateEnvoi', width: 20 },
-            { header: 'Status', key: 'status', width: 15 }
+            { header: 'Status', key: 'status', width: 15 },
+            { header: 'Motif de Refus', key: 'motifRefus', width: 40 },
+            { header: 'Service', key: 'service', width: 50 }
         ];
 
         // Style header row
@@ -215,7 +227,9 @@ export const generateExcel = asyncHandler(async (req, res) => {
                 option: traitement.option ? String(traitement.option).toLowerCase() : 'N/A',
                 dateDemande: moment(traitement.dateDemande).format('DD-MM-YYYY, h:mm'),
                 dateEnvoi: moment(traitement.dateEnvoi).format('DD-MM-YYYY, h:mm'),
-                status: traitement.status
+                status: traitement.status,
+                motifRefus: traitement.motifRefus || 'N/A',
+                service: traitement.serviceSignataireLibelle || 'N/A'
             });
         });
 

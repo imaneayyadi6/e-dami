@@ -21,6 +21,8 @@ import path from "path";
 import fs from "fs";
 import punycode from "punycode";
 import dotenv from "dotenv";
+import ensureUploadsDirectory from "./scripts/ensureUploadsDir.js";
+import checkStaticFiles from "./scripts/checkStaticFiles.js";
 // Init dotenv :
 dotenv.config();
 
@@ -37,10 +39,15 @@ const io = new Server(server, {
 // Connect Database :
 connectDB();
 
+// Ensure uploads directory exists
+ensureUploadsDirectory();
+
+// Check static files configuration
+checkStaticFiles();
+
 
 // Serve static files from the "uploads" folder
 app.use("/uploads", express.static("uploads"));
-app.use("/styles", express.static("frontend/src/styles"));
 
 // Serve static files from the "logs" folder
 app.use("/logs", express.static("logs"));

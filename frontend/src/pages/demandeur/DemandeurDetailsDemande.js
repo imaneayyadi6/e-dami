@@ -10,6 +10,7 @@ import {
 } from "../../components";
 import { Alert, Button, Modal } from "react-bootstrap";
 import { getTypeApprobation } from "../../services";
+import { getFileUrl } from "../../services/fileService";
 
 const STATUS = {
   encours: "warning",
@@ -145,6 +146,22 @@ const DemandeurDetailsDemande = () => {
                                         Motif de refus :
                                       </span>{" "}
                                       {tr.motifRefus}
+                                      {tr.fichierMotifRefus && (
+                                        <>
+                                          <br />
+                                          <span style={{ fontWeight: "bold" }}>
+                                            Fichier joint :
+                                          </span>{" "}
+                                          <a 
+                                            href={getFileUrl(tr.fichierMotifRefus)} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-primary"
+                                          >
+                                            Voir le fichier
+                                          </a>
+                                        </>
+                                      )}
                                     </p>
                                   )}
                                   <div className="d-flex justify-content-end">
@@ -262,6 +279,22 @@ const DemandeurDetailsDemande = () => {
                                     Motif de refus :
                                   </span>{" "}
                                   {tr.motifRefus}
+                                  {tr.fichierMotifRefus && (
+                                    <>
+                                      <br />
+                                      <span style={{ fontWeight: "bold" }}>
+                                        Fichier joint :
+                                      </span>{" "}
+                                      <a 
+                                        href={getFileUrl(tr.fichierMotifRefus)} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-primary"
+                                      >
+                                        Voir le fichier
+                                      </a>
+                                    </>
+                                  )}
                                 </p>
                               )}
                               <div className="d-flex justify-content-end">
