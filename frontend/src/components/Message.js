@@ -33,7 +33,7 @@ const Message = ({ type = "info", children, itWillBeHidden = false }) => {
                 {messageIcon[type]}
                 <small>{children}</small>
               </div>
-              <span className="cursor-pointer" onClick={handleRemove}>
+              <span className="pointer-auto" onClick={handleRemove}>
                 <i className="fas fa-times"></i>
               </span>
             </div>

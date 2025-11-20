@@ -16,9 +16,7 @@ const utilisateurs = [
     matricule: 2003003,
     roles: [
       {
-        role: {
-          "$oid": "65c34e0c4d1e2f50c262a137"
-        },
+        role: roles[0]._id, 
       },
     ],
   },

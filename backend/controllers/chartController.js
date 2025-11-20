@@ -3,9 +3,9 @@ import Utilisateur from "../models/utilisateurModel.js";
 import Option from "../models/optionModel.js";
 import Demande from "../models/demandeModel.js";
 import mongoose from "mongoose";
-// @desc    recuperer utilisateur par moi
-// @route   GET /api/charts/users
-// @access  private
+
+
+
 export const chartGetUsers = asyncHandler(async (req, res) => {
   const monthNames = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -16,9 +16,9 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
     
-    // Fix timezone issues by setting explicit times
-    startDate.setHours(0, 0, 0, 0); // Start of day
-    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(23, 59, 59, 999); 
     
     console.log("🔍 Using date range:", { startDate, endDate });
     console.log("🔍 StartDate ISO:", startDate.toISOString());
@@ -81,7 +81,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       },
     ]);
 
-    // Generate all months in the range in correct chronological order
+    
     const allMonthsInRange = [];
     let currentYear = startDate.getFullYear();
     let currentMonth = startDate.getMonth();
@@ -91,7 +91,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -110,7 +110,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const finalResult = allMonthsInRange.map(monthInfo => {
       const existingData = result.find(item => 
         item.monthName === monthInfo.monthKey && item.year === monthInfo.year
@@ -180,7 +180,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       },
     ]);
 
-    // Generate all months for the last 5 months in correct chronological order
+    
     const currentDate = new Date();
     const allMonthsInRange = [];
     let currentYear = fiveMonthsAgo.getFullYear();
@@ -191,7 +191,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -210,7 +210,7 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const finalResult = allMonthsInRange.map(monthInfo => {
       const existingData = result.find(item => 
         item.monthName === monthInfo.monthKey && item.year === monthInfo.year
@@ -225,9 +225,9 @@ export const chartGetUsers = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    recuperer option&dami par moi
-// @route   GET /api/charts/options
-// @access  private
+
+
+
 export const chartGetOptions = asyncHandler(async (req, res) => {
   const monthNames = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -238,9 +238,9 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
     
-    // Fix timezone issues by setting explicit times
-    startDate.setHours(0, 0, 0, 0); // Start of day
-    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(23, 59, 59, 999); 
     
     console.log("🔍 Using date range:", { startDate, endDate });
     console.log("🔍 StartDate ISO:", startDate.toISOString());
@@ -303,7 +303,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       },
     ]);
 
-    // Generate all months in the range in correct chronological order
+    
     const allMonthsInRange = [];
     let currentYear = startDate.getFullYear();
     let currentMonth = startDate.getMonth();
@@ -313,7 +313,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -332,7 +332,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const finalResult = allMonthsInRange.map(monthInfo => {
       const existingData = result.find(item => 
         item.monthName === monthInfo.monthKey && item.year === monthInfo.year
@@ -402,7 +402,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       },
     ]);
 
-    // Generate all months for the last 5 months in correct chronological order
+    
     const currentDate = new Date();
     const allMonthsInRange = [];
     let currentYear = fiveMonthsAgo.getFullYear();
@@ -413,7 +413,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -432,7 +432,7 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const finalResult = allMonthsInRange.map(monthInfo => {
       const existingData = result.find(item => 
         item.monthName === monthInfo.monthKey && item.year === monthInfo.year
@@ -447,9 +447,9 @@ export const chartGetOptions = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    recuperer le nombre d'options pour chaque sous-categorie
-// @route   GET /api/charts/options/souscategories
-// @access  private
+
+
+
 export const chartGetCountOptionsOfSousCategories = asyncHandler(
   async (req, res) => {
     const result = await Option.aggregate([
@@ -461,7 +461,7 @@ export const chartGetCountOptionsOfSousCategories = asyncHandler(
       },
       {
         $lookup: {
-          from: "souscategories", // Replace with the actual name of your sousCategorie collection
+          from: "souscategories", 
           localField: "_id",
           foreignField: "_id",
           as: "sousCategorieInfo",
@@ -480,9 +480,9 @@ export const chartGetCountOptionsOfSousCategories = asyncHandler(
   }
 );
 
-// @desc    recuperer le nombre d'options pour chaque service
-// @route   GET /api/charts/options/services
-// @access  private
+
+
+
 export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
   const result = await Option.aggregate([
     {
@@ -493,7 +493,7 @@ export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
     },
     {
       $lookup: {
-        from: "services", // Replace with the actual name of your service collection
+        from: "services", 
         localField: "_id",
         foreignField: "_id",
         as: "serviceInfo",
@@ -511,9 +511,9 @@ export const chartGetCountOptionsOfServices = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-// @desc    Recuperer les demandes 'lines'
-// @route   GET /api/charts/lines/demandes
-// @access  private
+
+
+
 export const chartLineGetDemandes = asyncHandler(async (req, res) => {
   const monthNames = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -524,15 +524,15 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
     
-    // Fix timezone issues by setting explicit times
-    startDate.setHours(0, 0, 0, 0); // Start of day
-    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(23, 59, 59, 999); 
     
     console.log("🔍 Using date range:", { startDate, endDate });
     console.log("🔍 StartDate ISO:", startDate.toISOString());
     console.log("🔍 EndDate ISO:", endDate.toISOString());
     
-    // Let's check what documents exist in the date range WITHOUT user filtering first
+    
     const totalDocsInRange = await Demande.countDocuments({
       dateDemande: {
         $gte: startDate,
@@ -541,7 +541,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     });
     console.log("🔍 Total documents in date range (all users):", totalDocsInRange);
     
-    // Now check documents for this specific user
+    
     const userDocsInRange = await Demande.countDocuments({
       "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
       dateDemande: {
@@ -551,7 +551,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     });
     console.log("🔍 User documents in date range:", userDocsInRange);
     
-    // Let's see some sample documents for this user (any date)
+    
     const sampleUserDocs = await Demande.find({
       "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
     }).limit(3).select('dateDemande traitement').sort({ dateDemande: -1 });
@@ -614,13 +614,13 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       },
     ];
 
-    // Use the aggregate method to apply the pipeline to your model
+    
     const result = await Demande.aggregate(aggregatePipeline);
     
     console.log("🔍 Raw aggregation result:", result);
     console.log("🔍 Result length:", result.length);
 
-    // Generate all months in the range in correct chronological order
+    
     const allMonthsInRange = [];
     let currentYear = startDate.getFullYear();
     let currentMonth = startDate.getMonth();
@@ -630,7 +630,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -649,7 +649,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const formattedResult = {};
     allMonthsInRange.forEach(monthInfo => {
       formattedResult[monthInfo.monthDisplay] = {
@@ -659,14 +659,14 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       };
     });
 
-    // Fill with actual data
+    
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
         statusCounts[statusItem.status] = Number(statusItem.count);
       });
       
-      // Find the correct month display name from our generated range
+      
       const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
       if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
         formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
@@ -735,7 +735,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       },
     ]);
 
-    // Generate all months for the last 5 months in correct chronological order
+    
     const currentDate = new Date();
     const allMonthsInRange = [];
     let currentYear = fiveMonthsAgo.getFullYear();
@@ -746,7 +746,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || fiveMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -765,7 +765,7 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const finalResult = allMonthsInRange.map(monthInfo => {
       const existingData = result.find(item => 
         item.monthName === monthInfo.monthKey && item.year === monthInfo.year
@@ -780,9 +780,9 @@ export const chartLineGetDemandes = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les demandes 'bars'
-// @route   GET /api/charts/bars/demandes
-// @access  private
+
+
+
 export const chartBarGetDemandes = asyncHandler(async (req, res) => {
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
@@ -879,9 +879,9 @@ export const chartBarGetDemandes = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les demandes de signataire
-// @route   GET /api/charts/lines/demandes/signataire
-// @access  private
+
+
+
 export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
   console.log("🔍 chartLinesSignataireDemandes called with:");
   console.log("  - query:", req.query);
@@ -891,9 +891,9 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
     
-    // Fix timezone issues by setting explicit times
-    startDate.setHours(0, 0, 0, 0); // Start of day
-    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(23, 59, 59, 999); 
     
     console.log("🔍 Using date range:", { startDate, endDate });
 
@@ -983,13 +983,13 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       },
     ];
 
-    // Use the aggregate method to apply the pipeline to your model
+    
     const result = await Demande.aggregate(aggregatePipeline);
     
     console.log("🔍 Raw aggregation result:", result);
     console.log("🔍 Result length:", result.length);
 
-    // Generate all months in the range in correct chronological order
+    
     const monthNames = [
       "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -1004,7 +1004,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || startDate.getFullYear() !== endDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -1023,7 +1023,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       }
     }
 
-    // Initialize result with all months in correct chronological order
+    
     const formattedResult = {};
     allMonthsInRange.forEach(monthInfo => {
       formattedResult[monthInfo.monthDisplay] = {
@@ -1033,14 +1033,14 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       };
     });
 
-    // Fill with actual data
+    
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
         statusCounts[statusItem.status] = Number(statusItem.count);
       });
       
-      // Find the correct month display name from our generated range
+      
       const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
       if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
         formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
@@ -1137,13 +1137,13 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       },
     ];
 
-    // Use the aggregate method to apply the pipeline to your model
+    
     const result = await Demande.aggregate(aggregatePipeline);
     
     console.log("🔍 Raw aggregation result:", result);
     console.log("🔍 Result length:", result.length);
 
-    // Generate all months for the last 4 months in correct chronological order
+    
     const monthNames = [
       "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -1161,7 +1161,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
     
     while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
       const monthName = monthNames[currentMonth];
-      // Include year in display if different from current year or if span crosses years
+      
       const monthDisplay = (currentYear !== currentYearRef || fourMonthsAgo.getFullYear() !== currentDate.getFullYear()) 
         ? `${monthName} ${currentYear}` 
         : monthName;
@@ -1180,7 +1180,7 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       }
     }
     
-    // Initialize result with all months in correct chronological order
+    
     const formattedResult = {};
     allMonthsInRange.forEach(monthInfo => {
       formattedResult[monthInfo.monthDisplay] = {
@@ -1190,14 +1190,14 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
       };
     });
     
-    // Fill with actual data
+    
     result.forEach((item) => {
       const statusCounts = {};
       item.statusCounts.forEach((statusItem) => {
         statusCounts[statusItem.status] = Number(statusItem.count);
       });
       
-      // Find the correct month display name from our generated range
+      
       const monthInfo = allMonthsInRange.find(m => m.monthKey === item.month && m.year === item.year);
       if (monthInfo && formattedResult[monthInfo.monthDisplay]) {
         formattedResult[monthInfo.monthDisplay] = { ...formattedResult[monthInfo.monthDisplay], ...statusCounts };
@@ -1211,17 +1211,17 @@ export const chartLinesSignataireDemandes = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les demandes 'bars'
-// @route   GET /api/charts/bars/demandes/signataire
-// @access  private
+
+
+
 export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
   if (req.query.startDate && req.query.endDate) {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
     
-    // Fix timezone issues by setting explicit times
-    startDate.setHours(0, 0, 0, 0); // Start of day
-    endDate.setHours(23, 59, 59, 999); // End of day
+    
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(23, 59, 59, 999); 
     
     console.log("🔍 Debug chartBarGetSignatairesDemandes - Filtering with dates:");
     console.log("startDate:", startDate);
@@ -1230,7 +1230,7 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
     console.log("endDate ISO:", endDate.toISOString());
     console.log("userId:", req.user.id);
 
-    // Use same approach as else branch - simpler and more reliable
+    
     let demandes = JSON.parse(
       JSON.stringify(
         await Demande.find({
@@ -1348,9 +1348,9 @@ export const chartBarGetSignatairesDemandes = asyncHandler(async (req, res) => {
     });
 
     const filteredDemandes = demandes.filter((demande) => {
-      // Check if demande has traitement and get the status from the traitement
+      
       if (demande.traitement && demande.traitement.length > 0) {
-        // Get the last traitement status for this user
+        
         const lastTraitement = demande.traitement[demande.traitement.length - 1];
         return lastTraitement.status === status;
       }

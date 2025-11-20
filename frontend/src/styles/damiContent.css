@@ -305,7 +305,7 @@
 .btn-remove-component {
   font-size: 12px;
   position: absolute;
-  cursor: pointer;
+  pointer-events: auto;
   right: -3%;
   padding: 1px 3px;
   top: 0%;
@@ -327,7 +327,7 @@
 .dami-label {
   margin: 0;
   font-size: 12px;
-  cursor: pointer;
+  pointer-events: auto;
   user-select: auto;
   white-space: nowrap;
   margin: 5px 0;
@@ -412,7 +412,7 @@
   --webkit-appearance: none;
   appearance: none;
   z-index: 100;
-  cursor: pointer;
+  pointer-events: auto;
   position: relative;
 }
 
@@ -434,7 +434,6 @@
   margin-top: 2px;
   margin-right: 3px;
   padding: 5px 7px;
-  cursor: pointer;
 }
 
 .btn-remove-chk:hover {
@@ -443,7 +442,7 @@
 
 .btn-add-chk {
   font-size: 12px;
-  cursor: pointer;
+  pointer-events: auto;
   margin-top: 3px;
   padding: 5px 10px;
 }
@@ -479,7 +478,7 @@
   --webkit-appearance: none;
   appearance: none;
   z-index: 100;
-  cursor: pointer;
+  pointer-events: auto;
   position: relative;
 }
 
@@ -557,9 +556,9 @@
 .btn-add-checkbox-label-header {
   font-size: 12px;
   padding: 1px 4px;
-  cursor: pointer;
 }
 
+ 
 .btn-add-checkbox-label-header:hover {
   background-color: lightgray;
 }
@@ -567,7 +566,7 @@
 .btn-add-checkbox-line {
   font-size: 12px;
   padding: 1px 4px;
-  cursor: pointer;
+  pointer-events: auto;
 }
 
 .btn-add-checkbox-line:hover {
@@ -577,7 +576,7 @@
 .btn-remove-checkbox-label-header {
   font-size: 10px;
   padding: 1px 3px;
-  cursor: pointer;
+  pointer-events: auto;
 }
 
 .btn-remove-checkbox-label-header:hover {
@@ -587,7 +586,7 @@
 .btn-remove-checkbox-line {
   font-size: 10px;
   padding: 1px 3px;
-  cursor: pointer;
+  pointer-events: auto;
 }
 
 .btn-remove-checkbox-line:hover {
@@ -627,7 +626,7 @@
 
 .btn-remove-divider-children {
   font-size: 12px;
-  cursor: pointer;
+  pointer-events: auto;
   padding: 1px 3px;
   margin-bottom: 1px;
 }
@@ -669,4 +668,115 @@
   z-index: 900; /* Higher than inputs or any other children */
   background-color: rgba(0, 0, 0, 0.017); 
   pointer-events: all; /* This is the key to block clicks and typing */
+}
+
+/* RTL Support for DAMI Document */
+.dami[dir="rtl"] {
+  direction: rtl;
+}
+
+.dami[dir="rtl"] .dami-header {
+  flex-direction: row-reverse;
+}
+
+.dami[dir="rtl"] .dami-snrt-logo {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .dami-lb-tp {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .dami-codification-table tr td {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .dami-header-codi-item {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.dami[dir="rtl"] .demandeur-section {
+  border-left: none;
+  border-right: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .dami-body {
+  border-left: none;
+  border-right: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .demandeur-section .dami-input {
+  margin-right: 0;
+  margin-left: 15px;
+}
+
+.dami[dir="rtl"] .dami-input {
+  text-align: right;
+}
+
+.dami[dir="rtl"] .dami-textarea-line {
+  text-align: right;
+}
+
+.dami[dir="rtl"] .dami-label {
+  text-align: right;
+}
+
+.dami[dir="rtl"] .dami-label.align-left {
+  text-align: right;
+}
+
+.dami[dir="rtl"] .dami-label.align-right {
+  text-align: left;
+}
+
+.dami[dir="rtl"] .dami-check-box {
+  margin-right: 0;
+  margin-left: 2px;
+}
+
+.dami[dir="rtl"] .dami-radio-button {
+  margin-right: 0;
+  margin-left: 2px;
+}
+
+.dami[dir="rtl"] .btn-remove-component {
+  right: auto;
+  left: -3%;
+}
+
+.dami[dir="rtl"] .btn-condtion {
+  right: auto;
+  left: -4%;
+}
+
+.dami[dir="rtl"] .divider > div {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .divider > div:last-child {
+  border-left: none;
+}
+
+.dami[dir="rtl"] .directeur-lib {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .directeur-lib:last-child {
+  border-left: none;
+}
+
+.dami[dir="rtl"] .sig-item {
+  border-right: none;
+  border-left: 1px solid lightgray;
+}
+
+.dami[dir="rtl"] .sig-item:last-child {
+  border-left: none;
 }

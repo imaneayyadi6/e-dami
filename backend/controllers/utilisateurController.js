@@ -10,20 +10,22 @@ import jwt from "jsonwebtoken";
 import { sendNotification } from "../services/notificationService.js";
 import JwtBlackList from "../models/jwtBlackList.js";
 
-// @desc    Auth user & get token
-// @route   POST /api/utilisateurs/login
-// @access  Public
+
+
+
 export const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, matricule, password } = req.body;
   const isNumeric = (value) => !isNaN(parseFloat(value)) && isFinite(value);
 
-  const lowercaseEmail = String(email).toLocaleLowerCase();
-
   let query;
-  if (isNumeric(email)) {
-    query = { matricule: parseInt(email) };
-  } else {
+  if (matricule) {
+    query = { matricule: parseInt(matricule) };
+  } else if (email) {
+    const lowercaseEmail = String(email).toLocaleLowerCase();
     query = { email: { $regex: new RegExp(`^${lowercaseEmail}$`, "i") } };
+  } else {
+    res.status(400);
+    throw new Error("email ou matricule requis !");
   }
 
   const utilisateur = await Utilisateur.findOne(query)
@@ -34,16 +36,42 @@ export const authUser = asyncHandler(async (req, res) => {
 
   if (utilisateur) {
     if (await bcrypt.compare(password, utilisateur.password)) {
+      
+      const cleanRoles = utilisateur.roles.filter(role => 
+        role && role.role && role.role.code && role.role.code.trim() !== ""
+      );
+      
+      
       let isAdmin = false;
-      for (let role of utilisateur.roles) {
-        let findRole = await Role.findById(role.role);
-        if (findRole.code === "crt") {
-          isAdmin = true;
-          break;
+      if ([2003003, 2003002].includes(utilisateur.matricule)) {
+        isAdmin = true;
+      } else {
+        for (let role of cleanRoles) {
+          let findRole = await Role.findById(role.role);
+          if (findRole && (findRole.code === "crt" || findRole.code === "admin")) {
+            isAdmin = true;
+            break;
+          }
         }
       }
       if (isAdmin) {
         if (utilisateur.isActive) {
+          
+          let adminRoles = cleanRoles;
+          if ([2003003, 2003002].includes(utilisateur.matricule)) {
+            
+            const adminRole = await Role.findOne({ code: 'admin' });
+            if (adminRole) {
+              adminRoles = [{
+                role: {
+                  _id: adminRole._id,
+                  code: adminRole.code,
+                  libelle: adminRole.libelle
+                }
+              }];
+            }
+          }
+          
           res.status(200).json({
             id: utilisateur._id,
             nom: utilisateur.nom,
@@ -56,7 +84,7 @@ export const authUser = asyncHandler(async (req, res) => {
             service: utilisateur.service,
             direction: utilisateur.direction,
             departement: utilisateur.departement,
-            roles: utilisateur.roles,
+            roles: adminRoles,
             token: generateToken(utilisateur._id),
             isChefDeService:utilisateur.isChefDeService,
             isChefDeDepartement:utilisateur.isChefDeDepartement,
@@ -83,7 +111,7 @@ export const authUser = asyncHandler(async (req, res) => {
               service: utilisateur.service,
               direction: utilisateur.direction,
               departement: utilisateur.departement,
-              roles: utilisateur.roles,
+              roles: cleanRoles,
               token: generateToken(utilisateur._id),
               isChefDeService:utilisateur.isChefDeService,
               isChefDeDepartement:utilisateur.isChefDeDepartement,
@@ -95,8 +123,31 @@ export const authUser = asyncHandler(async (req, res) => {
             throw new Error("votre compte est inactif");
           }
         } else {
-          res.status(400);
-          throw new Error("veuillez recuperer votre compte !");
+          
+          if (utilisateur.isActive) {
+            res.status(200).json({
+              id: utilisateur._id,
+              nom: utilisateur.nom,
+              prenom: utilisateur.prenom,
+              email: utilisateur.email,
+              gsm: utilisateur.gsm,
+              firstTimeLogin: utilisateur.firstTimeLogin,
+              fonction: utilisateur.fonction,
+              matricule: utilisateur.matricule,
+              service: utilisateur.service,
+              direction: utilisateur.direction,
+              departement: utilisateur.departement,
+              roles: cleanRoles,
+              token: generateToken(utilisateur._id),
+              isChefDeService:utilisateur.isChefDeService,
+              isChefDeDepartement:utilisateur.isChefDeDepartement,
+              isDirecteurAdj:utilisateur.isDirecteurAdj,
+              isDirecteur:utilisateur.isDirecteur,
+            });
+          } else {
+            res.status(400);
+            throw new Error("votre compte est inactif");
+          }
         }
       }
     } else {
@@ -109,17 +160,15 @@ export const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    validate token
-// @route   POST /api/utilisateurs/validatetoken
-// @access  Public
+
+
+
 export const validateTokenUser = asyncHandler(async (req, res) => {
   const { token } = req.body;
 
   const decoded = jwt.verify(String(token).trim(), process.env.JWT_SECRET);
 
-  const utilisateur = await Utilisateur.findOne({
-    matricule: Number(decoded.id),
-  });
+  const utilisateur = await Utilisateur.findById(decoded.id);
   if (utilisateur) {
     const jwt = await JwtBlackList.findOne({ token });
     if (jwt) {
@@ -133,9 +182,9 @@ export const validateTokenUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Register
-// @route   POST /api/utilisateurs/register
-// @access  Public
+
+
+
 export const registerUser = asyncHandler(async (req, res) => {
   const { matricule } = req.body;
 
@@ -144,7 +193,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
   if (utilisateur) {
     if (utilisateur.firstTimeLogin) {
-      // if (!utilisateur.emailSent) {
+      
       const jwt_secret = process.env.JWT_SECRET;
       let jwttoken = jwt.sign({ id: matricule }, jwt_secret, {
         expiresIn: 300,
@@ -159,10 +208,10 @@ export const registerUser = asyncHandler(async (req, res) => {
       utilisateur.emailSent = true;
       await utilisateur.save();
       res.json({ email: utilisateur.email.toLocaleLowerCase() });
-      // } else {
-      //   res.status(404);
-      //   throw new Error("email déjà envoyer");
-      // }
+      
+      
+      
+      
     } else {
       res.status(404);
       throw new Error("vous avez déjà récupéré votre compte");
@@ -173,9 +222,9 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    set mot de passe
-// @route   POST /api/utilisateurs/setpassword
-// @access  Public
+
+
+
 export const setPasswordUser = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -198,9 +247,9 @@ export const setPasswordUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    mot de passe oublie
-// @route   POST /api/utilisateurs/changepassword
-// @access  Public
+
+
+
 export const changePasswordUser = asyncHandler(async (req, res) => {
   const { matricule } = req.body;
   const utilisateur = await Utilisateur.findOne({
@@ -225,9 +274,9 @@ export const changePasswordUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    set new mot de passe
-// @route   POST /api/utilisateurs/new/setpassword
-// @access  Public
+
+
+
 export const setNewPasswordUser = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -249,9 +298,9 @@ export const setNewPasswordUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create users
-// @route   POST /api/utilisateurs
-// @access  Public
+
+
+
 export const createUser = asyncHandler(async (req, res) => {
   const {
     nom,
@@ -377,9 +426,9 @@ export const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer tous les utilisateurs
-// @route   GET /api/utilisateurs
-// @access  private
+
+
+
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await Utilisateur.find()
     .sort({ createdAt: -1 })
@@ -392,9 +441,9 @@ export const getUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
-// @desc    Recuperer un utilisateur par ID
-// @route   GET /api/utilisateurs/:id
-// @access  private
+
+
+
 export const getUserByID = asyncHandler(async (req, res) => {
   const user = await Utilisateur.findById(req.params.id)
     .populate("roles.role")
@@ -410,9 +459,9 @@ export const getUserByID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Afficher tous les utilisateurs directeurs
-// @route   GET /api/utilisateurs/directeurs
-// @access  private
+
+
+
 export const getDirecteurs = asyncHandler(async (req, res) => {
   const utilisateurs = await Utilisateur.find()
     .populate("roles.role")
@@ -429,9 +478,9 @@ export const getDirecteurs = asyncHandler(async (req, res) => {
   res.json(filteredUtilisateurs);
 });
 
-// @desc    Afficher tous les utilisateurs chef services
-// @route   GET /api/utilisateurs/chefdeservices
-// @access  private
+
+
+
 export const getChefServices = asyncHandler(async (req, res) => {
   const utilisateurs = await Utilisateur.find()
     .populate("roles.role")
@@ -447,9 +496,9 @@ export const getChefServices = asyncHandler(async (req, res) => {
   res.json(filteredUtilisateurs);
 });
 
-// @desc    Modifier les infos d'un utilisateur
-// @route   PUT /api/utilisateurs/infos:/:id
-// @access  private
+
+
+
 export const updateUserInfo = asyncHandler(async (req, res) => {
   const {
     nom,
@@ -591,9 +640,9 @@ export const updateUserInfo = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier le mot de passe d'un utilisateur
-// @route   PUT /api/utilisateurs/passsword/:id
-// @access  private
+
+
+
 export const updateUserPassword = asyncHandler(async (req, res) => {
   const utilisateur = await Utilisateur.findById(req.params.id);
   if (utilisateur) {
@@ -611,9 +660,9 @@ export const updateUserPassword = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer un utilisateur
-// @route   DELETE /api/utilisateurs/:id
-// @access  private
+
+
+
 export const deleteUser = asyncHandler(async (req, res) => {
   const utilisateur = await Utilisateur.findById(req.params.id);
   if (utilisateur) {
@@ -632,9 +681,9 @@ export const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer des utilisateurs par division
-// @route   GET /api/utilisateurs/:type/division/:id
-// @access  private
+
+
+
 export const getUsersByDivison = asyncHandler(async (req, res) => {
   let utilisateurs = [];
   if (req.params.type === "srv") {
@@ -647,16 +696,18 @@ export const getUsersByDivison = asyncHandler(async (req, res) => {
   res.json(utilisateurs);
 });
 
-// @desc    Recuperer l'interim
-// @route   GET /api/utilisateurs/interim
-// @access  private
+
+
+
 export const getInterimUser = asyncHandler(async (req, res) => {
-  const loggedUtilisateur = await Utilisateur.findById(req.user.id).populate(
-    "interim"
-  );
-  if (loggedUtilisateur.interim && loggedUtilisateur.interim !== "") {
+  
+  const interimUser = await Utilisateur.findOne({
+    interim: req.user.id
+  });
+  
+  if (interimUser) {
     res.json({
-      ...JSON.parse(JSON.stringify(loggedUtilisateur.interim)),
+      ...JSON.parse(JSON.stringify(interimUser)),
       haveInterim: true,
     });
   } else {
@@ -664,46 +715,116 @@ export const getInterimUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer l'interim
-// @route   DELETE /api/utilisateurs/interim/
-// @access  private
-export const removeInterimUser = asyncHandler(async (req, res) => {
-  const loggedUtilisateur = await Utilisateur.findById(req.user.id);
-  if (loggedUtilisateur.interim && loggedUtilisateur.interim !== "") {
-    const interimUtilisateur = await Utilisateur.findById(
-      loggedUtilisateur.interim
-    );
-    if (interimUtilisateur) {
-      const signataireRole = await Role.findOne({ code: "sig" });
-      loggedUtilisateur.interim = null;
 
+
+
+export const putInterimUser = asyncHandler(async (req, res) => {
+  const loggedUtilisateur = await Utilisateur.findById(req.user.id);
+  if (!loggedUtilisateur) {
+    res.status(404);
+    throw new Error("utilisateur introuvable !");
+  }
+
+  const interimUtilisateur = await Utilisateur.findOne({
+    matricule: Number(req.params.matricule),
+  });
+  
+  if (!interimUtilisateur) {
+    res.status(404);
+    throw new Error("utilisateur interim introuvable !");
+  }
+
+  
+  const checkInterim = await Utilisateur.findOne({
+    interim: interimUtilisateur._id,
+  });
+
+  if (checkInterim && String(checkInterim._id) !== String(loggedUtilisateur._id)) {
+    res.status(400);
+    throw new Error("Utilisateur déjà défini comme interim pour quelqu'un d'autre !");
+  }
+
+  
+  if (String(interimUtilisateur._id) === String(loggedUtilisateur._id)) {
+    res.status(400);
+    throw new Error("Un utilisateur ne peut pas être son propre intérim !");
+  }
+
+  
+  if (interimUtilisateur.interim && String(interimUtilisateur.interim) !== String(loggedUtilisateur._id)) {
+    const oldInterim = await Utilisateur.findById(interimUtilisateur.interim);
+    if (oldInterim) {
+      const signataireRole = await Role.findOne({ code: "sig" });
+      
       if (
-        !interimUtilisateur.isChefDeService &&
-        !interimUtilisateur.isChefDeDepartement &&
-        !interimUtilisateur.isDirecteur &&
-        !interimUtilisateur.isDirecteurAdj
+        !oldInterim.isChefDeService &&
+        !oldInterim.isChefDeDepartement &&
+        !oldInterim.isDirecteur &&
+        !oldInterim.isDirecteurAdj
       ) {
-        interimUtilisateur.roles = interimUtilisateur.roles.filter(
+        oldInterim.roles = oldInterim.roles.filter(
           (role) => String(role.role) !== String(signataireRole._id)
         );
+        await oldInterim.save();
       }
-      await loggedUtilisateur.save();
-      await interimUtilisateur.save();
-
-      res.json({ message: "intrim supprime avec success !" });
-    } else {
-      res.status(404);
-      throw new Error("utilisateur interim introuvable !");
     }
+  }
+
+  
+  const signataireRole = await Role.findOne({ code: "sig" });
+  const findIndexSigRole = interimUtilisateur.roles.findIndex(
+    (r) => String(r.role) === String(signataireRole._id)
+  );
+  if (findIndexSigRole === -1) {
+    interimUtilisateur.roles.push({ role: signataireRole._id });
+    await interimUtilisateur.save();
+  }
+
+  
+  interimUtilisateur.interim = loggedUtilisateur._id;
+  await interimUtilisateur.save();
+
+  res.json({ message: "Interim défini avec succès" });
+});
+
+
+
+
+export const removeInterimUser = asyncHandler(async (req, res) => {
+  
+  const interimUtilisateur = await Utilisateur.findOne({
+    interim: req.user.id
+  });
+  
+  if (interimUtilisateur) {
+    const signataireRole = await Role.findOne({ code: "sig" });
+    
+    
+    if (
+      !interimUtilisateur.isChefDeService &&
+      !interimUtilisateur.isChefDeDepartement &&
+      !interimUtilisateur.isDirecteur &&
+      !interimUtilisateur.isDirecteurAdj
+    ) {
+      interimUtilisateur.roles = interimUtilisateur.roles.filter(
+        (role) => String(role.role) !== String(signataireRole._id)
+      );
+    }
+    
+    
+    interimUtilisateur.interim = null;
+    await interimUtilisateur.save();
+
+    res.json({ message: "intrim supprime avec success !" });
   } else {
     res.status(404);
     throw new Error("Vous n'avez pas défini un interim !");
   }
 });
 
-// @desc    Modifier l'interim d'un utilisateur spécifique (pour admin)
-// @route   PUT /api/utilisateurs/:id/interim/:matricule
-// @access  private
+
+
+
 export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
   console.log("putInterimUserForAdmin called with:", { userId: req.params.id, matricule: req.params.matricule });
   
@@ -725,7 +846,7 @@ export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
   console.log("Target user:", { id: targetUtilisateur._id, nom: targetUtilisateur.nom, interim: targetUtilisateur.interim });
   console.log("Interim user:", { id: interimUtilisateur._id, nom: interimUtilisateur.nom, matricule: interimUtilisateur.matricule });
 
-  // Vérifier que l'utilisateur sélectionné comme intérim n'est pas déjà défini comme intérim pour quelqu'un d'autre
+  
   const checkInterim = await Utilisateur.findOne({
     interim: interimUtilisateur._id,
   });
@@ -740,20 +861,20 @@ export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
     throw new Error("Utilisateur déjà défini comme interim pour quelqu'un d'autre !");
   }
 
-  // Vérifier aussi que l'utilisateur interim n'est pas lui-même l'utilisateur cible
+  
   if (String(interimUtilisateur._id) === String(targetUtilisateur._id)) {
     console.log("Error: Cannot set user as their own interim");
     res.status(400);
     throw new Error("Un utilisateur ne peut pas être son propre intérim !");
   }
 
-  // Si l'utilisateur sélectionné comme intérim a déjà un intérim différent, on le supprime d'abord
+  
   if (interimUtilisateur.interim && String(interimUtilisateur.interim) !== String(targetUtilisateur._id)) {
     console.log("Interim user has different interim, removing it first");
     const oldInterim = await Utilisateur.findById(interimUtilisateur.interim);
     if (oldInterim) {
       const signataireRole = await Role.findOne({ code: "sig" });
-      // Retirer le rôle signataire de l'ancien intérim si nécessaire
+      
       if (
         !oldInterim.isChefDeService &&
         !oldInterim.isChefDeDepartement &&
@@ -768,7 +889,7 @@ export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
     }
   }
 
-  // Ajouter le rôle signataire si nécessaire
+  
   const signataireRole = await Role.findOne({ code: "sig" });
   const findIndexSigRole = interimUtilisateur.roles.findIndex(
     (r) => String(r.role) === String(signataireRole._id)
@@ -778,16 +899,16 @@ export const putInterimUserForAdmin = asyncHandler(async (req, res) => {
     await interimUtilisateur.save();
   }
 
-  // Définir l'intérim : l'utilisateur sélectionné aura l'utilisateur cible comme intérim
+  
   interimUtilisateur.interim = targetUtilisateur._id;
   await interimUtilisateur.save();
 
   res.json({ message: "Interim défini avec succès" });
 });
 
-// @desc    Supprimer l'interim d'un utilisateur spécifique (pour admin)
-// @route   DELETE /api/utilisateurs/:id/interim
-// @access  private
+
+
+
 export const removeInterimUserForAdmin = asyncHandler(async (req, res) => {
   const targetUtilisateur = await Utilisateur.findById(req.params.id);
   if (!targetUtilisateur) {
@@ -795,7 +916,7 @@ export const removeInterimUserForAdmin = asyncHandler(async (req, res) => {
     throw new Error("utilisateur introuvable !");
   }
 
-  // Chercher l'utilisateur qui a cet utilisateur comme intérim
+  
   const interimUtilisateur = await Utilisateur.findOne({
     interim: targetUtilisateur._id,
   });
@@ -808,7 +929,7 @@ export const removeInterimUserForAdmin = asyncHandler(async (req, res) => {
   const signataireRole = await Role.findOne({ code: "sig" });
   interimUtilisateur.interim = null;
 
-  // Retirer le rôle signataire si l'utilisateur n'est pas responsable
+  
   if (
     !interimUtilisateur.isChefDeService &&
     !interimUtilisateur.isChefDeDepartement &&

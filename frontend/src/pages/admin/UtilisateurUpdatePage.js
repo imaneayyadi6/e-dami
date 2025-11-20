@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Form, Row, Tab, Tabs } from "react-bootstrap";
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { Button, Card, Col, Form, Row, Tabs, Tab } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   fetchUserByID,
   resetFetchUserByID,
@@ -18,48 +18,90 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Toast } from "../../services";
 import { fetchDirections } from "../../redux/direction/directionActions";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
+import { useTranslation } from "react-i18next";
+import { FaIdBadge, FaEnvelope, FaUser, FaBriefcase, FaPhone, FaBuilding, FaSitemap, FaUserTie, FaUserCheck, FaKey, FaEye, FaEyeSlash, FaKeyboard, FaEdit } from "react-icons/fa";
 
-const validationSchema = Yup.object({
-  matricule: Yup.string("le matricule doit etre un nombre de 6 chiffres")
+const getValidationSchema = (currentLanguage) => Yup.object({
+  matricule: Yup.string(
+    currentLanguage === "ar" ? "رقم الموظف يجب أن يكون 6 أرقام على الأقل" : "le matricule doit etre un nombre de 6 chiffres au minimum"
+  )
     .matches(
       /^([1-9]{1})([0-9]{5,7})$/,
-      "le matricule doit être un nombre qui comporte 6 chiffres"
+      currentLanguage === "ar" ? "رقم الموظف يجب أن يكون 6 أرقام على الأقل" : "le matricule doit être un nombre qui comporte 6 chiffres au minimum"
     )
-    .required("il faut saisire le matricule"),
+    .required(currentLanguage === "ar" ? "يجب إدخال رقم الموظف" : "il faut saisire le matricule"),
   email: Yup.string()
-    .email("email invalid !!")
-    .required("il fait saisire l'email de l'utilisateur"),
-  nom: Yup.string().required("il faut saisire un nom"),
-  prenom: Yup.string().required("il faut saisire un prenom"),
+    .email(currentLanguage === "ar" ? "البريد الإلكتروني غير صالح !!" : "email invalid !!")
+    .required(currentLanguage === "ar" ? "يجب إدخال البريد الإلكتروني للمستخدم" : "il faut saisire l'email de l'utilisateur"),
+  nom: Yup.string().required(currentLanguage === "ar" ? "يجب إدخال الاسم العائلي" : "il faut saisire un nom"),
+  prenom: Yup.string().required(currentLanguage === "ar" ? "يجب إدخال الاسم الشخصي" : "il faut saisire un prenom"),
   fonction: Yup.string(),
-  gsm: Yup.string().matches(/^\+\d{1,4}-\d{1,14}$/, "gsm invalid !!"),
+  gsm: Yup.string()
+    .test('gsm-format', currentLanguage === "ar" ? "رقم الهاتف غير صالح !!" : "GSM invalide !!", (value) => {
+      if (!value) return true;
+      const val = String(value).trim();
+      
+      const localMatch = /^0(5|6)\d{8}$/.test(val);
+      if (localMatch) return true;
+      
+      if (/^\+/.test(val)) {
+        const digits = val.replace(/[^0-9]/g, '');
+        return digits.length >= 11 && digits.length <= 13;
+      }
+      return false;
+    }),
   direction: Yup.string(),
   departement: Yup.string(),
   interim: Yup.string(),
-  //service: Yup.string(),
+  
   isChefDeService: Yup.boolean(),
   isDirecteur: Yup.boolean(),
   demandeur: Yup.boolean(),
   signataire: Yup.boolean(),
   createur: Yup.boolean(),
   createurOption: Yup.boolean(),
-
 });
-const changePasswordvalidationSchema = Yup.object({
-  password: Yup.string().required("il faut saisire le mot de passe !"),
+
+const getChangePasswordValidationSchema = (currentLanguage) => Yup.object({
+  password: Yup.string().required(currentLanguage === "ar" ? "يجب إدخال كلمة المرور !" : "il faut saisire le mot de passe !"),
   confirmPassword: Yup.string().required(
-    "il faut saisire le mot de passe de confirmation !"
+    currentLanguage === "ar" ? "يجب إدخال تأكيد كلمة المرور !" : "il faut saisire le mot de passe de confirmation !"
   ),
 });
 
 const UtilisateurUpdatePage = () => {
   const [callOnce, setCallOnce] = useState(false);
+  const prefilledRef = useRef(false);
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showArKb, setShowArKb] = useState({});
 
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentLanguage, isRTL } = useLanguageSync();
+  const { t } = useTranslation();
+  
+  
+  const validationSchema = useMemo(() => getValidationSchema(currentLanguage), [currentLanguage]);
+  const changePasswordValidationSchema = useMemo(() => getChangePasswordValidationSchema(currentLanguage), [currentLanguage]);
+  
+  
+  const arabicKeys = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', 'ء', 'ؤ', 'ئ', 'ة'];
+  
+  const toggleArabicKeyboard = (fieldName) => {
+    setShowArKb(prev => ({
+      ...prev,
+      [fieldName]: !prev[fieldName]
+    }));
+  };
+  
+  const appendArabicChar = (fieldName, char) => {
+    form.setFieldValue(fieldName, (form.values[fieldName] || '') + char);
+  };
+  
   const userByID = useSelector(state => state.userByID);
   const {
     loading: loadingUserByID,
@@ -124,7 +166,7 @@ const UtilisateurUpdatePage = () => {
   const {
     loading: loadingDirectionList,
     error: errorDirectionList,
-    // success: successDirectionList,
+    
     directions,
   } = directionList;
 
@@ -153,14 +195,16 @@ const UtilisateurUpdatePage = () => {
   const form = useFormik({
     initialValues,
     validationSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
     validate: values => {
       const errors = {};
 
       if (!values.demandeur && !values.signataire && !values.createur) {
-        errors.atLeastOneChecked = "au moins un de ces champs doit être coché";
+        errors.atLeastOneChecked = currentLanguage === "ar" ? "يجب تحديد دور واحد على الأقل" : "au moins un de ces champs doit être coché";
       }
 
-      // Add more specific validations if needed
+      
 
       return errors;
     },
@@ -224,7 +268,9 @@ const UtilisateurUpdatePage = () => {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: changePasswordvalidationSchema,
+    validationSchema: changePasswordValidationSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
     onSubmit: values => {
       const { password, confirmPassword } = values;
       if (String(password) === String(confirmPassword)) {
@@ -246,20 +292,18 @@ const UtilisateurUpdatePage = () => {
       dispatch(resetFetchUserByID());
       dispatch(resetUpdateUser());
       dispatch(fetchDirections());
-      dispatch(fetchUsers());
       dispatch(fetchUserByID(id));
       setCallOnce(true);
     }
 
-    if (!loadingUserUpdate && successUserByID && recoveredUser) {
-      if (!errorUserUpdate) {
-        // D'abord charger les départements et services si l'utilisateur a une direction
+    if (successUserByID && recoveredUser && !prefilledRef.current) {
+        
         if (recoveredUser && recoveredUser.direction) {
           dispatch(fetchServicesByDirectionID(recoveredUser.direction._id));
           dispatch(fetchDepartementsByDirectionID(recoveredUser.direction._id));
         }
         
-        // Ensuite mettre à jour le formulaire (sans le département pour l'instant)
+        
         form.setValues({
           matricule: recoveredUser ? recoveredUser.matricule : "",
           email: recoveredUser ? recoveredUser.email : "",
@@ -270,37 +314,41 @@ const UtilisateurUpdatePage = () => {
           direction: recoveredUser
             ? recoveredUser.direction && recoveredUser.direction._id
             : "",
-          departement: "", // On ne définit pas le département ici
+          departement: "", 
           interim: recoveredUser
             ? recoveredUser.interim && recoveredUser.interim._id
             : "",
           service: recoveredUser
             ? recoveredUser.service && recoveredUser.service._id
             : "",
-          isChefDeService: recoveredUser ? recoveredUser.isChefDeService : "",
-          isDirecteur: recoveredUser ? recoveredUser.isDirecteur : "",
+          isChefDeService: recoveredUser ? !!recoveredUser.isChefDeService : false,
+          isDirecteur: recoveredUser ? !!recoveredUser.isDirecteur : false,
           createur:
             recoveredUser &&
-              recoveredUser.roles.find(role => String(role.role.code) === "crt")
+              recoveredUser.roles &&
+              recoveredUser.roles.find(role => role && role.role && String(role.role.code) === "crt")
               ? true
               : false,
           createurOption:
             recoveredUser &&
-              recoveredUser.roles.find(role => String(role.role.code) === "crt-op")
+              recoveredUser.roles &&
+              recoveredUser.roles.find(role => role && role.role && String(role.role.code) === "crt-op")
               ? true
               : false,
           signataire:
             recoveredUser &&
-              recoveredUser.roles.find(role => String(role.role.code) === "sig")
+              recoveredUser.roles &&
+              recoveredUser.roles.find(role => role && role.role && String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             recoveredUser &&
-              recoveredUser.roles.find(role => String(role.role.code) === "dmr")
+              recoveredUser.roles &&
+              recoveredUser.roles.find(role => role && role.role && String(role.role.code) === "dmr")
               ? true
               : false,
         });
-      }
+      prefilledRef.current = true;
     }
     if (successUserUpdate && updatedUser) {
       if (!errorUserUpdate) {
@@ -323,26 +371,26 @@ const UtilisateurUpdatePage = () => {
           service: updatedUser
             ? updatedUser.service && updatedUser.service._id
             : "",
-          isChefDeService: updatedUser ? updatedUser.isChefDeService : "",
-          isDirecteur: updatedUser ? updatedUser.isDirecteur : "",
+          isChefDeService: updatedUser ? !!updatedUser.isChefDeService : false,
+          isDirecteur: updatedUser ? !!updatedUser.isDirecteur : false,
           createur:
             updatedUser &&
-              updatedUser.roles.find(role => String(role.role.code) === "crt")
+              updatedUser.roles.find(role => role && role.role && String(role.role.code) === "crt")
               ? true
               : false,
           createurOption:
             updatedUser &&
-              updatedUser.roles.find(role => String(role.role.code) === "crt-op")
+              updatedUser.roles.find(role => role && role.role && String(role.role.code) === "crt-op")
               ? true
               : false,
           signataire:
             updatedUser &&
-              updatedUser.roles.find(role => String(role.role.code) === "sig")
+              updatedUser.roles.find(role => role && role.role && String(role.role.code) === "sig")
               ? true
               : false,
           demandeur:
             updatedUser &&
-              updatedUser.roles.find(role => String(role.role.code) === "dmr")
+              updatedUser.roles.find(role => role && role.role && String(role.role.code) === "dmr")
               ? true
               : false,
         });
@@ -351,6 +399,8 @@ const UtilisateurUpdatePage = () => {
           title: "Modification avec success",
           message: "l'utilisateur a été modifiée avec succès",
         });
+        navigate('/admin/utilisateurs');
+        dispatch(resetUpdateUser());
       }
     }
     if (successUserUpdatePassword) {
@@ -364,21 +414,12 @@ const UtilisateurUpdatePage = () => {
     }
 
 
-  }, [
-    callOnce,
-    successUserByID,
-    successUserUpdate,
-    updatedUser,
-    errorUserUpdate,
-    loadingUserUpdate,
-    successUserUpdatePassword,
-    recoveredUser,
-  ]);
+  }, [callOnce, successUserByID, recoveredUser, successUserUpdate, updatedUser, errorUserUpdate]);
 
-  // Effet pour mettre à jour le formulaire quand les départements sont chargés
+  
   useEffect(() => {
     if (recoveredUser && !loadingDepartementListByDirectionID && departements.length > 0) {
-      // Mettre à jour le département une fois que les départements sont chargés
+      
       if (recoveredUser.departement) {
         form.setFieldValue('departement', recoveredUser.departement._id);
       }
@@ -388,16 +429,37 @@ const UtilisateurUpdatePage = () => {
 
 
   return (
-    <>
-      <div className='d-flex justify-content-between align-items-center'>
+    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', padding: '20px' }} dir={isRTL ? 'rtl' : 'ltr'}>
+      {}
+      <div className="d-flex align-items-center mb-4" style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+        <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
+          <h2 className="mb-0" style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+            {currentLanguage === "ar" ? "تعديل المستخدم" : "Modifier l'utilisateur"}
+            <FaEdit style={{ color: '#0d6efd' }} />
+          </h2>
+          <small className="text-muted">{currentLanguage === "ar" ? "تعديل معلومات المستخدم" : "Modifier les informations de l'utilisateur"}</small>
+        </div>
         <Link
-          to='/utilisateurs'
-          className='btn btn-sm btn-light mb-3'
+          to="/admin/utilisateurs"
+          className="btn btn-sm rounded-pill d-flex align-items-center justify-content-center"
           onClick={() => {
             setCallOnce(false);
             dispatch(resetFetchUserByID());
-          }}>
-          <i className='fas fa-arrow-left'></i> utilisateurs
+          }}
+          style={{
+            background: 'transparent',
+            border: '1px solid #6c757d',
+            borderRadius: '9999px',
+            fontSize: '0.875rem',
+            padding: '6px 14px',
+            gap: 8,
+            height: 32,
+            color: '#6c757d',
+            flexDirection: isRTL ? 'row-reverse' : 'row'
+          }}
+        >
+          <i className="fas fa-arrow-left"></i>
+          <span className={isRTL ? 'me-1' : 'ms-1'}>{currentLanguage === "ar" ? "العودة" : "Retour"}</span>
         </Link>
       </div>
       {errorUserByID && (
@@ -433,130 +495,302 @@ const UtilisateurUpdatePage = () => {
           {errorDirectionList}
         </Message>
       )}
-      <Card>
-        <Card.Body>
+      {}
+      <Card style={{ 
+        background: 'var(--bg-secondary)', 
+        border: '1px solid var(--border-light)', 
+        borderRadius: 12, 
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        marginLeft: isRTL ? 'auto' : 0,
+        marginRight: isRTL ? 0 : 'auto',
+        maxWidth: isRTL ? '100%' : '100%',
+        position: isRTL ? 'relative' : 'static',
+        top: isRTL ? 0 : 'auto',
+        right: isRTL ? 0 : 'auto'
+      }}>
+        <Card.Body style={{ padding: '24px' }}>
           <Tabs defaultActiveKey='tab1' id='my-tabs'>
-            <Tab eventKey='tab1' title='Modifier les informations'>
-              <Form onSubmit={form.handleSubmit}>
-                <Row>
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>matricule :</label>
+            <Tab eventKey='tab1' title={currentLanguage === "ar" ? "تعديل المعلومات" : "Modifier les informations"}>
+              <Form onSubmit={form.handleSubmit} style={{ textAlign: isRTL ? 'right' : 'left', direction: isRTL ? 'rtl' : 'ltr' }}>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaIdBadge style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "رقم الموظف" : "Matricule"}
+                      </Form.Label>
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                        placeholder={currentLanguage === "ar" ? "أدخل رقم الموظف" : "Veuillez saisir le matricule"}
                         name='matricule'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.matricule}
+                        style={{ 
+                          background: 'var(--bg-primary)', 
+                          border: '1px solid var(--border-light)', 
+                          borderRadius: 8,
+                          textAlign: isRTL ? 'right' : 'left',
+                          direction: isRTL ? 'rtl' : 'ltr'
+                        }}
                       />
-                      <small className='text-warning d-block'>
-                        <i className='fa-solid fa-triangle-exclamation'></i> le
-                        matricule ne doit pas commencer par le chiffre 0
+                      <small className="text-warning d-flex align-items-center mt-1" style={{ gap: 4, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <i className="fa-solid fa-triangle-exclamation"></i>
+                        {currentLanguage === "ar" ? "رقم الموظف لا يجب أن يبدأ بالرقم 0" : "Le matricule ne doit pas commencer par le chiffre 0"}
                       </small>
                       {form.touched.matricule && form.errors.matricule && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.matricule}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>Email :</label>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaEnvelope style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "البريد الإلكتروني" : "Email"}
+                      </Form.Label>
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                        type="email"
+                        placeholder={currentLanguage === "ar" ? "أدخل البريد الإلكتروني" : "Veuillez saisir l'email"}
                         name='email'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.email}
+                        style={{ 
+                          background: 'var(--bg-primary)', 
+                          border: '1px solid var(--border-light)', 
+                          borderRadius: 8,
+                          textAlign: isRTL ? 'right' : 'left',
+                          direction: isRTL ? 'rtl' : 'ltr'
+                        }}
                       />
                       {form.touched.email && form.errors.email && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.email}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
                 </Row>
-                <Row>
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>Nom :</label>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaUser style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "الاسم العائلي" : "Nom"}
+                      </Form.Label>
+                      <div className="position-relative">
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                          placeholder={currentLanguage === "ar" ? "أدخل الاسم العائلي" : "Veuillez saisir le nom"}
                         name='nom'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.nom}
-                      />
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr'
+                          }}
+                        />
+                        {isRTL && (
+                          <Button 
+                            type="button" 
+                            variant="light" 
+                            size="sm" 
+                            className="position-absolute" 
+                            style={{ 
+                              top: '50%', 
+                              transform: 'translateY(-50%)', 
+                              right: 8, 
+                              border: '1px solid var(--border-light)',
+                              borderRadius: 6,
+                              padding: '2px 6px'
+                            }}
+                            onClick={() => toggleArabicKeyboard('nom')}
+                          >
+                            <FaKeyboard style={{ fontSize: 12 }} />
+                          </Button>
+                        )}
+                      </div>
+                      {isRTL && showArKb.nom && (
+                        <div className="border rounded p-2 bg-white shadow-sm mt-2" style={{ zIndex: 1060, background: 'var(--bg-secondary)', maxWidth: 350 }} onMouseDown={(e)=>e.preventDefault()}>
+                          <div className="d-grid" style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 2 }}>
+                            {arabicKeys.map((k, idx)=> (
+                              <Button key={idx} variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=>appendArabicChar('nom', k)}>{k}</Button>
+                            ))}
+                            <Button variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=> form.setFieldValue('nom', (form.values.nom||'').slice(0,-1))}><i className="fa-solid fa-delete-left"></i></Button>
+                          </div>
+                        </div>
+                      )}
                       {form.touched.nom && form.errors.nom && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.nom}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>Prenom :</label>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaUser style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "الاسم الشخصي" : "Prénom"}
+                      </Form.Label>
+                      <div className="position-relative">
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                          placeholder={currentLanguage === "ar" ? "أدخل الاسم الشخصي" : "Veuillez saisir le prénom"}
                         name='prenom'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.prenom}
-                      />
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr'
+                          }}
+                        />
+                        {isRTL && (
+                          <Button 
+                            type="button" 
+                            variant="light" 
+                            size="sm" 
+                            className="position-absolute" 
+                            style={{ 
+                              top: '50%', 
+                              transform: 'translateY(-50%)', 
+                              right: 8, 
+                              border: '1px solid var(--border-light)',
+                              borderRadius: 6,
+                              padding: '2px 6px'
+                            }}
+                            onClick={() => toggleArabicKeyboard('prenom')}
+                          >
+                            <FaKeyboard style={{ fontSize: 12 }} />
+                          </Button>
+                        )}
+                      </div>
+                      {isRTL && showArKb.prenom && (
+                        <div className="border rounded p-2 bg-white shadow-sm mt-2" style={{ zIndex: 1060, background: 'var(--bg-secondary)', maxWidth: 350 }} onMouseDown={(e)=>e.preventDefault()}>
+                          <div className="d-grid" style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 2 }}>
+                            {arabicKeys.map((k, idx)=> (
+                              <Button key={idx} variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=>appendArabicChar('prenom', k)}>{k}</Button>
+                            ))}
+                            <Button variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=> form.setFieldValue('prenom', (form.values.prenom||'').slice(0,-1))}><i className="fa-solid fa-delete-left"></i></Button>
+                          </div>
+                        </div>
+                      )}
                       {form.touched.prenom && form.errors.prenom && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.prenom}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
                 </Row>
 
-                <Row>
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>Fonction :</label>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaBriefcase style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "الوظيفة" : "Fonction"}
+                      </Form.Label>
+                      <div className="position-relative">
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                          placeholder={currentLanguage === "ar" ? "أدخل الوظيفة" : "Veuillez saisir la fonction"}
                         name='fonction'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.fonction}
-                      />
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr'
+                          }}
+                        />
+                        {isRTL && (
+                          <Button 
+                            type="button" 
+                            variant="light" 
+                            size="sm" 
+                            className="position-absolute" 
+                            style={{ 
+                              top: '50%', 
+                              transform: 'translateY(-50%)', 
+                              right: 8, 
+                              border: '1px solid var(--border-light)',
+                              borderRadius: 6,
+                              padding: '2px 6px'
+                            }}
+                            onClick={() => toggleArabicKeyboard('fonction')}
+                          >
+                            <FaKeyboard style={{ fontSize: 12 }} />
+                          </Button>
+                        )}
+                      </div>
+                      {isRTL && showArKb.fonction && (
+                        <div className="border rounded p-2 bg-white shadow-sm mt-2" style={{ zIndex: 1060, background: 'var(--bg-secondary)', maxWidth: 350 }} onMouseDown={(e)=>e.preventDefault()}>
+                          <div className="d-grid" style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 2 }}>
+                            {arabicKeys.map((k, idx)=> (
+                              <Button key={idx} variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=>appendArabicChar('fonction', k)}>{k}</Button>
+                            ))}
+                            <Button variant="light" size="sm" style={{ fontSize: 12, padding: '2px 6px' }} onClick={()=> form.setFieldValue('fonction', (form.values.fonction||'').slice(0,-1))}><i className="fa-solid fa-delete-left"></i></Button>
+                          </div>
+                        </div>
+                      )}
                       {form.touched.fonction && form.errors.fonction && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.fonction}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
-
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <div>
-                      <label>GSM :</label>
+                  <Col xl={6} lg={6} md={6} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaPhone style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "رقم الهاتف" : "GSM"}
+                      </Form.Label>
                       <Form.Control
-                        disabled={loadingUserUpdate}
+                        placeholder={currentLanguage === "ar" ? "أدخل رقم الهاتف" : "Veuillez saisir le GSM (numéro de téléphone)"}
                         name='gsm'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
                         value={form.values.gsm}
+                        style={{ 
+                          background: 'var(--bg-primary)', 
+                          border: '1px solid var(--border-light)', 
+                          borderRadius: 8,
+                          textAlign: isRTL ? 'right' : 'left',
+                          direction: isRTL ? 'rtl' : 'ltr'
+                        }}
                       />
                       {form.touched.gsm && form.errors.gsm && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.gsm}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
                 </Row>
 
-                <Row>
-                  <Col xl={12} lg={12} md={12} sm={12}>
-                    <div>
-                      <label>Direction :</label>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={12} lg={12} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaBuilding style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "الإدارة" : "Direction"}
+                      </Form.Label>
                       <Form.Select
                         disabled={loadingDirectionList}
                         name='direction'
@@ -565,9 +799,16 @@ const UtilisateurUpdatePage = () => {
                           getServicesHandler(event);
                         }}
                         onBlur={form.handleBlur}
-                        value={form.values.direction}>
+                        value={form.values.direction}
+                        style={{ 
+                          background: 'var(--bg-primary)', 
+                          border: '1px solid var(--border-light)', 
+                          borderRadius: 8,
+                          textAlign: isRTL ? 'right' : 'left',
+                          direction: isRTL ? 'rtl' : 'ltr'
+                        }}>
                         <option value=''>
-                          ---- veuillez selectionner une direction ----
+                          {currentLanguage === "ar" ? "---- يرجى اختيار إدارة ----" : "---- veuillez selectionner une direction ----"}
                         </option>
                         {directions.length > 0 &&
                           directions.map(direction => (
@@ -577,26 +818,33 @@ const UtilisateurUpdatePage = () => {
                           ))}
                       </Form.Select>
                       {form.touched.direction && form.errors.direction && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.direction}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
-                  <Col xl={12} lg={12} md={12} sm={12}>
-                    <div>
-                      <label>Département :</label>
+                  <Col xl={12} lg={12} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                        <FaSitemap style={{ color: '#0d6efd' }} />
+                        {currentLanguage === "ar" ? "القسم" : "Département"}
+                      </Form.Label>
                       <Form.Select
-                        disabled={
-                          loadingDepartementListByDirectionID ||
-                          !form.values.direction
-                        }
+                        disabled={loadingDepartementListByDirectionID || !form.values.direction}
                         name='departement'
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
-                        value={form.values.departement}>
+                        value={form.values.departement}
+                        style={{ 
+                          background: 'var(--bg-primary)', 
+                          border: '1px solid var(--border-light)', 
+                          borderRadius: 8,
+                          textAlign: isRTL ? 'right' : 'left',
+                          direction: isRTL ? 'rtl' : 'ltr'
+                        }}>
                         <option value=''>
-                          ---- veuillez selectionner un département ----
+                          {currentLanguage === "ar" ? "---- يرجى اختيار قسم ----" : "---- veuillez selectionner un département ----"}
                         </option>
                         {departements.length > 0 &&
                           departements.map(departement => (
@@ -606,29 +854,36 @@ const UtilisateurUpdatePage = () => {
                           ))}
                       </Form.Select>
                       {form.touched.departement && form.errors.departement && (
-                        <small className='text-danger d-block'>
+                        <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                           {form.errors.departement}
                         </small>
                       )}
-                    </div>
+                    </Form.Group>
                   </Col>
 
 
                   {!form.values.isDirecteur && (
-                    <Col xl={12} lg={12} md={12} sm={12}>
-                      <div>
-                        <label>Service :</label>
+                    <Col xl={12} lg={12} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                      <Form.Group className="mb-3">
+                        <Form.Label className="fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                          <FaSitemap style={{ color: '#0d6efd' }} />
+                          {currentLanguage === "ar" ? "الخدمة" : "Service"}
+                        </Form.Label>
                         <Form.Select
-                          disabled={
-                            loadingServiceListByDirectionID ||
-                            !form.values.direction
-                          }
+                          disabled={loadingServiceListByDirectionID || !form.values.direction}
                           name='service'
                           onChange={form.handleChange}
                           onBlur={form.handleBlur}
-                          value={form.values.service}>
+                          value={form.values.service}
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr'
+                          }}>
                           <option value=''>
-                            ---- veuillez selectionner un service ----
+                            {currentLanguage === "ar" ? "---- يرجى اختيار خدمة ----" : "---- veuillez selectionner un service ----"}
                           </option>
                           {services.length > 0 &&
                             services.map(service => (
@@ -638,21 +893,26 @@ const UtilisateurUpdatePage = () => {
                             ))}
                         </Form.Select>
                         {form.touched.service && form.errors.service && (
-                          <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                             {form.errors.service}
                           </small>
                         )}
-                      </div>
+                      </Form.Group>
                     </Col>
                   )}
                 </Row>
-                <Row>
-                  <Col xl={12} lg={12} md={12} sm={12}>
-                    <h5 className='mt-3'>Poste de responsabilité :</h5>
-                  </Col>
-                  <Col xl={12} lg={12} md={12} sm={12}>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={12} lg={12} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <div className="d-flex align-items-center mb-3" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                      <FaUserTie style={{ color: '#0d6efd', fontSize: '1.2rem' }} />
+                      <h5 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary)' }}>
+                        {currentLanguage === "ar" ? "منصب المسؤولية" : "Poste de responsabilité"}
+                      </h5>
+                    </div>
+                    <div className="d-flex justify-content-end mb-3">
                     <Button
-                      variant='light'
+                        variant='outline-secondary'
                       size='sm'
                       onClick={() => {
                         form.setValues({
@@ -672,233 +932,366 @@ const UtilisateurUpdatePage = () => {
                           isChefDeService: false,
                           isDirecteur: false,
                         });
-                      }}>
-                      décoche
+                        }}
+                        className="rounded-pill d-flex align-items-center"
+                        style={{ 
+                          gap: 6, 
+                          fontSize: '0.875rem',
+                          padding: '6px 16px',
+                          flexDirection: isRTL ? 'row-reverse' : 'row'
+                        }}>
+                        <i className="fa-solid fa-square-minus"></i>
+                        <span>{currentLanguage === "ar" ? "إلغاء التحديد" : "Décocher"}</span>
                     </Button>
+                    </div>
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <div className='d-flex align-items-center'>
-                      <div className='d-flex justify-content-start align-items-center mr-2'>
-                        <label className='mr-1'>Chef de service :</label>
+                    <div className="d-flex flex-wrap gap-4" style={{ flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                      <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                         <Form.Check
-                          disabled={loadingUserUpdate}
                           name='isChefDeService'
-                          onChange={event => {
-                            form.handleChange(event);
-                            form.setValues({
-                              matricule: form.values.matricule,
-                              email: form.values.email,
-                              nom: form.values.nom,
-                              prenom: form.values.prenom,
-                              fonction: form.values.fonction,
-                              gsm: form.values.gsm,
-                              direction: form.values.direction,
-                              departement: form.values.departement,
-                              interim: form.values.interim,
-                              service: form.values.service,
-                              demandeur: form.values.demandeur,
-                              createur: form.values.createur,
-                              signataire: form.values.signataire,
-                              createurOption: form.values.createurOption,
-                              isDirecteur: false,
-                              isChefDeService: true,
-                            });
+                          type="checkbox"
+                          id="isChefDeService"
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            form.setFieldValue('isChefDeService', checked);
+                            if (checked) form.setFieldValue('isDirecteur', false);
                           }}
                           onBlur={form.handleBlur}
-                          value={form.values.isChefDeService}
-                          checked={form.values.isChefDeService}
+                          checked={!!form.values.isChefDeService}
+                          style={{ transform: 'scale(1.2)' }}
                         />
-                        {form.touched.isChefDeService &&
-                          form.errors.isChefDeService && (
-                            <small className='text-danger d-block'>
-                              {form.errors.isChefDeService}
-                            </small>
-                          )}
+                        <Form.Label htmlFor="isChefDeService" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                          <FaUserTie style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                          {currentLanguage === "ar" ? "رئيس الخدمة" : "Chef de service"}
+                        </Form.Label>
                       </div>
-                      <div className='d-flex justify-content-start align-items-center mr-2'>
-                        <label className='mr-1'>Directeur:</label>
+                      <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                         <Form.Check
-                          disabled={loadingUserUpdate}
                           name='isDirecteur'
-                          onChange={event => {
-                            form.handleChange(event);
-                            form.setValues({
-                              matricule: form.values.matricule,
-                              email: form.values.email,
-                              nom: form.values.nom,
-                              prenom: form.values.prenom,
-                              fonction: form.values.fonction,
-                              gsm: form.values.gsm,
-                              direction: form.values.direction,
-                              departement: form.values.departement,
-                              interim: form.values.interim,
-                              service: form.values.service,
-                              demandeur: form.values.demandeur,
-                              createur: form.values.createur,
-                              signataire: form.values.signataire,
-                              createurOption: form.values.createurOption,
-                              isChefDeService: false,
-                              isDirecteur: true,
-                            });
+                          type="checkbox"
+                          id="isDirecteur"
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            form.setFieldValue('isDirecteur', checked);
+                            if (checked) form.setFieldValue('isChefDeService', false);
                           }}
                           onBlur={form.handleBlur}
-                          value={form.values.isDirecteur}
-                          checked={form.values.isDirecteur}
+                          checked={!!form.values.isDirecteur}
+                          style={{ transform: 'scale(1.2)' }}
                         />
-                        {form.touched.isDirecteur &&
-                          form.errors.isDirecteur && (
-                            <small className='text-danger d-block'>
+                        <Form.Label htmlFor="isDirecteur" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                          <FaUserTie style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                          {currentLanguage === "ar" ? "المدير" : "Directeur"}
+                        </Form.Label>
+                      </div>
+                    </div>
+                    {(form.touched.isChefDeService && form.errors.isChefDeService) && (
+                      <small className="text-danger d-block mt-2" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                        {form.errors.isChefDeService}
+                      </small>
+                    )}
+                    {(form.touched.isDirecteur && form.errors.isDirecteur) && (
+                      <small className="text-danger d-block mt-2" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                               {form.errors.isDirecteur}
                             </small>
                           )}
-                      </div>
-                    </div>
                   </Col>
                 </Row>
 
-                <Row>
-                  <Col xl={12} lg={12} md={12} sm={12}>
-                    <h5 className='mt-3'>Roles :</h5>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={12} lg={12} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <div className="d-flex align-items-center mb-3" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: isRTL ? 'flex-end' : 'flex-start' }}>
+                      <FaUserCheck style={{ color: '#0d6efd', fontSize: '1.2rem' }} />
+                      <h5 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary)' }}>
+                        {currentLanguage === "ar" ? "الأدوار" : "Rôles"}
+                      </h5>
+                    </div>
                   </Col>
                   <Col xl={12} lg={12} md={12} sm={12}>
-                    <Row>
-                      <Col xl={3} lg={3} md={12} sm={12}>
-                        <div className='d-flex justify-content-start align-items-center mr-2'>
-                          <label className='mr-1'>Demandeur :</label>
+                    <Row className="g-3">
+                      <Col xl={3} lg={3} md={6} sm={12}>
+                        <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                           <Form.Check
-                            disabled={loadingUserUpdate}
                             name='demandeur'
-                            onChange={form.handleChange}
+                            type="checkbox"
+                            id="demandeur"
+                            onChange={(e) => form.setFieldValue('demandeur', e.target.checked)}
                             onBlur={form.handleBlur}
-                            value={form.values.demandeur}
-                            checked={form.values.demandeur}
+                            checked={!!form.values.demandeur}
+                            style={{ transform: 'scale(1.2)' }}
                           />
+                          <Form.Label htmlFor="demandeur" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                            <FaUser style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                            {currentLanguage === "ar" ? "مقدم الطلب" : "Demandeur"}
+                          </Form.Label>
+                        </div>
                           {form.touched.demandeur && form.errors.demandeur && (
-                            <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                               {form.errors.demandeur}
                             </small>
                           )}
-                        </div>
                       </Col>
-                      <Col xl={3} lg={3} md={12} sm={12}>
-                        <div className='d-flex justify-content-start align-items-center mr-2'>
-                          <label className='mr-1'>Signataire :</label>
+                      <Col xl={3} lg={3} md={6} sm={12}>
+                        <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                           <Form.Check
-                            disabled={loadingUserUpdate}
                             name='signataire'
-                            onChange={form.handleChange}
+                            type="checkbox"
+                            id="signataire"
+                            onChange={(e) => form.setFieldValue('signataire', e.target.checked)}
                             onBlur={form.handleBlur}
-                            value={form.values.signataire}
-                            checked={form.values.signataire}
+                            checked={!!form.values.signataire}
+                            style={{ transform: 'scale(1.2)' }}
                           />
-                          {form.touched.signataire &&
-                            form.errors.signataire && (
-                              <small className='text-danger d-block'>
+                          <Form.Label htmlFor="signataire" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                            <FaUserTie style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                            {currentLanguage === "ar" ? "الموقع" : "Signataire"}
+                          </Form.Label>
+                        </div>
+                        {form.touched.signataire && form.errors.signataire && (
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                                 {form.errors.signataire}
                               </small>
                             )}
-                        </div>
                       </Col>
-                      <Col xl={3} lg={3} md={12} sm={12}>
-                        <div className='d-flex justify-content-start align-items-center mr-2'>
-                          <label className='mr-1'>Createur :</label>
+                      <Col xl={3} lg={3} md={6} sm={12}>
+                        <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                           <Form.Check
-                            disabled={loadingUserUpdate}
                             name='createur'
-                            onChange={form.handleChange}
+                            type="checkbox"
+                            id="createur"
+                            onChange={(e) => form.setFieldValue('createur', e.target.checked)}
                             onBlur={form.handleBlur}
-                            value={form.values.createur}
-                            checked={form.values.createur}
+                            checked={!!form.values.createur}
+                            style={{ transform: 'scale(1.2)' }}
                           />
+                          <Form.Label htmlFor="createur" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                            <FaUserCheck style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                            {currentLanguage === "ar" ? "المنشئ" : "Créateur"}
+                          </Form.Label>
+                        </div>
                           {form.touched.createur && form.errors.createur && (
-                            <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                               {form.errors.createur}
                             </small>
                           )}
-                        </div>
                       </Col>
-                      <Col xl={3} lg={3} md={12} sm={12}>
-                        <div className='d-flex justify-content-start align-items-center mr-2'>
-                          <label className='mr-1'>Createur d'option :</label>
+                      <Col xl={3} lg={3} md={6} sm={12}>
+                        <div className="d-flex align-items-center" style={{ gap: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                           <Form.Check
-                            disabled={loadingUserUpdate}
                             name='createurOption'
-                            onChange={form.handleChange}
+                            type="checkbox"
+                            id="createurOption"
+                            onChange={(e) => form.setFieldValue('createurOption', e.target.checked)}
                             onBlur={form.handleBlur}
-                            value={form.values.createurOption}
-                            checked={form.values.createurOption}
+                            checked={!!form.values.createurOption}
+                            style={{ transform: 'scale(1.2)' }}
                           />
+                          <Form.Label htmlFor="createurOption" className="mb-0 fw-semibold d-flex align-items-center" style={{ color: 'var(--text-primary)', gap: 6, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                            <FaUserCheck style={{ color: '#0d6efd', fontSize: '1rem' }} />
+                            {currentLanguage === "ar" ? "منشئ الخيار" : "Créateur d'option"}
+                          </Form.Label>
+                        </div>
                           {form.touched.createurOption && form.errors.createurOption && (
-                            <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                               {form.errors.createurOption}
                             </small>
                           )}
-                        </div>
                       </Col>
                     </Row>
                   </Col>
                 </Row>
 
                 {form.errors && form.errors["atLeastOneChecked"] && (
-                  <small className='text-danger d-block'>
+                  <div className="alert alert-warning d-flex align-items-center mt-3" style={{ 
+                    background: 'var(--bg-warning)', 
+                    border: '1px solid var(--border-warning)', 
+                    borderRadius: 8,
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    textAlign: isRTL ? 'right' : 'left'
+                  }}>
+                    <i className="fa-solid fa-triangle-exclamation me-2" style={{ color: '#856404' }}></i>
+                    <small className="mb-0 fw-semibold" style={{ color: '#856404' }}>
                     {form.errors["atLeastOneChecked"]}
                   </small>
+                  </div>
                 )}
 
 
 
-                <Button className='w-100 mt-3' type='submit' variant='dark'>
-                  <i className='fa-solid fa-user-pen'></i> modifier
+                {}
+                <div className="d-flex justify-content-center mt-4">
+                  <Button 
+                    type="submit" 
+                    disabled={loadingUserUpdate}
+                    className="rounded-pill d-flex align-items-center justify-content-center"
+                    style={{
+                      background: '#0d6efd',
+                      border: 'none',
+                      borderRadius: '9999px',
+                      fontSize: '1rem',
+                      padding: '12px 32px',
+                      gap: 8,
+                      minWidth: 200,
+                      flexDirection: isRTL ? 'row-reverse' : 'row'
+                    }}
+                  >
+                    {loadingUserUpdate ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i>
+                        <span className={isRTL ? 'me-1' : 'ms-1'}>
+                          {currentLanguage === "ar" ? "جاري التحديث..." : "Mise à jour en cours..."}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <FaEdit />
+                        <span className={isRTL ? 'me-1' : 'ms-1'}>
+                          {currentLanguage === "ar" ? "تحديث المستخدم" : "Modifier l'utilisateur"}
+                        </span>
+                      </>
+                    )}
                 </Button>
+                </div>
               </Form>
             </Tab>
-            <Tab eventKey='tab2' title='Modifier le mot de passe'>
-              <Form className='py-3' onSubmit={changePasswordForm.handleSubmit}>
-                <div>
-                  <label>Mot de passe :</label>
+            <Tab eventKey='tab2' title={currentLanguage === "ar" ? "تعديل كلمة المرور" : "Modifier le mot de passe"}>
+              <Form className='py-3' onSubmit={changePasswordForm.handleSubmit} style={{ textAlign: isRTL ? 'right' : 'left', direction: isRTL ? 'rtl' : 'ltr' }}>
+                {}
+                <Row className="mb-3" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+                  <Col xl={6} lg={6} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold" style={{ color: 'var(--text-primary)', textAlign: isRTL ? 'right' : 'left' }}>
+                        {currentLanguage === "ar" ? "كلمة المرور" : "Mot de passe"}
+                      </Form.Label>
+                      <div className="position-relative">
                   <Form.Control
-                    placeholder='veuillez saisir le mot de passe'
+                          placeholder={currentLanguage === "ar" ? "أدخل كلمة المرور" : "Veuillez saisir le mot de passe"}
                     name='password'
                     type={showPassword ? "text" : "password"}
                     onChange={changePasswordForm.handleChange}
                     onBlur={changePasswordForm.handleBlur}
                     value={changePasswordForm.values.password}
-                  />
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr',
+                            paddingRight: isRTL ? 40 : 40
+                          }}
+                        />
+                        <Button 
+                          type="button" 
+                          variant="light" 
+                          size="sm" 
+                          className="position-absolute" 
+                          style={{ 
+                            top: '50%', 
+                            transform: 'translateY(-50%)', 
+                            right: 8, 
+                            border: '1px solid var(--border-light)',
+                            borderRadius: 6,
+                            padding: '2px 6px'
+                          }}
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <FaEyeSlash style={{ fontSize: 12 }} /> : <FaEye style={{ fontSize: 12 }} />}
+                        </Button>
+                      </div>
                   {changePasswordForm.touched.password &&
                     changePasswordForm.errors.password && (
-                      <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {changePasswordForm.errors.password}
                       </small>
                     )}
-                </div>
-
-                <div>
-                  <label>Confirmer le mot de passe :</label>
+                    </Form.Group>
+                  </Col>
+                  <Col xl={6} lg={6} md={12} sm={12} style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold" style={{ color: 'var(--text-primary)', textAlign: isRTL ? 'right' : 'left' }}>
+                        {currentLanguage === "ar" ? "تأكيد كلمة المرور" : "Confirmer le mot de passe"}
+                      </Form.Label>
+                      <div className="position-relative">
                   <Form.Control
-                    placeholder='veuillez saisir le mot de passe de confirmation'
+                          placeholder={currentLanguage === "ar" ? "أعد إدخال كلمة المرور" : "Veuillez confirmer le mot de passe"}
                     name='confirmPassword'
-                    type={showPassword ? "text" : "password"}
+                          type={showConfirmPassword ? "text" : "password"}
                     onChange={changePasswordForm.handleChange}
                     onBlur={changePasswordForm.handleBlur}
                     value={changePasswordForm.values.confirmPassword}
-                  />
+                          style={{ 
+                            background: 'var(--bg-primary)', 
+                            border: '1px solid var(--border-light)', 
+                            borderRadius: 8,
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr',
+                            paddingRight: isRTL ? 40 : 40
+                          }}
+                        />
+                        <Button 
+                          type="button" 
+                          variant="light" 
+                          size="sm" 
+                          className="position-absolute" 
+                          style={{ 
+                            top: '50%', 
+                            transform: 'translateY(-50%)', 
+                            right: 8, 
+                            border: '1px solid var(--border-light)',
+                            borderRadius: 6,
+                            padding: '2px 6px'
+                          }}
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <FaEyeSlash style={{ fontSize: 12 }} /> : <FaEye style={{ fontSize: 12 }} />}
+                        </Button>
+                      </div>
                   {changePasswordForm.touched.confirmPassword &&
                     changePasswordForm.errors.confirmPassword && (
-                      <small className='text-danger d-block'>
+                          <small className="text-danger d-block mt-1" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {changePasswordForm.errors.confirmPassword}
                       </small>
                     )}
-                </div>
-                <Form.Check
-                  label='afficher le mot de passe'
-                  type='switch'
-                  className='mt-1'
-                  onChange={() => setShowPassword(!showPassword)}
-                />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-                <Button className='w-100 mt-3' type='submit' variant='dark'>
-                  <i className='fa-solid fa-key'></i> modifier le mot de passe
+                {}
+                <div className="d-flex justify-content-center mt-4">
+                  <Button 
+                    type="submit" 
+                    disabled={loadingUserUpdatePassword}
+                    className="rounded-pill d-flex align-items-center justify-content-center"
+                    style={{
+                      background: '#0d6efd',
+                      border: 'none',
+                      borderRadius: '9999px',
+                      fontSize: '1rem',
+                      padding: '12px 32px',
+                      gap: 8,
+                      minWidth: 200,
+                      flexDirection: isRTL ? 'row-reverse' : 'row'
+                    }}
+                  >
+                    {loadingUserUpdatePassword ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i>
+                        <span className={isRTL ? 'me-1' : 'ms-1'}>
+                          {currentLanguage === "ar" ? "جاري التحديث..." : "Mise à jour en cours..."}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <FaKey />
+                        <span className={isRTL ? 'me-1' : 'ms-1'}>
+                          {currentLanguage === "ar" ? "تحديث كلمة المرور" : "Modifier le mot de passe"}
+                        </span>
+                      </>
+                    )}
                 </Button>
+                </div>
               </Form>
             </Tab>
           </Tabs>
@@ -908,7 +1301,7 @@ const UtilisateurUpdatePage = () => {
           )}
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 };
 

@@ -1,9 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Notification from "../models/notificationModel.js";
 
-// @desc    Recuperer le nombre de notification non vue
-// @route   GET /api/notifications/notseen
-// @access  private
+
+
+
 export const getCountNotSeenNotifications = asyncHandler(async (req, res) => {
     const count = await Notification.countDocuments({
         vue: false,
@@ -12,9 +12,9 @@ export const getCountNotSeenNotifications = asyncHandler(async (req, res) => {
     res.json({ count });
 });
 
-// @desc    Recuperer tous les notification d un utilisateur
-// @route   GET /api/notifications/
-// @access  private
+
+
+
 export const getNotifications = asyncHandler(async (req, res) => {
     const { page = 1, limit = 5 } = req.query;
 
@@ -43,14 +43,14 @@ export const getNotifications = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Rendre tous les notification vue
-// @route   PUT /api/notifications
-// @access  private
+
+
+
 export const seenNotifications = asyncHandler(async (req, res) => {
-    // const notifications = await Notification.updateMany(
-    //     { utilisateur: req.user.id },
-    //     { $setField: { vue: true } });
-    // res.json(notifications);
+    
+    
+    
+    
     const notifications = await Notification.find({ utilisateur: req.user.id });
 
     for (const notification of notifications) {
@@ -63,9 +63,9 @@ export const seenNotifications = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Recuperer tous les notification d un utilisateur
-// @route   GET /api/notifications/toast
-// @access  private
+
+
+
 export const getToastNotifications = asyncHandler(async (req, res) => {
     let notifications = await Notification.find({
         utilisateur: req.user.id,
@@ -83,9 +83,9 @@ export const getToastNotifications = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Rendre tous les notification vue
-// @route   PUT /api/notifications/toast
-// @access  private
+
+
+
 export const seenToastNotifications = asyncHandler(async (req, res) => {
     const notifications = await Notification.find({ utilisateur: req.user.id });
     for (const notification of notifications) {
@@ -97,9 +97,9 @@ export const seenToastNotifications = asyncHandler(async (req, res) => {
     res.json({ message: "notifications modifiee" })
 });
 
-// @desc    Rendre une  notification vue
-// @route   PUT /api/notifications/toast/:id
-// @access  private
+
+
+
 export const seenOneToastNotification = asyncHandler(async (req, res) => {
 
     await Notification.updateOne(

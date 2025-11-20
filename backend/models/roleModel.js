@@ -13,5 +13,9 @@ const roleSchema = Schema({
   },
 });
 
+
+roleSchema.index({ code: 1 }, { unique: true });
+roleSchema.index({ libelle: 1 });
+
 const Role = mongoose.model("role", roleSchema);
 export default Role;

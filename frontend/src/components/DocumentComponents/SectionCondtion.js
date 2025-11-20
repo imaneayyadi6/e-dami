@@ -49,7 +49,7 @@ const SectionCondtion = ({
         {!children || children.length === 0 ? (
           <p>Veuillez glisser un élément au-dessus de cette section </p>
         ) : (
-          children.map((child) => (
+          children && children.map((child) => (
             <div
               key={child.id}
               id={`child-${child.id}`}

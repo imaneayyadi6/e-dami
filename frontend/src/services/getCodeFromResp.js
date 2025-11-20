@@ -10,7 +10,7 @@ export const getCodeFromResp = (userInfo, demandeur, option) => {
     code = "dir";
   }
 
-  // console.log("option.autreUtilisateur :", option.autreUtilisateur)
+  
 
   if (option && option.autreUtilisateur) {
     if (String(option.autreUtilisateur) === String(userInfo.id)) {

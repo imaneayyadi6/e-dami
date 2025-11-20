@@ -31,7 +31,7 @@ const useTimeAgo = (date) => {
     useEffect(() => {
         calculateTimeAgo();
 
-        // Update time ago every minute
+        
         const intervalId = setInterval(calculateTimeAgo, 60 * 1000);
 
         return () => clearInterval(intervalId);

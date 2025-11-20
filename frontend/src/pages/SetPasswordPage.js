@@ -9,7 +9,7 @@ import { Toast } from "../services";
 
 
 const SetPasswordPage = () => {
-  //   const [matricule, setMatricule] = useState("");
+  
   const [callOnce, setCallOnce] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -75,7 +75,7 @@ const SetPasswordPage = () => {
       <FormContainer>
         <Card className="mt-5">
           <Card.Body>
-            {/* {token} */}
+            {}
             {loading && <Loader />}
             {errorUserValidateToken && (
               <Message itWillBeHidden type="danger">

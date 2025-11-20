@@ -230,13 +230,9 @@ export const userListReducer = (state = { users: [] }, action) => {
     case USER_LIST_UPDATE:
       return {
         success: true,
-        users: state.users.map((user) => {
-          if (String(user._id) === String(payload._id)) {
-            user.libelle = payload.libelle;
-            user.direction = payload.direction;
-          }
-          return user;
-        }),
+        users: state.users.map((user) => (
+          String(user._id) === String(payload._id) ? { ...user, ...payload } : user
+        )),
       };
     case USER_LIST_FAIL:
       return { loading: false, error: payload, users: [], success: true };

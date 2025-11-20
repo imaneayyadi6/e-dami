@@ -3,8 +3,12 @@ import Label from "./Label";
 import { v4 as uuidv4 } from "uuid";
 import { Form, OverlayTrigger, Popover } from "react-bootstrap";
 import { cssStringToObject } from "../../services";
+import { useTranslation } from "react-i18next";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguageSync();
   const id = uuidv4();
   const [show, setShow] = useState(false);
 
@@ -69,27 +73,27 @@ const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
 
   const popover = (
     <Popover ref={popoverRef} id={popoverId}>
-      <Popover.Header>Style de la zone de text</Popover.Header>
-      <Popover.Body>
+      <Popover.Header>{t('builder.textInput.title', { defaultValue: 'Style de la zone de texte' })}</Popover.Header>
+      <Popover.Body dir={isRTL ? 'rtl' : 'ltr'}>
         <Form>
-          <label>Type</label>
+          <label>{t('builder.textInput.type', { defaultValue: 'Type' })}</label>
           <Form.Select
             size="sm"
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value={""}>---- veuillez choisire type ----</option>
-            <option value={"text"}>Text</option>
-            <option value={"date"}>Date</option>
-            <option value={"number"}>Nombre</option>
+            <option value={""}>{t('builder.common.chooseType', { defaultValue: '---- veuillez choisir le type ----' })}</option>
+            <option value={"text"}>{t('builder.textInput.types.text', { defaultValue: 'Texte' })}</option>
+            <option value={"date"}>{t('builder.textInput.types.date', { defaultValue: 'Date' })}</option>
+            <option value={"number"}>{t('builder.textInput.types.number', { defaultValue: 'Nombre' })}</option>
           </Form.Select>
 
           {type === "number" && (
             <>
-              <label>Min - Max valeur :</label>
+              <label>{t('builder.textInput.minMax', { defaultValue: 'Min - Max valeur :' })}</label>
               <div className="d-flex align-items-center justify-content-center">
                 <div className="mx-1">
-                  <label>min :</label>
+                  <label>{t('builder.textInput.min', { defaultValue: 'min :' })}</label>
                   <Form.Control
                     className=""
                     size="sm"
@@ -98,7 +102,7 @@ const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
                   />
                 </div>
                 <div className="mx-1">
-                  <label>max :</label>
+                  <label>{t('builder.textInput.max', { defaultValue: 'max :' })}</label>
                   <Form.Control
                     className=""
                     size="sm"
@@ -110,21 +114,21 @@ const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
             </>
           )}
 
-          <label className="mt-3">Placeholder :</label>
+          <label className="mt-3">{t('builder.common.placeholder', { defaultValue: 'Placeholder :' })}</label>
           <Form.Control
             size="sm"
-            placeholder="Exp: 'veuillez saisire quelque chose' "
+            placeholder={t('builder.common.placeholderExample', { defaultValue: "Exp: 'veuillez saisir quelque chose' " })}
             value={placeholder}
             onChange={(e) => setPlaceholder(e.target.value)}
           />
-          <label className="mt-3">Taille de police</label>
+          <label className="mt-3">{t('builder.common.fontSize', { defaultValue: 'Taille de police' })}</label>
           <Form.Select
             size="sm"
             value={size}
             onChange={(e) => setSize(e.target.value)}
           >
             <option value={""}>
-              ---- veuillez choisire la taille de police ----
+              {t('builder.common.chooseFontSize', { defaultValue: '---- veuillez choisir la taille de police ----' })}
             </option>
             <option value={"12"}>12px</option>
             <option value={"13"}>13px</option>
@@ -134,9 +138,9 @@ const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
             <option value={"17"}>17px</option>
             <option value={"18"}>18px</option>
           </Form.Select>
-          <label className="mt-3">Taille de la zone de text</label>
+          <label className="mt-3">{t('builder.common.blockSize', { defaultValue: 'Taille de la zone de texte' })}</label>
           <Form.Check
-            label="block"
+            label={t('builder.common.block', { defaultValue: 'block' })}
             checked={block}
             onChange={(e) => setBlock(!block)}
           />
@@ -153,7 +157,7 @@ const TextInput = ({ showLabel = true, mainLabelProps, textInputProp }) => {
           style={
             mainLabelProps && cssStringToObject(String(mainLabelProps.style))
           }
-          text={mainLabelProps ? mainLabelProps.text : "label"}
+          text={mainLabelProps ? mainLabelProps.text : t('builder.common.label', { defaultValue: 'label' })}
         />
       )}
       <OverlayTrigger

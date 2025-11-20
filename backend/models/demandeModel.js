@@ -68,5 +68,20 @@ const demandeSchema = Schema({
   ],
 });
 
+
+demandeSchema.index({ demandeur: 1 });
+demandeSchema.index({ option: 1 });
+demandeSchema.index({ status: 1 });
+demandeSchema.index({ dateDemande: -1 });
+demandeSchema.index({ "traitement.utilisateur": 1 });
+demandeSchema.index({ "traitement.status": 1 });
+demandeSchema.index({ "traitement.dateEnvoi": -1 });
+
+
+demandeSchema.index({ demandeur: 1, status: 1 });
+demandeSchema.index({ status: 1, dateDemande: -1 });
+demandeSchema.index({ option: 1, status: 1 });
+demandeSchema.index({ "traitement.utilisateur": 1, "traitement.status": 1 });
+
 const Demande = mongoose.model("demande", demandeSchema);
 export default Demande;

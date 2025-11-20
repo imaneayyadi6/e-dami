@@ -20,6 +20,10 @@ import {
   getDemandesForPreview,
   getDemandeForPreviewByID,
   getDemandesForPreviewAll,
+  generateDemandePDF,
+  updateDemande,
+  deleteDemande,
+  getDashboardStats,
 } from "../controllers/demandeController.js";
 
 import upload from "../middlewares/uploadMiddleware.js";
@@ -51,11 +55,22 @@ router
   .put(protect, signataire, approuverDemande);
 router
   .route("/:id/refuse/:idTraitement")
-  .put(protect, upload.single("fichierMotifRefus"), refuserDemande);
+  .put(protect, signataire, upload.single("fichierMotifRefus"), refuserDemande);
 router.route("/mesdemandes").get(protect, demandeur, getMesDemandes);
-router.route("/:id").get(protect, demandeur, getDemandeurDemandeByID);
 router.route("/for/preview/team/all").get(protect,  getDemandesForPreviewAll);
 
 
+router.route("/dashboard/stats").get(protect, getDashboardStats);
+
+
+router
+  .route("/:id")
+  .get(protect, demandeur, getDemandeurDemandeByID)
+  .put(protect, updateDemande)
+  .delete(protect, deleteDemande);
+
+router
+  .route("/:id/pdf")
+  .get(protect, generateDemandePDF);
 
 export default router;

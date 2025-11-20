@@ -49,12 +49,12 @@ export const generateExcel = (filters) => {
                     "Content-Type": "application/json",
                     authorization: `Bearer ${userInfo.token}`,
                 },
-                responseType: 'blob' // Important for file download
+                responseType: 'blob' 
             };
             
             const { data } = await axios.post("/api/generate/excel", { filters }, config);
             
-            // Create blob and download
+            
             const blob = new Blob([data], { 
                 type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
             });

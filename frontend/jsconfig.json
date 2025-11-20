@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "checkJs": false,
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node", "react", "react-dom"]
+  },
+  "exclude": [
+    "node_modules",
+    "**/dist/**",
+    "**/build/**"
+  ]
+}
+
+
+

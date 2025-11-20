@@ -22,10 +22,10 @@ const utilisateurSchema = Schema(
       type: String,
       unique: [true, "email existe déjà"],
       required: [true, "veuillez saisir une adresse e-mail"],
-      // match: [
-      //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      //   "Format d'email invalide. veuillez fournir une adresse email valide.",
-      // ],
+      
+      
+      
+      
     },
     emailSent: {
       type: Boolean,
@@ -43,7 +43,7 @@ const utilisateurSchema = Schema(
     },
     gsm: {
       type: String,
-      // unique: [true, "gsm existe déjà"],
+      
     },
     isChefDeService: {
       type: Boolean,
@@ -127,6 +127,23 @@ utilisateurSchema.pre("save", async function (next) {
   this.password = crppassword;
   next();
 });
+
+
+utilisateurSchema.index({ email: 1 });
+utilisateurSchema.index({ matricule: 1 });
+utilisateurSchema.index({ isActive: 1 });
+utilisateurSchema.index({ direction: 1 });
+utilisateurSchema.index({ service: 1 });
+utilisateurSchema.index({ departement: 1 });
+utilisateurSchema.index({ "roles.role": 1 });
+utilisateurSchema.index({ isChefDeService: 1 });
+utilisateurSchema.index({ isDirecteur: 1 });
+utilisateurSchema.index({ createdAt: -1 });
+
+
+utilisateurSchema.index({ isActive: 1, direction: 1 });
+utilisateurSchema.index({ isActive: 1, service: 1 });
+utilisateurSchema.index({ isActive: 1, "roles.role": 1 });
 
 const Utilisateur = mongoose.model("utilisateur", utilisateurSchema);
 export default Utilisateur;

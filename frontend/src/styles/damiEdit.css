@@ -1,0 +1,471 @@
+/* DAMI Edit Page Custom Styles - Platform Blue Theme */
+
+/* Primary Blue Color Variables */
+:root {
+  --primary-blue: #007bff;
+  --primary-blue-dark: #0056b3;
+  --primary-blue-light: #66b3ff;
+  --secondary-blue: #e3f2fd;
+  --accent-blue: #1976d2;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-light: #e9ecef;
+  --background-light: #f8f9fa;
+}
+
+/* Main Container */
+.dami-edit-container {
+  background-color: var(--background-light);
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Card Styling */
+.dami-edit-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.dami-edit-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 123, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.dami-edit-card .card-header {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.dami-edit-card .card-body {
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Form Styling */
+.dami-edit-form .form-label {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.dami-edit-form .form-control,
+.dami-edit-form .form-select {
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  width: 100%;
+  min-height: 45px;
+  line-height: 1.5;
+}
+
+/* Arabic input field adjustments */
+.dami-edit-form .form-control[dir="rtl"] {
+  text-align: right;
+  direction: rtl;
+}
+
+.dami-edit-form .form-control[dir="ltr"] {
+  text-align: left;
+  direction: ltr;
+}
+
+/* Ensure proper spacing for keyboard button */
+.dami-edit-form .position-relative .form-control {
+  padding-right: 45px !important;
+}
+
+.dami-edit-form .position-relative .form-control[dir="rtl"] {
+  padding-right: 12px !important;
+  padding-left: 45px !important;
+}
+
+/* Arabic text input improvements */
+.dami-edit-form .form-control[dir="rtl"] {
+  font-family: 'Arial', 'Tahoma', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.dami-edit-form .form-control[dir="rtl"]:focus {
+  text-align: right;
+  direction: rtl;
+}
+
+.dami-edit-form .form-control:focus,
+.dami-edit-form .form-select:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  background-color: white;
+}
+
+.dami-edit-form .form-control::placeholder {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Button Styling */
+.dami-edit-btn {
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.dami-edit-btn-primary {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+  color: white;
+}
+
+.dami-edit-btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.dami-edit-btn-secondary {
+  background-color: white;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.dami-edit-btn-secondary:hover {
+  background-color: var(--primary-blue);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.dami-edit-btn-light {
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.dami-edit-btn-light:hover {
+  background-color: var(--secondary-blue);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+/* Steps Progress Styling */
+.dami-steps-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+}
+
+.dami-step-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  position: relative;
+}
+
+.dami-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--border-light);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.dami-step-item.active .dami-step-number {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+  color: white;
+  transform: scale(1.1);
+}
+
+.dami-step-item.completed .dami-step-number {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.dami-step-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.dami-step-connector {
+  height: 2px;
+  background-color: var(--border-light);
+  flex: 1;
+  margin: 0 1rem;
+  position: relative;
+}
+
+.dami-step-connector.active {
+  background: linear-gradient(90deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+}
+
+/* Signatories Section */
+.dami-signatories-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+}
+
+.dami-signatory-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.dami-signatory-item:hover {
+  border-color: var(--primary-blue);
+  background-color: var(--secondary-blue);
+  transform: translateX(4px);
+}
+
+.dami-signatory-checkbox {
+  margin-right: 0.75rem;
+  transform: scale(1.2);
+}
+
+.dami-signatory-label {
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.dami-signatory-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+/* Message Styling */
+.dami-message {
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: none;
+  font-weight: 500;
+}
+
+.dami-message.info {
+  background-color: var(--secondary-blue);
+  color: var(--primary-blue);
+  border-left: 4px solid var(--primary-blue);
+}
+
+.dami-message.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+.dami-message.danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+/* Navigation Buttons */
+.dami-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+  gap: 1rem;
+}
+
+.dami-nav-btn {
+  min-width: 120px;
+  padding: 0.75rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  pointer-events: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dami-edit-container {
+    padding: 0.5rem;
+  }
+  
+  .dami-edit-card .card-body {
+    padding: 1rem;
+  }
+  
+  .dami-edit-card .card-header {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .dami-nav-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .dami-nav-btn {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .dami-step-item {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  .dami-step-number {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dami-step-connector {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .dami-edit-form .form-control,
+  .dami-edit-form .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .dami-edit-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .dami-signatory-item {
+    padding: 0.5rem;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .dami-step-number {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+[dir="rtl"] .dami-signatory-checkbox {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .dami-signatory-item:hover {
+  transform: translateX(-4px);
+}
+
+[dir="rtl"] .dami-message.info,
+[dir="rtl"] .dami-message.warning,
+[dir="rtl"] .dami-message.danger {
+  border-left: none;
+  border-right: 4px solid;
+}
+
+/* Loading States */
+.dami-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  color: var(--primary-blue);
+}
+
+.dami-loading .spinner-border {
+  color: var(--primary-blue);
+}
+
+/* Form Validation */
+.dami-edit-form .is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.dami-edit-form .invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Custom Radio and Checkbox Styling */
+.dami-edit-form .form-check-input:checked {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.dami-edit-form .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Section Dividers */
+.dami-section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-light) 50%, transparent 100%);
+  margin: 1.5rem 0;
+}
+
+/* Animation Classes */
+.dami-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dami-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -5,12 +5,7 @@ import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 import Demande from "../models/demandeModel.js";
 
-/**
- * Récupère l'ID du directeur hiérarchique d'un demandeur.
- *
- * @param {String} demandeurId - L'ID de l'utilisateur demandeur.
- * @returns {String|null} - L'ID du directeur hiérarchique ou null si non trouvé.
- */
+
 const getDirecteurHiarchique = async (demandeurId) => {
   const demandeur = await Utilisateur.findById(demandeurId);
   let dirHiqID = null;
@@ -145,7 +140,9 @@ const getCode = async (demandeurId, option) => {
             else code += ".hiq";
             if (demandeurHiq) {
               const dirHiqId = await getDirecteurHiarchique(demandeurId);
-              userId = dirHiqId;
+              if (dirHiqId) {
+                userId = dirHiqId;
+              }
             }
           } else {
             if (
@@ -177,7 +174,9 @@ const getCode = async (demandeurId, option) => {
             else code += ".dir";
             if (optionDirection) {
               const dirHiqId = await getDirecteurHiarchique(demandeurId);
-              userId = dirHiqId;
+              if (dirHiqId) {
+                userId = dirHiqId;
+              }
             }
           } else {
             if (
@@ -204,6 +203,7 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
   const option = await Option.findById(optionId).populate("service");
   const user = await Utilisateur.findById(userId);
   let isInterim = false;
+  
   if (!option) {
     throw new Error("Option introuvable !");
   }
@@ -214,13 +214,15 @@ export const getTypeAppOnCreate = async (optionId, userId) => {
 
   let [userID, code] = await getCode(user.id, option);
 
-  const userInterim = await Utilisateur.findById(userID);
-  if (userInterim && userInterim.interim) {
-    userID = userInterim.interim;
-    isInterim = true;
+  if (userID) {
+    const userInterim = await Utilisateur.findById(userID);
+    if (userInterim && userInterim.interim) {
+      userID = userInterim.interim;
+      isInterim = true;
+    }
   }
 
-  return [code, String(userID), isInterim];
+  return [code, userID ? String(userID) : null, isInterim];
 };
 
 export const getNextTypeAppOnApp = async (optionId, demandeId, code) => {

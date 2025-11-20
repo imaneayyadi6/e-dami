@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import { Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchChartOptionsCountOfServices } from "../../redux/chart/chartActions";
 import Message from "../Message";
 import Loader from "../Loader";
 import { v4 as uuidv4 } from "uuid";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const DamiByServiceDoughnutChart = () => {
-  const [callOnce, setCallOnce] = useState(false);
-  const [chartOnce, setChartOnce] = useState(false);
-
   const chartRef = useRef(null);
+
   const dispatch = useDispatch();
   const chartGetOptionsCountOfServices = useSelector(
     (state) => state.chartGetOptionsCountOfServices
@@ -23,6 +21,26 @@ const DamiByServiceDoughnutChart = () => {
     data,
   } = chartGetOptionsCountOfServices;
 
+  const { isRTL, currentLanguage } = useLanguageSync();
+
+  
+  const translations = {
+    fr: {
+      chartTitle: "Options par service",
+      loading: "Chargement des données du graphique...",
+      error: "Erreur lors du chargement des données du graphique.",
+      noData: "Aucune donnée disponible.",
+    },
+    ar: {
+      chartTitle: "الخيارات حسب الخدمة",
+      loading: "جارٍ تحميل بيانات الرسم البياني...",
+      error: "حدث خطأ أثناء تحميل بيانات الرسم البياني.",
+      noData: "لا توجد بيانات متاحة.",
+    },
+  };
+
+  const t = translations[currentLanguage] || translations.fr;
+
   const generateColors = (number) => {
     const colors = [];
     const crypto = window.crypto || window.msCrypto;
@@ -32,15 +50,15 @@ const DamiByServiceDoughnutChart = () => {
       const greenArray = new Uint8Array(1);
       const blueArray = new Uint8Array(1);
 
-      // Generate random values for red, green, and blue
+      
       crypto.getRandomValues(redArray);
       crypto.getRandomValues(greenArray);
       crypto.getRandomValues(blueArray);
 
-      // Map the random byte (0-255) to the RGBA color format
-      const red = redArray[0]; // 0-255
-      const green = greenArray[0]; // 0-255
-      const blue = blueArray[0]; // 0-255
+      
+      const red = redArray[0]; 
+      const green = greenArray[0]; 
+      const blue = blueArray[0]; 
       const alpha = 0.2;
 
       const color = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
@@ -51,69 +69,128 @@ const DamiByServiceDoughnutChart = () => {
   };
 
   useEffect(() => {
-    if (!callOnce) {
-      dispatch(fetchChartOptionsCountOfServices());
-      setCallOnce(true);
-    }
+    dispatch(fetchChartOptionsCountOfServices());
+    return () => {
+      if (chartRef.current && chartRef.current.chart) {
+        chartRef.current.chart.destroy();
+      }
+    };
+  }, [dispatch]);
 
+  useEffect(() => {
     if (successChartGetOptionsCountOfService && data) {
-      if (!chartOnce) {
-        if (chartRef.current) {
-          // Destroy the existing chart if it exists
-          if (chartRef.current.chart) {
-            chartRef.current.chart.destroy();
-          }
-          let labels = [];
-          let counts = [];
-
-          for (let item of data) {
-            labels.push(item.service);
-            counts.push(Number(item.count));
-          }
-
-          const ctx = chartRef.current.getContext("2d");
-          const chartdata = {
-            labels: labels,
-            datasets: [
-              {
-                data: counts,
-                backgroundColor: generateColors(data.length),
-              },
-            ],
-          };
-          // Create a new Chart instance
-          chartRef.current.chart = new Chart(ctx, {
-            type: "doughnut",
-            data: chartdata,
-          });
-          setChartOnce(true);
+      if (chartRef.current) {
+        
+        if (chartRef.current.chart) {
+          chartRef.current.chart.destroy();
         }
+        let labels = [];
+        let counts = [];
+
+        for (let item of Array.isArray(data) ? data : []) {
+          labels.push(item.service);
+          counts.push(Number(item.count));
+        }
+
+        const ctx = chartRef.current.getContext("2d");
+        const chartdata = {
+          labels: labels,
+          datasets: [
+            {
+              data: counts,
+              backgroundColor: generateColors(data.length),
+            },
+          ],
+        };
+        
+        chartRef.current.chart = new Chart(ctx, {
+          type: "doughnut",
+          data: chartdata,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                  color: "#333",
+                  padding: 20,
+                  usePointStyle: true,
+                },
+              },
+              tooltip: {
+                rtl: isRTL,
+                titleAlign: isRTL ? "right" : "left",
+                bodyAlign: isRTL ? "right" : "left",
+                callbacks: {
+                  label: (context) => {
+                    const label = context.label || '';
+                    const value = context.raw;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return `${label}: ${value} (${percentage}%)`;
+                  },
+                },
+              },
+            },
+          },
+        });
       }
     }
-    return () => {
-      setChartOnce(false);
-    };
-  }, [successChartGetOptionsCountOfService, data, callOnce, chartRef]);
+  }, [successChartGetOptionsCountOfService, data, isRTL]);
+
+  const chartContainerStyle = {
+    background: "#fff",
+    border: "1px solid #e0e0e0",
+    borderRadius: "12px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)", 
+    transition: "all 0.3s ease-in-out",
+    height: "auto",
+    padding: "24px",
+    fontFamily: "inherit",
+  };
+
+  const chartHeaderStyle = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "24px",
+    paddingBottom: "16px",
+    borderBottom: "1px solid #f0f0f0", 
+  };
+
+  const chartTitleStyle = {
+    color: "#333",
+    fontWeight: "300",
+    fontSize: "1.2rem",
+  };
 
   return (
-    <>
-      {errorChartGetOptionsCountOfService && (
-        <Message itWillBeHidden type="danger">
-          {errorChartGetOptionsCountOfService}
-        </Message>
-      )}
+    <div
+      style={chartContainerStyle}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div
+        style={chartHeaderStyle}
+      >
+        <h4 className="mb-0" style={chartTitleStyle}>
+          {t.chartTitle}
+        </h4>
+      </div>
+
+      {errorChartGetOptionsCountOfService && <Message variant="danger">{t.error}</Message>}
       {loadingChartGetOptionsCountOfService && <Loader />}
-      {data && (
-        <Card className="mb-2 ">
-          <div className="d-flex justify-content-center mt-2">
-            <h6>Options par service</h6>
-          </div>
-          <Card.Body className="w-50" style={{ marginLeft: "25%" }}>
-            {chartRef && <canvas ref={chartRef} id={uuidv4()}></canvas>}
-          </Card.Body>
-        </Card>
+      {data && data.length > 0 ? (
+        <div style={{ height: "300px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <canvas ref={chartRef} id={uuidv4()}></canvas>
+        </div>
+      ) : (
+        <div style={{ textAlign: "center", padding: "32px", color: "#999" }}>
+          <p>{t.noData}</p>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

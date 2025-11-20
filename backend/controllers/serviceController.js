@@ -4,17 +4,17 @@ import Direction from "../models/directionModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
 import Departement from "../models/departementModel.js";
 
-// @desc    Afficher tous les services
-// @route   GET /api/services/:id
-// @access  private
+
+
+
 export const getServices = asyncHandler(async (req, res) => {
   const services = await Service.find().sort({ createdAt: -1 });
   res.json(services);
 });
 
-// @desc    Recuperer les services d'une direction par ID
-// @route   GET /api/services/direction/:id
-// @access  private
+
+
+
 export const getServicesByDirectionID = asyncHandler(async (req, res) => {
   const direction = await Direction.findById(req.params.id);
   if (direction) {
@@ -30,9 +30,9 @@ export const getServicesByDirectionID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les services d'un departement par ID
-// @route   GET /api/services/departement/:id
-// @access  private
+
+
+
 export const getServicesByDepartementID = asyncHandler(async (req, res) => {
   const departement = await Departement.findById(req.params.id);
   if (departement) {
@@ -49,9 +49,9 @@ export const getServicesByDepartementID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer un service par ID
-// @route   GET /api/services/:id
-// @access  private
+
+
+
 export const getServiceByID = asyncHandler(async (req, res) => {
   const service = await Service.findById(req.params.id);
   if (service) {
@@ -62,9 +62,9 @@ export const getServiceByID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Creer un service
-// @route   POST /api/services
-// @access  private
+
+
+
 export const createService = asyncHandler(async (req, res) => {
   const { libelle, direction: directionId, chefService } = req.body;
   const direction = await Direction.findById(directionId);
@@ -107,9 +107,9 @@ export const createService = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier un service
-// @route   PUT /api/services/:id
-// @access  private
+
+
+
 export const updateService = asyncHandler(async (req, res) => {
   const { libelle, direction: directionId, chefService } = req.body;
 
@@ -170,9 +170,9 @@ export const updateService = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer un service
-// @route   DELETE /api/services/:id
-// @access  private
+
+
+
 export const deleteService = asyncHandler(async (req, res) => {
   const { deletedCount } = await Service.deleteOne({ _id: req.params.id });
   if (deletedCount === 1) {

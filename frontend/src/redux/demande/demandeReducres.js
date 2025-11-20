@@ -47,6 +47,18 @@ import {
   DEMANDE_PREVIEW_TEAM_DETAILS_REQUEST,
   DEMANDE_PREVIEW_TEAM_DETAILS_RESET,
   DEMANDE_PREVIEW_TEAM_DETAILS_SUCCESS,
+  DEMANDE_UPDATE_REQUEST,
+  DEMANDE_UPDATE_SUCCESS,
+  DEMANDE_UPDATE_FAIL,
+  DEMANDE_UPDATE_RESET,
+  DEMANDE_DELETE_REQUEST,
+  DEMANDE_DELETE_SUCCESS,
+  DEMANDE_DELETE_FAIL,
+  DEMANDE_DELETE_RESET,
+  DASHBOARD_STATS_REQUEST,
+  DASHBOARD_STATS_SUCCESS,
+  DASHBOARD_STATS_FAIL,
+  DASHBOARD_STATS_RESET,
 } from "./demandeTypes";
 
 export const mesDemandesReducer = (state = { demandes: [] }, action) => {
@@ -225,7 +237,7 @@ export const demandeApprouveTraitementReducer = (state = {}, action) => {
   }
 };
 
-export const demanderRefuseTraitementReducer = (state = {}, action) => {
+export const demandeRefuseTraitementReducer = (state = {}, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -253,6 +265,57 @@ export const demandeDemandeurByIdReducer = (state = {}, action) => {
       return { loading: false, error: payload };
     case DEMANDE_DEMANDEUR_BY_ID_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+
+export const demandeUpdateReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_UPDATE_REQUEST:
+      return { loading: true };
+    case DEMANDE_UPDATE_SUCCESS:
+      return { loading: false, success: true, demande: payload };
+    case DEMANDE_UPDATE_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_UPDATE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+export const demandeDeleteReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DEMANDE_DELETE_REQUEST:
+      return { loading: true };
+    case DEMANDE_DELETE_SUCCESS:
+      return { loading: false, success: true, message: payload.message };
+    case DEMANDE_DELETE_FAIL:
+      return { loading: false, error: payload };
+    case DEMANDE_DELETE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+export const dashboardStatsReducer = (state = { stats: null }, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DASHBOARD_STATS_REQUEST:
+      return { loading: true };
+    case DASHBOARD_STATS_SUCCESS:
+      return { loading: false, stats: payload };
+    case DASHBOARD_STATS_FAIL:
+      return { loading: false, error: payload };
+    case DASHBOARD_STATS_RESET:
+      return { stats: null };
     default:
       return state;
   }

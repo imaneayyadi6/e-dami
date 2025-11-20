@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getToastNotificationsList } from '../redux/notification/notificationActions';
 import NotificationItem from './NotificationItem';
+import { useLanguageSync } from '../hooks/useLanguageSync';
 
 
 const NotificationsToastContainer = () => {
     const [callOnce, setCallOnce] = useState(false);
+    const { isRTL } = useLanguageSync();
 
     const notificationToatsList = useSelector(state => state.notificationToatsList);
     const { notifications } = notificationToatsList;
@@ -20,8 +22,17 @@ const NotificationsToastContainer = () => {
     }, [callOnce]);
 
     return (
-        <div className='w-100 d-flex justify-content-end'>
-            <div className='position-absolute' style={{ zIndex: '2000' }}>
+        <div 
+            className='position-fixed' 
+            style={{ 
+                zIndex: '9999',
+                top: '20px',
+                [isRTL ? 'left' : 'right']: '20px',
+                maxWidth: '350px',
+                pointerEvents: 'none'
+            }}
+        >
+            <div style={{ pointerEvents: 'auto' }}>
                 {notifications && notifications.length > 0 &&
                     notifications.map((notification) => (
                         <NotificationItem
@@ -29,10 +40,9 @@ const NotificationsToastContainer = () => {
                             notification={notification}
                         />
                     ))}
-
             </div>
         </div>
     );
-}
+};
 
 export default NotificationsToastContainer;

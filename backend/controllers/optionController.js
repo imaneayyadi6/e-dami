@@ -6,9 +6,9 @@ import Service from "../models/serviceModel.js";
 import Departement from "../models/departementModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
 
-// @desc    Afficher tous les options
-// @route   GET /api/options/
-// @access  private
+
+
+
 export const getOptions = asyncHandler(async (req, res) => {
   const options = await Option.find()
     .populate("service")
@@ -18,23 +18,30 @@ export const getOptions = asyncHandler(async (req, res) => {
   res.json(options);
 });
 
-// @desc    Afficher tous les options
-// @route   GET /api/options/crtop
-// @access  private
+
+
+
 export const getOptionsCrtOp = asyncHandler(async (req, res) => {
+  
   const options = await Option.find({
-    service: req.user.service,
+    $or: [
+      { createur: req.user.id }, 
+      { service: req.user.service }, 
+      { proprietaireDeDonnees: req.user.id }, 
+      { autreUtilisateur: req.user.id } 
+    ]
   })
     .populate("service")
     .populate("proprietaireDeDonnees")
     .populate("sousCategorie")
+    .populate("createur")
     .sort({ createdAt: -1 });
   res.json(options);
 });
 
-// @desc    Recuperer les options d'une sous-categorie par ID
-// @route   GET /api/options/souscategorie
-// @access  private
+
+
+
 export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   const {
     page = 1,
@@ -75,16 +82,16 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .exec();
 
-  // Count total documents based on filters
+  
   const count = await Option.countDocuments({
     ...query,
     isDeleted: false,
   });
 
-  // Calculate total pages
+  
   const totalPages = Math.ceil(count / limit);
 
-  // Respond with processed data
+  
   res.json({
     options,
     totalPages,
@@ -92,14 +99,27 @@ export const getOptionsBySousCategorieID = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Recuperer une option par ID
-// @route   GET /api/options/:id
-// @access  private
+
+
+
 export const getOptionByID = asyncHandler(async (req, res) => {
+  console.log("getOptionByID - Request params:", req.params);
+  console.log("getOptionByID - Request headers:", req.headers);
+  console.log("getOptionByID - User:", req.user?.id);
+  
+  
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    console.error("getOptionByID - Invalid ObjectId format:", req.params.id);
+    res.status(400);
+    throw new Error("Format d'ID invalide");
+  }
+  
+  console.log("getOptionByID - Searching for option with ID:", req.params.id);
   let option = await Option.findById(req.params.id)
     .populate("proprietaireDeDonnees")
     .populate("autreUtilisateur");
   if (option) {
+    console.log("getOptionByID - Option found:", option._id);
     option = JSON.parse(JSON.stringify(option));
     const optionService = await Service.findById(option.service);
     if (optionService) {
@@ -111,16 +131,18 @@ export const getOptionByID = asyncHandler(async (req, res) => {
       option.departement = departement;
     }
 
+    console.log("getOptionByID - Returning option data");
     res.json(option);
   } else {
+    console.error("getOptionByID - Option not found with ID:", req.params.id);
     res.status(404);
     throw new Error("option introuvable !");
   }
 });
 
-// @desc    Creer une option
-// @route   POST /api/options
-// @access  private
+
+
+
 export const createOption = asyncHandler(async (req, res) => {
   const {
     libelle,
@@ -131,8 +153,21 @@ export const createOption = asyncHandler(async (req, res) => {
 
   const sousCategorie = await SousCategorie.findById(req.body.sousCategorie);
   if (sousCategorie) {
-    const service = await Service.findById(req.body.service);
-    if (service) {
+    
+    
+    const serviceId = req.body.service && String(req.body.service).trim() !== "" ? req.body.service : req.user?.service;
+    const isAdmin = req.user.roles.some(role => 
+      role.role?.code === 'admin' || 
+      role.role?.code === 'crt' || 
+      (role.role?.libelle && role.role.libelle.toLowerCase().includes('admin'))
+    );
+    
+    if (!serviceId && !isAdmin) {
+      res.status(400);
+      throw new Error("service requis");
+    }
+    const service = serviceId ? await Service.findById(serviceId) : null;
+    if (service || isAdmin) {
       if (req.body.proprietaireDeDonnees) {
         const utilisateur = await Utilisateur.findById(
           req.body.proprietaireDeDonnees
@@ -144,8 +179,8 @@ export const createOption = asyncHandler(async (req, res) => {
             proprietaireDeDonnees: utilisateur._id,
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
-            service: service._id,
-            departement: service.departement,
+            service: service ? service._id : null,
+            departement: service ? service.departement : null,
             contenu,
             signataires: req.body.signataires,
             conditions: req.body.conditions,
@@ -207,7 +242,7 @@ export const createOption = asyncHandler(async (req, res) => {
   }
 });
 
-// Helper function to validate date
+
 function isValidDate(value) {
   if (typeof value === "string" || value instanceof Date) {
     const date = new Date(value);
@@ -217,10 +252,16 @@ function isValidDate(value) {
   return false;
 }
 
-// @desc    Modifier une option
-// @route   PUT /api/options/:id
-// @access  private
+
+
+
 export const updateOption = asyncHandler(async (req, res) => {
+  
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400);
+    throw new Error("Format d'ID invalide");
+  }
+  
   const { libelle, typeProcessus, header, proprietaireDeDonnees, contenu } =
     req.body;
 
@@ -229,7 +270,7 @@ export const updateOption = asyncHandler(async (req, res) => {
     option.libelle = libelle || option.libelle;
     option.typeProcessus = typeProcessus || option.typeProcessus;
 
-    // Update header fields safely
+    
     if (header) {
       option.header.document = header.document || option.header.document;
       option.header.classification =
@@ -327,10 +368,16 @@ export const updateOption = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer une categorie
-// @route   DELETE /api/options/:id
-// @access  private
+
+
+
 export const deleteOption = asyncHandler(async (req, res) => {
+  
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400);
+    throw new Error("Format d'ID invalide");
+  }
+  
   const option = await Option.findById(req.params.id);
   if (option) {
     if (!option.isDeleted) {
@@ -363,22 +410,33 @@ export const deleteOption = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Creer une option
-// @route   POST /api/options/crtop
-// @access  private
-export const createOptionCrOp = asyncHandler(async (req, res) => {
+
+
+
+export const createOptionCrtOp = asyncHandler(async (req, res) => {
   const {
     libelle,
     typeProcessus,
     header: { document, classification, creation, maj },
-    // proprietaireDeDonnees,
+    
     contenu,
   } = req.body;
 
   const sousCategorie = await SousCategorie.findById(req.body.sousCategorie);
   if (sousCategorie) {
-    const service = await Service.findById(req.body.service);
-    if (service) {
+    const serviceId = req.body.service && String(req.body.service).trim() !== "" ? req.body.service : req.user?.service;
+    const isAdmin = req.user.roles.some(role => 
+      role.role?.code === 'admin' || 
+      role.role?.code === 'crt' || 
+      (role.role?.libelle && role.role.libelle.toLowerCase().includes('admin'))
+    );
+    
+    if (!serviceId && !isAdmin) {
+      res.status(400);
+      throw new Error("service requis");
+    }
+    const service = serviceId ? await Service.findById(serviceId) : null;
+    if (service || isAdmin) {
       if (req.body.proprietaireDeDonnees) {
         const utilisateur = await Utilisateur.findById(
           req.body.proprietaireDeDonnees
@@ -391,8 +449,8 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
             proprietaireDeDonnees: utilisateur._id,
             header: { document, classification, creation, maj },
             sousCategorie: sousCategorie._id,
-            service: service._id,
-            departement: service.departement,
+            service: service ? service._id : null,
+            departement: service ? service.departement : null,
             contenu,
             signataires: req.body.signataires,
             shouldAskAnyTime: req.body.shouldAskAnyTime,
@@ -441,10 +499,16 @@ export const createOptionCrOp = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier une option
-// @route   PUT /api/options/crtop/:id
-// @access  private
+
+
+
 export const updateOptionCrtOp = asyncHandler(async (req, res) => {
+  
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400);
+    throw new Error("Format d'ID invalide");
+  }
+  
   const { libelle, typeProcessus, header, proprietaireDeDonnees, contenu } =
     req.body;
 
@@ -547,10 +611,16 @@ export const updateOptionCrtOp = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer une categorie
-// @route   DELETE /api/options/crtop/:id
-// @access  private
+
+
+
 export const deleteOptionCrtOp = asyncHandler(async (req, res) => {
+  
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400);
+    throw new Error("Format d'ID invalide");
+  }
+  
   const option = await Option.findById(req.params.id);
   if (option) {
     if (String(option.createur) === String(req.user.id)) {

@@ -1,10 +1,55 @@
-import { Card } from "react-bootstrap";
-import { FormContainer, Loader, Message } from "../components";
-import { Form, Button, Alert } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { changePassword, resetChangePassword } from "../redux/user/userActions";
 import { useNavigate, Link } from "react-router-dom";
+import { changePassword, resetChangePassword } from "../redux/user/userActions";
+import { Loader, Message } from "../components";
+import { Button, Card, Form, Row, Col, Container, Alert } from "react-bootstrap";
+import { useLanguageSync } from "../hooks/useLanguageSync";
+import "animate.css";
+
+
+const translations = {
+  fr: {
+    title: "Mot de passe oublié",
+    subtitle: "Récupérez l'accès à votre compte E-Dami",
+    labelMatricule: "Numéro de matricule",
+    placeholderMatricule: "Veuillez saisir votre numéro de matricule",
+    infoMessage: "Veuillez saisir votre matricule afin de recevoir un email vous permettant de définir un nouveau mot de passe.",
+    buttonText: "Récupérer le mot de passe",
+    processing: "Traitement...",
+    successTitle: "Email envoyé !",
+    successMessage: "Un e-mail a été envoyé à votre boîte mail Zimbra '{email}' afin que vous puissiez définir un nouveau mot de passe",
+    backToLogin: "Retour à la connexion",
+    footer: "© 2025 E-Dami. Tous droits réservés.",
+  },
+  ar: {
+    title: "نسيت كلمة المرور",
+    subtitle: "استعد الوصول إلى حسابك في E-Dami",
+    labelMatricule: "رقم التسجيل",
+    placeholderMatricule: "الرجاء إدخال رقم التسجيل الخاص بك",
+    infoMessage: "الرجاء إدخال رقم التسجيل الخاص بك لتلقي بريد إلكتروني يسمح لك بتعيين كلمة مرور جديدة.",
+    buttonText: "استعادة كلمة المرور",
+    processing: "...جارٍ المعالجة",
+    successTitle: "تم إرسال البريد الإلكتروني!",
+    successMessage: "تم إرسال بريد إلكتروني إلى صندوق بريدك الإلكتروني Zimbra '{email}' لتتمكن من تعيين كلمة مرور جديدة",
+    backToLogin: "العودة إلى تسجيل الدخول",
+    footer: "© 2025 E-Dami. جميع الحقوق محفوظة.",
+  },
+};
+
+
+const theme = {
+  background: "#F5F7FA",
+  cardBackground: "white",
+  cardShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
+  textDark: "#1B263B",
+  textMuted: "#6C757D",
+  inputBorder: "#cfd8dc",
+  accentColor: "#3A91CB",
+  linkHover: "#1B263B",
+  rightPaneBackground: "#1B263B",
+  successColor: "#28a745",
+};
 
 const ForgotPasswordPage = () => {
   const [matricule, setMatricule] = useState("");
@@ -16,6 +61,10 @@ const ForgotPasswordPage = () => {
   const { error, success, result, loading } = userChangePassword;
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isRTL, currentLanguage, toggleLanguage } = useLanguageSync();
+
+  const text = translations[currentLanguage] || translations.fr;
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -23,7 +72,7 @@ const ForgotPasswordPage = () => {
       dispatch(changePassword(matricule));
     }
   };
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (userInfo) {
       navigate("/");
@@ -35,83 +84,218 @@ const ForgotPasswordPage = () => {
         }, 15000);
       }
     }
-  }, [userInfo, success]);
+  }, [userInfo, success, dispatch, navigate]);
 
   return (
     <>
-      <div className="px-5 mt-2">
-        <Link to="/login" className="btn btn-light">
-          <i className="fas fa-arrow-left"></i> login
-        </Link>
+      <div
+        className="d-flex flex-column min-vh-100"
+        style={{
+          background: `linear-gradient(135deg, ${theme.background} 30%, #D6E4F0 100%)`,
+          fontFamily: "'Poppins', sans-serif",
+          padding: "1rem",
+          color: theme.textDark,
+          direction: isRTL ? "rtl" : "ltr",
+        }}
+      >
+        {}
+        <header className="d-flex justify-content-start align-items-center mb-4">
+          <Link
+            to="/login"
+            className="btn btn-outline-secondary d-flex align-items-center"
+            style={{
+              borderRadius: "8px",
+              fontSize: "0.9rem",
+              padding: "0.5rem 1rem",
+            }}
+          >
+            <i className={`fa-solid fa-arrow-left ${isRTL ? 'ms-2' : 'me-2'}`}></i>
+            {text.backToLogin}
+          </Link>
+        </header>
+
+        {}
+        <main className="d-flex justify-content-center align-items-center flex-grow-1">
+          <Container>
+            <Row className="justify-content-center">
+              <Col md={10} lg={9} xl={8}>
+                <Card
+                  className="shadow-lg border-0 animate__animated animate__fadeIn"
+                  style={{
+                    borderRadius: "18px",
+                    overflow: "hidden",
+                    background: theme.cardBackground,
+                    boxShadow: theme.cardShadow,
+                  }}
+                >
+                  <Row className="g-0">
+                    {}
+                    <Col md={6} className="p-4 p-md-5">
+                      <div className="mb-4 text-center">
+                        <h3 className="fw-bold mb-1" style={{ fontSize: "1.7rem", color: theme.textDark }}>
+                          {text.title}
+                        </h3>
+                        <p className="text-muted" style={{ fontSize: "0.85rem", color: theme.textMuted }}>
+                          {text.subtitle}
+                        </p>
+                      </div>
+
+                      {loading && <Loader size={"md"} />}
+                      {error && <Message type="danger" itWillBeHidden>{error}</Message>}
+
+                      {success ? (
+                        <Alert variant="success" className="text-center animate__animated animate__fadeIn">
+                          <div className="mb-3">
+                            <i className="fa-solid fa-circle-check" style={{ fontSize: "3rem", color: theme.successColor }}></i>
+                          </div>
+                          <h5 className="fw-bold mb-2">{text.successTitle}</h5>
+                          <p className="mb-0" style={{ fontSize: "0.9rem" }}>
+                            {text.successMessage.replace('{email}', result?.email || '')}
+                          </p>
+                        </Alert>
+                      ) : (
+                        <>
+                          <Alert variant="info" className="mb-4" style={{ fontSize: "0.85rem" }}>
+                            <i className="fa-solid fa-info-circle me-2"></i>
+                            {text.infoMessage}
+                          </Alert>
+
+                          <Form onSubmit={submitHandler}>
+                            <Form.Group controlId="matricule" className="mb-4">
+                              <Form.Label
+                                className="fw-semibold"
+                                style={{ fontSize: "0.85rem", color: theme.textMuted }}
+                              >
+                                {text.labelMatricule}
+                              </Form.Label>
+                              <Form.Control
+                                type="number"
+                                placeholder={text.placeholderMatricule}
+                                value={matricule}
+                                onChange={(e) => setMatricule(e.target.value)}
+                                className="py-2 shadow-sm"
+                                style={{
+                                  borderRadius: "8px",
+                                  fontSize: "0.9rem",
+                                  borderColor: theme.inputBorder,
+                                  transition: "border-color 0.3s",
+                                  backgroundColor: theme.cardBackground,
+                                  color: theme.textDark,
+                                }}
+                                onFocus={(e) => (e.target.style.borderColor = theme.accentColor)}
+                                onBlur={(e) => (e.target.style.borderColor = theme.inputBorder)}
+                              />
+                            </Form.Group>
+
+                            <Button
+                              type="submit"
+                              className="w-100 fw-semibold py-2"
+                              disabled={loading || !matricule}
+                              style={{
+                                backgroundColor: theme.accentColor,
+                                border: "none",
+                                borderRadius: "10px",
+                                fontSize: "0.95rem",
+                                boxShadow: `0 6px 20px rgba(27, 38, 59, 0.3)`,
+                                transition: "transform 0.2s ease",
+                              }}
+                              onMouseEnter={(e) => (e.target.style.transform = "scale(1.03)")}
+                              onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+                            >
+                              {loading ? (
+                                <>
+                                  <span className="spinner-border spinner-border-sm me-2"></span>
+                                  {text.processing}
+                                </>
+                              ) : (
+                                <>
+                                  <i className="fa-solid fa-key me-2"></i>
+                                  {text.buttonText}
+                                </>
+                              )}
+                            </Button>
+                          </Form>
+                        </>
+                      )}
+                    </Col>
+
+                    {}
+                    <Col
+                      md={6}
+                      className="d-none d-md-flex align-items-center justify-content-center"
+                      style={{
+                        backgroundColor: theme.rightPaneBackground,
+                        borderRadius: isRTL ? "18px 0 0 18px" : "0 18px 18px 0",
+                        flexDirection: "column",
+                        color: "white",
+                        padding: "2rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div 
+                        style={{
+                          pointerEvents: "auto",
+                          padding: "1rem",
+                          borderRadius: "12px",
+                          transition: "all 0.3s ease",
+                          border: "2px solid transparent",
+                        }}
+                        onClick={() => toggleLanguage()}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+                          e.target.style.borderColor = "rgba(255, 255, 255, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.borderColor = "transparent";
+                        }}
+                      >
+                        <img
+                          src="/images/logo.png"
+                          alt="Logo"
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            marginBottom: "1rem",
+                          }}
+                          className="animate__animated animate__zoomIn"
+                        />
+                        <h5 className="fw-bold mb-2 animate__animated animate__fadeInUp" style={{ letterSpacing: "1px" }}>
+                          SNRT / E-DAMI
+                        </h5>
+                        <p className="animate__animated animate__fadeInUp" style={{ fontSize: "0.9rem", opacity: 0.8 }}>
+                          {isRTL ? "استعادة كلمة المرور" : "Récupération de mot de passe"}
+                        </p>
+                        <div 
+                          className="animate__animated animate__fadeInUp"
+                          style={{
+                            fontSize: "0.8rem",
+                            opacity: 0.8,
+                            marginTop: "0.5rem",
+                            padding: "0.3rem 0.8rem",
+                            backgroundColor: "rgba(255, 255, 255, 0.1)",
+                            borderRadius: "20px",
+                            border: "1px solid rgba(255, 255, 255, 0.2)",
+                          }}
+                        >
+                          {currentLanguage === 'fr' ? 'FR • Français' : 'AR • العربية'}
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        </main>
+        
+        {}
+        <footer className="mt-4 text-center">
+          <p className="small" style={{ color: theme.textMuted }}>
+            {text.footer}
+          </p>
+        </footer>
       </div>
-      <FormContainer>
-        <Card className="mt-5">
-          <Card.Body>
-            {error && (
-              <Message itWillBeHidden type="danger">
-                {error}
-              </Message>
-            )}
-
-            {success && (
-              <Alert variant="success">
-                <div className="d-flex justify-content-center">
-                  <h1>
-                    <i className="fa-solid fa-circle-check"></i>
-                  </h1>
-                </div>
-                <p>
-                  Un e-mail a été envoyé à votre boîte mail Zimbra '
-                  {result.email}' afin que vous puissiez définir nouveau un mot
-                  de passe
-                </p>
-              </Alert>
-            )}
-            {loading && (
-              <div className="my-3">
-                <Loader size={"sm"} />
-              </div>
-            )}
-
-            <div className="d-flex justify-content-center">
-              <img
-                src="/images/logo.png"
-                alt="logo"
-                className="logo-login-page"
-              />
-            </div>
-            <div className="d-flex justify-content-center my-1">
-              <h4>Snrt / e-dami</h4>
-            </div>
-            <div className="d-flex justify-content-center mt-2">
-              <h6>mot de passe oublie</h6>
-            </div>
-            <Message variant="info">
-              veuillez saisir votre matricule afin de recevoir un email vous
-              permettant de définir un nouveau mot de passe.
-            </Message>
-            <Form onSubmit={submitHandler}>
-              <label>matricule</label>
-              <Form.Control
-                className="mb-3"
-                type="number"
-                placeholder="veuillez saisir votre matricule"
-                value={matricule}
-                onChange={(e) => setMatricule(e.target.value)}
-                disabled={success}
-              />
-              <Button
-                variant="dark"
-                className="w-100"
-                type="submit"
-                disabled={success}
-              >
-                Recuperer le mot de passe
-              </Button>
-            </Form>
-          </Card.Body>
-        </Card>
-      </FormContainer>
     </>
   );
 };

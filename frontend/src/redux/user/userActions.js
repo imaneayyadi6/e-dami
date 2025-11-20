@@ -77,23 +77,41 @@ import {
 
 import axios from "axios";
 
-export const login = (email, password) => {
+export const login = (email, password, language = 'fr') => {
   return async (dispatch) => {
     try {
       dispatch({ type: USER_LOGIN_REQUEST });
       const config = {
         headers: { "Content-Type": "application/json" },
       };
+      
+      
+      const isNumeric = !isNaN(parseFloat(email)) && isFinite(email);
+      const loginData = isNumeric 
+        ? { matricule: parseInt(email), password }
+        : { email, password };
+      
       const { data } = await axios.post(
         "/api/utilisateurs/login",
-        { email, password },
+        loginData,
         config
       );
-      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+      
+      
+      const userDataWithLanguage = {
+        ...data,
+        preferredLanguage: language
+      };
+      
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: userDataWithLanguage });
 
-      console.log(data);
+      console.log(userDataWithLanguage);
 
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      
+      localStorage.setItem("userInfo", JSON.stringify(userDataWithLanguage));
+      
+      
+      localStorage.setItem("userLanguage", language);
     } catch (error) {
       const err =
         error.response && error.response.data.message
@@ -166,7 +184,7 @@ export const setPasswordUser = (password, token) => {
 
       const config = {
         headers: { "Content-Type": "application/json" },
-        // authorization: `Bearer ${token}`,
+        
       };
 
       const { data } = await axios.post(
@@ -223,7 +241,7 @@ export const setNewPasswordUser = (password, token) => {
 
       const config = {
         headers: { "Content-Type": "application/json" },
-        // authorization: `Bearer ${token}`,
+        
       };
 
       const { data } = await axios.post(
@@ -251,6 +269,7 @@ export const resetNewChangePassword = () => {
 export const logout = () => {
   return (dispatch, getState) => {
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("userLanguage");
     dispatch({ type: USER_LOGOUT });
   };
 };
@@ -665,7 +684,7 @@ export const resetDeleteUserIntrim = () => {
   return { type: USER_DELETE_INTERIM_RESET };
 };
 
-// Nouvelles actions pour la gestion des intérims par admin
+
 export const putUserIntrimForAdmin = (userId, matricule) => {
   return async (dispatch, getState) => {
     try {

@@ -17,6 +17,7 @@ import DamiDemande from "./DamiDemande";
 import NotificationsToastContainer from "./NotificationsToastContainer";
 import TimeAgo from "./TimeAgo";
 import Option from "./Option";
+import Footer from "./Footer";
 
 export {
   Option,
@@ -24,6 +25,7 @@ export {
   NotificationsToastContainer,
   Header,
   Sidebar,
+  Footer,
   FormContainer,
   Loader,
   Message,

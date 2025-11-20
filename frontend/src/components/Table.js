@@ -1,51 +1,188 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useTable, usePagination, useFilters } from "react-table";
+import { useLanguageSync } from "../hooks/useLanguageSync";
+import { FaKeyboard, FaBackspace } from "react-icons/fa";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Link } from "react-router-dom";
 
 const TextFilter = ({ column }) => {
-  const handleFilterChange = (e) => {
-    column.setFilter(e.target.value);
+  const { currentLanguage, isRTL } = useLanguageSync();
+  const [localValue, setLocalValue] = useState(column.filterValue || "");
+  const [showArKb, setShowArKb] = useState(false);
+  const [kbPos, setKbPos] = useState({ top: 0, left: 0 });
+  const inputRef = useRef(null);
+  const btnRef = useRef(null);
+  const arabicKeys = [
+    'ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د',
+    'ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط',
+    'ئ','ء','ؤ','ر','ﻻ','ى','ة','و','ز','ظ'
+  ];
+
+  useEffect(() => {
+    setLocalValue(column.filterValue || "");
+  }, [column.filterValue]);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      if (column.setFilter) column.setFilter(localValue || undefined);
+    }, 200);
+    return () => clearTimeout(id);
+  }, [localValue, column]);
+
+  const insertArabicChar = (char) => {
+    const input = inputRef.current;
+    const current = localValue || "";
+    const start = input && input.selectionStart != null ? input.selectionStart : current.length;
+    const end = input && input.selectionEnd != null ? input.selectionEnd : current.length;
+    let next = current;
+    if (char === '⌫') {
+      if (start === end && start > 0) {
+        next = current.slice(0, start - 1) + current.slice(end);
+        setLocalValue(next);
+        setTimeout(() => input && input.setSelectionRange(start - 1, start - 1), 0);
+      } else if (start !== end) {
+        next = current.slice(0, start) + current.slice(end);
+        setLocalValue(next);
+        setTimeout(() => input && input.setSelectionRange(start, start), 0);
+      }
+    } else {
+      const toInsert = char === '␣' ? ' ' : char;
+      next = current.slice(0, start) + toInsert + current.slice(end);
+      setLocalValue(next);
+      const newCaret = start + toInsert.length;
+      setTimeout(() => input && input.setSelectionRange(newCaret, newCaret), 0);
+    }
+    setTimeout(() => input && input.focus(), 0);
   };
 
+  const headerLabel = (
+    column.filterLabel || column.headerText || (
+      typeof column.Header === "string"
+    ? column.Header
+        : (() => {
+            const id = String(column.id || column.accessor || "");
+            if (currentLanguage === 'ar') {
+              if (id === 'libelle') return 'التسمية';
+              if (id === 'direction.libelle') return 'الإدارة';
+              if (id === 'service.libelle') return 'المصلحة';
+              if (id === 'sousCategorie.libelle' || id === 'souscategorie.libelle') return 'الفئة الفرعية';
+              if (id === 'typeProcessus') return 'نوع العملية';
+              if (id === 'matricule') return 'الرقم الإداري';
+              if (id === 'email') return 'البريد الإلكتروني';
+              if (id === 'fonction') return 'الوظيفة';
+              if (id === 'directeur') return 'المدير';
+              if (id === 'chefService') return 'رئيس المصلحة';
+              if (id.toLowerCase() === 'nom' || id.toLowerCase() === 'prenom' || id.toLowerCase() === 'nomcomplet') return 'الاسم واللقب';
+            }
+            return id;
+          })()
+    )
+  );
+
+  const showKeyboard = Boolean(column.enableArabicKeyboard) && (isRTL || (currentLanguage && String(currentLanguage).toLowerCase().startsWith('ar')));
+
   return (
-    <Form.Control
-      size="sm"
-      style={{ minWidth: "250px" }}
-      value={column.filterValue || ""}
-      type={column.type ? column.type : "text"}
-      onChange={handleFilterChange}
-      placeholder={`filtrer par ${column.Header}`}
-    />
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <Form.Control
+        ref={inputRef}
+        size="sm"
+        style={{ minWidth: "250px", textAlign: isRTL ? 'right' : 'left' }}
+        value={localValue}
+        type={column.type ? column.type : "text"}
+        onChange={(e) => setLocalValue(e.target.value)}
+        placeholder={`${currentLanguage === 'ar' ? 'تصفية حسب' : 'filtrer par'} ${String(headerLabel)}`}
+        dir={isRTL ? 'rtl' : 'ltr'}
+        lang={isRTL ? 'ar' : undefined}
+      />
+      {showKeyboard && (
+        <Button
+          type="button"
+          variant="light"
+          size="sm"
+          onMouseDown={(e)=>e.preventDefault()}
+          onClick={(e) => {
+            const rect = btnRef.current ? btnRef.current.getBoundingClientRect() : e.currentTarget.getBoundingClientRect();
+            setKbPos({ top: rect.bottom + 6 + window.scrollY, left: (isRTL ? rect.right : rect.left) + window.scrollX });
+            setShowArKb(v=>!v);
+          }}
+          className="rounded-pill"
+          style={{ lineHeight: 1, padding: '2px 8px', border: '1px solid var(--border-light)' }}
+          aria-label={showArKb ? 'إخفاء لوحة المفاتيح' : 'إظهار لوحة المفاتيح'}
+          ref={btnRef}
+        >
+          <FaKeyboard />
+        </Button>
+      )}
+      {showKeyboard && showArKb && (
+        <div className="border rounded p-2" style={{ position: 'fixed', top: kbPos.top, left: isRTL ? undefined : kbPos.left, right: isRTL ? (window.innerWidth - kbPos.left) : undefined, background: 'var(--bg-secondary)', zIndex: 20000, boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }} onMouseDown={(e)=>e.preventDefault()}>
+          <div className="d-flex flex-wrap" style={{ gap: 4, maxWidth: 260 }}>
+            {arabicKeys.map((k) => (
+              <Button key={k} size="sm" variant="light" onClick={() => insertArabicChar(k)} style={{ padding: '2px 6px' }}>{k}</Button>
+            ))}
+            <Button size="sm" variant="light" onClick={() => insertArabicChar('␣')} style={{ padding: '2px 6px' }}>{currentLanguage === 'ar' ? 'مسافة' : 'Espace'}</Button>
+            <Button size="sm" variant="outline-danger" onClick={() => insertArabicChar('⌫')} style={{ padding: '2px 6px' }}><FaBackspace /></Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
 const DropdownFilter = ({ column }) => {
+  const { currentLanguage, isRTL } = useLanguageSync();
   const { filterValue, setFilter } = column;
 
-  const uniqueDirections = React.useMemo(() => {
-    const options = new Set();
+  const options = React.useMemo(() => {
+    if (Array.isArray(column.filterOptions)) {
+      return column.filterOptions;
+    }
+    const set = new Set();
+    if (Array.isArray(column.preFilteredRows)) {
     column.preFilteredRows.forEach((row) => {
-      if (row.values[column.id]) options.add(row.values[column.id]);
+        if (row.values[column.id]) set.add(row.values[column.id]);
     });
-    return Array.from(options);
-  }, [column.preFilteredRows]);
+    }
+    return Array.from(set);
+  }, [column.filterOptions, column.preFilteredRows, column.id]);
+
+  const headerLabel = (
+    column.filterLabel || column.headerText || (
+      typeof column.Header === "string"
+    ? column.Header
+        : (() => {
+            const id = String(column.id || column.accessor || "");
+            if (currentLanguage === 'ar') {
+              if (id === 'libelle') return 'التسمية';
+              if (id === 'direction.libelle') return 'الإدارة';
+              if (id === 'service.libelle') return 'المصلحة';
+              if (id === 'sousCategorie.libelle' || id === 'souscategorie.libelle') return 'الفئة الفرعية';
+              if (id === 'typeProcessus') return 'نوع العملية';
+              if (id === 'matricule') return 'الرقم الإداري';
+              if (id === 'email') return 'البريد الإلكتروني';
+              if (id === 'fonction') return 'الوظيفة';
+              if (id === 'directeur') return 'المدير';
+              if (id === 'chefService') return 'رئيس المصلحة';
+              if (id.toLowerCase() === 'nom' || id.toLowerCase() === 'prenom' || id.toLowerCase() === 'nomcomplet') return 'الاسم واللقب';
+            }
+            return id;
+          })()
+    )
+  );
 
   return (
     <Form.Select
-      style={{ minWidth: "250px" }}
+      style={{ minWidth: "200px", textAlign: isRTL ? 'right' : 'left' }}
       size="sm"
       value={filterValue || ""}
       onChange={(e) => setFilter(e.target.value)}
     >
       <option value="">
-        -------- veuillez selectionner ({String(column.Header.toLowerCase())})
-        --------
+        {`-------- ${currentLanguage === 'ar' ? 'يرجى الاختيار' : 'veuillez selectionner'} (${String(headerLabel).toLowerCase()}) --------`}
       </option>
-      {uniqueDirections.map((option, index) => (
+      {options && options.map((option, index) => (
         <option key={index} value={option}>
           {String(option).toLowerCase()}
         </option>
@@ -67,21 +204,27 @@ const Table = ({
   showDetailsLink,
   disableFilters = false,
   disablePagination = false,
+  detailsLabel = "details",
+  headerActions = null,
+  restoreRow,
+  onFilterChange,
+  emptyStateComponent = null,
 }) => {
   const [callOnce, setCallOnce] = useState(false);
+  const { currentLanguage } = useLanguageSync();
 
   const filteredColumns = useMemo(
     () => columns.filter((column) => column.accessor !== "_id"),
     [columns]
   );
-  const filteredData = useMemo(() => data, []);
+  const filteredData = useMemo(() => data, [data]);
 
   const tableConfig = {
     columns: filteredColumns,
     data: filteredData,
   };
 
-  // Conditionally add pagination only if not disabled
+  
   const tableHooks = [useFilters];
   if (!disablePagination) {
     tableHooks.push(usePagination);
@@ -99,7 +242,17 @@ const Table = ({
     state,
   } = tableInstance;
 
-  // Only destructure pagination props if pagination is enabled
+  
+  useEffect(() => {
+    if (onFilterChange) {
+      const hasActiveFilters = Object.values(state.filters || {}).some(filter => 
+        filter && filter.value && filter.value.toString().trim() !== ""
+      );
+      onFilterChange(hasActiveFilters);
+    }
+  }, [state.filters, onFilterChange]);
+
+  
   const {
     nextPage = () => {},
     previousPage = () => {},
@@ -111,28 +264,28 @@ const Table = ({
     setPageSize = () => {},
   } = disablePagination ? {} : tableInstance;
 
-  // Use all rows when pagination is disabled, otherwise use page
+  
   const rowsToDisplay = disablePagination ? rows : page;
 
   const { pageIndex } = state || {};
 
   useEffect(() => {
     if (!callOnce && !disablePagination) {
-      setPageSize(7);
+      setPageSize(10);
       setCallOnce(true);
     }
   }, [callOnce, disablePagination]);
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props} className="bg-warning">
-      Cette ligne n'est pas encore enregistrée dans la base de données
+      {currentLanguage === 'ar' ? 'هذا السطر لم يتم حفظه بعد في قاعدة البيانات' : "Cette ligne n'est pas encore enregistrée dans la base de données"}
     </Tooltip>
   );
 
   const renderPaginationButtons = () => {
     const pageButtons = [];
 
-    // Previous Button
+    
     pageButtons.push(
       <Button
         variant="light"
@@ -157,8 +310,8 @@ const Table = ({
       </Button>
     );
 
-    // Page Number Buttons
-    const range = 5; // Number of pages to display at a time
+    
+    const range = 5; 
     const start = Math.max(1, pageIndex - Math.floor(range / 2)) - 1;
     const end = Math.min(pageCount, start + range - 1);
 
@@ -176,7 +329,7 @@ const Table = ({
       );
     }
 
-    // Next Button
+    
     pageButtons.push(
       <Button
         variant="light"
@@ -238,7 +391,13 @@ const Table = ({
                     </div>
                   </th>
                 ))}
-                <th></th>
+                <th>
+                  {headerActions && (
+                    <div className="d-flex align-items-center justify-content-end" style={{ gap: 8 }}>
+                      {headerActions}
+                    </div>
+                  )}
+                </th>
               </tr>
             ))}
           </thead>
@@ -252,7 +411,7 @@ const Table = ({
                   <OverlayTrigger placement="left" overlay={renderTooltip}>
                     <tr
                       {...row.getRowProps()}
-                      className={`cursor-pointer position-relative`}
+                      className={`pointer-auto position-relative`}
                       onClick={() => {
                         if (rowClick) {
                           rowClick(rowId);
@@ -260,19 +419,39 @@ const Table = ({
                       }}
                     >
                       {row.cells.map((cell) => {
-                        // Check if the cell is empty (you can customize this condition)
+                        
                         const columnName = cell.column.Header;
                         if (
                           cell.value === null ||
                           cell.value === undefined ||
                           cell.value === ""
                         ) {
-                          // Get the column name from the cell object and include it in the message
+                          
+                          
+                          const missingWord = currentLanguage === 'ar' ? 'غير موجود' : 'introuvable';
+                          const undefinedWord = currentLanguage === 'ar' ? 'غير معرّف' : 'Non défini';
+                          let displayMessage = `(${columnName}) ${missingWord}`;
+                          
+                          if (columnName === "Créateur") {
+                            
+                            const rowData = cell.row?.original;
+                            if (rowData?.createur?.nom && rowData?.createur?.prenom) {
+                              displayMessage = `${rowData.createur.prenom} ${rowData.createur.nom}`;
+                            } else if (rowData?.createur?.nom) {
+                              displayMessage = rowData.createur.nom;
+                            } else {
+                              displayMessage = undefinedWord;
+                            }
+                          } else if (columnName === "Service") {
+                            displayMessage = undefinedWord;
+                          } else if (columnName === "Direction") {
+                            displayMessage = undefinedWord;
+                          }
 
                           return (
                             <td className="empty-cell column-text">
-                              <small className="column-text text-danger">
-                                ({columnName}) introuvable
+                              <small className="column-text text-muted">
+                                {displayMessage}
                               </small>
                             </td>
                           );
@@ -286,15 +465,7 @@ const Table = ({
                               row.original.notSavedYet && "text-warning"
                             }`}
                           >
-                            <small
-                              className={`${
-                                columnName === "Status" || columnName === "status"
-                                  ? `table-text-status-${String(
-                                      cell.value
-                                    ).replace(/\s/g, "")}`
-                                  : ""
-                              }`}
-                            >
+                            <small>
                               {cell.render("Cell")}
                             </small>
                           </td>
@@ -308,14 +479,14 @@ const Table = ({
                               to={showDetailsLink}
                               className="btn btn-sm btn-light"
                             >
-                              details
+                              {detailsLabel}
                             </Link>
                           )}
 
                           {(showDetailsRow || showDetailsRowSpecificData) &&
                             !row.original.notSavedYet && (
                               <span
-                                className="cursor-pointer"
+                                className="pointer-auto"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (showDetailsRowSpecificData) {
@@ -340,7 +511,7 @@ const Table = ({
 
                           {updateRow && (
                             <span
-                              className="cursor-pointer"
+                              className="pointer-auto"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (updateRow) updateRow(rowId);
@@ -351,15 +522,29 @@ const Table = ({
                           )}
 
                           {removeRow && (
-                            <span
-                              className="cursor-pointer"
+                            <button
+                              type="button"
+                              className="btn btn-link btn-sm d-inline-flex align-items-center justify-content-center"
+                              onMouseDown={(e) => { e.preventDefault(); }}
                               onClick={(e) => {
+                                e.preventDefault();
                                 e.stopPropagation();
-                                if (removeRow) removeRow(rowId);
+                                if (isDeleted && typeof restoreRow === 'function') {
+                                  restoreRow(rowId);
+                                } else {
+                                  removeRow(rowId);
+                                }
                               }}
+                              style={{ lineHeight: 1, width: 28, height: 28 }}
+                              title={isDeleted ? "Restore" : "Delete"}
+                              aria-label={isDeleted ? "Restore" : "Delete"}
                             >
+                              {isDeleted ? (
+                                <i className="fa-solid fa-trash-can-arrow-up text-primary"></i>
+                              ) : (
                               <i className="fas fa-trash text-danger"></i>
-                            </span>
+                              )}
+                            </button>
                           )}
                         </div>
                       </td>
@@ -370,7 +555,7 @@ const Table = ({
                 return (
                   <tr
                     {...row.getRowProps()}
-                    className={`cursor-pointer position-relative ${
+                    className={`pointer-auto position-relative ${
                       isDeleted ? "table-danger" : ""
                     }`}
                     onClick={() => {
@@ -380,19 +565,39 @@ const Table = ({
                     }}
                   >
                     {row.cells.map((cell) => {
-                      // Check if the cell is empty (you can customize this condition)
+                      
                       const columnName = cell.column.Header;
                       if (
                         cell.value === null ||
                         cell.value === undefined ||
                         cell.value === ""
                       ) {
-                        // Get the column name from the cell object and include it in the message
+                        
+                        
+                        const missingWord2 = currentLanguage === 'ar' ? 'غير موجود' : 'introuvable';
+                        const undefinedWord2 = currentLanguage === 'ar' ? 'غير معرّف' : 'Non défini';
+                        let displayMessage = `(${columnName}) ${missingWord2}`;
+                        
+                        if (columnName === "Créateur") {
+                          
+                          const rowData = cell.row?.original;
+                          if (rowData?.createur?.nom && rowData?.createur?.prenom) {
+                            displayMessage = `${rowData.createur.prenom} ${rowData.createur.nom}`;
+                          } else if (rowData?.createur?.nom) {
+                            displayMessage = rowData.createur.nom;
+                          } else {
+                            displayMessage = "Non défini";
+                          }
+                        } else if (columnName === "Service") {
+                            displayMessage = undefinedWord2;
+                        } else if (columnName === "Direction") {
+                            displayMessage = undefinedWord2;
+                        }
 
                         return (
                           <td className="empty-cell column-text">
-                            <small className="text-danger">
-                              ({columnName}) introuvable
+                            <small className="text-muted">
+                              {displayMessage}
                             </small>
                           </td>
                         );
@@ -406,15 +611,7 @@ const Table = ({
                               row.original.notSavedYet && "text-warning"
                             }`}
                           >
-                            <small
-                              className={`${
-                                columnName === "Status" || columnName === "status"
-                                  ? `table-text-status-${String(
-                                      cell.value
-                                    ).replace(/\s/g, "")}`
-                                  : ""
-                              }`}
-                            >
+                            <small>
                               {cell.render("Cell")}
                             </small>
                           </td>
@@ -428,14 +625,14 @@ const Table = ({
                             to={showDetailsLink + "/" + rowId}
                             className="btn btn-sm btn-light"
                           >
-                            details
+                            {detailsLabel}
                           </Link>
                         )}
 
                         {(showDetailsRow || showDetailsRowSpecificData) &&
                           !row.original.notSavedYet && (
                             <span
-                              className="cursor-pointer"
+                              className="pointer-auto"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (showDetailsRowSpecificData) {
@@ -459,7 +656,7 @@ const Table = ({
                           )}
                         {updateRow && (
                           <span
-                            className="cursor-pointer"
+                            className="pointer-auto"
                             onClick={(e) => {
                               e.stopPropagation();
                               if (updateRow) updateRow(rowId);
@@ -469,19 +666,29 @@ const Table = ({
                           </span>
                         )}
                         {removeRow && (
-                          <span
-                            className="cursor-pointer"
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm d-inline-flex align-items-center justify-content-center"
+                            onMouseDown={(e) => { e.preventDefault(); }}
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
-                              if (removeRow) removeRow(rowId);
+                              if (isDeleted && typeof restoreRow === 'function') {
+                                restoreRow(rowId);
+                              } else {
+                                removeRow(rowId);
+                              }
                             }}
+                            style={{ lineHeight: 1, width: 28, height: 28 }}
+                            title={isDeleted ? "Restore" : "Delete"}
+                            aria-label={isDeleted ? "Restore" : "Delete"}
                           >
                             {!isDeleted ? (
                               <i className="fas fa-trash text-danger"></i>
                             ) : (
                               <i className="fa-solid fa-trash-can-arrow-up text-primary"></i>
                             )}
-                          </span>
+                          </button>
                         )}
                       </div>
                     </td>
@@ -492,24 +699,25 @@ const Table = ({
           </tbody>
         </table>
       </div>
+      
+      {}
+      {((disablePagination ? rows.length === 0 : page.length === 0)) && ((Array.isArray(data) ? data.length : 0) > 0) && emptyStateComponent && (
+        <div className="d-flex justify-content-center py-4">
+          {emptyStateComponent}
+        </div>
+      )}
       {!disablePagination && (
-        <>
-          <hr />
-          <div className="d-flex justify-content-center mt-2">
-            <div className="d-flex align-items-center">
-              <small>
-                Page{" "}
-                <span style={{ fontWeight: "bold" }}>
-                  {pageIndex + 1} de {pageOptions.length}
-                </span>
-              </small>
-              <div>{renderPaginationButtons()} </div>
-            </div>
+        <div className="d-flex justify-content-center mt-3">
+          <div
+            className="d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+            style={{ backdropFilter: 'saturate(180%) blur(6px)', background: 'rgba(13,110,253,0.06)', border: '1px solid var(--border-light)' }}
+          >
+            {renderPaginationButtons()}
           </div>
-        </>
+        </div>
       )}
     </>
   );
 };
 
-export default Table;
+export default React.memo(Table);

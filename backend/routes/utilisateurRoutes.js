@@ -17,6 +17,7 @@ import {
   getUsersByDivison,
   removeInterimUser,
   getInterimUser,
+  putInterimUser,
   putInterimUserForAdmin,
   removeInterimUserForAdmin,
 } from "../controllers/utilisateurController.js";
@@ -34,6 +35,7 @@ router
   .route("/interim")
   .delete(protect, removeInterimUser)
   .get(protect, getInterimUser);
+router.route("/interim/:matricule").put(protect, putInterimUser);
 router.route("/register").post(registerUser);
 router.route("/setpassword").post(setPasswordUser);
 
@@ -58,7 +60,7 @@ router
 router.route("/infos/:id").put(protect, createur, updateUserInfo);
 router.route("/password/:id").put(protect, updateUserPassword);
 
-// Nouvelles routes pour la gestion des intérims par admin
+
 router.route("/:id/interim/:matricule").put(protect, createur, putInterimUserForAdmin);
 router.route("/:id/interim").delete(protect, createur, removeInterimUserForAdmin);
 

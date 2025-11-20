@@ -7,9 +7,9 @@ import Utilisateur from "../models/utilisateurModel.js";
 import moment from "moment";
 import mongoose from "mongoose";
 
-// @desc    Generate image from HTML
-// @route   POST /api/generate/image
-// @access  private
+
+
+
 export const generateImage = asyncHandler(async (req, res) => {
     const { html } = req.body;
 
@@ -20,13 +20,13 @@ export const generateImage = asyncHandler(async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    // Set a larger viewport size for better screenshot quality
+    
     await page.setViewport({ width: 1200, height: 1200 });
 
-    // Get server URL from environment variables with fallback
+    
     const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
 
-    // Set the HTML content with the base URL
+    
     await page.setContent(`
         <html>
             <head>
@@ -46,7 +46,7 @@ export const generateImage = asyncHandler(async (req, res) => {
         </html>
     `, { waitUntil: 'domcontentloaded' });
 
-    // Wait for a short period to ensure styles are applied (adjust if necessary)
+    
     await page.waitForTimeout(1000);
 
     await page.evaluate(() => {
@@ -54,36 +54,36 @@ export const generateImage = asyncHandler(async (req, res) => {
         console.log(exampleElement);
     });
 
-    // Take a screenshot of the visible area
+    
     const screenshotBuffer = await page.screenshot();
 
-    // Close the browser
+    
     await browser.close();
 
-    // Save the screenshot as an image file
+    
     const timestamp = Date.now();
     const imagePath = `uploads/screenshot_${timestamp}.png`;
 
     fs.writeFileSync(imagePath, screenshotBuffer);
 
-    // Send the URL of the saved image as a response
+    
     const imageUrl = `${serverUrl}/${imagePath}`;
     res.json({ imageUrl });
 });
 
-// @desc    Generate Excel file with filtered demandes
-// @route   POST /api/generate/excel  
-// @access  private
+
+
+
 export const generateExcel = asyncHandler(async (req, res) => {
     const { filters } = req.body;
     const user = req.user;
 
     try {
-        // Build query based on filters
+        
         let query = {};
         let matchStage = {};
 
-        // Add filters to match stage
+        
         if (filters.option) {
             matchStage["option"] = new mongoose.Types.ObjectId(filters.option);
         }
@@ -108,7 +108,7 @@ export const generateExcel = asyncHandler(async (req, res) => {
             };
         }
 
-        // First, get all traitements with the basic filtering and then filter by service
+        
         const allTraitements = await Demande.aggregate([
             { $unwind: "$traitement" },
             { $match: matchStage },
@@ -166,13 +166,13 @@ export const generateExcel = asyncHandler(async (req, res) => {
             { $sort: { dateDemande: -1 } }
         ]);
 
-        // Get user's service information and populate it
+        
         const userWithService = await Utilisateur.findById(user._id).populate('service');
         const userServiceLibelle = userWithService.service ? userWithService.service.libelle : null;
         
         console.log('User service:', userServiceLibelle);
         
-        // Filter and group to get only one line per demande for the user's service
+        
         const demandesMap = new Map();
         
         allTraitements.forEach(traitement => {
@@ -182,7 +182,7 @@ export const generateExcel = asyncHandler(async (req, res) => {
                 const serviceUpper = serviceLibelle.toUpperCase();
                 const userServiceUpper = userServiceLibelle.toUpperCase();
                 
-                // Only include treatments that match the user's service exactly
+                
                 if (serviceUpper.includes(userServiceUpper) || userServiceUpper.includes(serviceUpper)) {
                     if (!demandesMap.has(traitement.idDemande.toString())) {
                         demandesMap.set(traitement.idDemande.toString(), traitement);
@@ -193,11 +193,11 @@ export const generateExcel = asyncHandler(async (req, res) => {
 
         const traitements = Array.from(demandesMap.values());
 
-        // Create Excel workbook
+        
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Demandes Filtrées');
 
-        // Define columns
+        
         worksheet.columns = [
             { header: 'ID Demande', key: 'idDemande', width: 15 },
             { header: 'ID Traitement', key: 'idTraitement', width: 15 },
@@ -210,7 +210,7 @@ export const generateExcel = asyncHandler(async (req, res) => {
             { header: 'Service', key: 'service', width: 50 }
         ];
 
-        // Style header row
+        
         worksheet.getRow(1).font = { bold: true };
         worksheet.getRow(1).fill = {
             type: 'pattern',
@@ -218,7 +218,7 @@ export const generateExcel = asyncHandler(async (req, res) => {
             fgColor: { argb: 'FFE0E0E0' }
         };
 
-        // Add data rows
+        
         traitements.forEach((traitement) => {
             worksheet.addRow({
                 idDemande: traitement.idDemande.toString(),
@@ -233,19 +233,19 @@ export const generateExcel = asyncHandler(async (req, res) => {
             });
         });
 
-        // Auto-fit columns
+        
         worksheet.columns.forEach(column => {
             column.width = Math.max(column.width, 10);
         });
 
-        // Generate Excel buffer
+        
         const buffer = await workbook.xlsx.writeBuffer();
 
-        // Set response headers for file download
+        
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=demandes_filtered_${moment().format('YYYY-MM-DD')}.xlsx`);
         
-        // Send the file
+        
         res.send(buffer);
 
     } catch (error) {

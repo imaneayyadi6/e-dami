@@ -439,9 +439,7 @@ button,
 select {
   text-transform: none;
 }
-[role="button"] {
-  cursor: pointer;
-}
+
 select {
   word-wrap: normal;
 }
@@ -11577,4 +11575,3 @@ th {
 .list-group-item h6 {
   color: inherit;
 }
-/*# sourceMappingURL=bootstrap.min.css.map */

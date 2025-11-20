@@ -143,41 +143,7 @@ const DamiLoading = ({ mini = false }) => {
             <Placeholder xs={2} className='ml-1' />
           </div>
         </div>
-        {/* <div className='dami-footer'>
-            {option.signataires.map(sig => (
-              <div key={sig} className='sig-item'>
-                <span className='directeur-lib mb-2'>{sigTypes[sig]}</span>
-                <div className='sig-item-content'>
-                  <div className=''>
-                    <label>Nom:</label>
-                    <input className='dami-input' />
-                  </div>
-                  <div className=''>
-                    <label>Prenom:</label>
-                    <input className='dami-input' />
-                  </div>
-                  <div className='' style={{ margin: "10px 0" }}>
-                    <label>Decision:</label>
-                    <input className='dami-check-box ml-1' />
-                    <input className='dami-check-box ml-1' />
-                  </div>
-    
-                  <div className='' style={{ height: "50px" }}>
-                    <label>Observation:</label>
-                    <input className='dami-input' />
-                  </div>
-    
-                  <div className=''>
-                    <label>Date:</label>
-                    <input className='dami-input' />
-                  </div>
-                  <div className='mt-1' style={{ height: "50px" }}>
-                    <label>Signature & cachet:</label>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
+        {}
       </div>
     </Placeholder>
   );

@@ -97,23 +97,46 @@ export const fetchOptionByID = (optionID) => {
         userLogin: { userInfo },
       } = getState();
 
+      
+      console.log("fetchOptionByID - Option ID:", optionID);
+      console.log("fetchOptionByID - User token exists:", !!userInfo?.token);
+      console.log("fetchOptionByID - API endpoint:", `/api/options/${optionID}`);
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${userInfo.token}`,
         },
       };
+      
       const { data } = await axios.get(`/api/options/${optionID}`, config);
+      console.log("fetchOptionByID - Success response:", data);
+      
       dispatch({
         type: OPTION_BY_ID_SUCCESS,
         payload: data,
       });
+      return data;
     } catch (error) {
+      
+      if (error.response?.status !== 404) {
+        console.error("fetchOptionByID - Error details:", {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message,
+          optionID: optionID
+        });
+      } else {
+        console.warn("fetchOptionByID - Option not found (404):", optionID);
+      }
+      
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message;
       dispatch({ type: OPTION_BY_ID_FAIL, payload: err });
+      throw new Error(err);
     }
   };
 };
@@ -230,23 +253,41 @@ export const updateOption = (optionID, option) => {
         userLogin: { userInfo },
       } = getState();
 
+      
+      console.log("updateOption - Option ID:", optionID);
+      console.log("updateOption - User token exists:", !!userInfo?.token);
+      console.log("updateOption - API endpoint:", `/api/options/${optionID}`);
+      console.log("updateOption - Option data:", option);
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${userInfo.token}`,
         },
       };
+      
       const { data } = await axios.put(
         `/api/options/${optionID}`,
         option,
         config
       );
+      
+      console.log("updateOption - Success response:", data);
+      
       dispatch({
         type: OPTION_UPDATE_SUCCESS,
         payload: data,
       });
       dispatch({ type: OPTION_LIST_REMOVE, payload: optionID });
     } catch (error) {
+      console.error("updateOption - Error details:", {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        optionID: optionID
+      });
+      
       const err =
         error.response && error.response.data.message
           ? error.response.data.message

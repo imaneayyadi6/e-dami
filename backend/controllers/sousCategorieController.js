@@ -2,17 +2,17 @@ import asyncHandler from "express-async-handler";
 import SousCategorie from "../models/sousCategorieModel.js";
 import Categorie from "../models/categorieModel.js";
 
-// @desc    Afficher tous les sous-categories
-// @route   GET /api/souscategories/:id
-// @access  private
+
+
+
 export const getSousCategories = asyncHandler(async (req, res) => {
   const catgeories = await SousCategorie.find();
   res.json(catgeories);
 });
 
-// @desc    Recuperer les sous-categories d'une categorie par ID
-// @route   GET /api/souscategories/categorie/:id
-// @access  private
+
+
+
 export const getSousCategoriesByCategorieID = asyncHandler(async (req, res) => {
   const categorie = await Categorie.findById(req.params.id);
   if (categorie) {
@@ -28,9 +28,9 @@ export const getSousCategoriesByCategorieID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer une sous-categorie par ID
-// @route   GET /api/souscategories/:id
-// @access  private
+
+
+
 export const getSousCategorieByID = asyncHandler(async (req, res) => {
   const sousCategorie = await SousCategorie.findById(req.params.id);
   if (sousCategorie) {
@@ -41,9 +41,9 @@ export const getSousCategorieByID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Creer une sous-categorie
-// @route   POST /api/souscategories
-// @access  private
+
+
+
 export const createSousCategorie = asyncHandler(async (req, res) => {
   const { libelle, categorie: categorieId } = req.body;
   const categorie = await Categorie.findById(categorieId);
@@ -61,9 +61,9 @@ export const createSousCategorie = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier une categorie
-// @route   PUT /api/souscategories/:id
-// @access  private
+
+
+
 export const updateSousCategorie = asyncHandler(async (req, res) => {
   const { libelle, categorie: categorieId } = req.body;
   const sousCategorie = await SousCategorie.findById(req.params.id);
@@ -98,9 +98,9 @@ export const updateSousCategorie = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer une categorie
-// @route   DELETE /api/souscategories/:id
-// @access  private
+
+
+
 export const deleteSousCategorie = asyncHandler(async (req, res) => {
   const { deletedCount } = await SousCategorie.deleteOne({
     _id: req.params.id,

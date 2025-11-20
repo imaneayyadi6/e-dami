@@ -33,11 +33,11 @@ export const protect = asyncHandler(async (req, res, next) => {
 });
 
 export const createur = asyncHandler(async (req, res, next) => {
-  const role = await Role.findOne({ code: "crt" });
+  const roleCreateur = await Role.findOne({ code: "crt" });
+  const roleAdmin = await Role.findOne({ code: "admin" });
   if (req.user && req.user.roles && req.user.roles.length > 0) {
-    const findIndex = req.user.roles.findIndex(
-      item => String(item.role) === String(role._id)
-    );
+    const allowedIds = [roleCreateur?._id, roleAdmin?._id].filter(Boolean).map(id => String(id));
+    const findIndex = req.user.roles.findIndex(item => item && item.role && allowedIds.includes(String(item.role)));
     if (findIndex !== -1) {
       next();
     } else {
@@ -51,10 +51,16 @@ export const createur = asyncHandler(async (req, res, next) => {
 });
 
 export const createurOption = asyncHandler(async (req, res, next) => {
-  const role = await Role.findOne({ code: "crt-op" });
+  
+  const roleCrtOp = await Role.findOne({ code: "crt-op" });
+  const roleCrt = await Role.findOne({ code: "crt" });
+  const roleCreateur = await Role.findOne({ code: "createur" });
   if (req.user && req.user.roles && req.user.roles.length > 0) {
-    const findIndex = req.user.roles.findIndex(
-      item => String(item.role) === String(role._id)
+    const allowedIds = [roleCrtOp?._id, roleCrt?._id, roleCreateur?._id]
+      .filter(Boolean)
+      .map(id => String(id));
+    const findIndex = req.user.roles.findIndex(item =>
+      item && item.role && allowedIds.includes(String(item.role))
     );
     if (findIndex !== -1) {
       next();
@@ -69,11 +75,11 @@ export const createurOption = asyncHandler(async (req, res, next) => {
 });
 
 export const demandeur = asyncHandler(async (req, res, next) => {
-  const role = await Role.findOne({ code: "dmr" });
+  const roleDemandeur = await Role.findOne({ code: "dmr" });
+  const roleAdmin = await Role.findOne({ code: "admin" });
   if (req.user && req.user.roles && req.user.roles.length > 0) {
-    const findIndex = req.user.roles.findIndex(
-      item => String(item.role) === String(role._id)
-    );
+    const allowedIds = [roleDemandeur?._id, roleAdmin?._id].filter(Boolean).map(id => String(id));
+    const findIndex = req.user.roles.findIndex(item => item && item.role && allowedIds.includes(String(item.role)));
     if (findIndex !== -1) {
       next();
     } else {
@@ -87,11 +93,11 @@ export const demandeur = asyncHandler(async (req, res, next) => {
 });
 
 export const signataire = asyncHandler(async (req, res, next) => {
-  const role = await Role.findOne({ code: "sig" });
+  const roleSig = await Role.findOne({ code: "sig" });
+  const roleAdmin = await Role.findOne({ code: "admin" });
   if (req.user && req.user.roles && req.user.roles.length > 0) {
-    const findIndex = req.user.roles.findIndex(
-      item => String(item.role) === String(role._id)
-    );
+    const allowedIds = [roleSig?._id, roleAdmin?._id].filter(Boolean).map(id => String(id));
+    const findIndex = req.user.roles.findIndex(item => item && item.role && allowedIds.includes(String(item.role)));
     if (findIndex !== -1) {
       next();
     } else {

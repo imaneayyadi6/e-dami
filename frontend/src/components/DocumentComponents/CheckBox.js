@@ -4,8 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { cssStringToObject } from "../../services";
 import { Form, OverlayTrigger, Popover } from "react-bootstrap";
 import Message from "../Message";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const DamiCheckBox = ({ id, onRemove, labelProp, dataConditionID = "" }) => {
+  const { isRTL } = useLanguageSync();
   const [chkId, setChkId] = useState(dataConditionID);
   const [show, setShow] = useState(false);
 
@@ -22,7 +24,7 @@ const DamiCheckBox = ({ id, onRemove, labelProp, dataConditionID = "" }) => {
   const popover = (
     <Popover ref={popoverRef} id={popoverId}>
       <Popover.Header>identifiant</Popover.Header>
-      <Popover.Body>
+      <Popover.Body dir={isRTL ? 'rtl' : 'ltr'}>
         <Message type="warning">
           Saisir un identifiant à utiliser dans une condition de signataire.
         </Message>
@@ -33,6 +35,7 @@ const DamiCheckBox = ({ id, onRemove, labelProp, dataConditionID = "" }) => {
             value={chkId}
             placeholder="saisir un identifiant ..."
             onChange={(e) => setChkId(e.target.value)}
+            dir={isRTL ? 'rtl' : 'ltr'}
           />
         </Form>
       </Popover.Body>

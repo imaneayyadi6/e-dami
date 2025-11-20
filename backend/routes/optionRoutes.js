@@ -7,7 +7,7 @@ import {
   getOptionsBySousCategorieID,
   updateOption,
   getOptionsCrtOp,
-  createOptionCrOp,
+  createOptionCrtOp,
   updateOptionCrtOp,
   deleteOptionCrtOp,
 } from "../controllers/optionController.js";
@@ -23,7 +23,7 @@ router.route("/").get(protect, getOptions).post(protect, createOption);
 router
   .route("/crtop")
   .get(protect, getOptionsCrtOp)
-  .post(protect, createurOption, createOptionCrOp);
+  .post(protect, createurOption, createOptionCrtOp);
 
 router.route("/souscategorie").get(protect, getOptionsBySousCategorieID);
 

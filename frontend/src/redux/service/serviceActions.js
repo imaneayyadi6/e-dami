@@ -138,6 +138,13 @@ export const resetFetchServicesByDepartementID = () => {
 
 export const fetchServiceByID = (serviceID) => {
   return async (dispatch, getState) => {
+    
+    if (!serviceID || serviceID === 'undefined' || serviceID === 'null' || serviceID.trim() === '') {
+      console.warn('fetchServiceByID: Invalid serviceID provided:', serviceID);
+      dispatch({ type: SERVICE_BY_ID_FAIL, payload: 'Invalid service ID' });
+      return;
+    }
+
     try {
       dispatch({ type: SERVICE_BY_ID_REQUEST });
       const {

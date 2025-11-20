@@ -1,7 +1,7 @@
 import Notification from "../models/notificationModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
 import io from "../server.js";
-import { sendMail } from "./sendMailService.js";
+
 import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
@@ -32,15 +32,15 @@ export const sendNotification = async (
       let mailOptions = {
         from: '"e-dami" <e-dami@snrt.com>',
         to: utilisateur.email,
-        // to: utilisateur.email.replace(new RegExp("ma", "g"), "com"),
+        
         subject: subject || "Message from e-dami",
         html: content,
       };
-      // send email :
-      sendMail(mailOptions);
+      
+      
 
 
-      // Define the uploads as static folder :
+      
       const __dirname = path.resolve();
       const logFilePath = path.join(
         __dirname,
@@ -61,4 +61,4 @@ export const sendNotification = async (
   }
 };
 
-// sendNotification("65df196cfc882c17ca280dc4", "hello world", "hello world");
+

@@ -4,9 +4,9 @@ import Service from "../models/serviceModel.js";
 import Utilisateur from "../models/utilisateurModel.js";
 import mongoose from "mongoose";
 import Demande from "../models/demandeModel.js";
-// @desc    Afficher tous les directions
-// @route   GET /api/directions/:id
-// @access  private
+
+
+
 export const getDirections = asyncHandler(async (req, res) => {
   const directions = await Direction.find()
     .populate("directeur")
@@ -14,9 +14,9 @@ export const getDirections = asyncHandler(async (req, res) => {
   res.json(directions);
 });
 
-// @desc    Recuperer une direction par ID
-// @route   GET /api/directions/:id
-// @access  private
+
+
+
 export const getDirectionByID = asyncHandler(async (req, res) => {
   const direction = await Direction.findById(req.params.id);
   if (direction) {
@@ -27,9 +27,9 @@ export const getDirectionByID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Creer une direction
-// @route   POST /api/directions
-// @access  private
+
+
+
 export const createDirection = asyncHandler(async (req, res) => {
   const { libelle, directeur } = req.body;
   if (directeur) {
@@ -56,9 +56,9 @@ export const createDirection = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Modifier une direction
-// @route   PUT /api/directions/:id
-// @access  private
+
+
+
 export const updateDirection = asyncHandler(async (req, res) => {
   const { libelle, directeur } = req.body;
   const direction = await Direction.findById(req.params.id);
@@ -96,9 +96,9 @@ export const updateDirection = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Supprimer une direction
-// @route   DELETE /api/directions/:id
-// @access  private
+
+
+
 export const deleteDirection = asyncHandler(async (req, res) => {
   const { deletedCount } = await Direction.deleteOne({ _id: req.params.id });
   if (deletedCount === 1) {
@@ -111,9 +111,9 @@ export const deleteDirection = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer une direction par ID d'un service
-// @route   GET /api/directions/service/:id
-// @access  private
+
+
+
 export const getDirectionByServiceID = asyncHandler(async (req, res) => {
   const service = await Service.findById(req.params.id).populate("direction");
   if (service) {
@@ -124,9 +124,9 @@ export const getDirectionByServiceID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les directions
-// @route   GET /api/directions/signataires
-// @access  private/signataire
+
+
+
 export const getDirectionSignataires = asyncHandler(async (req, res) => {
   let directions = [];
 

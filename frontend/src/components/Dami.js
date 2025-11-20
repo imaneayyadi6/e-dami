@@ -2,18 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { capitalizeFirstLetter } from "../services";
 import { getCodeFromResp } from "../services/getCodeFromResp";
+import { useTranslation } from "react-i18next";
+import { useLanguageSync } from "../hooks/useLanguageSync";
 
 const Dami = ({ option, showAdmin = false, mini = false }) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguageSync();
   const cleanDocRef = useRef(null);
   const [sigTypes] = useState({
-    cds: "Approbation Chef de Service",
-    cdd: "Approbation Chef de Departement",
-    hiq: "Approbation Directeur Hiearchique",
-    pdd: "Approbation Proprietaire de donnees",
-    atr: "Approbation de ",
-    dir: `Approbation Directeur de la `,
-    dg: "Approbation directeur général",
-    pdg: "Approbation président-directeur général",
+    cds: t('dami.sigTypes.cds', { defaultValue: 'Approbation Chef de Service' }),
+    cdd: t('dami.sigTypes.cdd', { defaultValue: 'Approbation Chef de Departement' }),
+    hiq: t('dami.sigTypes.hiq', { defaultValue: 'Approbation Directeur Hiearchique' }),
+    pdd: t('dami.sigTypes.pdd', { defaultValue: 'Approbation Proprietaire de donnees' }),
+    atr: t('dami.sigTypes.atr', { defaultValue: 'Approbation de ' }),
+    dir: t('dami.sigTypes.dir', { defaultValue: 'Approbation Directeur de la ' }),
+    dg: t('dami.sigTypes.dg', { defaultValue: 'Approbation directeur général' }),
+    pdg: t('dami.sigTypes.pdg', { defaultValue: 'Approbation président-directeur général' }),
   });
 
   const [vOption, setVOption] = useState(option);
@@ -161,7 +165,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
   }, []);
 
   return (
-    <div className={`dami ${mini ? "mini-dami" : ""}`} id="dami">
+    <div className={`dami ${mini ? "mini-dami" : ""}`} id="dami" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="dami-header">
         <div className="dami-snrt-logo">
           <img alt="dami-logo" src="/images/logo.png" className="dami-logo" />
@@ -175,34 +179,34 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
         <div className="dami-codification">
           <table className="dami-codification-table ">
             <tr>
-              <td>document</td>
+              <td>{t('dami.header.document', { defaultValue: 'document' })}</td>
               <td>
                 <span className="dami-header-codi-item dami-header-document">
-                  {option.header.document}
+                  {option.header && option.header.document}
                 </span>
               </td>
             </tr>
             <tr>
-              <td>classification</td>
+              <td>{t('dami.header.classification', { defaultValue: 'classification' })}</td>
               <td>
                 <span className="dami-header-codi-item dami-header-classification">
-                  {option.header.classification}
+                  {option.header && option.header.classification}
                 </span>
               </td>
             </tr>
             <tr>
-              <td>creation</td>
+              <td>{t('dami.header.creation', { defaultValue: 'creation' })}</td>
               <td>
                 <span className="dami-header-codi-item dami-header-creation">
-                  {new Date(option.header.creation).toLocaleDateString()}
+                  {option.header && option.header.creation && new Date(option.header.creation).toLocaleDateString()}
                 </span>
               </td>
             </tr>
             <tr>
-              <td>maj</td>
+              <td>{t('dami.header.update', { defaultValue: 'maj' })}</td>
               <td>
                 <span className="dami-header-codi-item dami-header-maj">
-                  {new Date(option.header.maj).toLocaleDateString()}
+                  {option.header && option.header.maj && new Date(option.header.maj).toLocaleDateString()}
                 </span>
               </td>
             </tr>
@@ -213,16 +217,17 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
         <table>
           <tr>
             <td>
-              <label>Date demande:</label>
+              <label>{t('dami.form.dateRequest', { defaultValue: 'Date demande:' })}</label>
             </td>
             <td>
               <input
                 className="dami-input"
                 value={new Date().toLocaleDateString()}
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
             <td>
-              <label>Depratement</label>
+              <label>{t('dami.form.department', { defaultValue: 'Depratement' })}</label>
             </td>
             <td>
               <input
@@ -232,21 +237,23 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? capitalizeFirstLetter(userInfo.departement.libelle)
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
           </tr>
           <tr>
             <td>
-              <label>Matricule:</label>
+              <label>{t('dami.form.matricule', { defaultValue: 'Matricule:' })}</label>
             </td>
             <td>
               <input
                 className="dami-input "
                 value={!showAdmin && userInfo ? userInfo.matricule : ""}
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
             <td>
-              <label>Service</label>
+              <label>{t('dami.form.service', { defaultValue: 'Service' })}</label>
             </td>
             <td>
               <input
@@ -256,12 +263,13 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? capitalizeFirstLetter(userInfo.service.libelle)
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
           </tr>
           <tr>
             <td>
-              <label>Nom:</label>
+              <label>{t('dami.form.lastName', { defaultValue: 'Nom:' })}</label>
             </td>
             <td>
               <input
@@ -271,10 +279,11 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? capitalizeFirstLetter(userInfo.nom)
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
             <td>
-              <label>Prenom</label>
+              <label>{t('dami.form.firstName', { defaultValue: 'Prenom' })}</label>
             </td>
             <td>
               <input
@@ -284,12 +293,13 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? capitalizeFirstLetter(userInfo.prenom)
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
           </tr>
           <tr>
             <td>
-              <label>Email:</label>
+              <label>{t('dami.form.email', { defaultValue: 'Email:' })}</label>
             </td>
             <td>
               <input
@@ -299,10 +309,11 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? userInfo.email.toLowerCase()
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
             <td>
-              <label>Gsm</label>
+              <label>{t('dami.form.gsm', { defaultValue: 'Gsm' })}</label>
             </td>
             <td>
               <input
@@ -310,12 +321,13 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                 value={
                   !showAdmin && userInfo && userInfo.gsm ? userInfo.gsm : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
           </tr>
           <tr>
             <td>
-              <label>Direction</label>
+              <label>{t('dami.form.direction', { defaultValue: 'Direction' })}</label>
             </td>
             <td>
               <input
@@ -325,6 +337,7 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                     ? capitalizeFirstLetter(userInfo.direction.libelle)
                     : ""
                 }
+                style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </td>
             <td></td>
@@ -422,79 +435,69 @@ const Dami = ({ option, showAdmin = false, mini = false }) => {
                 ).checked && (
                   <div className="sig-item" key={sig}>
                     <div className="">
-                      <label>Nom:</label>
+                      <label>{t('dami.form.lastName', { defaultValue: 'Nom:' })}</label>
                       <input className="dami-input" />
                     </div>
                     <div className="">
-                      <label>Prenom:</label>
+                      <label>{t('dami.form.firstName', { defaultValue: 'Prenom:' })}</label>
                       <input className="dami-input" />
                     </div>
                     <div
                       className="d-flex align-items-center"
                       style={{ marginTop: "5px" }}
                     >
-                      <label>Decision:</label>
+                      <label>{t('dami.form.decision', { defaultValue: 'Decision:' })}</label>
                       <div className="ml-1">
-                        <label>Oui</label>
+                        <label>{t('dami.form.yes', { defaultValue: 'Oui' })}</label>
                         <input className="dami-check-box mr-1" />
                       </div>
                       <div>
-                        <label>Non</label>
+                        <label>{t('dami.form.no', { defaultValue: 'Non' })}</label>
                         <input className="dami-check-box mr-1" />
                       </div>
                     </div>
 
-                    {/* <div className=''>
-                    <label>Observation:</label>
-                    <input className='dami-input w-75' />
-                  </div> */}
+                    {}
 
                     <div className="">
-                      <label>Date:</label>
+                      <label>{t('dami.form.date', { defaultValue: 'Date:' })}</label>
                       <input className="dami-input" />
                     </div>
-                    {/* <div className="mt-1">
-                    <label>Signature & cachet:</label>
-                  </div> */}
+                    {}
                   </div>
                 )
               ) : (
                 <div className="sig-item" key={sig}>
                   <div className="">
-                    <label>Nom:</label>
+                    <label>{t('dami.form.lastName', { defaultValue: 'Nom:' })}</label>
                     <input className="dami-input" />
                   </div>
                   <div className="">
-                    <label>Prenom:</label>
+                    <label>{t('dami.form.firstName', { defaultValue: 'Prenom:' })}</label>
                     <input className="dami-input" />
                   </div>
                   <div
                     className="d-flex align-items-center"
                     style={{ marginTop: "5px" }}
                   >
-                    <label>Decision:</label>
+                    <label>{t('dami.form.decision', { defaultValue: 'Decision:' })}</label>
                     <div className="ml-1">
-                      <label>Oui</label>
+                      <label>{t('dami.form.yes', { defaultValue: 'Oui' })}</label>
                       <input className="dami-check-box mr-1" />
                     </div>
                     <div>
-                      <label>Non</label>
+                      <label>{t('dami.form.no', { defaultValue: 'Non' })}</label>
                       <input className="dami-check-box mr-1" />
                     </div>
                   </div>
 
-                  {/* <div className=''>
-                  <label>Observation:</label>
-                  <input className='dami-input w-75' />
-                </div> */}
+                  {}
 
                   <div className="">
-                    <label>Date:</label>
+                    <label>{t('dami.form.date', { defaultValue: 'Date:' })}</label>
                     <input className="dami-input" />
                   </div>
-                  {/* <div className="mt-1">
-                  <label>Signature & cachet:</label>
-                </div> */}
+                  {}
                 </div>
               )
             )}

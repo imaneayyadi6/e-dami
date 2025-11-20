@@ -82,7 +82,7 @@ export const souscategorieListByCategorieIDReducer = (
         souscategories: state.souscategories.map((souscategorie) => {
           if (String(souscategorie._id) === String(payload._id)) {
             souscategorie.libelle = payload.libelle;
-            // categorie.direction = payload.direction;
+            
           }
           return souscategorie;
         }),

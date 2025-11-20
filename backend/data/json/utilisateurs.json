@@ -25977,12 +25977,12 @@
     "_id": { "$oid": "65ddb1d1a1f6205e971d2311" },
     "isActive": true,
     "firstTimeLogin": true,
-    "nom": "AMAAJANE",
+    "nom": "AMAAimane",
     "prenom": "HANANE",
     "matricule": 2033825,
     "civilite": "F",
     "fonction": "TECHNICIEN D'EXPLOITATION DES EQUIPEMENTS AUDIOVISUELS",
-    "email": "H.AMAAJANE@snrt.ma",
+    "email": "H.AMAAimane@snrt.ma",
     "password": "$2a$10$3KDUv9/pSGpGuUNg0uxDHOePH7yRvY4AzxfWz50Gjj6CnHbT0H86a",
     "roles": [
       {

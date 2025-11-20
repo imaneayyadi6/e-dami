@@ -116,6 +116,80 @@ export const resetRemoveCategorie = () => {
   return { type: CATEGORIE_REMOVE_RESET };
 };
 
+
+export const softDeleteCategorie = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: CATEGORIE_REMOVE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.patch(`/api/categories/${id}`, { isDeleted: true }, config);
+      
+      dispatch({ type: CATEGORIE_REMOVE_SUCCESS, payload: data });
+      dispatch({ type: CATEGORIE_LIST_UPDATE, payload: data });
+    } catch (error) {
+      
+      if (error.response && (error.response.status === 404 || error.response.status === 405)) {
+        try {
+          const {
+            userLogin: { userInfo },
+          } = getState();
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${userInfo.token}`,
+            },
+          };
+          const { data } = await axios.delete(`/api/categories/${id}`, config);
+          dispatch({ type: CATEGORIE_REMOVE_SUCCESS, payload: data });
+          dispatch({ type: CATEGORIE_LIST_REMOVE, payload: id });
+        } catch (err2) {
+          const finalErr = err2.response && err2.response.data.message ? err2.response.data.message : err2.message;
+          dispatch({ type: CATEGORIE_REMOVE_FAIL, payload: finalErr });
+        }
+      } else {
+        const err = error.response && error.response.data.message ? error.response.data.message : error.message;
+        dispatch({ type: CATEGORIE_REMOVE_FAIL, payload: err });
+      }
+    }
+  };
+};
+
+
+export const restoreCategorie = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.patch(`/api/categories/${id}`, { isDeleted: false }, config);
+      dispatch({ type: CATEGORIE_LIST_UPDATE, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      
+      dispatch({ type: CATEGORIE_UPDATE_FAIL, payload: err });
+    }
+  };
+};
+
 export const updateCategorie = (id, categorie) => {
   return async (dispatch, getState) => {
     try {

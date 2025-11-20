@@ -3,8 +3,12 @@ import Label from "./Label";
 import { v4 as uuidv4 } from "uuid";
 import { Form, OverlayTrigger, Popover } from "react-bootstrap";
 import { cssStringToObject } from "../../services";
+import { useTranslation } from "react-i18next";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const DamiCheckBox = ({ disabled = false, labelProps }) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguageSync();
   const id = uuidv4();
   const [show, setShow] = useState(false);
   const [disabledChk, setDisabledChk] = useState(disabled);
@@ -39,10 +43,10 @@ const DamiCheckBox = ({ disabled = false, labelProps }) => {
   const popover = (
     <Popover ref={popoverRef} id={popoverId}>
       <Popover.Header>
-        <small>Disabled on non</small>
+        <small>{t('builder.common.disabledTitle', { defaultValue: 'Désactiver ou non' })}</small>
       </Popover.Header>
-      <Popover.Body>
-        <label>Disabled ou non :</label>
+      <Popover.Body dir={isRTL ? 'rtl' : 'ltr'}>
+        <label>{t('builder.common.disabledLabel', { defaultValue: 'Désactiver :' })}</label>
         <Form.Switch
           size='lg'
           checked={disabledChk}
@@ -65,13 +69,14 @@ const DamiCheckBox = ({ disabled = false, labelProps }) => {
         readOnly
         className={`lst dami-check-box ${disabledChk && "disabled"} `}
         onClick={clickHandler}
-        // disabled={disabledChk}
+        
       />
     </OverlayTrigger>
   );
 };
 
 const ListOfCheckBoxes = ({ headerProps = null, bodyItems = [] }) => {
+  const { t } = useTranslation();
   const [headerLabels, setHeaderLabels] = useState([{ id: uuidv4() }]);
   const [contentLines, setContentLines] = useState([
     { id: uuidv4(), isSection: false },
@@ -155,7 +160,7 @@ const ListOfCheckBoxes = ({ headerProps = null, bodyItems = [] }) => {
                         item.labelProp &&
                         cssStringToObject(item.labelProp.style)
                       }
-                      text={item.labelProp ? item.labelProp.text : "label"}
+                      text={item.labelProp ? item.labelProp.text : t('builder.common.label', { defaultValue: 'label' })}
                     />
                   </div>
                 </td>
@@ -186,14 +191,14 @@ const ListOfCheckBoxes = ({ headerProps = null, bodyItems = [] }) => {
                     style={
                       item.labelProp && cssStringToObject(item.labelProp.style)
                     }
-                    text={item.labelProp ? item.labelProp.text : "label"}
+                    text={item.labelProp ? item.labelProp.text : t('builder.common.label', { defaultValue: 'label' })}
                   />
                 </td>
                 {item.isSection || (item.labelProp && item.labelProp.isSection)
-                  ? headerLabels.map(headerItem => (
+                  ? headerLabels && headerLabels.map(headerItem => (
                       <td key={headerItem.id}></td>
                     ))
-                  : headerLabels.map((headerItem, index) => (
+                  : headerLabels && headerLabels.map((headerItem, index) => (
                       <td key={headerItem.id}>
                         <DamiCheckBox
                           disabled={

@@ -15,8 +15,8 @@ router
   .post(protect, createur, createDepartement);
 
 router.route("/:id").get(protect, getDepartementByID);
-//   .put(protect, createur, updateService)
-//   .delete(protect, createur, deleteService);
+
+
 
 router.route("/direction/:id").get(protect, getDepartementsByDirectionID);
 

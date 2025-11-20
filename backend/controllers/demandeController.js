@@ -12,7 +12,7 @@ import {
   getNextTypeAppOnApp,
   getTypeAppOnCreate,
 } from "../services/getTypeApp.js";
-import { createItopTicket } from "../services/createItopTicketService.js";
+
 import fs from "fs";
 import path from "path";
 
@@ -21,7 +21,7 @@ const getCv = (cv) => {
   else return "Mr";
 };
 
-// Fonction pour vérifier si l'utilisateur appartient aux services autorisés pour l'upload de fichiers
+
 const isUserFromAuthorizedService = async (userId) => {
   const user = await Utilisateur.findById(userId).populate("service");
   if (!user || !user.service) return false;
@@ -34,9 +34,9 @@ const isUserFromAuthorizedService = async (userId) => {
   return authorizedServices.includes(user.service.libelle);
 };
 
-// @desc    Recuperer les demandes de demandeur
-// @route   GET /api/demandes/mesdemandes
-// @access  private
+
+
+
 export const getMesDemandes = asyncHandler(async (req, res) => {
   let demandes = await Demande.find({
     demandeur: req.user.id,
@@ -47,19 +47,19 @@ export const getMesDemandes = asyncHandler(async (req, res) => {
   res.json(demandes);
 });
 
-// @desc    Recuperer les demandes envoyer a un utilisateur pour le  traitee
-// @route   GET /api/demandes/handle
-// @access  private
+
+
+
 export const getDemandesForHandling = asyncHandler(async (req, res) => {
-  // Destructure query parameters with default values
+  
   const { page = 1, limit = 20, ...filters } = req.query;
 
-  // Define base filter for user-specific requests
+  
   const userFilter = {
     "traitement.utilisateur": new mongoose.Types.ObjectId(req.user.id),
   };
 
-  // Update filter based on query parameters
+  
   if (filters.status) userFilter["traitement.status"] = String(filters.status);
 
   if (filters.dateDemande) {
@@ -113,7 +113,7 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
     )
   );
 
-  // Get current user with populated direction information
+  
   const currentUser = await Utilisateur.findById(req.user.id).populate('direction');
   
   let traitements = demandes.flatMap((demande) =>
@@ -133,9 +133,9 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
                 demande &&
                 demande.demandeur &&
                 `${demande.demandeur.prenom} ${demande.demandeur.nom}`,
-              demandeurObj: demande.demandeur, // Include full demandeur object with direction
+              demandeurObj: demande.demandeur, 
               option: demande.option,
-              directeur: currentUser, // Include current user (director) information with populated direction
+              directeur: currentUser, 
             });
           }
         }
@@ -152,27 +152,27 @@ export const getDemandesForHandling = asyncHandler(async (req, res) => {
       (tr) => String(tr.status) === String(filters.status)
     );
 
-  // Count total documents based on filters
+  
   const count = await Demande.countDocuments(userFilter);
 
-  // Calculate total pages
-  const totalPages = Math.ceil(count / parseInt(limit)); // Ensure that limit is parsed as an integer
+  
+  const totalPages = Math.ceil(count / parseInt(limit)); 
 
-  // Respond with processed data
+  
   res.json({
     traitements,
     totalPages,
-    currentPage: parseInt(page), // Ensure that page is parsed as an integer
+    currentPage: parseInt(page), 
   });
 });
 
-// @desc    Recuperer les elements de filter
-// @route   GET /api/demandes/handle/filter
-// @access  private
+
+
+
 export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
   const userObjectId = new mongoose.Types.ObjectId(req.user.id);
 
-  // Aggregate unique options, demandeurs, and typeApps in a single pipeline
+  
   const aggregationPipeline = [
     {
       $match: {
@@ -240,17 +240,17 @@ export const getFilterOptionsDemandes = asyncHandler(async (req, res) => {
   res.json({ options, demandeurs, typeApp });
 });
 
-// @desc    Faire une demande
-// @route   POST /api/demandes
-// @access  private
+
+
+
 export const createDemande = asyncHandler(async (req, res) => {
-  // creation de la demande :
+  
   const { option: optionID, contenu } = req.body;
   const option = await Option.findById(optionID).populate("service");
   const user = await Utilisateur.findById(req.user.id);
   if (option) {
     if (user) {
-      // verfier est ce que le demandeur a deja fait une demande :
+      
       const checkDemande = await Demande.findOne({
         demandeur: user._id,
         option: option._id,
@@ -260,59 +260,33 @@ export const createDemande = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Vous avez déjà demandé cette demande !");
       }
-      // demande obj pour creer la demande dans mongodb:
+      
+      const currentDate = new Date();
       let demandeObj = {
         option: option._id,
         demandeur: user._id,
         contenu,
-        dateDemande: new Date(),
+        dateDemande: currentDate,
       };
-      // l'objet traitement signifie le process de la demande :
+      
       let objTraitement = {
-        dateEnvoi: new Date(),
+        dateEnvoi: currentDate,
       };
 
-      // creer un obj pour avoir un filter de message :
-      // les cas possible de traitement d'une demande et le message que le signataire doit recevoire :
+      
+      
       const filterMessage = {
-        // proprietaire de donnees :
+        
         pdd: " veuillez la traiter en tant que propriétaire de données",
-        /*
-         les cas possibles pour un chef de service ===>  :
-                    - il peut etre juste un chef de service .
-         */
+        
         cds: " veuillez la traiter en tant que chef de service",
-        /*
-         les cas possibles pour un chef de departement ===>  :
-                  - il peut etre juste un chef de departement .
-                  - il peut un chef de service et chef de departement.     
-         */
+        
         cdd: " veuillez la traiter en tant que chef de derpatement",
         "cds.cdd":
           " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de derpatement",
-        /*
-         les cas possibles pour un autre utilisateur ===>  :
-                    - il peut etre juste un autre utilisateur .
-         */
-        atr: ` veuillez la traiter en tant que '${option.autreResponsableTitre.toLowerCase()}'`,
-        /*
-         les cas possibles pour un directeur ===>  :
-                  - il peut etre juste un directeur hiarchique .
-                  - il peut un chef de service et directeur hiarchique
-                  - il peut un chef de departement et directeur hiarchique 
-                  - il peut un chef de service, chef de departement et directeur hiarchique
-                  - il peut un directeur hiarchique et un pdd
-                  - il peut un chef de service, un directeur hiarchique et un pdd
-                  - il peut un chef de departement, un directeur hiarchique et un pdd
-                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
-                  - il peut un directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
-                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
-                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
-         */
+        
+        atr: ` veuillez la traiter en tant que '${option.autreResponsableTitre ? String(option.autreResponsableTitre).toLowerCase() : 'autre responsable'}'`,
+        
         hiq: " veuillez la traiter en tant que directeur hiarchique",
         "cds.hiq":
           " veuillez la traiter en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et directeur hiarchique",
@@ -349,27 +323,62 @@ export const createDemande = asyncHandler(async (req, res) => {
         user._id
       );
 
-      objTraitement.code = code;
-      objTraitement.utilisateur = userID;
-      objTraitement.interim = isInterim;
+      if (!userID) {
+        res.status(400);
+        throw new Error("Aucun signataire trouvé pour cette demande. Vérifiez la configuration de l'option.");
+      }
 
-      demandeObj.traitement = [objTraitement];
+      
+      let traitements = [];
+      
+      
+      const traitementSignataire = {
+        ...objTraitement,
+        code: code,
+        utilisateur: userID,
+        interim: isInterim,
+        type: 'signataire'
+      };
+      traitements.push(traitementSignataire);
+      
+      
+      const adminUser = await Utilisateur.findOne({ role: 'admin' });
+      if (adminUser) {
+        const traitementAdmin = {
+          dateEnvoi: currentDate, 
+          code: 'admin',
+          utilisateur: adminUser._id,
+          interim: false,
+          type: 'admin'
+        };
+        traitements.push(traitementAdmin);
+      }
+
+      demandeObj.traitement = traitements;
 
       const demande = new Demande(demandeObj);
       await demande.save();
       await demande.populate("demandeur");
       const isInterimtext = isInterim ? "(interim)":"";
-      // message pour que le signataires va recevoire :
+      
+      
+      for (const traitement of demande.traitement) {
       let messageContent = `<p> Une <a style='font-weight:bold' `;
-      messageContent += `href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${demande.traitement[0]._id}">demande</a>`;
-      messageContent += ` a été faite par <strong style='font-weight:bold'>${user.prenom.toLowerCase()}</strong> <strong style='font-weight:bold'>${user.nom.toLowerCase()}</strong>, `;
-      messageContent += filterMessage[code] + " " + isInterimtext + "</p>";
+        messageContent += `href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${traitement._id}">demande</a>`;
+        messageContent += ` a été faite par <strong style='font-weight:bold'>${user.prenom ? String(user.prenom).toLowerCase() : 'utilisateur'}</strong> <strong style='font-weight:bold'>${user.nom ? String(user.nom).toLowerCase() : 'inconnu'}</strong>, `;
+        
+        if (traitement.type === 'admin') {
+          messageContent += "veuillez la traiter en tant qu'administrateur</p>";
+        } else {
+          messageContent += filterMessage[traitement.code] + " " + isInterimtext + "</p>";
+        }
 
       sendNotification(
-        userID,
+          traitement.utilisateur,
         messageContent,
-        `Demande fait par ${user.prenom.toLowerCase()} ${user.nom.toLowerCase()}`
+          `Demande fait par ${user.prenom ? String(user.prenom).toLowerCase() : 'utilisateur'} ${user.nom ? String(user.nom).toLowerCase() : 'inconnu'}`
       );
+      }
 
       res.status(201).json({ message: "demande a été effectuée avec succès" });
     } else {
@@ -382,9 +391,9 @@ export const createDemande = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer le details d'une demande par ID
-// @route   GET /api/demandes/:id/traitement/:idTraitement
-// @access  private
+
+
+
 export const getDemandesByID = asyncHandler(async (req, res) => {
   let demande = await Demande.findOne({
     _id: req.params.id,
@@ -441,7 +450,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
 
@@ -453,7 +462,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
 
@@ -465,7 +474,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "atr") {
@@ -476,7 +485,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "pdd") {
@@ -487,7 +496,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "dg") {
@@ -498,7 +507,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "pdg") {
@@ -509,7 +518,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "dir") {
@@ -520,7 +529,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             sig.push(obj);
@@ -548,7 +557,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "cdd") {
@@ -559,7 +568,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "hiq") {
@@ -570,7 +579,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "atr") {
@@ -581,7 +590,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "pdd") {
@@ -592,7 +601,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
 
@@ -604,7 +613,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                       if (s === "dg") {
                         obj = {
@@ -614,7 +623,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                           approuve: status === "approuve" ? true : false,
                           refuse: status === "refuse" ? true : false,
                           dateTraitement: dateTraitement,
-                          // date:trai
+                          
                         };
                       }
                       if (s === "pdg") {
@@ -625,7 +634,7 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
                           approuve: status === "approuve" ? true : false,
                           refuse: status === "refuse" ? true : false,
                           dateTraitement: dateTraitement,
-                          // date:trai
+                          
                         };
                       }
                     }
@@ -658,9 +667,9 @@ export const getDemandesByID = asyncHandler(async (req, res) => {
   res.json(demande);
 });
 
-// @desc    Recuperer le status de traitement
-// @route   PUT /api/demandes/:id/status/:idTraitement
-// @access  private
+
+
+
 export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
   const demande = await Demande.findOne({
     _id: req.params.id,
@@ -682,9 +691,9 @@ export const getStatusTraitementDeDemande = asyncHandler(async (req, res) => {
   res.json(demande);
 });
 
-// @desc    Approuver un traitemen de demande
-// @route   PUT /api/demandes/:id/approuve/:idTraitement
-// @access  private
+
+
+
 export const approuverDemande = asyncHandler(async (req, res) => {
   let demande = await Demande.findById(String(req.params.id))
     .populate({
@@ -697,50 +706,23 @@ export const approuverDemande = asyncHandler(async (req, res) => {
 
   if (demande) {
     if (demande.status === "en cours") {
-      // creer des obj's pour avoir un filter de message :
-      // les cas possible de traitement d'une demande et le message que le demandeur doit recevoire :
+      
+      
       const demandeurFilterMessage = {
-        // directeur generale :
+        
         dg: " en tant que directeur général",
-        // president directeur generale :
+        
         pdg: " en tant que président directeur général",
-        // proprietaire de donnees :
+        
         pdd: " en tant que propriétaire de données",
-        /*
-         les cas possibles pour un chef de service ===>  :
-                    - il peut etre juste un chef de service .
-         */
+        
         cds: " en tant que chef de service",
-        /*
-         les cas possibles pour un autre utilisateur ===>  :
-                    - il peut etre juste un autre utilisateur .
-         */
-        atr: ` en tant que '${demande.option.autreResponsableTitre.toLowerCase()}'`,
-        /*
-         les cas possibles pour un chef de departement ===>  :
-                  - il peut etre juste un chef de departement .
-                  - il peut un chef de service et chef de departement.     
-         */
+        
+        atr: ` en tant que '${demande.option.autreResponsableTitre ? demande.option.autreResponsableTitre.toLowerCase() : 'autre responsable'}'`,
+        
         cdd: " en tant que chef de derpatement",
         "cds.cdd": " en tant que chef de service et chef de derpatement",
-        /*
-         les cas possibles pour un directeur ===>  :
-                  - il peut etre juste un directeur hiarchique .
-                  - il peut un chef de service et directeur hiarchique
-                  - il peut un chef de departement et directeur hiarchique 
-                  - il peut un chef de service, chef de departement et directeur hiarchique
-                  - il peut un directeur hiarchique et un pdd
-                  - il peut un chef de service, un directeur hiarchique et un pdd
-                  - il peut un chef de departement, un directeur hiarchique et un pdd
-                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
-                  - il peut un directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
-                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
-                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
-         */
+        
         hiq: " en tant que directeur hiarchique",
         dir: " en tant que directeur l'entité",
         "cds.hiq": " en tant que chef de service et directeur hiarchique",
@@ -770,50 +752,23 @@ export const approuverDemande = asyncHandler(async (req, res) => {
           " en tant que chef de departement  directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
 
-      // les cas possible de traitement d'une demande et le message que le signataires doit recevoire :
+      
       const signataireFilterMessage = {
-        // directeur generale :
+        
         dg: " veuillez l'approuvez ou la refusez en tant que directeur général",
-        // president directeur generale :
+        
         pdg: " veuillez l'approuvez ou la refusez en tant que président directeur général",
-        // proprietaire de donnees :
+        
         pdd: " veuillez l'approuvez ou la refusez en tant que propriétaire de données",
-        /*
-         les cas possibles pour un chef de service ===>  :
-                    - il peut etre juste un chef de service .
-         */
+        
         cds: " veuillez l'approuvez ou la refusez en tant que chef de service",
-        /*
-         les cas possibles pour un autre utilisateur ===>  :
-                    - il peut etre juste un autre utilisateur .
-         */
-        atr: ` veuillez l'approuvez ou la refusez en tant que '${demande.option.autreResponsableTitre.toLowerCase()}'`,
-        /*
-         les cas possibles pour un chef de departement ===>  :
-                  - il peut etre juste un chef de departement .
-                  - il peut un chef de service et chef de departement.     
-         */
+        
+        atr: ` veuillez l'approuvez ou la refusez en tant que '${demande.option.autreResponsableTitre ? demande.option.autreResponsableTitre.toLowerCase() : 'autre responsable'}'`,
+        
         cdd: " veuillez l'approuvez ou la refusez en tant que chef de derpatement",
         "cds.cdd":
           " veuillez l'approuvez ou la refusez en tant que chef de service '<i>(le demandeur n'a pas un chef de service ou n'a pas été affecté à un service)</i>' et chef de derpatement",
-        /*
-         les cas possibles pour un directeur ===>  :
-                  - il peut etre juste un directeur hiarchique .
-                  - il peut un chef de service et directeur hiarchique
-                  - il peut un chef de departement et directeur hiarchique 
-                  - il peut un chef de service, chef de departement et directeur hiarchique
-                  - il peut un directeur hiarchique et un pdd
-                  - il peut un chef de service, un directeur hiarchique et un pdd
-                  - il peut un chef de departement, un directeur hiarchique et un pdd
-                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
-                  - il peut un directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
-                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
-                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
-         */
+        
         hiq: " veuillez l'approuvez ou la refusez en tant que directeur hiarchique",
         dir: " veuillez l'approuvez ou la refusez en tant que directeur l'entité",
         "cds.hiq":
@@ -846,7 +801,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
           " veuillez l'approuvez ou la refusez en tant que chef de departement '<i>(le demandeur n'a pas un chef de departement ou n'a pas été affecté à un departement)</i>', directeur hiarchique, propriétaire de données et directeur de l'entité",
       };
       let sigInterim = false;
-      // recuperer le traitement :
+      
       let traitement = demande.traitement.find(
         (tr) => String(tr._id) === String(req.params.idTraitement)
       );
@@ -854,71 +809,102 @@ export const approuverDemande = asyncHandler(async (req, res) => {
       if (traitement) {
         if (String(traitement.utilisateur) === String(req.user.id)) {
           if (traitement.status === "en cours") {
-            // changer le status de traitement :
+            
             for (let tr of demande.traitement) {
               if (String(tr._id) === String(req.params.idTraitement)) {
                 tr.status = "approuve";
-                tr.dateTraitement = new Date();
+                tr.dateTraitement = new Date(); 
+                tr.motifValidation = req.body.motifValidation || "Demande approuvée";
                 if (tr.interim) sigInterim = true;
                 break;
               }
             }
 
-            // recuperer le type d'approubation et le signataire qui va signier
-            const [nextCode, nextUserId, isInterim] = await getNextTypeAppOnApp(
-              demande.option._id,
-              demande._id,
-              traitement.code
-            );
+            
+            let nextCode, nextUserId, isInterim;
+            try {
+              [nextCode, nextUserId, isInterim] = await getNextTypeAppOnApp(
+                demande.option._id,
+                demande._id,
+                traitement.code
+              );
+            } catch (error) {
+              console.error('Error in getNextTypeAppOnApp:', error);
+              
+              nextCode = "fini";
+              nextUserId = null;
+              isInterim = false;
+            }
 
-            let nextSignataire = await Utilisateur.findById(
-              traitement.utilisateur
-            );
+            
+            let currentUser;
+            try {
+              currentUser = await Utilisateur.findById(req.user.id);
+            } catch (error) {
+              console.error('Error finding current user:', error);
+              currentUser = null;
+            }
 
             let messageDemandeur = `<p> Votre <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}">demande</a>`;
-            messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>${getCv(
-              nextSignataire.civilite
-            )}.</b>`;
-            messageDemandeur += ` <b style='font-weight:bold'>${nextSignataire.prenom.toLowerCase()} ${nextSignataire.nom.toLowerCase()}${
-              sigInterim ? " (interim)" : ""
-            }</b> `;
+            if (currentUser) {
+              messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>${getCv(
+                currentUser.civilite
+              )}.</b>`;
+              messageDemandeur += ` <b style='font-weight:bold'>${currentUser.prenom ? currentUser.prenom.toLowerCase() : 'utilisateur'} ${currentUser.nom ? currentUser.nom.toLowerCase() : 'inconnu'}${
+                sigInterim ? " (interim)" : ""
+              }</b> `;
+            } else {
+              messageDemandeur += ` a été approuvée par <b style='font-weight:bold'>un utilisateur</b> `;
+            }
+            
+            
+            if (traitement.type === 'admin') {
+              messageDemandeur += " en tant qu'administrateur";
+            } else {
             messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
+            }
 
-            // Ajouter le motif de validation si disponible
+            
             if (req.body.motifValidation && req.body.motifValidation.trim() !== "") {
               messageDemandeur += `<br><b style='font-weight:bold'>Motif de validation : </b> "${req.body.motifValidation}"`;
             }
 
-            // verfier est ce que la demande a ete fini le traitement :
+            
+            if (traitement.type === 'admin') {
+              messageDemandeur += " et pour cela, elle a été finalisée et traitée avec succès";
+              demande.status = "approuvée";
+            } else {
+            
             if (nextCode === "fini") {
               messageDemandeur +=
                 " et pour cela, tous les signataires possibles approuvent votre demande. votre demande est maintenant prête à être traitée par les utilisateurs concernés";
-              demande.status = "approuve";
+                demande.status = "approuvée";
             } else {
-              // envoyer la demande au signataire prochaine pour la traiter :
+              
               demande.traitement.push({
                 utilisateur: new mongoose.Types.ObjectId(nextUserId),
-                dateEnvoi: new Date(),
+                  dateEnvoi: new Date(), 
                 status: "en cours",
                 code: nextCode,
                 interim: isInterim,
               });
+              }
             }
             if (req.body.docContent) {
               demande.contenu = req.body.docContent;
             }
-            // sauvgarder le chnagement :
+            
             await demande.save();
 
             messageDemandeur += "</p>";
-            // envoyer le message au demandeur :
+            
             sendNotification(
               demande.demandeur._id,
               messageDemandeur,
               `Votre demande a été approuvée`
             );
 
-            // envoyer un email au chef de departement si le demandeur a demander une demande de prouction informatique:
+            
             if (
               traitement.code === "cds" &&
               nextCode === "hiq" &&
@@ -929,7 +915,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               prodCddmessage += ` par <b style='font-weight:bold'>${getCv(
                 demande.demandeur.civilite
               )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
-              prodCddmessage += ` a été approuvée par son chef de service.  DAMI : ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
+              prodCddmessage += ` a été approuvée par son chef de service.  DAMI : ('<i>${demande.option.libelle ? demande.option.libelle.toLowerCase() : 'option'}</i>')</p>`;
 
               const prodService = await Service.findById(
                 demande.option.service._id
@@ -938,11 +924,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               sendNotification(
                 prodService.departement.chefDeDepartement,
                 prodCddmessage,
-                `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                `Une demande fait par ${demande.demandeur.prenom ? demande.demandeur.prenom.toLowerCase() : 'utilisateur'} ${demande.demandeur.nom ? demande.demandeur.nom.toLowerCase() : 'inconnu'}.`
               );
             }
 
-            // envoyer le message au signataire :
+            
             if (nextCode !== "fini") {
               let codeIndex = Array.from(demande.traitement).findIndex(
                 (cd) => String(cd.code) === String(nextCode)
@@ -950,14 +936,14 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               let traitementItem = demande.traitement[codeIndex];
               if (traitementItem) {
                 let messageSignataire = `<p>Une <a style='font-weight:bold' href="${process.env.CLIENT_ADDRESS}/details-demande/${demande._id}/traitement/${traitementItem._id}">demande</a>`;
-                messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom.toLowerCase()}</b> <b style='font-weight:bold'>${demande.demandeur.nom.toLowerCase()}</b>, ${
+                messageSignataire += ` a été faite par <b style='font-weight:bold'>${demande.demandeur.prenom ? demande.demandeur.prenom.toLowerCase() : 'utilisateur'}</b> <b style='font-weight:bold'>${demande.demandeur.nom ? demande.demandeur.nom.toLowerCase() : 'inconnu'}</b>, ${
                   signataireFilterMessage[nextCode]
                 } ${isInterim ? "(interim)" : ""}</p>`;
 
                 sendNotification(
                   nextUserId,
                   messageSignataire,
-                  `Une demande fait par ${demande.demandeur.prenom.toLowerCase()} ${demande.demandeur.nom.toLowerCase()}.`
+                  `Une demande fait par ${demande.demandeur.prenom ? demande.demandeur.prenom.toLowerCase() : 'utilisateur'} ${demande.demandeur.nom ? demande.demandeur.nom.toLowerCase() : 'inconnu'}.`
                 );
               }
             }
@@ -1020,7 +1006,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 );
               }
 
-              // Notifier le responsable de service magazin si un demandeur a demander 'DEMANDE D'UN PERIPHERIQUE INFORMATIQUE' || 'DEMANDE D'UN POSTE DE TRAVAIL INFORMATIQUE' :
+              
               if (
                 String(demande.option.libelle).toUpperCase() ===
                   "E-DAMI - DEMANDE D'UN PERIPHERIQUE INFORMATIQUE" ||
@@ -1043,11 +1029,11 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                     demande.demandeur.civilite
                   )}.${demande.demandeur.prenom} ${demande.demandeur.nom}</b> `;
                   message += ` a été approuvée par ses supérieurs et tous les signataires possibles.  DAMI : ('<i>${demande.option.libelle.toLowerCase()}</i>')</p>`;
-                  // recuperer le chef de service de magasin :
+                  
                   const chefServiceMagasin = await Utilisateur.findById(
                     serviceMagasin.chefService._id
                   );
-                  // verfier est ce que l' utilisateur a un interim ou non :
+                  
                   if (chefServiceMagasin.interim) {
                     sendNotification(
                       chefServiceMagasin.interim,
@@ -1064,7 +1050,7 @@ export const approuverDemande = asyncHandler(async (req, res) => {
                 }
               }
 
-              // CREER UN TICKET SUR ITOP :
+              
               const chefDeService = await Utilisateur.findById(
                 optionService.chefService
               );
@@ -1086,26 +1072,29 @@ export const approuverDemande = asyncHandler(async (req, res) => {
               const demandeurDirection = await Direction.findById(
                 demande.demandeur.direction
               );
-              // ...
-              createItopTicket({
-                title: demande.option.libelle,
-                lien: `https://e-dami.snrt.ma/demandes/apercu/details/${demande._id}`,
-                client_matricule: demande.demandeur.matricule,
-                client_service: demandeurService ? demandeurService.uo : null,
-                client_departement: demandeurDepartement
-                  ? demandeurDepartement.uo
-                  : null,
-                client_direction: demandeurDirection
-                  ? demandeurDirection.uo
-                  : null,
-                agent_service: optionService.uo,
-                agent_matricule: chefDeService
-                  ? chefDeService.matricule
-                  : chefDeDepartement
-                  ? chefDeDepartement.matricule
-                  : directeur.matricule,
-              });
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
             }
+
+            
+            await demande.save();
 
             res.json({ message: "demande approvee avec success !" });
           } else {
@@ -1132,9 +1121,9 @@ export const approuverDemande = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Refuser un traitement de demande
-// @route   PUT /api/demandes/:id/refuse/:idTraitement
-// @access  private
+
+
+
 export const refuserDemande = asyncHandler(async (req, res) => {
   let demande = await Demande.findById(req.params.id).populate("option");
   if (demande) {
@@ -1148,22 +1137,22 @@ export const refuserDemande = asyncHandler(async (req, res) => {
         if (traitement) {
           if (String(traitement.utilisateur) === String(req.user.id)) {
             if (traitement.status === "en cours") {
-              // Vérifier si l'utilisateur peut uploader des fichiers
+              
               const canUploadFile = await isUserFromAuthorizedService(req.user.id);
               let fichierMotifRefus = null;
 
-              // Si l'utilisateur peut uploader des fichiers et qu'un fichier est fourni
+              
               if (canUploadFile && req.file) {
                 fichierMotifRefus = req.file.path;
               }
 
               for (let tr of demande.traitement) {
                 if (String(tr._id) === String(req.params.idTraitement)) {
-                  tr.motifRefus = req.body.motif;
+                  tr.motifRefus = req.body.motif || req.body.motifRefus;
                   tr.status = "refuse";
-                  tr.dateTraitement = new Date();
+                  tr.dateTraitement = new Date(); 
                   
-                  // Ajouter le fichier si disponible
+                  
                   if (fichierMotifRefus) {
                     tr.fichierMotifRefus = fichierMotifRefus;
                   }
@@ -1176,54 +1165,36 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                 }
               }
 
+              
+              if (traitement.type === 'admin') {
+                demande.status = "refusée";
+              } else {
               demande.status = "refuse";
+              }
               await demande.save();
 
+              
               let signataireUser = await Utilisateur.findById(
-                traitement.utilisateur
+                req.user.id
               );
 
-              // ecrit le contenu de la notification selon le type d'approbation :
-              // creer des obj's pour avoir un filter de message :
-              // les cas possible de traitement d'une demande et le message que le demandeur doit recevoire :
+              
+              
+              
               const demandeurFilterMessage = {
-                // directeur generale :
+                
                 dg: " en tant que directeur général",
-                // president directeur generale :
+                
                 pdg: " en tant que président directeur général",
-                // proprietaire de donnees :
+                
                 pdd: " en tant que propriétaire de données",
-                /*
-         les cas possibles pour un chef de service ===>  :
-                    - il peut etre juste un chef de service .
-         */
+                
                 cds: " en tant que chef de service",
-                /*
-         les cas possibles pour un chef de departement ===>  :
-                  - il peut etre juste un chef de departement .
-                  - il peut un chef de service et chef de departement.     
-         */
+                
                 cdd: " en tant que chef de derpatement",
                 "cds.cdd":
                   " en tant que chef de service et chef de derpatement",
-                /*
-         les cas possibles pour un directeur ===>  :
-                  - il peut etre juste un directeur hiarchique .
-                  - il peut un chef de service et directeur hiarchique
-                  - il peut un chef de departement et directeur hiarchique 
-                  - il peut un chef de service, chef de departement et directeur hiarchique
-                  - il peut un directeur hiarchique et un pdd
-                  - il peut un chef de service, un directeur hiarchique et un pdd
-                  - il peut un chef de departement, un directeur hiarchique et un pdd
-                  - il peut un chef de service, chef de departement, un directeur hiarchique et un pdd
-                  - il peut un directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service,directeur hiarchique et directeur de l'entite
-                  - il peut un chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de service, chef de departement, directeur hiarchique et directeur de l'entite
-                  - il peut un directeur hiarchique, un pdd, et directeur de l'entite
-                  - il peut un chef de service, un pdd, directeur hiarchique et directeur de l'entite
-                  - il peut un chef de department, un pdd, directeur hiarchique et directeur de l'entite
-         */
+                
                 hiq: " en tant que directeur hiarchique",
                 "cds.hiq":
                   " en tant que chef de service et directeur hiarchique",
@@ -1258,13 +1229,20 @@ export const refuserDemande = asyncHandler(async (req, res) => {
               messageDemandeur += ` a été refuseée par <b style='font-weight:bold'>${getCv(
                 signataireUser.civilite
               )}.</b>`;
-              messageDemandeur += ` <b style='font-weight:bold'>${signataireUser.prenom.toLowerCase()} ${signataireUser.nom.toLowerCase()}${
+              messageDemandeur += ` <b style='font-weight:bold'>${signataireUser.prenom ? signataireUser.prenom.toLowerCase() : 'utilisateur'} ${signataireUser.nom ? signataireUser.nom.toLowerCase() : 'inconnu'}${
                 interim ? " (interim)" : ""
               }</b> `;
-              messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
-              messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif}"`;
               
-              // Ajouter l'information sur le fichier joint si disponible
+              
+              if (traitement.type === 'admin') {
+                messageDemandeur += " en tant qu'administrateur";
+              } else {
+              messageDemandeur += `${demandeurFilterMessage[traitement.code]}`;
+              }
+              
+              messageDemandeur += `. <b style='font-weight:bold'>Motif de refus : </b> "${req.body.motif || req.body.motifRefus}"`;
+              
+              
               if (fichierMotifRefus) {
                 const serverUrl = process.env.NODE_ENV === "production" 
                   ? process.env.SERVER_URL || "https://e-dami.snrt.ma"
@@ -1279,6 +1257,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
                 messageDemandeur,
                 `Votre demande a été refusée`
               );
+
+              
+              await demande.save();
 
               res.json({ message: "demande refuse!" });
             } else {
@@ -1311,9 +1292,9 @@ export const refuserDemande = asyncHandler(async (req, res) => {
   res.json(demande);
 });
 
-// @desc    Recuperer le details d'une demande par ID
-// @route   GET /api/demandes/:id
-// @access  private
+
+
+
 export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
   let demande = await Demande.findOne({
     _id: req.params.id,
@@ -1337,6 +1318,7 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
       const direction = await Direction.findById(
         demande.demandeur.direction
       ).populate("directeur");
+      
       const optionService = await Service.findById(
         demande.option.service
       ).populate("chefService");
@@ -1347,57 +1329,28 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
           demande.option.proprietaireDeDonnees
         );
 
-      const optionDirection = await Direction.findById(
-        optionService.direction
-      ).populate("directeur");
-      demande.dirLibelle = optionDirection.libelle;
+      let optionATR = null;
+      if (demande.option.autreUtilisateur)
+        optionATR = await Utilisateur.findById(
+          demande.option.autreUtilisateur
+        );
 
-      let sig = [];
-      for (const s of demande.option.signataires) {
-        let traitement = demande.traitement.find((tr) => tr.code === s);
-        if (traitement) {
-          let obj = null;
-          let status = traitement.status;
-          const traitementUtilisateur = await Utilisateur.findById(
-            traitement.utilisateur
-          );
-          if (status && status !== "en cours") {
-            let dateTraitement = traitement.dateTraitement;
-            if (s === "cds") {
-              obj = {
-                code: "cds",
-                nom: traitementUtilisateur.nom,
-                prenom: traitementUtilisateur.prenom,
-                approuve: status === "approuve" ? true : false,
-                refuse: status === "refuse" ? true : false,
-                dateTraitement: dateTraitement,
-                // date:trai
-              };
-            }
+      demande.demandeur.direction = direction;
+      demande.demandeur.service = service;
+      demande.demandeur.departement = departement;
 
-            if (s === "cdd") {
-              obj = {
-                code: "cdd",
-                nom: traitementUtilisateur.nom,
-                prenom: traitementUtilisateur.prenom,
-                approuve: status === "approuve" ? true : false,
-                refuse: status === "refuse" ? true : false,
-                dateTraitement: dateTraitement,
-                // date:trai
-              };
-            }
+      
+      const sig = [];
+      if (demande.traitement && demande.traitement.length > 0) {
+        for (const tr of demande.traitement) {
+          if (tr && tr.code) {
+            const arrCode = tr.code.split(".");
+            for (const s of arrCode) {
+              let obj = {};
+              const status = tr.status;
+              const dateTraitement = tr.dateTraitement;
+              const traitementUtilisateur = tr.utilisateur;
 
-            if (s === "hiq") {
-              obj = {
-                code: "hiq",
-                nom: traitementUtilisateur.nom,
-                prenom: traitementUtilisateur.prenom,
-                approuve: status === "approuve" ? true : false,
-                refuse: status === "refuse" ? true : false,
-                dateTraitement: dateTraitement,
-                // date:trai
-              };
-            }
             if (s === "atr") {
               obj = {
                 code: "atr",
@@ -1406,7 +1359,6 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
               };
             }
             if (s === "pdd") {
@@ -1417,10 +1369,8 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
               };
             }
-
             if (s === "dir") {
               obj = {
                 code: "dir",
@@ -1429,27 +1379,9 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
-              };
-            }
-            sig.push(obj);
-          }
-        } else {
-          for (const tr of demande.traitement) {
-            const arrCode = tr.code.split(".");
-            if (arrCode.length > 1) {
-              for (const item of arrCode) {
-                let traitement = tr;
-                if (traitement) {
-                  let obj = null;
-                  let status = traitement.status;
-                  const traitementUtilisateur = await Utilisateur.findById(
-                    traitement.utilisateur
-                  );
-                  if (status && status !== "en cours") {
-                    let dateTraitement = traitement.dateTraitement;
-
-                    if (item === "cds") {
+                };
+              }
+              if (s === "cds") {
                       obj = {
                         code: "cds",
                         nom: traitementUtilisateur.nom,
@@ -1457,11 +1389,9 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
                       };
                     }
-
-                    if (item === "cdd") {
+              if (s === "cdd") {
                       obj = {
                         code: "cdd",
                         nom: traitementUtilisateur.nom,
@@ -1469,11 +1399,9 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
                       };
                     }
-
-                    if (item === "hiq") {
+              if (s === "hiq") {
                       obj = {
                         code: "hiq",
                         nom: traitementUtilisateur.nom,
@@ -1481,46 +1409,10 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
-                      };
-                    }
-                    if (item === "atr") {
-                      obj = {
-                        code: "atr",
-                        nom: traitementUtilisateur.nom,
-                        prenom: traitementUtilisateur.prenom,
-                        approuve: status === "approuve" ? true : false,
-                        refuse: status === "refuse" ? true : false,
-                        dateTraitement: dateTraitement,
-                        // date:trai
-                      };
-                    }
-                    if (item === "pdd") {
-                      obj = {
-                        code: "pdd",
-                        nom: traitementUtilisateur.nom,
-                        prenom: traitementUtilisateur.prenom,
-                        approuve: status === "approuve" ? true : false,
-                        refuse: status === "refuse" ? true : false,
-                        dateTraitement: dateTraitement,
-                        // date:trai
-                      };
-                    }
-
-                    if (item === "dir") {
-                      obj = {
-                        code: "dir",
-                        nom: traitementUtilisateur.nom,
-                        prenom: traitementUtilisateur.prenom,
-                        approuve: status === "approuve" ? true : false,
-                        refuse: status === "refuse" ? true : false,
-                        dateTraitement: dateTraitement,
-                        // date:trai
-                      };
-                    }
+                };
+              }
+              if (Object.keys(obj).length > 0) {
                     sig.push(obj);
-                  }
-                }
               }
             }
           }
@@ -1528,9 +1420,6 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
       }
 
       demande.sig = sig;
-      demande.demandeur.direction = direction;
-      demande.demandeur.service = service;
-
       demande.traitement.sort((a, b) => {
         return new Date(b.dateEnvoi) - new Date(a.dateEnvoi);
       });
@@ -1546,13 +1435,11 @@ export const getDemandeurDemandeByID = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("demande introuvable");
   }
-
-  res.json(demande);
 });
 
-// @desc    Recuperer les demandes pour appercu de superieur
-// @route   GET /api/demandes/for/preview/team
-// @access  private
+
+
+
 export const getDemandesForPreview = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, demandeur, option, status, fonction, dateDemande, dateEnvoiTraitement } = req.query;
   let utilisateur = await Utilisateur.findById(req.user.id);
@@ -1562,7 +1449,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
     throw new Error("utilisateur introuvable !");
   }
 
-  // Build the aggregation pipeline
+  
   let pipeline = [
     {
       $lookup: {
@@ -1588,15 +1475,22 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
     },
   ];
 
-  // Build match conditions based on user role
+  
   let matchConditions = {
     "demandeur._id": {
       $ne: new mongoose.Types.ObjectId(utilisateur._id),
     },
   };
 
-  // Add role-specific filters
-  if (utilisateur.isDirecteur || utilisateur.isDirecteurAdj) {
+  
+  if (utilisateur.role === 'admin' || ['2003003','2003002'].includes(String(utilisateur.matricule))) {
+    
+    
+  } else if (utilisateur.role === 'sig' || utilisateur.matricule === '2003005') {
+    
+    
+  } else if (utilisateur.isDirecteur || utilisateur.isDirecteurAdj) {
+    
     matchConditions["demandeur.direction"] = new mongoose.Types.ObjectId(utilisateur.direction);
   } else if (utilisateur.isChefDeDepartement) {
     matchConditions["demandeur.departement"] = new mongoose.Types.ObjectId(utilisateur.departement);
@@ -1607,7 +1501,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
     throw new Error("vous n'avez pas le droit de voir les demandes !");
   }
 
-  // Add filters
+  
   if (demandeur) {
     matchConditions.$or = [
       { "demandeur.nom": { $regex: demandeur, $options: "i" } },
@@ -1620,7 +1514,29 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
   }
 
   if (status) {
-    matchConditions.status = status;
+    
+    let s = String(status || '').toLowerCase().trim();
+    s = s.replace(/_/g, ' ')
+         .normalize('NFD')
+         .replace(/\p{Diacritic}/gu, '');
+
+    if (s.includes('approuv')) {
+      
+      matchConditions.status = { $regex: /^approuv/i };
+    } else if (s.includes('refus')) {
+      
+      matchConditions.status = { $regex: /^refus/i };
+    } else if (s.replace(/\s+/g, '') === 'encours' || s === 'en cours') {
+      matchConditions.status = 'en cours';
+    } else if (s.includes('attent')) {
+      
+      matchConditions.status = { $in: ['en_attente', 'en attente'] };
+    } else if (s.includes('term')) {
+      
+      matchConditions.status = { $regex: /^termin/i };
+    } else {
+      matchConditions.status = status;
+    }
   }
 
   if (fonction) {
@@ -1651,31 +1567,31 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
     };
   }
 
-  // Add match stage
+  
   pipeline.push({ $match: matchConditions });
 
-  // Add sort stage
+  
   pipeline.push({
     $sort: {
       dateDemande: -1,
     },
   });
 
-  // Get total count for pagination
+  
   const totalPipeline = [...pipeline, { $count: "total" }];
   const totalResult = await Demande.aggregate(totalPipeline);
   const total = totalResult.length > 0 ? totalResult[0].total : 0;
 
-  // Add pagination stages
+  
   pipeline.push(
     { $skip: (page - 1) * parseInt(limit) },
     { $limit: parseInt(limit) }
   );
 
-  // Execute the aggregation
+  
   let demandes = await Demande.aggregate(pipeline);
 
-  // Get unique options used in team demands for dropdown
+  
   const optionsPipeline = [
     {
       $lookup: {
@@ -1712,7 +1628,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
   const optionIds = uniqueOptions.map(opt => opt._id);
   const teamOptions = await Option.find({ _id: { $in: optionIds } }).select('_id libelle');
 
-  // Populate traitement.utilisateur for each demande to get signataires names
+  
   demandes = await Promise.all(
     demandes.map(async (demande) => {
       const populatedDemande = await Demande.findById(demande._id)
@@ -1720,9 +1636,9 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
         .populate("option", "autreResponsableTitre")
         .lean();
       
-      // Function to get title based on signature code
+      
       const getSignataireTitle = async (code, option, utilisateur) => {
-        // Handle combined codes like "cds.cdd"
+        
         if (code && code.includes('.')) {
           const codes = code.split('.');
           const titles = [];
@@ -1763,7 +1679,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
                 titles.push("Président Directeur Général");
                 break;
               default:
-                // Handle unknown codes in combinations
+                
                 break;
             }
           }
@@ -1771,7 +1687,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
           return titles.length > 0 ? titles.join(" et ") : "Signataire";
         }
         
-        // Handle single codes
+        
         if (!code) return "Signataire";
         
         const cleanCode = code.toLowerCase().trim();
@@ -1806,15 +1722,27 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
           case undefined:
             return "Signataire";
           default:
-            // Log unknown codes for debugging
+            
             console.warn(`Code de signature inconnu: ${code}`);
             return `Signataire (${code})`;
         }
       };
     
-      // Extract signataires with titles
+      
       const signataires = await Promise.all(
         populatedDemande.traitement.map(async (traitement) => {
+          
+          if (!traitement.utilisateur) {
+            console.log(`⚠️ Traitement sans utilisateur: ${traitement.code}`);
+            return {
+              nom: 'N/A',
+              prenom: 'N/A',
+              code: traitement.code,
+              status: traitement.status,
+              titre: 'N/A'
+            };
+          }
+          
           console.log(`🔍 Processing signature code: "${traitement.code}" for user: ${traitement.utilisateur.nom} ${traitement.utilisateur.prenom}`);
           const titre = await getSignataireTitle(traitement.code, populatedDemande.option, traitement.utilisateur);
           console.log(`✅ Generated title: "${titre}"`);
@@ -1837,7 +1765,7 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
     })
   );
 
-  // Calculate pagination metadata
+  
   const totalPages = Math.ceil(total / limit);
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
@@ -1852,13 +1780,13 @@ export const getDemandesForPreview = asyncHandler(async (req, res) => {
       hasNextPage,
       hasPrevPage,
     },
-    teamOptions, // Options utilisées dans l'équipe
+    teamOptions, 
   });
 });
 
-// @desc    Recuperer details demande pour appercu de superieur
-// @route   GET /api/demandes/for/preview/team/details/:id
-// @access  private
+
+
+
 export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
   let demandes = await Demande.findOne({
     _id: req.params.id,
@@ -1991,7 +1919,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                   approuve: status === "approuve" ? true : false,
                   refuse: status === "refuse" ? true : false,
                   dateTraitement: dateTraitement,
-                  // date:trai
+                  
                 };
               }
             }
@@ -2004,7 +1932,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
 
@@ -2016,7 +1944,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "atr") {
@@ -2027,7 +1955,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
             if (s === "pdd") {
@@ -2038,7 +1966,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
             }
 
@@ -2050,7 +1978,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                 approuve: status === "approuve" ? true : false,
                 refuse: status === "refuse" ? true : false,
                 dateTraitement: dateTraitement,
-                // date:trai
+                
               };
               if (s === "dg") {
                 obj = {
@@ -2060,7 +1988,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                   approuve: status === "approuve" ? true : false,
                   refuse: status === "refuse" ? true : false,
                   dateTraitement: dateTraitement,
-                  // date:trai
+                  
                 };
               }
               if (s === "pdg") {
@@ -2071,7 +1999,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                   approuve: status === "approuve" ? true : false,
                   refuse: status === "refuse" ? true : false,
                   dateTraitement: dateTraitement,
-                  // date:trai
+                  
                 };
               }
             }
@@ -2101,7 +2029,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
 
@@ -2113,7 +2041,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
 
@@ -2125,7 +2053,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "atr") {
@@ -2136,7 +2064,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
                     if (item === "pdd") {
@@ -2147,7 +2075,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                     }
 
@@ -2159,7 +2087,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                         approuve: status === "approuve" ? true : false,
                         refuse: status === "refuse" ? true : false,
                         dateTraitement: dateTraitement,
-                        // date:trai
+                        
                       };
                       if (s === "dg") {
                         obj = {
@@ -2169,7 +2097,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                           approuve: status === "approuve" ? true : false,
                           refuse: status === "refuse" ? true : false,
                           dateTraitement: dateTraitement,
-                          // date:trai
+                          
                         };
                       }
                       if (s === "pdg") {
@@ -2180,7 +2108,7 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
                           approuve: status === "approuve" ? true : false,
                           refuse: status === "refuse" ? true : false,
                           dateTraitement: dateTraitement,
-                          // date:trai
+                          
                         };
                       }
                     }
@@ -2211,13 +2139,20 @@ export const getDemandeForPreviewByID = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Recuperer les demandes pour appercu de superieur
-// @route   GET /api/demandes/for/preview/team/all
-// @access  private
+
+
+
 export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, demandeur, option, status, fonction, dateDemande, dateEnvoiTraitement } = req.query;
+  
+  
+  const currentUser = await Utilisateur.findById(req.user.id);
+  if (!currentUser) {
+    res.status(404);
+    throw new Error("Utilisateur introuvable");
+  }
 
-  // Build the aggregation pipeline
+  
   let pipeline = [
     {
       $lookup: {
@@ -2243,14 +2178,35 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
     },
   ];
 
-  // Build match conditions
+  
   let matchConditions = {
     "demandeur._id": {
       $ne: new mongoose.Types.ObjectId(req.user.id),
     },
   };
 
-  // Add filters
+  
+  if (currentUser.role === 'admin' || ['2003003','2003002'].includes(String(currentUser.matricule))) {
+    
+    
+  } else if (currentUser.role === 'sig' || currentUser.matricule === '2003005') {
+    
+    
+  } else {
+    
+    if (currentUser.isDirecteur || currentUser.isDirecteurAdj) {
+      matchConditions["demandeur.direction"] = new mongoose.Types.ObjectId(currentUser.direction);
+    } else if (currentUser.isChefDeDepartement) {
+      matchConditions["demandeur.departement"] = new mongoose.Types.ObjectId(currentUser.departement);
+    } else if (currentUser.isChefDeService) {
+      matchConditions["demandeur.service"] = new mongoose.Types.ObjectId(currentUser.service);
+    } else {
+      res.status(400);
+      throw new Error("Vous n'avez pas le droit de voir les demandes !");
+    }
+  }
+
+  
   if (demandeur) {
     matchConditions.$or = [
       { "demandeur.nom": { $regex: demandeur, $options: "i" } },
@@ -2294,31 +2250,31 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
     };
   }
 
-  // Add match stage
+  
   pipeline.push({ $match: matchConditions });
 
-  // Add sort stage
+  
   pipeline.push({
     $sort: {
       dateDemande: -1,
     },
   });
 
-  // Get total count for pagination
+  
   const totalPipeline = [...pipeline, { $count: "total" }];
   const totalResult = await Demande.aggregate(totalPipeline);
   const total = totalResult.length > 0 ? totalResult[0].total : 0;
 
-  // Add pagination stages
+  
   pipeline.push(
     { $skip: (page - 1) * parseInt(limit) },
     { $limit: parseInt(limit) }
   );
 
-  // Execute the aggregation
+  
   let demandes = await Demande.aggregate(pipeline);
 
-  // Populate traitement.utilisateur for each demande to get signataires names
+  
   demandes = await Promise.all(
     demandes.map(async (demande) => {
       const populatedDemande = await Demande.findById(demande._id)
@@ -2326,9 +2282,9 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
         .populate("option", "autreResponsableTitre")
         .lean();
       
-              // Function to get title based on signature code
+              
         const getSignataireTitle = async (code, option, utilisateur) => {
-          // Handle combined codes like "cds.cdd"
+          
           if (code && code.includes('.')) {
             const codes = code.split('.');
             const titles = [];
@@ -2369,7 +2325,7 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
                   titles.push("Président Directeur Général");
                   break;
                 default:
-                  // Handle unknown codes in combinations
+                  
                   break;
               }
             }
@@ -2377,7 +2333,7 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
             return titles.length > 0 ? titles.join(" et ") : "Signataire";
           }
           
-          // Handle single codes
+          
           if (!code) return "Signataire";
           
           const cleanCode = code.toLowerCase().trim();
@@ -2412,15 +2368,27 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
             case undefined:
               return "Signataire";
             default:
-              // Log unknown codes for debugging
+              
               console.warn(`Code de signature inconnu: ${code}`);
               return `Signataire (${code})`;
           }
         };
       
-      // Extract signataires with titles
+      
       const signataires = await Promise.all(
         populatedDemande.traitement.map(async (traitement) => {
+          
+          if (!traitement.utilisateur) {
+            console.log(`⚠️ Traitement sans utilisateur: ${traitement.code}`);
+            return {
+              nom: 'N/A',
+              prenom: 'N/A',
+              code: traitement.code,
+              status: traitement.status,
+              titre: 'N/A'
+            };
+          }
+          
           console.log(`🔍 Processing signature code: "${traitement.code}" for user: ${traitement.utilisateur.nom} ${traitement.utilisateur.prenom}`);
           const titre = await getSignataireTitle(traitement.code, populatedDemande.option, traitement.utilisateur);
           console.log(`✅ Generated title: "${titre}"`);
@@ -2443,7 +2411,7 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
     })
   );
 
-  // Calculate pagination metadata
+  
   const totalPages = Math.ceil(total / limit);
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
@@ -2459,4 +2427,275 @@ export const getDemandesForPreviewAll = asyncHandler(async (req, res) => {
       hasPrevPage,
     },
   });
+});
+
+
+
+
+export const generateDemandePDF = asyncHandler(async (req, res) => {
+  const demande = await Demande.findById(req.params.id)
+    .populate('option')
+    .populate('demandeur')
+    .populate('traitement.utilisateur');
+
+  if (!demande) {
+    res.status(404);
+    throw new Error('Demande non trouvée');
+  }
+
+  try {
+    
+    const { createPDFFromDemande } = await import('../services/convertDamiToMedia.js');
+    
+    
+    const language = req.query.lang || 'fr';
+    
+    
+    const pdfBuffer = await createPDFFromDemande(demande, language);
+    
+    
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="demande_${demande._id}_${language}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.setHeader('Cache-Control', 'no-cache');
+    
+    
+    res.send(pdfBuffer);
+    
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Demande - ${demande.option?.libelle || 'DAMI'}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .info { margin-bottom: 20px; }
+          .content { margin-top: 20px; }
+          .status { padding: 5px 10px; border-radius: 5px; color: white; }
+          .status.approuvée { background-color: #28a745; }
+          .status.refusée { background-color: #dc3545; }
+          .status.en-cours { background-color: #007bff; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Demande DAMI</h1>
+          <h2>${demande.option?.libelle || 'DAMI'}</h2>
+        </div>
+        
+        <div class="info">
+          <p><strong>Demandeur:</strong> ${demande.demandeur?.prenom || ''} ${demande.demandeur?.nom || ''}</p>
+          <p><strong>Date de demande:</strong> ${new Date(demande.dateDemande).toLocaleDateString('fr-FR')}</p>
+          <p><strong>Statut:</strong> <span class="status ${demande.status}">${demande.status}</span></p>
+        </div>
+        
+        <div class="content">
+          <h3>Contenu de la demande:</h3>
+          <div>${demande.contenu || 'Aucun contenu disponible'}</div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="demande_${demande._id}.html"`);
+    res.setHeader('Cache-Control', 'no-cache');
+    
+    res.send(html);
+  }
+});
+
+
+
+
+export const updateDemande = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const demande = await Demande.findById(id);
+    
+    if (!demande) {
+      res.status(404);
+      throw new Error("Demande non trouvée");
+    }
+
+    
+    const canModify = req.user.roles.some(role => 
+      role.role?.code === 'admin' || 
+      (role.role?.code === 'demandeur' && String(demande.demandeur) === String(req.user._id))
+    );
+
+    if (!canModify) {
+      res.status(403);
+      throw new Error("Non autorisé à modifier cette demande");
+    }
+
+    
+    if (demande.statut === 'approuvée' || demande.statut === 'refusée') {
+      res.status(400);
+      throw new Error("Impossible de modifier une demande déjà traitée");
+    }
+
+    
+    const updatedDemande = await Demande.findByIdAndUpdate(
+      id,
+      { 
+        ...updates,
+        updatedAt: new Date()
+      },
+      { new: true, runValidators: true }
+    ).populate('demandeur', 'nom prenom email matricule')
+     .populate('option', 'libelle typeProcessus')
+     .populate('service', 'libelle')
+     .populate('departement', 'libelle')
+     .populate('direction', 'libelle');
+
+    res.json(updatedDemande);
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Erreur lors de la modification: ${error.message}`);
+  }
+});
+
+
+
+
+export const deleteDemande = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const demande = await Demande.findById(id);
+    
+    if (!demande) {
+      res.status(404);
+      throw new Error("Demande non trouvée");
+    }
+
+    
+    const canDelete = req.user.roles.some(role => 
+      role.role?.code === 'admin' || 
+      (role.role?.code === 'demandeur' && String(demande.demandeur) === String(req.user._id))
+    );
+
+    if (!canDelete) {
+      res.status(403);
+      throw new Error("Non autorisé à supprimer cette demande");
+    }
+
+    
+    if (demande.statut === 'approuvée' || demande.statut === 'refusée') {
+      res.status(400);
+      throw new Error("Impossible de supprimer une demande déjà traitée");
+    }
+
+    
+    await Demande.findByIdAndDelete(id);
+
+    res.json({ message: "Demande supprimée avec succès" });
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Erreur lors de la suppression: ${error.message}`);
+  }
+});
+
+
+
+
+export const getDashboardStats = asyncHandler(async (req, res) => {
+  try {
+    
+    const activeUsers = await Utilisateur.countDocuments({ 
+      isDeleted: { $ne: true } 
+    });
+
+    
+    const pendingRequests = await Demande.countDocuments({
+      status: { $in: ['en cours', 'pending'] }
+    });
+
+    
+    const directions = await Direction.countDocuments({ 
+      isDeleted: { $ne: true } 
+    });
+
+    
+    const totalDemandes = await Demande.countDocuments();
+    const approvedDemandes = await Demande.countDocuments({
+      status: 'approuve'
+    });
+    
+    const approvalRate = totalDemandes > 0 
+      ? Math.round((approvedDemandes / totalDemandes) * 100) 
+      : 0;
+
+    
+    const currentDate = new Date();
+    const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    const thisMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    
+    const usersThisMonth = await Utilisateur.countDocuments({
+      createdAt: { $gte: thisMonth },
+      isDeleted: { $ne: true }
+    });
+
+    
+    const usersLastMonth = await Utilisateur.countDocuments({
+      createdAt: { $gte: lastMonth, $lt: thisMonth },
+      isDeleted: { $ne: true }
+    });
+
+    
+    const usersChange = usersLastMonth > 0 
+      ? Math.round(((usersThisMonth - usersLastMonth) / usersLastMonth) * 100)
+      : usersThisMonth > 0 ? 100 : 0;
+
+    
+    const requestsThisMonth = await Demande.countDocuments({
+      dateDemande: { $gte: thisMonth }
+    });
+
+    
+    const requestsLastMonth = await Demande.countDocuments({
+      dateDemande: { $gte: lastMonth, $lt: thisMonth }
+    });
+
+    
+    const requestsChange = requestsLastMonth > 0 
+      ? Math.round(((requestsThisMonth - requestsLastMonth) / requestsLastMonth) * 100)
+      : requestsThisMonth > 0 ? 100 : 0;
+
+    const stats = {
+      activeUsers,
+      pendingRequests,
+      directions,
+      approvalRate,
+      changes: {
+        users: usersChange,
+        requests: requestsChange
+      },
+      
+      debug: {
+        totalDemandes,
+        approvedDemandes,
+        usersThisMonth,
+        usersLastMonth,
+        requestsThisMonth,
+        requestsLastMonth
+      }
+    };
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Erreur lors de la récupération des statistiques: ${error.message}`);
+  }
 });

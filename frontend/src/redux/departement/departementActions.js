@@ -3,9 +3,9 @@ import {
   DEPARTEMENT_LIST_BY_DIRECTION_ID_REQUEST,
   DEPARTEMENT_LIST_BY_DIRECTION_ID_RESET,
   DEPARTEMENT_LIST_BY_DIRECTION_ID_SUCCESS,
-//   DEPARTEMENT_LIST_BY_DIRECTION_ID_ADD,
-//   DEPARTEMENT_LIST_BY_DIRECTION_ID_REMOVE,
-//   DEPARTEMENT_LIST_BY_DIRECTION_ID_UPDATE,
+
+
+
   DEPARTEMENT_LIST_FAIL,
   DEPARTEMENT_LIST_REQUEST,
   DEPARTEMENT_LIST_RESET,
@@ -86,6 +86,13 @@ export const resetFetchDepartementsByDirectionID = () => {
 
 export const fetchDepartementByID = (DepartementID) => {
   return async (dispatch, getState) => {
+    
+    if (!DepartementID || DepartementID === 'undefined' || DepartementID === 'null' || DepartementID.trim() === '') {
+      console.warn('fetchDepartementByID: Invalid DepartementID provided:', DepartementID);
+      dispatch({ type: DEPARTEMENT_BY_ID_FAIL, payload: 'Invalid departement ID' });
+      return;
+    }
+
     try {
       dispatch({ type: DEPARTEMENT_BY_ID_REQUEST });
       const {

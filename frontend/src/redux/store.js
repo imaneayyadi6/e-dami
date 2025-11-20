@@ -85,19 +85,23 @@ import {
   chartGetBarDemandesSignataireReducer,
 } from "./chart/chartReducers";
 import { toastReducer } from "./toast/toastReducers";
+import languageReducer from "./language/languageReducers";
 import {
   demandeByIdReducer,
   demandeCreateReducer,
   demandeToHandleReducer,
   demandeGetTraitementStatusReducer,
   demandeApprouveTraitementReducer,
-  demanderRefuseTraitementReducer,
+  demandeRefuseTraitementReducer,
   mesDemandesReducer,
   demandeDemandeurByIdReducer,
   demandeToHandleFilterReducer,
   demandePreviewTeamReducer,
   demandePreviewTeamDetailsReducer,
   demandePreviewTeamAdminReducer,
+  demandeUpdateReducer,
+  demandeDeleteReducer,
+  dashboardStatsReducer,
 } from "./demande/demandeReducres";
 import {
   notificationListReducer,
@@ -108,32 +112,39 @@ import {
   notificationsNotSeenCountReducer,
 } from "./notification/notificationReducers";
 import { imageGenerateReducer, excelGenerateReducer } from "./generate/generateReducers";
+import { dashboardReducer } from "./dashboard/dashboardReducers";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
+const languageFromStorage = localStorage.getItem("appLanguage") || "fr";
+
 const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
+  language: { current: languageFromStorage },
+  sidebar: { show: true, collapsed: false }, 
 };
 
 const reducer = combineReducers({
-  // sidebar:
+  
   sidebar: sidebarReducer,
-  // dialog:
+  
   dialog: dialogReducer,
-  // alert :
+  
   alert: alertReducer,
-  // toast :
+  
   toast: toastReducer,
-  // direction:
+  
+  language: languageReducer,
+  
   directionList: directionListReducer,
   directionCreate: directionCreateReducer,
   directionRemove: directionRemoveReducer,
   directionUpdate: directionUpdateReducer,
   directionByServiceID: directionByServiceIDReducer,
   directionSignatairesList: directionSignatairesListReducer,
-  //services :
+  
   serviceList: serviceListReducer,
   serviceListByDirectionID: serviceListByDirectionIDReducer,
   serviceCreate: serviceCreateReducer,
@@ -141,22 +152,22 @@ const reducer = combineReducers({
   serviceUpdate: serviceUpdateReducer,
   serviceByID: serviceByIDReducer,
   serviceListByDepartementID: serviceListByDepartementIDReducer,
-  // departement :
+  
   departementList: departementListReducer,
   departementListByDirectionID: departementListByDirectionIDReducer,
   departementByID: departementByIDReducer,
-  // categorie :
+  
   categorieCreate: categorieCreateReducer,
   categorieList: categorieListReducer,
   categorieRemove: categorieRemoveReducer,
   categorieUpdate: categorieUpdateReducer,
-  // sous-categorie :
+  
   sousCategorieList: sousCategorieListReducer,
   souscategorieListByCategorieID: souscategorieListByCategorieIDReducer,
   sousCategorieCreate: sousCategorieCreateReducer,
   sousCategorieRemove: sousCategorieRemoveReducer,
   sousCategorieUpdate: sousCategorieUpdateReducer,
-  // options :
+  
   optionListBySousCategorieID: optionListBySousCategorieIDReducer,
   optionByID: optionByIDReducer,
   optionCreate: optionCreateReducer,
@@ -169,7 +180,7 @@ const reducer = combineReducers({
   optionCrtOpDelete: optionCrtOpDeleteReducer,
   optionCrtOpUpdate: optionCrtOpUpdateReducer,
 
-  // user :
+  
   userLogin: userLoginReducer,
   userDirecteursList: userDirecteursListReducer,
   userChefServiceList: userChefServiceListReducer,
@@ -188,7 +199,7 @@ const reducer = combineReducers({
   userPutInterim: userPutInterimReducer,
   userDeleteInterim: userDeleteInterimReducer,
   userGetInterim: userGetInterimReducer,
-  // chart :
+  
   chartGetUsers: chartGetUsersReducer,
   chartGetOptions: chartGetOptionsReducer,
   chartGetOptionsCountOfSousCategorie:
@@ -198,29 +209,34 @@ const reducer = combineReducers({
   chartGetBarDemande: chartGetBarDemandeReducer,
   chartGetLineDemandesSignataire: chartGetLineDemandesSignataireReducer,
   chartGetBarDemandesSignataire: chartGetBarDemandesSignataireReducer,
-  // demande :
+  
   demandeCreate: demandeCreateReducer,
   demandesToHandle: demandeToHandleReducer,
   demandeById: demandeByIdReducer,
   demandeGetTraitementStatus: demandeGetTraitementStatusReducer,
   demandeApprouveTraitement: demandeApprouveTraitementReducer,
-  demanderRefuseTraitement: demanderRefuseTraitementReducer,
+  demandeRefuseTraitement: demandeRefuseTraitementReducer,
   mesDemandes: mesDemandesReducer,
   demandeDemandeurById: demandeDemandeurByIdReducer,
   demandeToHandleFilter: demandeToHandleFilterReducer,
   demandePreviewTeam: demandePreviewTeamReducer,
   demandePreviewTeamDetails: demandePreviewTeamDetailsReducer,
   demandePreviewTeamAdmin: demandePreviewTeamAdminReducer,
-  // notifications :
+  demandeUpdate: demandeUpdateReducer,
+  demandeDelete: demandeDeleteReducer,
+  dashboardStats: dashboardStatsReducer,
+  
   notificationToatsList: notificationToatsListReducer,
   notificationToastMakeItSeen: notificationToastMakeItSeenReducer,
   notificationsNotSeenCount: notificationsNotSeenCountReducer,
   notificationList: notificationListReducer,
   notificationMakeItSeen: notificationMakeItSeenReducer,
   notificationOnceToastMakeItSeen: notificationOnceToastMakeItSeenReducer,
-  // generate :
+  
   imageGenerate: imageGenerateReducer,
   excelGenerate: excelGenerateReducer,
+  
+  dashboard: dashboardReducer,
 });
 
 const store = configureStore({

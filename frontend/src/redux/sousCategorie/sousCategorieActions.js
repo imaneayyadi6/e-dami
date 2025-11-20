@@ -163,6 +163,78 @@ export const resetRemoveSousCategorie = () => {
   return { type: SOUSCATEGORIE_REMOVE_RESET };
 };
 
+
+export const softDeleteSousCategorie = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: SOUSCATEGORIE_REMOVE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.patch(`/api/souscategories/${id}`, { isDeleted: true }, config);
+      dispatch({ type: SOUSCATEGORIE_REMOVE_SUCCESS, payload: data });
+      dispatch({ type: SOUSCATEGORIE_LIST_BY_CATEGORIE_ID_UPDATE, payload: data });
+    } catch (error) {
+      
+      if (error.response && (error.response.status === 404 || error.response.status === 405)) {
+        try {
+          const {
+            userLogin: { userInfo },
+          } = getState();
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${userInfo.token}`,
+            },
+          };
+          const { data } = await axios.delete(`/api/souscategories/${id}`, config);
+          dispatch({ type: SOUSCATEGORIE_REMOVE_SUCCESS, payload: data });
+          dispatch({ type: SOUSCATEGORIE_LIST_BY_CATEGORIE_ID_REMOVE, payload: id });
+        } catch (err2) {
+          const finalErr = err2.response && err2.response.data.message ? err2.response.data.message : err2.message;
+          dispatch({ type: SOUSCATEGORIE_REMOVE_FAIL, payload: finalErr });
+        }
+      } else {
+        const err = error.response && error.response.data.message ? error.response.data.message : error.message;
+        dispatch({ type: SOUSCATEGORIE_REMOVE_FAIL, payload: err });
+      }
+    }
+  };
+};
+
+
+export const restoreSousCategorie = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.patch(`/api/souscategories/${id}`, { isDeleted: false }, config);
+      dispatch({ type: SOUSCATEGORIE_LIST_BY_CATEGORIE_ID_UPDATE, payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: SOUSCATEGORIE_UPDATE_FAIL, payload: err });
+    }
+  };
+};
+
 export const updateSousCategorie = (id, sousCategorie) => {
   return async (dispatch, getState) => {
     try {

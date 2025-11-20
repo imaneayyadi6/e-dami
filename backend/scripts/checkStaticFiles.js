@@ -8,11 +8,11 @@ const checkStaticFiles = () => {
   const uploadsDir = 'uploads';
   const motifRefusDir = path.join(uploadsDir, 'motifRefus');
   
-  // Vérifier l'existence des dossiers
+  
   console.log(`📂 Dossier uploads: ${fs.existsSync(uploadsDir) ? '✅' : '❌'}`);
   console.log(`📂 Dossier motifRefus: ${fs.existsSync(motifRefusDir) ? '✅' : '❌'}`);
   
-  // Créer les dossiers s'ils n'existent pas
+  
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
     console.log('✅ Dossier uploads créé');
@@ -23,12 +23,12 @@ const checkStaticFiles = () => {
     console.log('✅ Dossier motifRefus créé');
   }
   
-  // Créer un fichier de test
+  
   const testFile = path.join(motifRefusDir, 'test-static.txt');
   fs.writeFileSync(testFile, 'Test de fichier statique - ' + new Date().toISOString());
   console.log(`📄 Fichier de test créé: ${testFile}`);
   
-  // Vérifier les permissions
+  
   try {
     const stats = fs.statSync(uploadsDir);
     console.log(`📊 Permissions uploads: ${stats.mode.toString(8)}`);
@@ -43,7 +43,7 @@ const checkStaticFiles = () => {
     console.log('❌ Erreur lors de la vérification des permissions motifRefus');
   }
   
-  // Lister les fichiers dans motifRefus
+  
   if (fs.existsSync(motifRefusDir)) {
     const files = fs.readdirSync(motifRefusDir);
     console.log(`📋 Fichiers dans motifRefus: ${files.join(', ')}`);

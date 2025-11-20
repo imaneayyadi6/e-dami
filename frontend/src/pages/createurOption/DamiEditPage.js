@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import {
   Alert,
   Button,
@@ -19,11 +19,12 @@ import {
   RadioButtons,
   TextInput,
   Divider,
-} from "../../components/documentComponents";
-import { TextStyles } from "../../components/createDamiComponents";
+  SectionCondtion,
+} from "../../components/DocumentComponents";
+import { TextStyles } from "../../components/CreateDamiComponents";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   Dami,
   Loader,
@@ -64,6 +65,12 @@ import {
   resetFetchUsersByDivision,
 } from "../../redux/user/userActions";
 import axios from "axios";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
+import { useTranslation } from "react-i18next";
+import ErrorBoundary from "../../components/ErrorBoundary";
+import ArabicKeyboard from "../../components/ArabicKeyboard";
+import UltimateErrorSuppressor from "../../components/UltimateErrorSuppressor";
+import "../../styles/damiEdit.css";
 
 const UICOMPONENTS = {
   label: <Label block />,
@@ -77,27 +84,46 @@ const UICOMPONENTS = {
   divider: <Divider />,
 };
 
+
+
+const DamiEditPageCrtOp = () => {
+  const { t, i18n } = useTranslation();
+  const { isRTL, currentLanguage, autoSwitchToArabic } = useLanguageSync();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  
 const validationHeaderSchema = Yup.object({
   libelle: Yup.string().required(
-    "il faut saisire une libelle (nom de l'option)"
+      t('damiEdit.form.validation.libelleRequired', { defaultValue: "il faut saisire une libelle (nom de l'option)" })
   ),
-  typeProcessus: Yup.string().required("il faut saisire le type de processsus"),
+    typeProcessus: Yup.string().required(
+      t('damiEdit.form.validation.typeProcessusRequired', { defaultValue: "il faut saisire le type de processsus" })
+    ),
   document: Yup.string()
-    .required("il faut saisire le document")
+      .required(
+        t('damiEdit.form.validation.documentRequired', { defaultValue: "il faut saisire le document" })
+      )
     .matches(
       /^([A-Z]{3})\.([A-Z&]{0,2}[A-Z]|[0-9]{3})\.([0-9]{3})\.([A-Z])$/,
-      "Le document doit être saisi sous cette forme, par exemple : 'ERT.LSI.001.A'"
+        t('damiEdit.form.validation.documentFormat', { defaultValue: "Le document doit être saisi sous cette forme, par exemple : 'ERT.LSI.001.A'" })
     ),
   classification: Yup.string().required(
-    "il faut saisire le type de classification"
-  ),
-  creation: Yup.date().required("il faut saisire la date de creation"),
-  maj: Yup.date().required("il faut saisire le date de mise a jour"),
+      t('damiEdit.form.validation.classificationRequired', { defaultValue: "il faut saisire le type de classification" })
+    ),
+    creation: Yup.date().required(
+      t('damiEdit.form.validation.creationDateRequired', { defaultValue: "il faut saisire la date de creation" })
+    ),
+    maj: Yup.date().required(
+      t('damiEdit.form.validation.updateDateRequired', { defaultValue: "il faut saisire le date de mise a jour" })
+    ),
 });
 
 const validationSousCategorieSchema = Yup.object({
-  sousCategorie: Yup.string().required("il faut enntrer une sous-categorie"),
-  service: Yup.string().required("il faut enntrer un service"),
+    sousCategorie: Yup.string().required(
+      t('damiEdit.form.validation.sousCategorieRequired', { defaultValue: "il faut enntrer une sous-categorie" })
+    ),
+  service: Yup.string(), 
   departement: Yup.string(),
   typePdd: Yup.string(),
   proprietaireDeDonnees: Yup.string(),
@@ -105,21 +131,47 @@ const validationSousCategorieSchema = Yup.object({
   atr: Yup.string(),
 });
 
-const DamiEditPageCrtOp = () => {
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-
   const [callOnce, setCallOnce] = useState(false);
   const [draggedItems, setDraggedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showCreateOpModal, setShowCreateOpModal] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [steps] = useState([
-    "entête",
-    "sous-categorie & service & proprietaire de donnees",
-    "signataires",
-    "confirmation",
-  ]);
+  const [showArabicKeyboard, setShowArabicKeyboard] = useState(false);
+
+  
+  useEffect(() => {
+    setShowArabicKeyboard(false);
+  }, [activeStep]);
+
+  
+  useEffect(() => {
+    return () => {
+      setShowArabicKeyboard(false);
+    };
+  }, []);
+
+  
+  const arabicKeys = useMemo(() => [
+    'ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د',
+    'ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط',
+    'ئ','ء','ؤ','ر','ﻻ','ى','ة','و','ز','ظ'
+  ], []);
+
+  const insertArabicChar = useCallback((currentValue, setFieldValue, field, char) => {
+    if (char === '⌫') {
+      setFieldValue(field, currentValue.slice(0, -1));
+    } else if (char === '␣') {
+      setFieldValue(field, currentValue + ' ');
+    } else {
+      setFieldValue(field, currentValue + char);
+    }
+  }, []);
+  const steps = useMemo(() => ([
+    t('damiEdit.steps.header', { defaultValue: 'entête' }),
+    t('damiEdit.steps.meta', { defaultValue: 'sous-categorie & service & proprietaire de donnees' }),
+    t('damiEdit.steps.signatories', { defaultValue: 'signataires' }),
+    t('damiEdit.steps.confirmation', { defaultValue: 'confirmation' }),
+  ]), [i18n.language]);
   const [checkValues, setCheckValues] = useState({
     cds: false,
     cdd: false,
@@ -129,6 +181,7 @@ const DamiEditPageCrtOp = () => {
     dir: true,
     dg: false,
     pdg: false,
+    admin: false,
   });
   const [option, setOption] = useState(null);
   const [callOptionByIDOnce, setCallOptionByIDOnce] = useState(false);
@@ -169,7 +222,7 @@ const DamiEditPageCrtOp = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const directionList = useSelector((state) => state.directionList);
   const {
     loading: loadingDirectionList,
@@ -227,7 +280,7 @@ const DamiEditPageCrtOp = () => {
   const {
     loading: loadingOptionCrtOpCreate,
     error: errorOptionCrtOpCreate,
-    // option: createdOption,
+    
     success: successOptionCrtOpCreate,
   } = optionCrtOpCreate;
 
@@ -243,7 +296,7 @@ const DamiEditPageCrtOp = () => {
   const {
     loading: loadingoptionCrtOpUpdate,
     error: erroroptionCrtOpUpdate,
-    // option: updatedOption,
+    
     success: successoptionCrtOpUpdate,
   } = optionCrtOpUpdate;
 
@@ -290,8 +343,8 @@ const DamiEditPageCrtOp = () => {
                 mouseX >= div1Rect.left &&
                 mouseX <= div1Rect.right
               ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
+                
+                let nDraggedItems = draggedItems && draggedItems.map((item) => {
                   if (String(item.id) === String(divider.id)) {
                     item.children1.push({
                       id: uuidv4(),
@@ -310,8 +363,8 @@ const DamiEditPageCrtOp = () => {
                 mouseX >= div2Rect.left &&
                 mouseX <= div2Rect.right
               ) {
-                // L'élément a été déposé à l'emplacement du diviseur
-                let nDraggedItems = draggedItems.map((item) => {
+                
+                let nDraggedItems = draggedItems && draggedItems.map((item) => {
                   if (String(item.id) === String(divider.id)) {
                     item.children2.push({
                       id: uuidv4(),
@@ -371,8 +424,10 @@ const DamiEditPageCrtOp = () => {
     } catch (error) {
       Toast.open({
         type: "danger",
-        title: "Error on (drop component)",
-        message: String(error),
+        message: {
+          title: "notifications.error",
+          message: "notifications.dropComponentError"
+        }
       });
     }
   };
@@ -463,8 +518,10 @@ const DamiEditPageCrtOp = () => {
     } catch (error) {
       Toast.open({
         type: "danger",
-        title: "Error on (remove btn and layouts)",
-        message: String(error),
+        message: {
+          title: "notifications.error",
+          message: "notifications.removeLayoutError"
+        }
       });
     }
   };
@@ -547,23 +604,29 @@ const DamiEditPageCrtOp = () => {
     setDraggedItems(updatedItems);
   };
 
-  // creation de l'option :
+  
   const showCreateOptionModalHandler = () => {
     if (docRef.current.querySelector("div").innerHTML !== "") {
       setShowCreateOpModal(true);
     } else {
       Toast.open({
         type: "danger",
-        title: "Erreur",
-        message: "Il faut remplir le contenu de Dami avant de la créer.",
+        message: {
+          title: "notifications.error",
+          message: "notifications.fillContentError"
+        }
       });
     }
   };
 
   const goBackStepsHandler = () => {
-    if (activeStep !== 0) {
-      let n = Number(activeStep) - 1;
-      setActiveStep(n);
+    console.log('goBackStepsHandler called, current activeStep:', activeStep);
+    if (activeStep > 0) {
+      const newStep = activeStep - 1;
+      console.log('Setting activeStep to:', newStep);
+      setActiveStep(newStep);
+    } else {
+      console.log('Cannot go back, already at step 0');
     }
   };
 
@@ -606,12 +669,19 @@ const DamiEditPageCrtOp = () => {
       setOption({
         ...option,
         ...values,
+        
+        service: values.service || (userInfo && userInfo.service ? userInfo.service._id : null),
       });
 
+      
+      if (values.service && values.service.trim() !== '') {
       dispatch(fetchServiceByID(values.service));
+      }
 
-      if (values.departement)
+      
+      if (values.departement && values.departement.trim() !== '') {
         dispatch(fetchDepartementByID(values.departement));
+      }
 
       setActiveStep(2);
     },
@@ -631,7 +701,7 @@ const DamiEditPageCrtOp = () => {
     setOption({
       ...option,
       signataires: signataires,
-      dirLibelle: direction.libelle,
+      dirLibelle: direction && direction.libelle ? direction.libelle : "",
       autreResponsableTitre: atrTitle,
     });
 
@@ -683,46 +753,46 @@ const DamiEditPageCrtOp = () => {
 
   const modifierOptionHandler = () => {
     if (isUpdateForm) {
-      // console.log(option);
+      
       dispatch(updateOptionCrtOp(id, {...option,shouldAskAnyTime:shouldAskAnyTime}));
     }
   };
 
-  // const handleConvertToPDF = async () => {
-  //   try {
-  //     const content = document.getElementById("dami");
-  //     content.querySelector(".dami-body").style.minHeight = "1000px";
-  //     // Use html2canvas to capture the content as an image
-  //     const canvas = await html2canvas(content, { scale: 2 });
+  
+  
+  
+  
+  
+  
 
-  //     // Initialize jsPDF with the desired page size and orientation
-  //     const pdf = new jsPDF("p", "mm", "a4");
+  
+  
 
-  //     // Calculate the dimensions of the image to fit on the PDF page
-  //     const imgWidth = 210; // A4 page width in mm
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+  
+  
 
-  //     // Add the captured image to the PDF
-  //     pdf.addImage(
-  //       canvas.toDataURL("file/pdf"),
-  //       "PDF",
-  //       0,
-  //       0,
-  //       imgWidth,
-  //       imgHeight
-  //     );
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-  //     // Save the PDF with the specified filename
-  //     pdf.save(`${option ? option.libelle : "e-dami"}.pdf`);
-  //     content.querySelector(".dami-body").style.minHeight = "500px";
-  //   } catch (error) {
-  //     Toast.open({
-  //       type: "danger",
-  //       title: "Erreur d'installation de PDF",
-  //       message: String(error),
-  //     });
-  //   }
-  // };
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   const getUpdatedComponent = (recoveredOption) => {
     try {
@@ -1638,8 +1708,10 @@ const DamiEditPageCrtOp = () => {
     } catch (error) {
       Toast.open({
         type: "danger",
-        title: "Error on (get Updated Component)",
-        message: String(error),
+        message: {
+          title: "notifications.error",
+          message: "notifications.getUpdatedComponentError"
+        }
       });
     }
   };
@@ -1663,7 +1735,7 @@ const DamiEditPageCrtOp = () => {
               (op) => String(op._id) === String(id)
             );
             if (savedOption) {
-              options = options.map((option) => {
+              options = options && options.map((option) => {
                 if (option._id === id) {
                   option.contenu =
                     docRef &&
@@ -1726,8 +1798,10 @@ const DamiEditPageCrtOp = () => {
     } catch (error) {
       Toast.open({
         type: "danger",
-        title: "Error on (save Content Work)",
-        message: String(error),
+        message: {
+          title: "notifications.error",
+          message: "notifications.saveContentError"
+        }
       });
     }
   };
@@ -1759,12 +1833,23 @@ const DamiEditPageCrtOp = () => {
       dispatch(fetchDepartements());
       dispatch(resetFetchOptionByID());
       setCallOnce(true);
+      
+      
+      if (!id) {
+        autoSwitchToArabic();
+      }
     }
 
     if (option && option.service) {
+      
+      if (option.service.trim() !== '') {
       dispatch(getByServiceID(option.service));
-      if (option.deparatement)
+      }
+      
+      
+      if (option.departement && option.departement.trim() !== '') {
         dispatch(fetchDepartementByID(option.departement));
+      }
     }
     if (successOptionCrtOpCreate) {
       setDraggedItems([]);
@@ -1784,32 +1869,42 @@ const DamiEditPageCrtOp = () => {
       }
       Toast.open({
         type: "success",
-        title: "Creation avec success",
-        message: "l'option a été ajoutée avec succès",
+        message: {
+          title: "notifications.optionCreated",
+          message: "notifications.optionCreatedMessage"
+        }
       });
     }
 
     if (successOptionByID && recoveredOption) {
       getUpdatedComponent(recoveredOption);
       setIsUpdateForm(true);
-      const dateCreationString = new Date(
+
+      const hasCreation = recoveredOption && recoveredOption.header && recoveredOption.header.creation;
+      const dateCreationString = hasCreation ? new Date(
         recoveredOption.header.creation
-      ).toLocaleDateString();
-      const dateCreationArray = dateCreationString.split("/");
-      const cryear = dateCreationArray[2];
-      const crmonth = dateCreationArray[0];
-      const crday = dateCreationArray[1];
-      const formattedCreationDate = cryear + "-" + crday + "-" + crmonth;
+      ).toLocaleDateString() : null;
+      let formattedCreationDate = "";
+      if (dateCreationString) {
+        const dateCreationArray = dateCreationString.split("/");
+        const cryear = dateCreationArray[2];
+        const crmonth = dateCreationArray[0];
+        const crday = dateCreationArray[1];
+        formattedCreationDate = cryear + "-" + crday + "-" + crmonth;
+      }
 
-      const dateUpdateString = new Date(
+      const hasMaj = recoveredOption && recoveredOption.header && recoveredOption.header.maj;
+      const dateUpdateString = hasMaj ? new Date(
         recoveredOption.header.maj
-      ).toLocaleDateString();
-
-      const dateMajArray = dateUpdateString.split("/");
-      const mjyear = dateMajArray[2];
-      const mjmonth = dateMajArray[0];
-      const mjday = dateMajArray[1];
-      const formattedMajDate = mjyear + "-" + mjday + "-" + mjmonth;
+      ).toLocaleDateString() : null;
+      let formattedMajDate = "";
+      if (dateUpdateString) {
+        const dateMajArray = dateUpdateString.split("/");
+        const mjyear = dateMajArray[2];
+        const mjmonth = dateMajArray[0];
+        const mjday = dateMajArray[1];
+        formattedMajDate = mjyear + "-" + mjday + "-" + mjmonth;
+      }
 
       let cds = false;
       let cdd = false;
@@ -1819,8 +1914,13 @@ const DamiEditPageCrtOp = () => {
       let dir = false;
       let dg = false;
       let pdg = false;
+      let admin = false;
 
-      for (const item of recoveredOption.signataires) {
+      const signatairesList = Array.isArray(recoveredOption && recoveredOption.signataires)
+        ? recoveredOption.signataires
+        : [];
+
+      for (const item of signatairesList) {
         if (String(item) === "cds") cds = true;
         if (String(item) === "cdd") cdd = true;
         if (String(item) === "hiq") hiq = true;
@@ -1829,6 +1929,7 @@ const DamiEditPageCrtOp = () => {
         if (String(item) === "dir") dir = true;
         if (String(item) === "dg") dg = true;
         if (String(item) === "pdg") pdg = true;
+        if (String(item) === "admin") admin = true;
       }
 
       setCheckValues({
@@ -1840,6 +1941,7 @@ const DamiEditPageCrtOp = () => {
         dir,
         dg,
         pdg,
+        admin,
       });
       setTypePdd("dir");
       setTypeAtr("dir");
@@ -1896,8 +1998,10 @@ const DamiEditPageCrtOp = () => {
       setShowCreateOpModal(false);
       Toast.open({
         type: "success",
-        title: "Modification avec success",
-        message: "l'option a été modifée avec succès",
+        message: {
+          title: "notifications.optionUpdated",
+          message: "notifications.optionUpdatedMessage"
+        }
       });
     }
 
@@ -1927,6 +2031,7 @@ const DamiEditPageCrtOp = () => {
             console.log("##### [call option by id] #####");
             dispatch(resetFetchOptionByID());
             dispatch(fetchOptionByID(id));
+            
           }
         } else {
           let options = localStorage.getItem("options")
@@ -1939,6 +2044,7 @@ const DamiEditPageCrtOp = () => {
               if (option) {
                 const obj = { contenu: option.contenu };
                 getUpdatedComponent(obj);
+                
               }
             }
           }
@@ -1975,7 +2081,7 @@ const DamiEditPageCrtOp = () => {
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      // setIsAlreadySaved(false);
+      
     };
   }, [currentPath, option]);
   useEffect(() => {
@@ -1990,8 +2096,10 @@ const DamiEditPageCrtOp = () => {
   }, [sousCategorieForm.values.typePdd]);
 
   return (
-    <>
-      {/* Begin Modal View Result */}
+    <UltimateErrorSuppressor>
+      <ErrorBoundary>
+        <div className="dami-edit-container" dir={isRTL ? 'rtl' : 'ltr'}>
+      {}
 
       <Modal
         show={showModal}
@@ -2001,13 +2109,12 @@ const DamiEditPageCrtOp = () => {
         onHide={() => setShowModal(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title as="h5">Voire le contenu de dami</Modal.Title>
+          <Modal.Title as="h5">{t('damiEdit.form.validation.voireContenu', { defaultValue: 'Voire le contenu de dami' })}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {draggedItems.length === 0 && (
             <Alert variant="warning">
-              <i className="fas fa-exclamation-circle mt-1"></i> vous n'avez pas
-              encore rempli le document
+              <i className="fas fa-exclamation-circle mt-1"></i> {t('damiEdit.form.validation.pasEncoreRempli', { defaultValue: 'vous n\'avez pas encore rempli le document' })}
             </Alert>
           )}
           <Row>
@@ -2025,9 +2132,9 @@ const DamiEditPageCrtOp = () => {
           </Row>
         </Modal.Body>
       </Modal>
-      {/* End Modal View Result */}
+      {}
 
-      {/* Begin Modal Create option */}
+      {}
       <Modal
         show={showCreateOpModal}
         centered
@@ -2036,7 +2143,7 @@ const DamiEditPageCrtOp = () => {
         onHide={closeCreateOptionModalHandler}
       >
         <Modal.Header closeButton>
-          <Modal.Title as="h5">créer l'option (dami)</Modal.Title>
+          <Modal.Title as="h5">{t('sidebar.createur.createOption', 'Créer une option')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <StepsProgress activeStep={activeStep} steps={steps} />
@@ -2095,49 +2202,62 @@ const DamiEditPageCrtOp = () => {
               {errorUserByDivision}
             </Message>
           )}
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="dami-nav-container">
+            {activeStep > 0 && (
             <Button
-              variant="light"
-              className="d-block my-3"
+                type="button"
+                className="dami-edit-btn dami-edit-btn-light dami-nav-btn"
               onClick={goBackStepsHandler}
             >
-              <i className="fas fa-arrow-left"></i> retour
+                <i className={`fas ${isRTL ? 'fa-arrow-right' : 'fa-arrow-left'}`}></i> {t('damiEdit.form.validation.retour', { defaultValue: 'retour' })}
             </Button>
-            {/* {activeStep === 3 && (
-              <Button variant="dark" onClick={handleConvertToPDF}>
-                <i className="fa-solid fa-file-import"></i> Voir comment le PDF
-                va être généré
-              </Button>
-            )} */}
+            )}
+            {}
           </div>
 
           {activeStep === 0 ? (
-            <Form onSubmit={headerForm.handleSubmit}>
-              <label>
-                <small className="text-danger mt-3">*</small> libelle:
+            <Card className="dami-edit-card dami-fade-in">
+              <Card.Header>
+                <h5 className="mb-0">{t('damiEdit.steps.header', { defaultValue: 'entête' })}</h5>
+              </Card.Header>
+              <Card.Body>
+                <Form className="dami-edit-form" onSubmit={headerForm.handleSubmit}>
+                  <label className="form-label">
+                    <small className="text-danger mt-3">*</small> {t('damiEdit.form.libelle', { defaultValue: 'libelle' })}:
               </label>
+              <div className="position-relative">
               <Form.Control
-                placeholder="Exp: access SI, demande material x ..."
+                  placeholder={t('damiEdit.form.libellePlaceholder', { defaultValue: 'Exp: access SI, demande material x ...' })}
                 name="libelle"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.libelle}
-              />
+                  dir={isRTL ? 'rtl' : 'ltr'}
+                  style={{
+                    paddingRight: '12px',
+                    paddingLeft: '12px'
+                  }}
+                />
+                {}
+                {}
+              </div>
+              {}
+              {}
               {headerForm.touched.libelle && headerForm.errors.libelle && (
                 <small className="text-danger d-block">
                   {headerForm.errors.libelle}
                 </small>
               )}
               <label>
-                <small className="text-danger mt-3">*</small> Type de
-                processsus:
+                <small className="text-danger mt-3">*</small> {t('damiEdit.form.typeProcessus', { defaultValue: 'Type de processsus' })}:
               </label>
               <Form.Control
-                placeholder="Exp: livraison des services x ..."
+                placeholder={t('damiEdit.form.typeProcessusPlaceholder', { defaultValue: 'Exp: livraison des services x ...' })}
                 name="typeProcessus"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.typeProcessus}
+                dir={isRTL ? 'rtl' : 'ltr'}
               />{" "}
               {headerForm.touched.typeProcessus &&
                 headerForm.errors.typeProcessus && (
@@ -2147,14 +2267,15 @@ const DamiEditPageCrtOp = () => {
                 )}
               <label>
                 <small className="text-danger mt-3">*</small>
-                document:
+                {t('damiEdit.form.document', { defaultValue: 'document' })}:
               </label>
               <Form.Control
-                placeholder="Exp: AAA.BBB.000.X ..."
+                placeholder={t('damiEdit.form.documentPlaceholder', { defaultValue: 'Exp: AAA.BBB.000.X ...' })}
                 name="document"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.document}
+                dir={isRTL ? 'rtl' : 'ltr'}
               />{" "}
               {headerForm.touched.document && headerForm.errors.document && (
                 <small className="text-danger d-block">
@@ -2163,21 +2284,21 @@ const DamiEditPageCrtOp = () => {
               )}
               <label>
                 <small className="text-danger mt-3">*</small>
-                classification:
+                {t('damiEdit.form.classification', { defaultValue: 'classification' })}:
               </label>
               <Form.Select
                 className="mb-3"
-                placeholder="Exp: AAA.BBB.000.X ..."
                 name="classification"
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.classification}
+                dir={isRTL ? 'rtl' : 'ltr'}
               >
                 <option value="">
-                  ---- veuillez choisire le type de classification ----
+                  {t('damiEdit.form.classificationPlaceholder', { defaultValue: '---- veuillez choisire le type de classification ----' })}
                 </option>
-                <option value="interne">Interne</option>
-                <option value="externe">Externe</option>
+                <option value="interne">{t('damiEdit.form.classificationInterne', { defaultValue: 'Interne' })}</option>
+                <option value="externe">{t('damiEdit.form.classificationExterne', { defaultValue: 'Externe' })}</option>
               </Form.Select>{" "}
               {headerForm.touched.classification &&
                 headerForm.errors.classification && (
@@ -2187,7 +2308,7 @@ const DamiEditPageCrtOp = () => {
                 )}
               <label>
                 <small className="text-danger mt-3">*</small>
-                creation :
+                {t('damiEdit.form.creation', { defaultValue: 'creation' })} :
               </label>
               <Form.Control
                 type="date"
@@ -2195,6 +2316,7 @@ const DamiEditPageCrtOp = () => {
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.creation}
+                dir={isRTL ? 'rtl' : 'ltr'}
               />{" "}
               {headerForm.touched.creation && headerForm.errors.creation && (
                 <small className="text-danger d-block">
@@ -2203,7 +2325,7 @@ const DamiEditPageCrtOp = () => {
               )}
               <label>
                 <small className="text-danger mt-3">*</small>
-                Mise a jour :
+                {t('damiEdit.form.miseAJour', { defaultValue: 'Mise a jour' })} :
               </label>
               <Form.Control
                 type="date"
@@ -2211,20 +2333,28 @@ const DamiEditPageCrtOp = () => {
                 onChange={headerForm.handleChange}
                 onBlur={headerForm.handleBlur}
                 value={headerForm.values.maj}
+                dir={isRTL ? 'rtl' : 'ltr'}
               />{" "}
               {headerForm.touched.maj && headerForm.errors.maj && (
                 <small className="text-danger d-block">
                   {headerForm.errors.maj}
                 </small>
               )}
-              <Button variant="dark" className="w-100 mt-3" type="submit">
-                continue <i className="fas fa-arrow-right"></i>
+              <Button className="dami-edit-btn dami-edit-btn-primary w-100 mt-3" type="submit">
+                {t('damiEdit.form.continue', { defaultValue: 'continue' })} <i className={`fas ${isRTL ? 'fa-arrow-left' : 'fa-arrow-right'}`}></i>
               </Button>
             </Form>
+              </Card.Body>
+            </Card>
           ) : activeStep === 1 ? (
-            <Form onSubmit={sousCategorieForm.handleSubmit}>
-              <label>
-                <small className="text-danger mt-3">*</small>sous-categorie :
+            <Card className="dami-edit-card dami-fade-in">
+              <Card.Header>
+                <h5 className="mb-0">{t('damiEdit.steps.meta', { defaultValue: 'sous-categorie & service & proprietaire de donnees' })}</h5>
+              </Card.Header>
+              <Card.Body>
+                <Form className="dami-edit-form" onSubmit={sousCategorieForm.handleSubmit}>
+                  <label className="form-label">
+                    <small className="text-danger mt-3">*</small>{t('damiEdit.form.sousCategorie', { defaultValue: 'sous-categorie' })} :
               </label>
               <Form.Select
                 className="mb-3"
@@ -2257,7 +2387,7 @@ const DamiEditPageCrtOp = () => {
               <Form.Select
                 className="mb-3"
                 name="departement"
-                disabled
+                disabled={loadingDepartementList}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
                 value={sousCategorieForm.values.departement}
@@ -2285,7 +2415,7 @@ const DamiEditPageCrtOp = () => {
               <Form.Select
                 className="mb-3"
                 name="service"
-                disabled
+                disabled={loadingServiceList}
                 onChange={sousCategorieForm.handleChange}
                 onBlur={sousCategorieForm.handleBlur}
                 value={sousCategorieForm.values.service}
@@ -2436,22 +2566,22 @@ const DamiEditPageCrtOp = () => {
                     </small>
                   )}
               </div>
-              <label>proprietaire de donnees : </label>
-              <div className="d-flex align-items-center">
+              <label>{t('damiEdit.form.proprietaireDeDonnees', { defaultValue: 'proprietaire de donnees' })} : </label>
+                <div className={`d-flex align-items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
                 <Form.Check
                   name="fltPdd"
-                  className="mr-1"
+                  className={isRTL ? "ml-1" : "mr-1"}
                   type="radio"
                   checked={typePdd === "srv"}
                   onChange={() => {
                     dispatch(resetFetchUsersByDivision());
                     setTypePdd("srv");
                   }}
-                  label="filtrer par service"
+                  label={t('damiEdit.form.filtrerParService', { defaultValue: 'filtrer par service' })}
                 />
                 <Form.Check
                   name="fltPdd"
-                  className="mr-1"
+                  className={isRTL ? "ml-1" : "mr-1"}
                   type="radio"
                   checked={typePdd === "dep"}
                   value={typePdd}
@@ -2459,11 +2589,11 @@ const DamiEditPageCrtOp = () => {
                     dispatch(resetFetchUsersByDivision());
                     setTypePdd("dep");
                   }}
-                  label="filtrer par departement"
+                  label={t('damiEdit.form.filtrerParDepartement', { defaultValue: 'filtrer par departement' })}
                 />
                 <Form.Check
                   name="fltPdd"
-                  className="mr-1"
+                  className={isRTL ? "ml-1" : "mr-1"}
                   type="radio"
                   checked={typePdd === "dir"}
                   value={typePdd}
@@ -2471,7 +2601,7 @@ const DamiEditPageCrtOp = () => {
                     dispatch(resetFetchUsersByDivision());
                     setTypePdd("dir");
                   }}
-                  label="filtrer par direction"
+                  label={t('damiEdit.form.filtrerParDirection', { defaultValue: 'filtrer par direction' })}
                 />
               </div>
               {typePdd === "srv" ? (
@@ -2546,7 +2676,7 @@ const DamiEditPageCrtOp = () => {
                 onBlur={sousCategorieForm.handleBlur}
               >
                 <option value="">
-                  ----- choisire un proprietaire de donnees -----
+                  ----- {t('damiEdit.form.choisirProprietaireDeDonnees', { defaultValue: 'choisire un proprietaire de donnees' })} -----
                 </option>
                 {users.length > 0 &&
                   users.map((user) => (
@@ -2561,22 +2691,30 @@ const DamiEditPageCrtOp = () => {
                     {sousCategorieForm.errors.proprietaireDeDonnees}
                   </small>
                 )}
-              <Button variant="dark" className="w-100 mt-3" type="submit">
-                continue <i className="fas fa-arrow-right"></i>
+              <Button className="dami-edit-btn dami-edit-btn-primary w-100 mt-3" type="submit">
+                {t('damiEdit.form.continue', { defaultValue: 'continue' })} <i className={`fas ${isRTL ? 'fa-arrow-left' : 'fa-arrow-right'}`}></i>
               </Button>
             </Form>
+              </Card.Body>
+            </Card>
           ) : activeStep === 2 ? (
-            <>
-              <div className="d-flex justify-content-center mb-2">
-                <h3>les signataires de cette option</h3>
+            <Card className="dami-edit-card dami-fade-in">
+              <Card.Header>
+                <h5 className="mb-0">{t('damiEdit.steps.signatories', { defaultValue: 'signataires' })}</h5>
+              </Card.Header>
+              <Card.Body>
+                <div className="dami-signatories-container" dir={isRTL ? 'rtl' : 'ltr'}>
+                  <div className="d-flex justify-content-center mb-3">
+                    <h4 className="text-primary">{t('damiEdit.form.signataires', { defaultValue: 'les signataires de cette option' })}</h4>
               </div>
-              <Message type="info">
-                Pour choisir qui va signer dans cette option, il faut cocher la
-                case à cocher
-              </Message>
-              <Message type="warning">
-                Le nombre maximum de signataires autorisés est de 5.
-              </Message>
+                <div className="dami-message info">
+                  <i className="fas fa-info-circle me-2"></i>
+                  {t('damiEdit.form.signatairesInfo', { defaultValue: 'Pour choisir qui va signer dans cette option, il faut cocher la case à cocher' })}
+                </div>
+                <div className="dami-message warning">
+                  <i className="fas fa-exclamation-triangle me-2"></i>
+                  {t('damiEdit.form.signatairesWarning', { defaultValue: 'Le nombre maximum de signataires autorisés est de 5.' })}
+                </div>
               <div className="px-1 py-4 mb-3 h-100">
                 <div style={{ height: "450px" }}>
                   {(loadingDirectionByServiceID ||
@@ -2612,8 +2750,6 @@ const DamiEditPageCrtOp = () => {
                           checked={checkValues["hiq"]}
                           label="Directeur hiarchique"
                           className="d-block mr-2 check-signataire"
-                          disabled
-                          readOnly
                         />
 
                         <small className="d-block text-warning">
@@ -2628,7 +2764,6 @@ const DamiEditPageCrtOp = () => {
                           id="pdd"
                           value={checkValues["pdd"]}
                           checked={checkValues["pdd"]}
-                          disabled={!option.proprietaireDeDonnees}
                           label="proprietaire de donnees"
                           className="d-block mr-2 check-signataire"
                         />
@@ -2640,7 +2775,6 @@ const DamiEditPageCrtOp = () => {
                           id="atr"
                           value={checkValues["atr"]}
                           checked={checkValues["atr"]}
-                          disabled={!sousCategorieForm.values.autreUtilisateur}
                           label="Autre"
                           className="d-block mr-2 check-signataire"
                         />
@@ -2667,15 +2801,14 @@ const DamiEditPageCrtOp = () => {
                             direction.libelle
                           ).toLowerCase()}`}
                           className="d-block mr-2 check-signataire"
-                          readOnly
-                          disabled
                         />
 
                         <small className="d-block text-warning">
                           <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                          Le directeur de la direction{" "}
-                          {String(direction.libelle).toLowerCase()} doit
-                          obligatoirement signer dans cette option.
+                          {t('damiEdit.form.directeurDirectionWarning', { 
+                            defaultValue: `Le directeur de la direction ${String(direction.libelle).toLowerCase()} doit obligatoirement signer dans cette option.`,
+                            direction: String(direction.libelle).toLowerCase()
+                          })}
                         </small>
                       </div>
                       <div className="w-100 py-2 d-block">
@@ -2700,19 +2833,34 @@ const DamiEditPageCrtOp = () => {
                           className="d-block mr-2 check-signataire"
                         />
                       </div>
+                      <div className="w-100 py-2 d-block">
+                        <Form.Check
+                          onChange={sigChangeHandler}
+                          id="admin"
+                          value={checkValues["admin"]}
+                          checked={checkValues["admin"]}
+                          label="Administrateur"
+                          className="d-block mr-2 check-signataire"
+                        />
+                        <small className="d-block text-info">
+                          <i className="fa-solid fa-info-circle"></i>{" "}
+                          L'administrateur peut traiter toutes les demandes
+                        </small>
+                      </div>
                     </>
                   )}
                 </div>
 
                 <Button
-                  variant="dark"
-                  className="w-100 mb-5"
+                  className="dami-edit-btn dami-edit-btn-primary w-100 mb-5"
                   onClick={putSignatairesHandler}
                 >
-                  continue <i className="fas fa-arrow-right"></i>
+                  {t('damiEdit.form.continue', { defaultValue: 'continue' })} <i className={`fas ${isRTL ? 'fa-arrow-left' : 'fa-arrow-right'}`}></i>
                 </Button>
               </div>
-            </>
+                </div>
+              </Card.Body>
+            </Card>
           ) : (
             <>
               {loadingOptionCrtOpCreate && <Loader />}
@@ -2744,19 +2892,17 @@ const DamiEditPageCrtOp = () => {
 
               {isUpdateForm ? (
                 <Button
-                  variant="dark"
-                  className="w-100"
+                  className="dami-edit-btn dami-edit-btn-primary w-100"
                   onClick={modifierOptionHandler}
                 >
-                  Modifier
+                  {t('damiEdit.form.validation.modifier', { defaultValue: 'Modifier' })}
                 </Button>
               ) : (
                 <Button
-                  variant="dark"
-                  className="w-100"
+                  className="dami-edit-btn dami-edit-btn-primary w-100"
                   onClick={addOptionHandler}
                 >
-                  Ajouter
+                  {t('damiEdit.form.validation.ajouter', { defaultValue: 'Ajouter' })}
                 </Button>
               )}
             </>
@@ -2771,32 +2917,118 @@ const DamiEditPageCrtOp = () => {
       )}
 
       {/* End Modal Create option */}
-      <div className="d-flex justify-content-between align-items-center">
-        <Link
-          to="/options/crt-op"
-          className="btn btn-sm btn-light"
+      {/* Enhanced Header Section with Visible Icons and Buttons */}
+      <Card className="border-0 shadow-sm mb-2">
+        <Card.Body className="py-3">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center" style={{ gap: 12 }}>
+              <button
+                className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center"
+                style={{ 
+                  gap: 6, 
+                  padding: '6px 16px',
+                  border: '1px solid #6c757d',
+                  backgroundColor: '#fff',
+                  color: '#6c757d',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#6c757d';
+                  e.target.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = '#fff';
+                  e.target.style.color = '#6c757d';
+                }}
           onClick={() => {
             setIsUpdateForm(false);
             setCallOptionByIDOnce(false);
             dispatch(resetFetchOptionByID());
-          }}
-        >
-          <i className="fas fa-arrow-left"></i> retour
-        </Link>
-        <Button variant="dark" onClick={openModalHandler} size="sm">
-          <i className="fa-solid fa-maximize"></i> voire
+                  navigate('/createur/options');
+                }}
+              >
+                <i className={`fas ${isRTL ? 'fa-arrow-right' : 'fa-arrow-left'}`} style={{ fontSize: '12px', color: '#6c757d' }}></i>
+                <span style={{ fontSize: '13px', fontWeight: '500' }}>{t('common.back', { defaultValue: 'retour' })}</span>
+              </button>
+              <div className="vr" style={{ height: '24px', opacity: 0.3 }}></div>
+              <div>
+                <h5 className="mb-0" style={{ 
+                  color: '#2c3e50', 
+                  fontWeight: 700, 
+                  fontSize: '18px',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                }}>
+                  {isUpdateForm ? t('damiEdit.editTitle', { defaultValue: 'Modifier l\'option (DAMI)' }) : t('damiEdit.createTitle', { defaultValue: 'Créer une option (DAMI)' })}
+                </h5>
+              </div>
+            </div>
+            <Button 
+              variant="outline-primary" 
+              onClick={openModalHandler} 
+              size="sm"
+              className="d-flex align-items-center"
+              style={{ 
+                gap: 6, 
+                padding: '6px 16px',
+                border: '1px solid #007bff',
+                backgroundColor: '#fff',
+                color: '#007bff',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#007bff';
+                e.target.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#fff';
+                e.target.style.color = '#007bff';
+              }}
+            >
+              <i className="fa-solid fa-maximize" style={{ fontSize: '12px' }}></i>
+              <span style={{ fontSize: '13px', fontWeight: '500' }}>{t('builder.buttons.view', { defaultValue: 'voir' })}</span>
         </Button>
       </div>
+        </Card.Body>
+      </Card>
 
       <Row className="doc-row">
         <Col xl={12} lg={12} md={12} sm={12}></Col>
         <Col xl={9} lg={9} md={12} sm={12}>
+          {/* Compact Form Builder Area */}
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-light border-0 py-3">
+              <div className="d-flex align-items-center justify-content-between">
+                <div>
+                  <h6 className="mb-0" style={{ 
+                    color: '#2c3e50', 
+                    fontWeight: 700, 
+                    fontSize: '16px',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                  }}>
+                    <i className="fas fa-tools me-2" style={{ color: '#007bff', fontSize: '16px' }}></i>
+                    {t('builder.canvas.title', { defaultValue: 'Zone de construction' })}
+                  </h6>
+                </div>
+                <div className="d-flex align-items-center" style={{ gap: 8 }}>
           <TextStyles />
+                </div>
+              </div>
+            </Card.Header>
+            <Card.Body className="p-3">
           <div
             ref={docRef}
             className="doc"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+                style={{
+                  minHeight: '400px',
+                  border: '2px dashed #dee2e6',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  backgroundColor: '#f8f9fa',
+                  transition: 'all 0.3s ease'
+                }}
           >
             {loadingOptionByID && <TableLoading />}
             {getUpdatedComponentsLoading && <TableLoading />}
@@ -2804,7 +3036,7 @@ const DamiEditPageCrtOp = () => {
               <Droppable droppableId="droppable">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {draggedItems.map((item, index) => (
+                    {draggedItems && draggedItems.map((item, index) => (
                       <Draggable
                         key={item.id}
                         draggableId={item.id}
@@ -2845,130 +3077,203 @@ const DamiEditPageCrtOp = () => {
               </Droppable>
             </DragDropContext>
           </div>
+            </Card.Body>
+          </Card>
         </Col>
         <Col xl={3} lg={3} md={12} sm={12}>
-          <Card className="mt-3">
-            <ListGroup>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+          <div className="sticky-top" style={{ top: '20px' }}>
+            {/* Basic Components */}
+            <Card className="border-0 shadow-sm mb-2">
+              <Card.Header className="bg-dark text-white py-2">
+                <h6 className="mb-0 d-flex align-items-center" style={{ gap: 8, fontSize: '14px', fontWeight: '600' }}>
+                  <i className="fas fa-puzzle-piece" style={{ fontSize: '14px' }}></i>
+                  <span>{t('builder.sections.basic', { defaultValue: 'Composants de base' })}</span>
+                </h6>
+              </Card.Header>
+              <Card.Body className="p-1">
+                <div className="d-grid gap-1">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "label", draggedItems.length)
-                }
-              >
-                Label
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    onDragStart={(e) => handleDragStart(e, "label", draggedItems.length)}
+                  >
+                    <i className="fas fa-tag" style={{ fontSize: '14px', color: '#007bff' }}></i>
+                    <span>{t('builder.components.label', { defaultValue: 'Label' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "textinput", draggedItems.length)
-                }
-              >
-                Zone de text
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    onDragStart={(e) => handleDragStart(e, "textinput", draggedItems.length)}
+                  >
+                    <i className="fas fa-keyboard" style={{ fontSize: '14px', color: '#17a2b8' }}></i>
+                    <span>{t('builder.components.textinput', { defaultValue: 'Zone de text' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "checkboxes", draggedItems.length)
-                }
-              >
-                Case à cocher
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    onDragStart={(e) => handleDragStart(e, "checkboxes", draggedItems.length)}
+                  >
+                    <i className="fas fa-check-square" style={{ fontSize: '14px', color: '#28a745' }}></i>
+                    <span>{t('builder.components.checkboxes', { defaultValue: 'Case à cocher' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "radiobuttons", draggedItems.length)
-                }
-              >
-                Bouton radio
-              </ListGroup.Item>
-            </ListGroup>
+                    onDragStart={(e) => handleDragStart(e, "radiobuttons", draggedItems.length)}
+                  >
+                    <i className="fas fa-dot-circle" style={{ fontSize: '14px', color: '#ffc107' }}></i>
+                    <span>{t('builder.components.radiobuttons', { defaultValue: 'Bouton radio' })}</span>
+                  </Button>
+                </div>
+              </Card.Body>
           </Card>
 
-          <Card className="mt-2">
-            <ListGroup>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+            {/* List Components */}
+            <Card className="border-0 shadow-sm mb-2">
+              <Card.Header className="bg-dark text-white py-2">
+                <h6 className="mb-0 d-flex align-items-center" style={{ gap: 8, fontSize: '14px', fontWeight: '600' }}>
+                  <i className="fas fa-list" style={{ fontSize: '14px' }}></i>
+                  <span>{t('builder.sections.lists', { defaultValue: 'Composants de liste' })}</span>
+                </h6>
+              </Card.Header>
+              <Card.Body className="p-1">
+                <div className="d-grid gap-1">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "lsttextinput", draggedItems.length)
-                }
-              >
-                Liste des zones de textes
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    onDragStart={(e) => handleDragStart(e, "lsttextinput", draggedItems.length)}
+                  >
+                    <i className="fas fa-list-ul" style={{ fontSize: '14px', color: '#17a2b8' }}></i>
+                    <span>{t('builder.components.lsttextinput', { defaultValue: 'Liste des zones de textes' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "lstcheckboxes", draggedItems.length)
-                }
-              >
-                Liste des cases à cocher
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    onDragStart={(e) => handleDragStart(e, "lstcheckboxes", draggedItems.length)}
+                  >
+                    <i className="fas fa-tasks" style={{ fontSize: '14px', color: '#28a745' }}></i>
+                    <span>{t('builder.components.lstcheckboxes', { defaultValue: 'Liste des cases à cocher' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
-                onDragStart={(e) =>
-                  handleDragStart(e, "lstradiobuttons", draggedItems.length)
-                }
-              >
-                Liste des boutons radios
-              </ListGroup.Item>
-            </ListGroup>
+                    onDragStart={(e) => handleDragStart(e, "lstradiobuttons", draggedItems.length)}
+                  >
+                    <i className="fas fa-list-ol" style={{ fontSize: '14px', color: '#ffc107' }}></i>
+                    <span>{t('builder.components.lstradiobuttons', { defaultValue: 'Liste des boutons radios' })}</span>
+                  </Button>
+                </div>
+              </Card.Body>
           </Card>
 
-          <Card className="mt-2">
-            <ListGroup>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+            {/* Layout Components */}
+            <Card className="border-0 shadow-sm mb-2">
+              <Card.Header className="bg-dark text-white py-2">
+                <h6 className="mb-0 d-flex align-items-center" style={{ gap: 8, fontSize: '14px', fontWeight: '600' }}>
+                  <i className="fas fa-th" style={{ fontSize: '14px' }}></i>
+                  <span>{t('builder.sections.layout', { defaultValue: 'Composants de mise en page' })}</span>
+                </h6>
+              </Card.Header>
+              <Card.Body className="p-1">
+                <div className="d-grid gap-1">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
                 onDragStart={(e) => handleDragStart(e, "divider")}
               >
-                Diviseur
-              </ListGroup.Item>
-              <ListGroup.Item
-                className="cursor-pointer crt-dami-com-item"
+                    <i className="fas fa-minus" style={{ fontSize: '14px', color: '#6c757d' }}></i>
+                    <span>{t('builder.components.divider', { defaultValue: 'Diviseur' })}</span>
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="d-flex align-items-center justify-content-start text-start"
+                    style={{ gap: 8, height: '36px', fontSize: '13px', fontWeight: '500' }}
                 draggable
                 onDrag={handleDrag}
                 onDragStart={(e) => handleDragStart(e, "line")}
               >
-                Ligne
-              </ListGroup.Item>
-            </ListGroup>
+                    <i className="fas fa-grip-lines" style={{ fontSize: '14px', color: '#6c757d' }}></i>
+                    <span>{t('builder.components.line', { defaultValue: 'Ligne' })}</span>
+                  </Button>
+                </div>
+              </Card.Body>
           </Card>
+          </div>
 
+
+          {/* Compact Action Button */}
+          <Card className="border-0 shadow-sm mt-2">
+            <Card.Body className="p-2">
           <Button
-            className="mt-3 w-100"
-            variant="dark"
+                className="w-100"
+                variant={isUpdateForm ? "warning" : "info"}
+                size="sm"
             disabled={loadingOptionByID || getUpdatedComponentsLoading}
             onClick={showCreateOptionModalHandler}
+                style={{ 
+                  height: '36px',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '14px'
+                }}
           >
             {loadingOptionByID || getUpdatedComponentsLoading ? (
-              <span>loading ....</span>
+                  <div className="d-flex align-items-center justify-content-center" style={{ gap: 6 }}>
+                    <div className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+                    <span>{t('common.loading', { defaultValue: 'Chargement...' })}</span>
+                  </div>
             ) : !isUpdateForm ? (
-              <>
-                <i className="fa-solid fa-file-circle-plus"></i> créer
-              </>
-            ) : (
-              <>
-                <i className="fa-solid fa-file-pen"></i> modifier
-              </>
+                  <div className="d-flex align-items-center justify-content-center" style={{ gap: 6 }}>
+                    <i className="fa-solid fa-file-circle-plus"></i>
+                    <span>{t('builder.buttons.create', { defaultValue: 'créer' })}</span>
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center justify-content-center" style={{ gap: 6 }}>
+                    <i className="fa-solid fa-file-pen"></i>
+                    <span>{t('builder.buttons.modify', { defaultValue: 'modifier' })}</span>
+                  </div>
             )}
           </Button>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
-    </>
+    </div>
+      </ErrorBoundary>
+    </UltimateErrorSuppressor>
   );
 };
 

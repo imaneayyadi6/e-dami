@@ -1,0 +1,222 @@
+/* Header Styles */
+.modern-header {
+  background: var(--bg-primary, #ffffff) !important;
+  border-bottom: 1px solid var(--border-light, #e0e0e0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+  z-index: 1030 !important;
+}
+
+/* Header buttons with better visibility */
+.header-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--text-primary, #333) !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  padding: 0 !important;
+  margin: 0 4px !important;
+}
+
+.header-btn:hover {
+  background: var(--bg-secondary, #f8f9fa) !important;
+  color: var(--primary-color, #007bff) !important;
+  transform: scale(1.1) !important;
+}
+
+.header-btn:focus {
+  outline: 2px solid var(--primary-color, #007bff) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Specific button states */
+.header-btn.active {
+  background: var(--bg-secondary, #f8f9fa) !important;
+  color: var(--primary-color, #007bff) !important;
+}
+
+/* Dark mode button specific styling */
+.theme-toggle-btn {
+  color: var(--text-primary, #333) !important;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--primary-color, #007bff) !important;
+}
+
+/* Notification badge */
+.notification-badge {
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  background: var(--danger-color, #dc3545) !important;
+  color: white !important;
+  border-radius: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+}
+
+/* Brand styling */
+.header-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-decoration: none !important;
+  color: var(--text-primary, #333) !important;
+}
+
+.header-brand:hover {
+  color: var(--primary-color, #007bff) !important;
+  text-decoration: none !important;
+}
+
+.header-logo {
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain !important;
+}
+
+.header-title {
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  color: var(--text-primary, #333) !important;
+}
+
+/* Search styling */
+.search-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.search-input {
+  border: 1px solid var(--border-light, #e0e0e0) !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  background: var(--bg-primary, #ffffff) !important;
+  color: var(--text-primary, #333) !important;
+  transition: all 0.2s ease !important;
+}
+
+.search-input:focus {
+  outline: none !important;
+  border-color: var(--primary-color, #007bff) !important;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Dropdown styling */
+.dropdown-menu {
+  border: 1px solid var(--border-light, #e0e0e0) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background: var(--bg-primary, #ffffff) !important;
+}
+
+.dropdown-item {
+  color: var(--text-primary, #333) !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-secondary, #f8f9fa) !important;
+  color: var(--primary-color, #007bff) !important;
+}
+
+/* User menu styling */
+.user-menu {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: var(--text-primary, #333) !important;
+  text-decoration: none !important;
+}
+
+.user-menu:hover {
+  color: var(--primary-color, #007bff) !important;
+  text-decoration: none !important;
+}
+
+.user-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: var(--primary-color, #007bff) !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .header-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .header-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .header-logo {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+/* Dark mode support */
+body.dark-mode .modern-header {
+  background: var(--bg-primary, #1a202c) !important;
+  border-bottom-color: var(--border-light, #4a5568) !important;
+}
+
+body.dark-mode .header-btn {
+  color: var(--text-primary, #f7fafc) !important;
+}
+
+body.dark-mode .header-btn:hover {
+  background: var(--bg-secondary, #2d3748) !important;
+  color: var(--primary-color, #63b3ed) !important;
+}
+
+body.dark-mode .header-brand {
+  color: var(--text-primary, #f7fafc) !important;
+}
+
+body.dark-mode .header-title {
+  color: var(--text-primary, #f7fafc) !important;
+}
+
+body.dark-mode .search-input {
+  background: var(--bg-secondary, #2d3748) !important;
+  border-color: var(--border-light, #4a5568) !important;
+  color: var(--text-primary, #f7fafc) !important;
+}
+
+body.dark-mode .dropdown-menu {
+  background: var(--bg-primary, #1a202c) !important;
+  border-color: var(--border-light, #4a5568) !important;
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-primary, #f7fafc) !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background: var(--bg-secondary, #2d3748) !important;
+  color: var(--primary-color, #63b3ed) !important;
+}

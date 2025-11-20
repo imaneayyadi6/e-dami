@@ -1,0 +1,131 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Check code formatting
+      run: npm run format:check
+
+    - name: Run tests
+      run: npm run test:ci
+      env:
+        NODE_ENV: test
+        JWT_SECRET: test-jwt-secret
+        MONGO_URI: mongodb://localhost:27017/e-dami-test
+        CLIENT_ADDRESS: http://localhost:3000
+        SERVER_URL: http://localhost:4000
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+
+    - name: Run Snyk security scan
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  build:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+
+    - name: Build Docker image
+      run: |
+        docker build -t e-dami:${{ github.sha }} .
+        docker tag e-dami:${{ github.sha }} e-dami:latest
+
+    - name: Push to registry
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker push e-dami:${{ github.sha }}
+        docker push e-dami:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production..."
+        # Add your deployment commands here
+        # Example: kubectl apply -f k8s/
+        # Example: docker-compose up -d
+
+  notify:
+    needs: [test, security, build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: Notify on success
+      if: ${{ needs.deploy.result == 'success' }}
+      run: |
+        echo "✅ Deployment successful!"
+        # Add notification logic (Slack, email, etc.)
+
+    - name: Notify on failure
+      if: ${{ needs.deploy.result == 'failure' }}
+      run: |
+        echo "❌ Deployment failed!"
+        # Add notification logic (Slack, email, etc.)

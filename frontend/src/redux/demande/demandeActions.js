@@ -47,6 +47,14 @@ import {
   DEMANDE_PREVIEW_TEAM_DETAILS_REQUEST,
   DEMANDE_PREVIEW_TEAM_DETAILS_RESET,
   DEMANDE_PREVIEW_TEAM_DETAILS_SUCCESS,
+  DEMANDE_UPDATE_REQUEST,
+  DEMANDE_UPDATE_SUCCESS,
+  DEMANDE_UPDATE_FAIL,
+  DEMANDE_UPDATE_RESET,
+  DEMANDE_DELETE_REQUEST,
+  DEMANDE_DELETE_SUCCESS,
+  DEMANDE_DELETE_FAIL,
+  DEMANDE_DELETE_RESET,
 } from "./demandeTypes";
 import axios from "axios";
 
@@ -311,7 +319,7 @@ export const getDemandeTraitementStatus = (id, idTraitement) => {
         },
       };
       const { data } = await axios.get(
-        `/api/demandes/${id}/status/${idTraitement}`,
+        `/api/demandes/${id}/traitement/${idTraitement}/status`,
         config
       );
       dispatch({ type: DEMANDE_TRAITEMENT_STATUS_SUCCESS, payload: data });
@@ -329,7 +337,7 @@ export const resetGetDemandeTraitementStatus = () => {
   return { type: DEMANDE_TRAITEMENT_STATUS_RESET };
 };
 
-export const approuveTraitement = (id, idTraitement, docContent, motifValidation) => {
+export const approuveTraitement = (id, idTraitement, data) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_REQUEST });
@@ -343,14 +351,12 @@ export const approuveTraitement = (id, idTraitement, docContent, motifValidation
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const body = { docContent };
-      if (motifValidation !== undefined) body.motifValidation = motifValidation;
-      const { data } = await axios.put(
+      const { data: responseData } = await axios.put(
         `/api/demandes/${id}/approuve/${idTraitement}`,
-        body,
+        data,
         config
       );
-      dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_SUCCESS, payload: data });
+      dispatch({ type: DEMANDE_APPROUVE_TRAITEMENT_SUCCESS, payload: responseData });
     } catch (error) {
       const err =
         error.response && error.response.data.message
@@ -365,7 +371,7 @@ export const resetApprouveTraitement = () => {
   return { type: DEMANDE_APPROUVE_TRAITEMENT_RESET };
 };
 
-export const refuseTraitement = (id, idTraitement, formData) => {
+export const refuseTraitement = (id, idTraitement, data) => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_REQUEST });
@@ -375,15 +381,16 @@ export const refuseTraitement = (id, idTraitement, formData) => {
 
       const config = {
         headers: {
+          "Content-Type": "application/json",
           authorization: `Bearer ${userInfo.token}`,
         },
       };
-      const { data } = await axios.put(
+      const { data: responseData } = await axios.put(
         `/api/demandes/${id}/refuse/${idTraitement}`,
-        formData,
+        data,
         config
       );
-      dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_SUCCESS, payload: data });
+      dispatch({ type: DEMANDE_REFUSE_TRAITEMENT_SUCCESS, payload: responseData });
     } catch (error) {
       const err =
         error.response && error.response.data.message
@@ -459,4 +466,115 @@ export const getDemandeurDemandeByID = (id) => {
 
 export const resetGetDemandeurDemandeByID = () => {
   return { type: DEMANDE_DEMANDEUR_BY_ID_RESET };
+};
+
+
+export const updateDemande = (demandeId, demandeData) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_UPDATE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        `/api/demandes/${demandeId}`,
+        demandeData,
+        config
+      );
+
+      dispatch({
+        type: DEMANDE_UPDATE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_UPDATE_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetUpdateDemande = () => {
+  return { type: DEMANDE_UPDATE_RESET };
+};
+
+
+export const deleteDemande = (demandeId) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: DEMANDE_DELETE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.delete(
+        `/api/demandes/${demandeId}`,
+        config
+      );
+
+      dispatch({
+        type: DEMANDE_DELETE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: DEMANDE_DELETE_FAIL, payload: err });
+    }
+  };
+};
+
+export const resetDeleteDemande = () => {
+  return { type: DEMANDE_DELETE_RESET };
+};
+
+
+export const getDashboardStats = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: "DASHBOARD_STATS_REQUEST" });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get("/api/demandes/dashboard/stats", config);
+      dispatch({ type: "DASHBOARD_STATS_SUCCESS", payload: data });
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({ type: "DASHBOARD_STATS_FAIL", payload: err });
+    }
+  };
+};
+
+export const resetDashboardStats = () => {
+  return { type: "DASHBOARD_STATS_RESET" };
 };

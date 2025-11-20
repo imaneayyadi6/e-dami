@@ -5,12 +5,16 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { v4 as uuidv4 } from "uuid";
 import { cssStringToObject } from "../../services";
+import { useTranslation } from "react-i18next";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const ListOfTextInput = ({
   mainLabelProps,
   isBlock = false,
   lineProps = null,
 }) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguageSync();
   const [show, setShow] = useState(false);
 
   const [placeholder, setPlaceholder] = useState(
@@ -78,16 +82,16 @@ const ListOfTextInput = ({
 
   const popover = (
     <Popover ref={popoverRef} id={popoverId}>
-      <Popover.Header>Style des zone de textes</Popover.Header>
-      <Popover.Body>
-        <label>Placeholder :</label>
+      <Popover.Header>{t('builder.listText.title', { defaultValue: 'Style des zones de texte' })}</Popover.Header>
+      <Popover.Body dir={isRTL ? 'rtl' : 'ltr'}>
+        <label>{t('builder.common.placeholder', { defaultValue: 'Placeholder :' })}</label>
         <Form.Control
           size="sm"
-          placeholder="Exp: 'veuillez saisire quelque chose' "
+          placeholder={t('builder.common.placeholderExample', { defaultValue: "Exp: 'veuillez saisir quelque chose' " })}
           value={placeholder}
           onChange={(e) => setPlaceholder(e.target.value)}
         />
-        <label>Nombre de lignes :</label>
+        <label>{t('builder.listText.numLines', { defaultValue: 'Nombre de lignes :' })}</label>
         <Form.Control
           type="number"
           size="sm"
@@ -96,14 +100,14 @@ const ListOfTextInput = ({
           value={nbrLines}
           onChange={(e) => setNbrLines(e.target.value)}
         />
-        <label className="mt-3">Taille de police</label>
+        <label className="mt-3">{t('builder.common.fontSize', { defaultValue: 'Taille de police' })}</label>
         <Form.Select
           size="sm"
           value={size}
           onChange={(e) => setSize(e.target.value)}
         >
           <option value={""}>
-            ---- veuillez choisire la taille de police ----
+            {t('builder.common.chooseFontSize', { defaultValue: '---- veuillez choisir la taille de police ----' })}
           </option>
           <option value={"12"}>12px</option>
           <option value={"13"}>13px</option>
@@ -113,9 +117,9 @@ const ListOfTextInput = ({
           <option value={"17"}>17px</option>
           <option value={"18"}>18px</option>
         </Form.Select>
-        <label className="mt-3">Taille de la zone de text</label>
+        <label className="mt-3">{t('builder.common.blockSize', { defaultValue: 'Taille de la zone de texte' })}</label>
         <Form.Check
-          label="block"
+          label={t('builder.common.block', { defaultValue: 'block' })}
           checked={block}
           onChange={(e) => setBlock(!block)}
         />
@@ -130,7 +134,7 @@ const ListOfTextInput = ({
         style={
           mainLabelProps && cssStringToObject(String(mainLabelProps.style))
         }
-        text={mainLabelProps ? mainLabelProps.text : "label"}
+        text={mainLabelProps ? mainLabelProps.text : t('builder.common.label', { defaultValue: 'label' })}
       />
       <OverlayTrigger
         trigger="click"

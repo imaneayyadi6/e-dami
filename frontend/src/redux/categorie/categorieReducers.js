@@ -47,8 +47,7 @@ export const categorieListReducer = (state = { categories: [] }, action) => {
         success: true,
         categories: state.categories.map((categorie) => {
           if (String(categorie._id) === String(payload._id)) {
-            categorie.libelle = payload.libelle;
-            categorie.direction = payload.direction;
+            return { ...categorie, ...payload };
           }
           return categorie;
         }),

@@ -3,8 +3,12 @@ import Label from "./Label";
 import { v4 as uuidv4 } from "uuid";
 import { Form, OverlayTrigger, Popover } from "react-bootstrap";
 import { cssStringToObject } from "../../services";
+import { useTranslation } from "react-i18next";
+import { useLanguageSync } from "../../hooks/useLanguageSync";
 
 const DamiRadioButton = ({ name, disabled }) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguageSync();
   const id = uuidv4();
   const [show, setShow] = useState(false);
   const [disabledChk, setDisabledChk] = useState(disabled);
@@ -39,10 +43,10 @@ const DamiRadioButton = ({ name, disabled }) => {
   const popover = (
     <Popover ref={popoverRef} id={popoverId}>
       <Popover.Header>
-        <small>Disabled on non</small>
+        <small>{t('builder.common.disabledTitle', { defaultValue: 'Désactiver ou non' })}</small>
       </Popover.Header>
-      <Popover.Body>
-        <label>Disabled ou non :</label>
+      <Popover.Body dir={isRTL ? 'rtl' : 'ltr'}>
+        <label>{t('builder.common.disabledLabel', { defaultValue: 'Désactiver :' })}</label>
         <Form.Switch
           size="lg"
           checked={disabledChk}
@@ -66,7 +70,7 @@ const DamiRadioButton = ({ name, disabled }) => {
         readOnly
         className={`lst dami-radio-button ${disabledChk && "disabled"}`}
         onClick={clickHandler}
-        // disabled={disabled}
+        
         name={name}
       />
     </OverlayTrigger>
@@ -74,6 +78,7 @@ const DamiRadioButton = ({ name, disabled }) => {
 };
 
 const ListOfRadiosButtons = ({ headerProps = null, bodyItems = [] }) => {
+  const { t } = useTranslation();
   const [contentLines, setContentLines] = useState([
     { id: uuidv4(), isSection: false },
   ]);
@@ -119,7 +124,7 @@ const ListOfRadiosButtons = ({ headerProps = null, bodyItems = [] }) => {
                   headerProps &&
                   cssStringToObject(String(headerProps.mainLabelProps.style))
                 }
-                text={headerProps ? headerProps.mainLabelProps.text : "label"}
+                text={headerProps ? headerProps.mainLabelProps.text : t('builder.common.label', { defaultValue: 'label' })}
               />
             </td>
             <td>
@@ -137,7 +142,7 @@ const ListOfRadiosButtons = ({ headerProps = null, bodyItems = [] }) => {
                 text={
                   headerProps && headerProps.headerItems[0]
                     ? headerProps.headerItems[0].text
-                    : "label"
+                    : t('builder.common.label', { defaultValue: 'label' })
                 }
               />
             </td>
@@ -153,11 +158,9 @@ const ListOfRadiosButtons = ({ headerProps = null, bodyItems = [] }) => {
                   headerProps.headerItems[1] &&
                   cssStringToObject(String(headerProps.headerItems[1].style))
                 }
-                text={
-                  headerProps && headerProps.headerItems[1]
+                text={headerProps && headerProps.headerItems[1]
                     ? headerProps.headerItems[1].text
-                    : "label"
-                }
+                    : t('builder.common.label', { defaultValue: 'label' })}
               />
             </td>
             <td></td>
