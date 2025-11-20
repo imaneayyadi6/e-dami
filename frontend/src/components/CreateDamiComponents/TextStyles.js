@@ -8,6 +8,7 @@ const TextStyles = () => {
     if (doc) {
       const selectedLabels = [];
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -36,6 +37,7 @@ const TextStyles = () => {
     if (doc) {
       const selectedLabels = [];
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -68,6 +70,7 @@ const TextStyles = () => {
     if (doc) {
       const selectedLabels = [];
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -101,6 +104,7 @@ const TextStyles = () => {
       const selectedLabels = [];
 
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -134,6 +138,7 @@ const TextStyles = () => {
       const selectedLabels = [];
 
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -176,6 +181,7 @@ const TextStyles = () => {
       const selectedLabels = [];
 
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -218,6 +224,7 @@ const TextStyles = () => {
       const selectedLabels = [];
 
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
@@ -260,6 +267,7 @@ const TextStyles = () => {
       const selectedLabels = [];
 
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; 
       const range = selection.getRangeAt(0);
       const allLabels = doc.querySelectorAll(".dami-label");
 
